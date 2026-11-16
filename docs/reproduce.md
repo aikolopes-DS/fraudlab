@@ -92,7 +92,7 @@ A prévia é marcada como rascunho e não substitui os experimentos. A versão f
 python -m presentation.build --metrics artifacts/runs/blend-dev/metrics.json --comparison artifacts/runs/mlp-dev/metrics.json --comparison artifacts/runs/catboost-dev/metrics.json --comparison artifacts/runs/logistic-dev/metrics.json --output artifacts/presentation --video
 ```
 
-`--video` usa a voz SAPI `Microsoft Maria Desktop` no Windows e requer FFmpeg no `PATH`. O comando gera slides HTML editáveis, imagens, roteiro, vídeo MP4, legendas SRT e WebVTT e um manifest com hashes. Não há duração fixa: cada slide técnico é seguido imediatamente por explicação simples com exemplo cotidiano. O vídeo exportado precisa de revisão visual e auditiva; geração bem-sucedida não marca essa revisão como realizada.
+`--video` usa por padrão a voz online `pt-BR-AntonioNeural`, pelo pacote `edge-tts` do extra `presentation`, e requer FFmpeg no `PATH`. A alternativa local no Windows é `--speech-engine sapi --voice "Microsoft Maria Desktop"`. O comando gera slides HTML editáveis, imagens, roteiro, vídeo MP4, legendas SRT e WebVTT e um manifest com hashes. Não há duração fixa: cada slide técnico é seguido imediatamente por explicação simples com exemplo cotidiano. O vídeo exportado precisa de revisão visual e auditiva; geração bem-sucedida não marca essa revisão como realizada.
 
 ## Site
 
