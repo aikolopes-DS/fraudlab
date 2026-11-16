@@ -2,6 +2,8 @@
 
 Detecção de fraude em cartão: experimentos reproduzíveis, participação real no Kaggle e uma apresentação em português que liga a matemática ao cotidiano.
 
+[Estudo de caso e player](https://aikolopes-fraudlab.aikol9pes.chatgpt.site) · [Slides](https://aikolopes-fraudlab.aikol9pes.chatgpt.site/presentation/slides.html) · [Vídeo e downloads](https://github.com/aikolopes-og/fraudlab/releases/tag/v0.1.0)
+
 O objetivo é disputar as primeiras posições no [Playground S6E11](https://www.kaggle.com/competitions/playground-series-s6e11). O prazo publicado é 30/11/2026 às 23h59 UTC. A métrica é ROC-AUC. A posição pública durante a competição é provisória; vencer depende dos resultados, não de uma promessa.
 
 ## Estado do projeto
@@ -14,8 +16,8 @@ Este é o único acompanhamento de tarefas. Atualizado em 16/11/2026. Quatro sub
 | Programar para competir | Rede neural treinada, comparação e melhoria com validação correta | Redes próprias e alternativas treinadas; composição selecionada por OOF 5/42: 56,25% GLM, 18,75% LightGBM e 25% GPT-2 público. Sem holdout independente nesta extensão | [Experimentos agregados](evidence/experiments.json), [seleção](evidence/hybrid-selection.json), [origem externa](evidence/external-gpt2.json) |
 | Concorrer de verdade | Submissão processada, score e posição com data | Quarto envio: 0,95097; posição pública 804/2.010 em 16/11/2026 às 17h23 UTC. A meta das primeiras posições segue aberta | [Evidência](evidence/public.json), submissão `58438450`; [CSV remoto idêntico ao local](evidence/submission-file-check.json) |
 | Apresentar com profundidade | Slides narrados PT-BR, matemática seguida de analogia, código e ranking | 116 slides e vídeo de 44min27s gerados; decodificação AV integral, ASR integral e inspeção dos 116 quadros passaram. Sem alegação de escuta humana ou reprodução contínua integral | [Apresentação](presentation/), [prova audiovisual](evidence/media.json) |
-| Hospedar e usar no portfólio | Repositório público e estudo de caso acessível | GitHub, site V2 e notebook V3 públicos. Nova mídia em publicação; vídeo excedeu os 32 MiB por arquivo do mirror Sites e será servido pela release GitHub | [Site](https://aikolopes-fraudlab.aikol9pes.chatgpt.site), [notebook](https://www.kaggle.com/code/aikoog/fraudlab-reproducible-neural-fraud-detection) |
-| Testar e revisar | Contratos testados, revisão independente e verificação publicada | Suíte integrada local passou, incluindo treino neural sintético; recorder conferido com Kaggle real; revisão cruzada e correções integradas. CI remota bloqueada por cobrança da conta GitHub, sem iniciar job | [Testes](tests/), [verificação](evidence/verification.json), [CI](.github/workflows/check.yml) |
+| Hospedar e usar no portfólio | Repositório público e estudo de caso acessível | Site V3 e notebook V3 públicos; vídeo e ZIP na release GitHub. Acesso anônimo, reprodução/avanço e 604 legendas verificados em desktop/mobile; ZIP baixado anonimamente e íntegro | [Publicação verificada](evidence/publication.json), [site](https://aikolopes-fraudlab.aikol9pes.chatgpt.site), [downloads](https://github.com/aikolopes-og/fraudlab/releases/tag/v0.1.0) |
+| Testar e revisar | Contratos testados, revisão independente e verificação publicada | 84 testes e 52 subtestes locais passaram; recorder conferido com Kaggle real; revisão cruzada e correções integradas; 29 fontes publicadas correspondem aos hashes testados. CI remota bloqueada por cobrança da conta GitHub, sem iniciar job | [Testes](tests/), [verificação](evidence/verification.json), [CI](.github/workflows/check.yml) |
 
 ## Princípios
 

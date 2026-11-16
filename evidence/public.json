@@ -28,9 +28,11 @@
   "links": {
     "github": "https://github.com/aikolopes-og/fraudlab",
     "kaggle": "https://www.kaggle.com/competitions/playground-series-s6e11",
-    "presentation": null,
-    "video": null,
-    "notebook": "https://www.kaggle.com/code/aikoog/fraudlab-reproducible-neural-fraud-detection"
+    "presentation": "https://aikolopes-fraudlab.aikol9pes.chatgpt.site/presentation/slides.html",
+    "video": "https://github.com/aikolopes-og/fraudlab/releases/download/v0.1.0/video.mp4",
+    "notebook": "https://www.kaggle.com/code/aikoog/fraudlab-reproducible-neural-fraud-detection",
+    "captions": "https://aikolopes-fraudlab.aikol9pes.chatgpt.site/presentation/captions.vtt",
+    "release": "https://github.com/aikolopes-og/fraudlab/releases/tag/v0.1.0"
   },
   "run": {
     "path": "artifacts/runs/explore5-public25",

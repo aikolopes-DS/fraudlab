@@ -80,7 +80,12 @@
   "ci_remote": {
     "status": "job_not_started",
     "reason": "GitHub account locked due to a billing issue",
-    "source": "https://github.com/aikolopes-og/fraudlab/actions/runs/43890253125"
+    "source": "https://github.com/aikolopes-og/fraudlab/actions/runs/43928000963",
+    "check_run_ids": [
+      133512525244,
+      133512177904
+    ],
+    "verified_on": "2026-11-16"
   },
   "audiovisual_verification": {
     "verified_at": "2026-11-16T18:15:19.771529+00:00",
@@ -140,5 +145,137 @@
     "input_snapshot_sha256": "42f2d325d98d52d65a442530023225b964faa3821d619578e983fb71a4e08d07",
     "manifest_sha256": "29b41e41ee515064fe50b5635cbdf40bba451651c9ae02b24e1d10d864fa4487",
     "review_report_sha256": "c95ee440f359855a5e7405386e9f5f8434b5cb55dce971d9a7a0a9a647e8726d"
-  }
+  },
+  "publication": {
+    "site": {
+      "url": "https://aikolopes-fraudlab.aikol9pes.chatgpt.site",
+      "project_id": "appgprj_6afb134a2cec819188da595bd6a8ba6d",
+      "version_id": "appgprj_6afb134a2cec819188da595bd6a8ba6d~appgver_0db38dee6d148191a57c887148001387",
+      "version_number": 3,
+      "source_commit": "5ebb8895355883a09916e028ed77c5d37c0ffc1c",
+      "deployment_id": "appgdep_6afb4a0d01b08191ace4430ba061afab",
+      "deployment_status": "succeeded",
+      "published_at": "2026-11-16T18:23:22.833299+00:00",
+      "archive_sha256": "sha256:17b4237e7f1c48648bdcf3c7e3ff98908dd46fc2b637d16e8a99af8b7372971c",
+      "video_host": "GitHub Release",
+      "site_audience": "public",
+      "browser_check": {
+        "url": "https://aikolopes-fraudlab.aikol9pes.chatgpt.site",
+        "observed_at": "2026-11-16T18:23:32.896979+00:00",
+        "scope": "Anonymous real published page: responsive UI, links, captions and sampled video playback/seek; not continuous full watching or human listening",
+        "viewports": [
+          {
+            "viewport": "desktop",
+            "initial_cookies": 0,
+            "overflow": false,
+            "metadata": {
+              "duration": 2666.729161,
+              "width": 1920,
+              "height": 1080,
+              "src": "https://github.com/aikolopes-og/fraudlab/releases/download/v0.1.0/video.mp4",
+              "error": null
+            },
+            "caption_cues": 604,
+            "playback_started": true,
+            "seek_samples": [
+              {
+                "slide": 1,
+                "requested_time": 11.584013605442177,
+                "time": 11.584013,
+                "error": null,
+                "activeCues": 1
+              },
+              {
+                "slide": 73,
+                "requested_time": 1601.944829931975,
+                "time": 1601.944829,
+                "error": null,
+                "activeCues": 1
+              },
+              {
+                "slide": 97,
+                "requested_time": 2271.8209977324273,
+                "time": 2271.820997,
+                "error": null,
+                "activeCues": 1
+              },
+              {
+                "slide": 109,
+                "requested_time": 2518.4091383219948,
+                "time": 2518.409138,
+                "error": null,
+                "activeCues": 1
+              },
+              {
+                "slide": 116,
+                "requested_time": 2661.0491609977303,
+                "time": 2661.04916,
+                "error": null,
+                "activeCues": 1
+              }
+            ],
+            "video_status": "Vídeo narrado · verificação técnica, transcrição integral automática e revisão visual dos slides."
+          },
+          {
+            "viewport": "mobile",
+            "initial_cookies": 0,
+            "overflow": false,
+            "metadata": {
+              "duration": 2666.729161,
+              "width": 1920,
+              "height": 1080,
+              "src": "https://github.com/aikolopes-og/fraudlab/releases/download/v0.1.0/video.mp4",
+              "error": null
+            },
+            "caption_cues": 604,
+            "playback_started": true,
+            "seek_samples": [
+              {
+                "slide": 109,
+                "requested_time": 2518.4091383219948,
+                "time": 2518.409138,
+                "error": null,
+                "activeCues": 1
+              }
+            ],
+            "video_status": "Vídeo narrado · verificação técnica, transcrição integral automática e revisão visual dos slides."
+          }
+        ],
+        "page_errors": [],
+        "passed": true
+      }
+    },
+    "release": {
+      "assets": [
+        {
+          "digest": "sha256:e2f55fea77a06d63ef72409407654145ff38fa85e610153252990f76d327dfab",
+          "name": "fraudlab-slides-legendas.zip",
+          "size": 6836003,
+          "url": "https://github.com/aikolopes-og/fraudlab/releases/download/v0.1.0/fraudlab-slides-legendas.zip"
+        },
+        {
+          "digest": "sha256:41d4e1182b7f24f5bb1f15f7978b37f6c5edc02f5a624f45ba2e95693c6f0fac",
+          "name": "SHA256SUMS.txt",
+          "size": 173,
+          "url": "https://github.com/aikolopes-og/fraudlab/releases/download/v0.1.0/SHA256SUMS.txt"
+        },
+        {
+          "digest": "sha256:e5bbaf7a69e7c1d336c89cf9d4d1c3593b3fdb14a3003e1384746f6401574968",
+          "name": "video.mp4",
+          "size": 51276892,
+          "url": "https://github.com/aikolopes-og/fraudlab/releases/download/v0.1.0/video.mp4"
+        }
+      ],
+      "draft": false,
+      "target": "447289dcfbf4cfd062b8e57001936fb7d861be1d",
+      "url": "https://github.com/aikolopes-og/fraudlab/releases/tag/v0.1.0",
+      "anonymous_zip_download_verified": true,
+      "zip_integrity_verified": true,
+      "media_hashes_match_reviewed_files": true,
+      "zip_sha256": "e2f55fea77a06d63ef72409407654145ff38fa85e610153252990f76d327dfab"
+    },
+    "code_commit": "447289dcfbf4cfd062b8e57001936fb7d861be1d",
+    "verified_at": "2026-11-16T18:26:20.391204+00:00"
+  },
+  "published_code_matches_tested_source_hashes": true
 }
