@@ -166,7 +166,7 @@
     <div aria-live="polite" class="metrics">
      <article class="metric-card">
       <div class="metric-label">
-       ROC-AUC local
+       ROC-AUC OOF · desenvolvimento
        <span>01</span>
       </div>
       <p class="metric-value" data-local-auc="">—</p>
@@ -188,6 +188,11 @@
       <p class="metric-value" data-ranking="">—</p>
       <p class="metric-context" data-ranking-context="">O ranking será registrado após a avaliação</p>
      </article>
+    </div>
+    <p class="result-note" data-refit-note="" hidden="">O modelo final foi treinado com 100% dos dados rotulados. A AUC OOF acima pertence à etapa de desenvolvimento; o treino final não gera uma nova OOF.</p>
+    <div class="holdout-note" data-holdout="" hidden="">
+     <p><strong>Reserva independente</strong><span data-holdout-auc=""></span></p>
+     <p>Avaliação separada da OOF, realizada após congelar a escolha dos modelos e seus pesos.</p>
     </div>
     <div class="fold-panel" data-fold-panel="" hidden="">
      <div>
@@ -247,6 +252,7 @@
       <h3>Reproduzir e revisar.</h3>
       <p>Preparação dos dados, experimentos, validação das previsões e geração dos materiais.</p>
       <a class="text-link" data-link="github" hidden="">Explorar no GitHub <span aria-hidden="true">↗</span></a>
+      <a class="text-link" data-link="notebook" hidden="">Notebook no Kaggle <span aria-hidden="true">↗</span></a>
       <p class="resource-status" data-code-status="">O repositório público será vinculado após a publicação.</p>
      </article>
      <article class="resource">

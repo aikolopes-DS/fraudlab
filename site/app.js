@@ -118,16 +118,22 @@ function render(evidence) {
     evaluated: "Validação local registrada", submitted: "Submissão registrada",
     published: "Materiais publicados", blocked: "Execução com pendência de acesso",
   };
-  text("[data-stage]", stages[evidence.stage] || "Experimento em desenvolvimento");
+  const isRefit = checks.training_verified === true && run.phase === "full_data_refit";
+  text("[data-stage]", isRefit ? "Treino final com todos os rótulos" : (stages[evidence.stage] || "Experimento em desenvolvimento"));
+  if (isRefit) select("[data-refit-note]").hidden = false;
   const updated = dateLabel(evidence.updated_at);
   text("[data-updated]", updated ? `Registro atualizado em ${updated}` : "Registro sem data informada");
 
-  if (checks.training_verified === true && validScore(results.local_auc)) {
+  if (checks.training_verified === true && validScore(results.local_auc) && (!isRefit || results.local_auc_scope === "development_oof")) {
     text("[data-local-auc]", score(results.local_auc));
     const validation = typeof run.validation === "string" ? run.validation : run.validation?.method;
     const folds = typeof run.validation?.n_splits === "number" ? `${run.validation.n_splits} folds` : null;
-    text("[data-local-context]", [run.model, validation, folds].filter(Boolean).join(" · ") || "Validação local registrada");
+    text("[data-local-context]", isRefit ? "OOF da etapa de desenvolvimento" : ([run.model, validation, folds].filter(Boolean).join(" · ") || "Validação local registrada"));
     renderFolds(results.fold_scores);
+  }
+  if (checks.holdout_verified === true && checks.data_verified === true && checks.training_verified === true && validScore(results.holdout_auc)) {
+    text("[data-holdout-auc]", score(results.holdout_auc));
+    select("[data-holdout]").hidden = false;
   }
   if (checks.submission_verified === true && validScore(results.public_auc)) {
     text("[data-public-auc]", score(results.public_auc));

@@ -1,0 +1,11 @@
+{
+  "scope": "Local integration check; not GitHub-hosted CI and not a claim of competition victory",
+  "command": "python -m pytest tests presentation/test_presentation.py site/test_build.py -q",
+  "passed": 51,
+  "subtests_passed": 34,
+  "model_source_commit": "1fe34b540f3ea28276da652c3dd1de02726897f4",
+  "working_tree_had_presentation_site_changes": true,
+  "ci_remote": "Job not started: GitHub account billing lock",
+  "ci_source": "https://github.com/aikolopes-og/fraudlab/actions/runs/43890253125",
+  "final_upload_bytes_verified": true
+}

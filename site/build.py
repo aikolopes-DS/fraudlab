@@ -62,10 +62,16 @@ def normalize(evidence: dict, metrics: dict | None = None) -> dict:
     results = dict(evidence.get("results") or {})
     run = dict(evidence.get("run") or {})
     if metrics and checks.get("training_verified") is True:
-        results.update(local_auc=metrics.get("roc_auc"), fold_scores=metrics.get("fold_scores", []))
-        run.update({key: metrics.get(key) for key in ("model", "validation", "rows", "features")})
+        run.update({key: metrics.get(key) for key in ("model", "phase", "validation", "rows", "features")})
+        if metrics.get("phase") != "full_data_refit":
+            results.update(local_auc=metrics.get("roc_auc"), fold_scores=metrics.get("fold_scores", []), local_auc_scope="development_oof")
     training_verified = checks.get("training_verified") is True
     submission_verified = checks.get("submission_verified") is True
+    is_refit = run.get("phase") == "full_data_refit"
+    local_scope = results.get("local_auc_scope") or (None if is_refit else "development_oof")
+    if is_refit and results.get("local_auc") is not None and local_scope != "development_oof":
+        raise ValueError("A final refit's local AUC must be explicitly attributed to development_oof")
+    holdout_verified = checks.get("holdout_verified") is True and training_verified and checks.get("data_verified") is True
     ranking = positive_integer(results.get("ranking")) if submission_verified and results.get("observed_at") else None
     total_teams = positive_integer(results.get("total_teams"))
     if ranking and total_teams and ranking > total_teams:
@@ -80,18 +86,20 @@ def normalize(evidence: dict, metrics: dict | None = None) -> dict:
         "competition": {key: competition.get(key) for key in ("title", "url", "deadline_utc")},
         "stage": evidence.get("stage", "implementation"),
         "updated_at": evidence.get("updated_at"),
-        "checks": {key: checks.get(key) is True for key in ("data_verified", "training_verified", "submission_verified")},
+        "checks": {**{key: checks.get(key) is True for key in ("data_verified", "training_verified", "submission_verified")}, "holdout_verified": holdout_verified},
         "results": {
             "local_auc": score(results.get("local_auc")) if training_verified else None,
+            "local_auc_scope": local_scope if training_verified else None,
             "fold_scores": folds if training_verified else [],
+            "holdout_auc": score(results.get("holdout_auc")) if holdout_verified else None,
             "public_auc": score(results.get("public_auc")) if submission_verified else None,
             "ranking": ranking,
             "total_teams": total_teams if ranking else None,
             "submission_id": results.get("submission_id") if submission_verified else None,
             "observed_at": results.get("observed_at") if submission_verified else None,
         },
-        "links": {key: public_link((evidence.get("links") or {}).get(key)) for key in ("github", "kaggle", "presentation", "video", "captions")},
-        "run": {key: run.get(key) for key in ("model", "validation", "rows", "features")},
+        "links": {key: public_link((evidence.get("links") or {}).get(key)) for key in ("github", "kaggle", "notebook", "presentation", "video", "captions")},
+        "run": {key: run.get(key) for key in ("model", "phase", "validation", "rows", "features")},
         "limitations": limitations,
     }
 

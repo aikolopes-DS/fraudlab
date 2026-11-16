@@ -1,0 +1,53 @@
+{
+  "status": "complete",
+  "kind": "independent_holdout",
+  "evaluation_source_hashes": {
+    "__init__.py": "14479eff95a0233e8bf2d9f359843c36f53f36b92cc95c3e452f75bfb2982dcc",
+    "__main__.py": "0857ec4b55d766e44587d7c18d260f62eb868e34b0c9640195901d373557fd50",
+    "data.py": "f22355cc51fa6e6162b24e639923f40a11a23af00afcb65553090176271c8326",
+    "experiment.py": "68b5caff191ebeba1fa91d624f85fbebe8bab1602a7b04e92939d48ed4819557",
+    "features.py": "4eb9a26b276af8c24d065e72e2672ac17edf82c09b66d9049fbe99855223ba68",
+    "holdout.py": "e3702891766326710c3b56dd7a7fe69f2f778acea3316665f130aa6955e2f4e3",
+    "models.py": "1c728763b7c103d711213a5edb2db3065d468ddd5b7943fe7d28b544404fd867",
+    "refit.py": "571c4f4206b3a228341f2c5bf23a5641565e6dbf2ffe9d01ed0e7ffa12a5ce99",
+    "splits.py": "41215280332984010f5b616bbf6a675c623b7af3e3f00604eb3238e79c709af9"
+  },
+  "roc_auc": 0.9485517227500961,
+  "individual_roc_auc": [
+    0.9482681522876101,
+    0.9481425151181083
+  ],
+  "rows": 104994,
+  "positive_rows": 1753,
+  "holdout_seed": 2026,
+  "holdout_fraction": 0.15,
+  "selection": {
+    "sources": [
+      "artifacts\\runs\\dev-glm-values-s50",
+      "artifacts\\runs\\dev-lgbm-leaf4-values-s20"
+    ],
+    "weights": [
+      0.75,
+      0.25
+    ],
+    "metrics_hashes": [
+      "4ae54f23d213ece637c65a438e2548a301698222552b2e4d657ea1bbd589fd59",
+      "0cfa5044ab49c0071835a921b850543682f6509dcff9f0e43426d08dba12aec6"
+    ],
+    "config_hashes": [
+      "31cff8d7ceebe352ff11bd45bf081014f3f414402e15063f9d29648f365d2e10",
+      "bdbae91439b8ea897eaf79dc0e61e5bcec639106890c9630db4da5291d9407e6"
+    ],
+    "frozen_at": "2026-11-16T16:09:14.771816+00:00",
+    "source_dev_run": "artifacts\\runs\\dev-blend-selected",
+    "development_roc_auc": 0.9505188657556217,
+    "development_metrics_sha256": "f06cf59a03599ce94f6113013dd3ee760faf11ce69094fe5a64019f20732eb6d"
+  },
+  "data_hashes": {
+    "train.csv": "87eaa10b8d17a7e4f657b8da1c66242431338bdd8b6ad45861521ac0c0e9fbd5",
+    "test.csv": "10f516959020357b565abaaa4fd25baae97fc2f536d0805695bb7cc15c1660f0",
+    "sample_submission.csv": "13fc6ed8b73de5329884ec490f2a0b750cf29a7cda772b78cfa0cf486f6f35fa"
+  },
+  "evaluated_at": "2026-11-16T16:09:36.560482+00:00",
+  "limitation": "The selection was frozen before this evaluation. Using this result to retune would make the holdout part of model selection."
+}

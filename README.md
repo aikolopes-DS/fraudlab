@@ -6,16 +6,16 @@ O objetivo é disputar as primeiras posições no [Playground S6E11](https://www
 
 ## Estado do projeto
 
-Este é o único acompanhamento de tarefas. Atualizado em 16/11/2026. O projeto está em experimentação. A primeira submissão foi processada, mas o resultado inicial ainda está distante das primeiras posições.
+Este é o único acompanhamento de tarefas. Atualizado em 16/11/2026. Três submissões próprias foram processadas. O resultado ainda está distante das primeiras posições; uma combinação complementar com uma rede neural pública está em avaliação, com licença e origem explícitas.
 
 | Pedido | Resultado esperado | Estado real | Evidência |
 | --- | --- | --- | --- |
 | Competição vigente e inscrição | Regras verificadas, acesso aos dados e conta inscrita | Conferido; arquivos oficiais baixados pela conta `aikoog` | [Regras verificadas](docs/competition.md) |
-| Programar para competir | Rede neural treinada, comparação e melhoria com validação correta | Logistic e CatBoost treinados; rede neural e otimização em andamento | [Núcleo](src/fraudlab), perfis e métricas locais; holdout de 15% reservado |
-| Concorrer de verdade | Submissão processada, score e posição com data | Referência inicial: score 0,94240; posição pública 1.837/1.996 em 16/11/2026 às 14h49 UTC | [evidence/public.json](evidence/public.json), submissão `58434290` |
-| Apresentar com profundidade | Slides narrados PT-BR, matemática seguida de analogia, código e ranking | Motor e amostra de voz neural testados; vídeo completo pendente | [Apresentação](presentation/), testes e amostras locais identificadas |
-| Hospedar e usar no portfólio | Repositório público e estudo de caso acessível | GitHub publicado; site local testado, deploy pendente; notebook Kaggle recusado com HTTP 403, em investigação | [GitHub](https://github.com/aikolopes-og/fraudlab), `site/` |
-| Testar e revisar | Contratos testados, revisão independente e verificação publicada | Suíte integrada local passou, incluindo treino neural sintético; revisão cruzada realizada; CI remota pendente | [Testes](tests/), [CI](.github/workflows/check.yml) |
+| Programar para competir | Rede neural treinada, comparação e melhoria com validação correta | Redes próprias e alternativas treinadas; composição GLM/LGB refitada em todos os rótulos. Nova etapa exploratória 5/42 em andamento | [Experimentos agregados](evidence/experiments.json), [núcleo](src/fraudlab) |
+| Concorrer de verdade | Submissão processada, score e posição com data | Terceiro envio: 0,95065; posição pública 881/2.003 em 16/11/2026 às 16h21 UTC. A meta das primeiras posições segue aberta | [Evidência](evidence/public.json), submissão `58437018`; [CSV remoto idêntico ao local](evidence/submission-file-check.json) |
+| Apresentar com profundidade | Slides narrados PT-BR, matemática seguida de analogia, código e ranking | Roteiro, renderização e motor de voz neural testados; vídeo completo pendente da configuração competitiva | [Apresentação](presentation/), testes e amostras locais identificadas |
+| Hospedar e usar no portfólio | Repositório público e estudo de caso acessível | GitHub, site V2 e notebook públicos; site verificado anonimamente. Snapshot e mídia finais ainda serão atualizados | [Site](https://aikolopes-fraudlab.aikol9pes.chatgpt.site), [notebook](https://www.kaggle.com/code/aikoog/fraudlab-reproducible-neural-fraud-detection) |
+| Testar e revisar | Contratos testados, revisão independente e verificação publicada | Suíte integrada local passou, incluindo treino neural sintético; revisão cruzada realizada; CI remota bloqueada por cobrança da conta GitHub, sem iniciar job | [Testes](tests/), [CI](.github/workflows/check.yml) |
 
 ## Princípios
 

@@ -3,6 +3,7 @@
 import importlib.util
 import hashlib
 import json
+import re
 import tempfile
 import unittest
 from pathlib import Path
@@ -24,6 +25,45 @@ class PublicBuildTests(unittest.TestCase):
         self.assertEqual(public["results"]["local_auc"], 0.92)
         self.assertIsNone(public["results"]["public_auc"])
         self.assertFalse(public["checks"]["submission_verified"])
+
+    def test_final_refit_preserves_development_oof_without_inventing_a_new_score(self):
+        evidence = {"checks": {"data_verified": True, "training_verified": True, "holdout_verified": True}, "results": {"local_auc": 0.91, "local_auc_scope": "development_oof", "fold_scores": [0.90, 0.92], "holdout_auc": 0.905}}
+        final = {"phase": "full_data_refit", "model": "blend", "roc_auc": None, "fold_scores": [], "rows": {"oof": 0}, "selection": {"development_roc_auc": 0.91}}
+        public = MODULE.normalize(evidence, final)
+        self.assertEqual(public["results"]["local_auc"], 0.91)
+        self.assertEqual(public["results"]["fold_scores"], [0.90, 0.92])
+        self.assertEqual(public["results"]["local_auc_scope"], "development_oof")
+        self.assertEqual(public["run"]["phase"], "full_data_refit")
+        self.assertEqual(public["run"]["rows"]["oof"], 0)
+        self.assertEqual(public["results"]["holdout_auc"], 0.905)
+        self.assertIsNone(public["results"]["public_auc"])
+
+    def test_final_refit_requires_explicit_development_scope(self):
+        with self.assertRaisesRegex(ValueError, "development_oof"):
+            MODULE.normalize({"checks": {"training_verified": True}, "results": {"local_auc": 0.91}}, {"phase": "full_data_refit", "roc_auc": None})
+
+    def test_holdout_needs_its_own_verification_and_verified_training_data(self):
+        evidence = {"checks": {"data_verified": True, "training_verified": True}, "results": {"holdout_auc": 0.91}}
+        self.assertIsNone(MODULE.normalize(evidence)["results"]["holdout_auc"])
+        evidence["checks"]["holdout_verified"] = True
+        evidence["checks"]["data_verified"] = False
+        self.assertIsNone(MODULE.normalize(evidence)["results"]["holdout_auc"])
+
+    def test_utf8_evidence_roundtrip_preserves_portuguese_text(self):
+        with tempfile.TemporaryDirectory(dir=Path(__file__).parent, prefix=".test-build-") as directory:
+            path = Path(directory)
+            source = {"competition": {"title": "Detecção de fraude · apresentação"}, "limitations": ["Seleção e avaliação independentes; posição provisória."]}
+            evidence = path / "source.json"
+            evidence.write_text(json.dumps(source, ensure_ascii=False), encoding="utf-8")
+            output = MODULE.build(evidence, output_dir=path / "dist")
+            public = MODULE.read_json(output / "evidence.json")
+            self.assertEqual(public["competition"]["title"], source["competition"]["title"])
+            self.assertEqual(public["limitations"], source["limitations"])
+
+    def test_repository_evidence_has_no_known_encoding_corruption(self):
+        evidence = MODULE.read_json(MODULE.ROOT / "evidence" / "public.json")
+        serialized = json.dumps(evidence, ensure_ascii=False)
+        self.assertIsNone(re.search(r"Ã[\u0080-\u00ff\u0192\u2010-\u20ff]|Â[\u0080-\u00ff]|�", serialized), "Evidence contains a mojibake or replacement-character sequence")
 
     def test_private_fields_and_local_paths_are_excluded(self):
         public = MODULE.normalize({"token": "not-a-real-secret", "run": {"path": "C:/private/run", "model": "reference"}, "raw_rows": [1, 2]})

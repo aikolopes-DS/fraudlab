@@ -26,7 +26,7 @@ A CLI Kaggle 2.2.5 utilizada neste projeto exige Python 3.11 e usa ambiente sepa
 
 ```powershell
 py -3.11 -m venv .local/kaggle-cli
-.\.local\kaggle-cli\Scripts\python.exe -m pip install kaggle==2.2.5
+.\.local\kaggle-cli\Scripts\python.exe -m pip install kaggle==2.2.5 six==1.17.0
 .\.local\kaggle-cli\Scripts\kaggle.exe competitions download playground-series-s6e11 -p data/raw --unzip
 python -m fraudlab inspect --data data/raw --output artifacts/profile.json
 ```
@@ -110,7 +110,7 @@ python -m pytest tests presentation/test_presentation.py site/test_build.py -q
 node --check site/app.js
 ```
 
-Os testes cobrem contratos, divisões, pequenos treinos sintéticos, persistência, combinação de previsões, barreiras de evidência e empacotamento público. A CI instala PyTorch CPU para executar também o teste neural. Ela não acessa a conta Kaggle, não usa os dados da competição, não submete arquivos e não valida narração Windows ou publicação.
+Os testes cobrem contratos, divisões, pequenos treinos sintéticos, persistência, combinação de previsões, barreiras de evidência e empacotamento público. A CI instala PyTorch CPU para executar também o teste neural. Ela não acessa a conta Kaggle, não usa os dados da competição, não submete arquivos e não valida a síntese de voz, a reprodução integral do vídeo ou a publicação.
 
 A verificação visual local é separada:
 

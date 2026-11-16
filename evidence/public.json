@@ -1,54 +1,54 @@
 {
   "competition": {
-    "title": "Predicting Credit Card Fraud Ã‚Â· Playground S6E11",
+    "title": "Predicting Credit Card Fraud · Playground S6E11",
     "url": "https://www.kaggle.com/competitions/playground-series-s6e11",
     "deadline_utc": "2026-11-30T23:59:00Z"
   },
   "stage": "experimentation",
-  "updated_at": "2026-11-16",
+  "updated_at": "2026-11-16T16:21:43.202867+00:00",
   "results": {
-    "local_auc": 0.9422598588541492,
+    "local_auc": 0.9505188657556217,
     "fold_scores": [
-      0.9412754226402857,
-      0.944328146060638,
-      0.941208181879438
+      0.9492771010504355,
+      0.9528110799842545,
+      0.949479647024171
     ],
-    "public_auc": 0.9424,
-    "ranking": 1837,
-    "total_teams": 1996,
-    "submission_id": "58434290",
-    "observed_at": "2026-11-16T14:49:05Z"
+    "public_auc": 0.95065,
+    "ranking": 881,
+    "total_teams": 2003,
+    "submission_id": "58437018",
+    "observed_at": "2026-11-16T16:21:43.202867+00:00",
+    "local_auc_scope": "development_oof",
+    "local_auc_run": "dev-blend-selected",
+    "holdout_auc": 0.9485517227500961,
+    "holdout_observed_at": "2026-11-16T16:09:36.560482+00:00"
   },
   "links": {
     "github": "https://github.com/aikolopes-og/fraudlab",
     "kaggle": "https://www.kaggle.com/competitions/playground-series-s6e11",
     "presentation": null,
-    "video": null
+    "video": null,
+    "notebook": "https://www.kaggle.com/code/aikoog/fraudlab-reproducible-neural-fraud-detection"
   },
   "run": {
-    "path": "artifacts/runs/dev-logistic-raw",
-    "model": "logistic",
+    "path": "artifacts/runs/final-blend",
+    "phase": "full_data_refit",
+    "submission_sha256": "0560d11162fb58dd85d54bfdc0ec1420066503b3e01bbc3946ea90457f6e530f",
+    "model": "blend",
     "validation": {
-      "method": "stratified",
-      "n_splits": 3,
-      "note": "Synthetic IID transactions; no entity identifiers or chronological timestamp, hour-of-day is cyclical; inspection found no duplicate feature rows or train-test overlap. Independent stratified 15 percent holdout seed2026 remains untouched during selection.",
-      "group_column": null,
-      "time_column": null,
-      "holdout_fraction": 0.15,
-      "holdout_seed": 2026,
+      "method": "no_new_selection_full_data_refit",
+      "n_splits": 0,
       "early_stopping_uses_validation": false
     },
     "rows": {
       "train": 699960,
       "test": 299984,
-      "oof": 594966,
-      "development": 594966,
-      "holdout": 104994
+      "oof": 0
     },
     "features": {
-      "count": 24,
-      "numeric": 13,
-      "categorical": 11,
+      "count": 78,
+      "numeric": 24,
+      "categorical": 54,
       "names": [
         "amount_usd",
         "hours_since_last_txn",
@@ -73,7 +73,61 @@
         "used_vpn",
         "ip_country_mismatch",
         "billing_shipping_mismatch",
-        "is_ai_generated_scam_attempt"
+        "is_ai_generated_scam_attempt",
+        "amount_usd__log1p",
+        "hours_since_last_txn__log1p",
+        "distance_from_home_km__log1p",
+        "account_balance_usd__log1p",
+        "velocity_score__log1p",
+        "merchant_risk_score__log1p",
+        "time_of_day_hour__sin",
+        "time_of_day_hour__cos",
+        "day_of_week__sin",
+        "day_of_week__cos",
+        "amount_balance_ratio",
+        "amount_usd__value_key",
+        "amount_usd__cents_key",
+        "amount_usd__leading_key",
+        "amount_usd__integer_key",
+        "amount_usd__tenths_key",
+        "amount_usd__leading_two_key",
+        "hours_since_last_txn__value_key",
+        "hours_since_last_txn__cents_key",
+        "hours_since_last_txn__leading_key",
+        "hours_since_last_txn__integer_key",
+        "hours_since_last_txn__tenths_key",
+        "hours_since_last_txn__leading_two_key",
+        "distance_from_home_km__value_key",
+        "distance_from_home_km__cents_key",
+        "distance_from_home_km__leading_key",
+        "distance_from_home_km__integer_key",
+        "distance_from_home_km__tenths_key",
+        "distance_from_home_km__leading_two_key",
+        "account_balance_usd__value_key",
+        "account_balance_usd__cents_key",
+        "account_balance_usd__leading_key",
+        "account_balance_usd__integer_key",
+        "account_balance_usd__tenths_key",
+        "account_balance_usd__leading_two_key",
+        "velocity_score__value_key",
+        "velocity_score__cents_key",
+        "velocity_score__leading_key",
+        "velocity_score__integer_key",
+        "velocity_score__tenths_key",
+        "velocity_score__leading_two_key",
+        "merchant_risk_score__value_key",
+        "merchant_risk_score__cents_key",
+        "merchant_risk_score__leading_key",
+        "merchant_risk_score__integer_key",
+        "merchant_risk_score__tenths_key",
+        "merchant_risk_score__leading_two_key",
+        "txn_count_last_24h__value_key",
+        "card_age_months__value_key",
+        "customer_age__value_key",
+        "cvv_retry_count__value_key",
+        "time_of_day_hour__value_key",
+        "day_of_week__value_key",
+        "prior_disputes__value_key"
       ],
       "excluded": [
         "id",
@@ -84,12 +138,13 @@
   "checks": {
     "data_verified": true,
     "training_verified": true,
-    "submission_verified": true
+    "submission_verified": true,
+    "holdout_verified": true
   },
   "limitations": [
-    "Primeira submissÃ£o Ã© uma referÃªncia inicial; otimizaÃ§Ã£o e treino da rede neural em andamento.",
-    "PosiÃ§Ã£o no ranking ainda nÃ£o apurada; pontuaÃ§Ã£o pÃºblica Ã© provisÃ³ria.",
-    "Holdout independente de 15% permanece reservado durante a seleÃ§Ã£o.",
-    "Notebook pÃºblico no Kaggle ainda nÃ£o publicado: API retornou HTTP 403."
+    "Otimização em andamento; a segunda submissão foi processada, ainda distante das primeiras posições.",
+    "OOF de desenvolvimento, avaliação independente e score público são medidas distintas.",
+    "O ranking público é provisório até o encerramento da competição.",
+    "CI remota não iniciou: GitHub informa bloqueio da conta por cobrança. Os testes locais foram executados separadamente."
   ]
 }
