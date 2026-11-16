@@ -1,0 +1,30 @@
+# Local environments and credentials
+.venv/
+.env
+.env.*
+!.env.example
+.local/
+.kaggle/
+kaggle.json
+*.pem
+*.key
+
+# Competition data and generated artifacts stay local by default
+data/
+artifacts/
+site/dist/
+site/.git/
+site/.openai/
+*.zip
+*.tar.gz
+*.mp4
+*.wav
+
+# Python and editor caches
+__pycache__/
+*.py[cod]
+*.egg-info/
+.pytest_cache/
+.ruff_cache/
+.DS_Store
+.vscode/

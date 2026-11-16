@@ -1,0 +1,35 @@
+{
+  "competition": {
+    "title": "Predicting Credit Card Fraud · Playground S6E11",
+    "url": "https://www.kaggle.com/competitions/playground-series-s6e11",
+    "deadline_utc": "2026-11-30T23:59:00Z"
+  },
+  "stage": "implementation",
+  "updated_at": "2026-11-16",
+  "results": {
+    "local_auc": null,
+    "fold_scores": [],
+    "public_auc": null,
+    "ranking": null,
+    "total_teams": null,
+    "submission_id": null,
+    "observed_at": null
+  },
+  "links": {
+    "github": "https://github.com/aikolopes-og/fraudlab",
+    "kaggle": "https://www.kaggle.com/competitions/playground-series-s6e11",
+    "presentation": null,
+    "video": null
+  },
+  "run": null,
+  "checks": {
+    "data_verified": false,
+    "training_verified": false,
+    "submission_verified": false
+  },
+  "limitations": [
+    "Regras completas e inscrição da conta ainda não verificadas.",
+    "Nenhum experimento com os dados da competição executado.",
+    "Nenhuma submissão, pontuação ou posição comprovada."
+  ]
+}
