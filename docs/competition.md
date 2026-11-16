@@ -8,11 +8,11 @@ Fonte: [regras oficiais do Playground S6E11](https://www.kaggle.com/competitions
 - Limite: dez submissões por dia; até duas submissões finais.
 - Equipe: no máximo três pessoas; uma única conta por participante.
 - Dados: licença CC BY 4.0, com os demais termos de acesso e segurança da competição.
-- Dados e ferramentas externos: precisam atender aos critérios de acesso e custo previstos nas regras. O primeiro ciclo usará somente os arquivos oficiais.
-- Código público: permitido sob licença aberta compatível. As regras também exigem disponibilizá-lo nos fóruns ou notebooks associados à competição. O projeto terá um notebook público no Kaggle ligado ao repositório.
+- Dados e ferramentas externos: precisam atender aos critérios de acesso e custo previstos nas regras. O protocolo inicial usou somente os arquivos oficiais. A extensão avalia previsões públicas licenciadas e versionadas, com autoria explícita.
+- Código público: permitido sob licença aberta compatível. As regras também exigem disponibilizá-lo nos fóruns ou notebooks associados à competição. O [notebook público do projeto](https://www.kaggle.com/code/aikoog/fraudlab-reproducible-neural-fraud-detection) está associado à edição e ligado ao repositório; as versões publicadas foram salvas sem execução.
 - Não há compartilhamento privado de código ou dados entre equipes separadas.
 - O ranking público durante o evento é provisório. A classificação final depende do conjunto privado e das regras da competição.
 
 Não incluímos os CSVs ou checkpoints no repositório. Cada participante deve obter os dados no Kaggle, com sua própria conta e aceitação das regras.
 
-A sessão do Brave foi confirmada como `aiko-og`; a página apresentou `Submit Prediction`, compatível com inscrição já realizada. Ainda é necessário confirmar acesso aos arquivos e processamento de uma submissão para comprovar a participação operacional.
+A sessão do Brave foi confirmada como `aiko-og` (usuário `aikoog`). Os arquivos oficiais foram baixados e submissões foram processadas pela plataforma. Identificadores, scores e posições com data estão em [evidence/public.json](../evidence/public.json); a conferência de bytes do arquivo enviado foi registrada separadamente.

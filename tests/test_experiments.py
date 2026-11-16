@@ -10,7 +10,7 @@ import pytest
 from sklearn.datasets import make_classification
 
 from fraudlab.__main__ import main
-from fraudlab.data import validate_submission
+from fraudlab.data import fingerprint, validate_submission
 from fraudlab.experiment import blend
 from fraudlab.holdout import evaluate
 from fraudlab.refit import refit
@@ -157,7 +157,12 @@ def test_blend_writes_normalized_explicit_weights_and_valid_predictions(tmp_path
         metrics = {
             "status": "complete",
             "data_hashes": {"train.csv": "same"},
-            "validation": {"method": "stratified", "n_splits": 2},
+            "validation": {
+                "method": "stratified",
+                "n_splits": 2,
+                "holdout_fraction": 0.0,
+                "holdout_seed": 2026 if index == 0 else None,
+            },
         }
         (run / "metrics.json").write_text(json.dumps(metrics))
         pd.DataFrame(
@@ -176,6 +181,9 @@ def test_blend_writes_normalized_explicit_weights_and_valid_predictions(tmp_path
     assert result["model_details"]["weights"] == [0.25, 0.75]
     assert submission["is_fraud"].to_numpy() == pytest.approx([0.5, 0.5])
     assert result["roc_auc"] == 1.0
+    assert result["config_sha256"] == fingerprint(
+        tmp_path / "runs" / "mixed" / "config.json"
+    )
 
 
 @pytest.mark.parametrize(
@@ -310,3 +318,41 @@ def test_final_blend_preserves_frozen_weights_and_has_no_new_local_score(
     with pytest.raises(ValueError, match="weights cannot change"):
         blend(finals, [0.5, 0.5], output, "retuned-after-holdout")
     assert not (output / "retuned-after-holdout").exists()
+
+
+def test_preselected_fixed_tree_cv_does_not_use_validation_for_early_stopping(
+    tmp_path, synthetic_data, monkeypatch
+):
+    data, _ = synthetic_data
+    output = tmp_path / "runs"
+    monkeypatch.setattr(
+        sys,
+        "argv",
+        [
+            "fraudlab",
+            "train",
+            "--data",
+            str(data),
+            "--output",
+            str(output),
+            "--model",
+            "lightgbm",
+            "--name",
+            "fixed",
+            "--fixed-training",
+            "--iterations",
+            "10",
+            "--min-child-samples",
+            "2",
+            "--threads",
+            "1",
+            "--validation-note",
+            "Manufactured data; tree count chosen before cross-validation.",
+        ],
+    )
+    main()
+    metadata = json.loads((output / "fixed" / "metrics.json").read_text())
+    assert metadata["validation"]["early_stopping_uses_validation"] is False
+    assert all(
+        fold["best_iteration"] == 10 for fold in metadata["model_details"]["folds"]
+    )

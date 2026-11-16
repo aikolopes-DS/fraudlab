@@ -183,6 +183,7 @@ def train(config: dict) -> dict:
         numeric, categorical = feature_types(frame[features])
         metrics = {
             "status": "complete",
+            "phase": config.get("phase", "development"),
             "config_sha256": config_hash,
             "model": config["model"],
             "roc_auc": float(roc_auc_score(frame.loc[covered, target], oof[covered])),
@@ -214,9 +215,13 @@ def train(config: dict) -> dict:
                 "group_column": config["group_column"],
                 "time_column": config["time_column"],
                 "holdout_fraction": holdout_fraction,
-                "holdout_seed": config.get("holdout_seed"),
+                "holdout_seed": (
+                    config.get("holdout_seed") if holdout_fraction else None
+                ),
+                "independent_holdout": bool(holdout_fraction),
                 "early_stopping_uses_validation": config["model"]
-                in ("catboost", "lightgbm", "mlp"),
+                in ("catboost", "lightgbm", "mlp")
+                and not config.get("fixed_training"),
             },
             "elapsed_seconds": round(time.perf_counter() - started, 3),
             "versions": versions(),
@@ -233,6 +238,13 @@ def train(config: dict) -> dict:
                 "OOF scores used for model selection are not an independent final assessment.",
                 "Public leaderboard and final private leaderboard scores must be obtained from Kaggle.",
                 "Temporal OOF, when selected, excludes the initial training-only window.",
+                *(
+                    [
+                        "Exploratory full-data CV uses all labels, including the historical holdout; no independent holdout remains for this stage."
+                    ]
+                    if config.get("phase") == "exploratory_full_data_cv"
+                    else []
+                ),
             ],
         }
         write_json(run / "metrics.json", metrics)
@@ -305,13 +317,16 @@ def blend(
                 "group_column",
                 "time_column",
                 "holdout_fraction",
-                "holdout_seed",
             )
             if any(
                 score["validation"].get(field) != metrics[0]["validation"].get(field)
                 for field in fields
             ):
                 raise ValueError("Blend sources must use the same validation strategy.")
+            if metrics[0]["validation"].get("holdout_fraction", 0) and score[
+                "validation"
+            ].get("holdout_seed") != metrics[0]["validation"].get("holdout_seed"):
+                raise ValueError("Blend sources must reserve exactly the same holdout.")
         validate_submission(prediction, expected, id_column, target)
         if (
             not np.isfinite(oof["prediction"]).all()
@@ -335,9 +350,25 @@ def blend(
     oof_result.to_csv(run / "oof.csv", index=False)
     prediction_result.to_csv(run / "predictions.csv", index=False)
     prediction_result.to_csv(run / "submission.csv", index=False)
+    external_components = {}
+    for weight, metric in zip(coefficients, metrics):
+        if weight <= 0:
+            continue
+        for component in metric.get("model_details", {}).get("external_components", []):
+            entry = {
+                **component,
+                "weight": float(weight) * component.get("weight", 1.0),
+                "mixture_space": "probability",
+            }
+            key = entry["predictions_source_url"]
+            if key in external_components:
+                external_components[key]["weight"] += entry["weight"]
+            else:
+                external_components[key] = entry
     result = {
         **metrics[0],
         "model": "blend",
+        "external_components": list(external_components.values()),
         "roc_auc": float(roc_auc_score(oof_result["target"], oof_result["prediction"])),
         "fold_scores": fold_scores,
         "fold_std": float(np.std(fold_scores)),
@@ -348,6 +379,8 @@ def blend(
             "method": "weighted_probability_average",
             "sources": [str(source) for source in runs],
             "weights": coefficients.tolist(),
+            "external_components": list(external_components.values()),
+            "mixture_space": "probability",
         },
         "submission_sha256": fingerprint(run / "submission.csv"),
     }
@@ -355,6 +388,7 @@ def blend(
         run / "config.json",
         {"sources": [str(source) for source in runs], "weights": coefficients.tolist()},
     )
+    result["config_sha256"] = fingerprint(run / "config.json")
     write_json(run / "metrics.json", result)
     write_json(run / "status.json", {"status": "complete"})
     return result

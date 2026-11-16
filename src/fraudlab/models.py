@@ -139,7 +139,7 @@ def fit_catboost(
         "verbose": False,
     }
     model = CatBoostClassifier(**parameters)
-    if config.get("refit"):
+    if config.get("refit") or config.get("fixed_training"):
         model.fit(training, y, cat_features=categorical)
     else:
         model.fit(
@@ -155,7 +155,11 @@ def fit_catboost(
         **parameters,
         "best_iteration": int(model.get_best_iteration()),
         "trees_used": int(model.tree_count_),
-        "early_stopping_patience": None if config.get("refit") else config["patience"],
+        "early_stopping_patience": (
+            None
+            if config.get("refit") or config.get("fixed_training")
+            else config["patience"]
+        ),
         "preprocessing": "Numeric missing values handled by CatBoost; categorical missing values mapped to __MISSING__; native ordered categorical statistics.",
     }
     return (
@@ -410,7 +414,7 @@ def fit_neural(
             loss.backward()
             optimizer.step()
         epochs_completed = epoch + 1
-        if config.get("refit"):
+        if config.get("refit") or config.get("fixed_training"):
             best_epoch = epochs_completed
             if epochs_completed == config["epochs"]:
                 best_state = {
@@ -454,7 +458,11 @@ def fit_neural(
         "batch_size": config["batch_size"],
         "epochs_completed": epochs_completed,
         "best_epoch": best_epoch,
-        "early_stopping_patience": None if config.get("refit") else config["patience"],
+        "early_stopping_patience": (
+            None
+            if config.get("refit") or config.get("fixed_training")
+            else config["patience"]
+        ),
         "device": str(device),
         "numeric_transform": config.get("neural_numeric_transform", "standard"),
         "target_encoder": (
@@ -625,7 +633,7 @@ def fit_lightgbm(
         "force_col_wise": True,
     }
     classifier = LGBMClassifier(**parameters)
-    if config.get("refit"):
+    if config.get("refit") or config.get("fixed_training"):
         classifier.fit(encoded_training, y)
     else:
         classifier.fit(

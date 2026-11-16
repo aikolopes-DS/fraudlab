@@ -19,6 +19,7 @@ dependencies = [
 neural = ["torch>=2.2,<3"]
 dev = ["pytest>=8,<10"]
 presentation = ["Pillow>=10,<13", "matplotlib>=3.8,<4", "edge-tts>=7.3,<8"]
+review = ["faster-whisper>=1.2,<2"]
 
 [project.scripts]
 fraudlab = "fraudlab.__main__:main"

@@ -31,6 +31,12 @@ def parser() -> argparse.ArgumentParser:
     training.add_argument("--output", default="artifacts/runs")
     training.add_argument("--name", required=True)
     training.add_argument(
+        "--phase",
+        choices=("development", "exploratory_full_data_cv"),
+        default="development",
+        help="Label the validation protocol; exploratory full-data CV has no independent holdout.",
+    )
+    training.add_argument(
         "--model",
         choices=("logistic", "glm", "catboost", "lightgbm", "mlp"),
         required=True,
@@ -62,6 +68,11 @@ def parser() -> argparse.ArgumentParser:
     )
     training.add_argument("--holdout-seed", type=int, default=2026)
     training.add_argument("--threads", type=int, default=8)
+    training.add_argument(
+        "--fixed-training",
+        action="store_true",
+        help="Use the configured tree/epoch count without early stopping; useful for preselected full-data CV.",
+    )
     training.add_argument(
         "--device",
         choices=("auto", "cpu", "cuda"),
@@ -142,10 +153,27 @@ def parser() -> argparse.ArgumentParser:
     )
     final.add_argument("--output", type=Path, default=Path("artifacts/runs"))
     final.add_argument("--name", required=True)
+    public = commands.add_parser(
+        "import-public-gpt2",
+        help="Validate the approved licensed public GPT-2 arrays and convert logits to the OOF contract.",
+    )
+    public.add_argument("--source", type=Path, required=True)
+    public.add_argument("--data", type=Path, default=Path("data/raw"))
+    public.add_argument("--output", type=Path, default=Path("artifacts/runs"))
+    public.add_argument("--name", default="explore5-public-gpt2")
     return root
 
 
 def validate_training_config(config: dict) -> None:
+    if config.get("phase") == "exploratory_full_data_cv" and (
+        config["holdout_fraction"]
+        or config["split"] != "stratified"
+        or config["folds"] != 5
+        or config["seed"] != 42
+    ):
+        raise ValueError(
+            "Exploratory full-data comparison requires stratified 5-fold/seed42 CV with no independent holdout."
+        )
     if config["id_column"] == config["target"]:
         raise ValueError("ID and target must be different columns.")
     if not config["validation_note"].strip():
@@ -292,6 +320,21 @@ def main() -> None:
                     {
                         key: metrics[key]
                         for key in ("model", "phase", "rows", "elapsed_seconds")
+                    },
+                    indent=2,
+                )
+            )
+        elif arguments.command == "import-public-gpt2":
+            from .external import import_public_gpt2
+
+            metrics = import_public_gpt2(
+                arguments.source, arguments.data, arguments.output, arguments.name
+            )
+            print(
+                json.dumps(
+                    {
+                        key: metrics[key]
+                        for key in ("model", "phase", "roc_auc", "fold_scores")
                     },
                     indent=2,
                 )

@@ -29,7 +29,7 @@ jobs:
           python -m pip install -e ".[dev,presentation]"
 
       - name: Test contracts and synthetic experiments
-        run: python -m pytest tests presentation/test_presentation.py site/test_build.py -q
+        run: python -m pytest tests presentation site/test_build.py -q
 
       - name: Validate the public site
         run: |
