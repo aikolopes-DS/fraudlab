@@ -1,0 +1,15 @@
+{
+  "id": "aikoog/fraudlab-reproducible-neural-fraud-detection",
+  "title": "FraudLab - Reproducible Neural Fraud Detection",
+  "code_file": "fraudlab.ipynb",
+  "language": "python",
+  "kernel_type": "notebook",
+  "is_private": false,
+  "enable_gpu": false,
+  "enable_internet": true,
+  "dataset_sources": [],
+  "competition_sources": [
+    "playground-series-s6e11"
+  ],
+  "kernel_sources": []
+}

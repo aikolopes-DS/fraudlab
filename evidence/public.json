@@ -1,19 +1,23 @@
 {
   "competition": {
-    "title": "Predicting Credit Card Fraud · Playground S6E11",
+    "title": "Predicting Credit Card Fraud Ã‚Â· Playground S6E11",
     "url": "https://www.kaggle.com/competitions/playground-series-s6e11",
     "deadline_utc": "2026-11-30T23:59:00Z"
   },
-  "stage": "implementation",
+  "stage": "experimentation",
   "updated_at": "2026-11-16",
   "results": {
-    "local_auc": null,
-    "fold_scores": [],
-    "public_auc": null,
-    "ranking": null,
-    "total_teams": null,
-    "submission_id": null,
-    "observed_at": null
+    "local_auc": 0.9422598588541492,
+    "fold_scores": [
+      0.9412754226402857,
+      0.944328146060638,
+      0.941208181879438
+    ],
+    "public_auc": 0.9424,
+    "ranking": 1837,
+    "total_teams": 1996,
+    "submission_id": "58434290",
+    "observed_at": "2026-11-16T14:49:05Z"
   },
   "links": {
     "github": "https://github.com/aikolopes-og/fraudlab",
@@ -21,15 +25,71 @@
     "presentation": null,
     "video": null
   },
-  "run": null,
+  "run": {
+    "path": "artifacts/runs/dev-logistic-raw",
+    "model": "logistic",
+    "validation": {
+      "method": "stratified",
+      "n_splits": 3,
+      "note": "Synthetic IID transactions; no entity identifiers or chronological timestamp, hour-of-day is cyclical; inspection found no duplicate feature rows or train-test overlap. Independent stratified 15 percent holdout seed2026 remains untouched during selection.",
+      "group_column": null,
+      "time_column": null,
+      "holdout_fraction": 0.15,
+      "holdout_seed": 2026,
+      "early_stopping_uses_validation": false
+    },
+    "rows": {
+      "train": 699960,
+      "test": 299984,
+      "oof": 594966,
+      "development": 594966,
+      "holdout": 104994
+    },
+    "features": {
+      "count": 24,
+      "numeric": 13,
+      "categorical": 11,
+      "names": [
+        "amount_usd",
+        "hours_since_last_txn",
+        "txn_count_last_24h",
+        "distance_from_home_km",
+        "card_age_months",
+        "customer_age",
+        "account_balance_usd",
+        "cvv_retry_count",
+        "velocity_score",
+        "time_of_day_hour",
+        "day_of_week",
+        "merchant_risk_score",
+        "prior_disputes",
+        "merchant_category",
+        "card_type",
+        "auth_method",
+        "channel",
+        "device_type",
+        "is_foreign_transaction",
+        "is_new_merchant",
+        "used_vpn",
+        "ip_country_mismatch",
+        "billing_shipping_mismatch",
+        "is_ai_generated_scam_attempt"
+      ],
+      "excluded": [
+        "id",
+        "is_fraud"
+      ]
+    }
+  },
   "checks": {
-    "data_verified": false,
-    "training_verified": false,
-    "submission_verified": false
+    "data_verified": true,
+    "training_verified": true,
+    "submission_verified": true
   },
   "limitations": [
-    "Regras completas e inscrição da conta ainda não verificadas.",
-    "Nenhum experimento com os dados da competição executado.",
-    "Nenhuma submissão, pontuação ou posição comprovada."
+    "Primeira submissÃ£o Ã© uma referÃªncia inicial; otimizaÃ§Ã£o e treino da rede neural em andamento.",
+    "PosiÃ§Ã£o no ranking ainda nÃ£o apurada; pontuaÃ§Ã£o pÃºblica Ã© provisÃ³ria.",
+    "Holdout independente de 15% permanece reservado durante a seleÃ§Ã£o.",
+    "Notebook pÃºblico no Kaggle ainda nÃ£o publicado: API retornou HTTP 403."
   ]
 }
