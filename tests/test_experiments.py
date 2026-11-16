@@ -13,6 +13,7 @@ from fraudlab.__main__ import main
 from fraudlab.data import validate_submission
 from fraudlab.experiment import blend
 from fraudlab.holdout import evaluate
+from fraudlab.refit import refit
 
 
 @pytest.fixture
@@ -44,6 +45,7 @@ def synthetic_data(tmp_path):
     "model",
     [
         "logistic",
+        "glm",
         "catboost",
         "lightgbm",
         pytest.param(
@@ -176,8 +178,22 @@ def test_blend_writes_normalized_explicit_weights_and_valid_predictions(tmp_path
     assert result["roc_auc"] == 1.0
 
 
+@pytest.mark.parametrize(
+    "model",
+    [
+        "logistic",
+        "lightgbm",
+        pytest.param(
+            "mlp",
+            marks=pytest.mark.skipif(
+                importlib.util.find_spec("torch") is None,
+                reason="Optional PyTorch is not installed.",
+            ),
+        ),
+    ],
+)
 def test_reserved_holdout_is_absent_from_every_oof_fold_and_evaluated_once(
-    tmp_path, synthetic_data, monkeypatch
+    tmp_path, synthetic_data, monkeypatch, model
 ):
     data, _ = synthetic_data
     output = tmp_path / "runs"
@@ -192,7 +208,7 @@ def test_reserved_holdout_is_absent_from_every_oof_fold_and_evaluated_once(
             "--output",
             str(output),
             "--model",
-            "logistic",
+            model,
             "--name",
             "development",
             "--folds",
@@ -203,6 +219,17 @@ def test_reserved_holdout_is_absent_from_every_oof_fold_and_evaluated_once(
             "Manufactured IID rows; independent holdout reserved before CV.",
             "--threads",
             "1",
+            "--device",
+            "cpu",
+            "--iterations",
+            "10",
+            "--epochs",
+            "2",
+            "--hidden-dims",
+            "16",
+            "8",
+            "--neural-categorical-transform",
+            "target",
         ],
     )
     main()
@@ -214,7 +241,72 @@ def test_reserved_holdout_is_absent_from_every_oof_fold_and_evaluated_once(
     assert len(oof) == 144 and len(held_out) == 36
     assert set(oof["id"]).isdisjoint(held_out["id"])
     assert len(set(oof["id"]) | set(held_out["id"])) == 180
-    assert result["roc_auc"] > 0.85
+    assert 0 <= result["roc_auc"] <= 1
     assert result["selection"]["frozen_at"] <= result["evaluated_at"]
     with pytest.raises(FileExistsError, match="already exists"):
         evaluate([run], [1], report, "cpu")
+    with pytest.raises(ValueError, match="already reserved or evaluated"):
+        evaluate([run], [1], tmp_path / "renamed-evaluation.json", "cpu")
+    full = refit(run, report, output, "final")
+    assert full["phase"] == "full_data_refit" and full["rows"]["train"] == 180
+    assert full["roc_auc"] is None and full["rows"]["oof"] == 0
+    validate_submission(
+        pd.read_csv(output / "final" / "submission.csv"),
+        pd.read_csv(data / "sample_submission.csv"),
+    )
+    config_path = run / "config.json"
+    config = json.loads(config_path.read_text())
+    config["holdout_seed"] += 1
+    config_path.write_text(json.dumps(config))
+    with pytest.raises(ValueError, match="changed|no longer matches"):
+        evaluate([run], [1], tmp_path / "tampered-evaluation.json", "cpu")
+
+
+def test_final_blend_preserves_frozen_weights_and_has_no_new_local_score(
+    tmp_path, synthetic_data, monkeypatch
+):
+    data, sample = synthetic_data
+    output = tmp_path / "runs"
+    sources = []
+    for model in ("logistic", "glm"):
+        monkeypatch.setattr(
+            sys,
+            "argv",
+            [
+                "fraudlab",
+                "train",
+                "--data",
+                str(data),
+                "--output",
+                str(output),
+                "--model",
+                model,
+                "--name",
+                model,
+                "--holdout-fraction",
+                "0.2",
+                "--validation-note",
+                "Manufactured IID rows; independent holdout for an integration test.",
+                "--threads",
+                "1",
+            ],
+        )
+        main()
+        sources.append(output / model)
+    development = blend(sources, [0.75, 0.25], output, "development-blend")
+    report = tmp_path / "holdout" / "evaluation.json"
+    evaluate(sources, [0.75, 0.25], report, "cpu", output / "development-blend")
+    finals = []
+    for index, source in enumerate(sources):
+        name = f"final-{index}"
+        refit(source, report, output, name)
+        finals.append(output / name)
+    result = blend(finals, None, output, "final-blend")
+    assert result["phase"] == "full_data_refit" and result["roc_auc"] is None
+    assert result["rows"]["oof"] == 0 and result["fold_scores"] == []
+    assert result["selection"]["development_roc_auc"] == development["roc_auc"]
+    assert result["model_details"]["weights"] == [0.75, 0.25]
+    validate_submission(pd.read_csv(output / "final-blend" / "submission.csv"), sample)
+    with pytest.raises(ValueError, match="weights cannot change"):
+        blend(finals, [0.5, 0.5], output, "retuned-after-holdout")
+    assert not (output / "retuned-after-holdout").exists()

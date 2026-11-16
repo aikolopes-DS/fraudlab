@@ -129,3 +129,31 @@ def test_engineered_features_are_independent_of_target_and_batch_composition():
     assert transformed.drop(columns="is_fraud").equals(flipped.drop(columns="is_fraud"))
     assert transformed.iloc[:1].equals(transform_features(frame.iloc[:1], "digits"))
     assert transformed["amount_usd__cents_key"].tolist() == ["34", "0"]
+
+
+def test_neural_target_encoding_never_uses_an_examples_own_unique_label():
+    frame = pd.DataFrame(
+        {"value": np.zeros(20), "category": [f"unique-{index}" for index in range(20)]}
+    )
+    labels = np.tile([0, 1], 10)
+    preprocessing = NeuralPreprocessor(categorical_transform="target", smoothing=20)
+    training, categories = preprocessing.fit_transform(frame, labels)
+    assert np.allclose(training, 0)
+    assert categories.shape == (20, 0)
+    # Inference mappings use all training labels, which is deliberately different
+    # from the internally cross-fitted values presented to the optimizer.
+    inference, _ = preprocessing.transform(frame)
+    assert not np.allclose(inference[:, -1], training[:, -1])
+
+
+def test_feature_views_respect_custom_id_and_target_names():
+    frame = pd.DataFrame(
+        {"record_key": [1, 2], "amount_usd": [0, 1], "customer_age": [20, 30]}
+    )
+    transformed = transform_features(
+        frame, "value_digits", excluded=("record_key", "amount_usd")
+    )
+    assert not any(
+        name.startswith("record_key__") or name.startswith("amount_usd__")
+        for name in transformed
+    )

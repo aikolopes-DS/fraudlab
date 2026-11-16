@@ -31,10 +31,14 @@ def parser() -> argparse.ArgumentParser:
     training.add_argument("--output", default="artifacts/runs")
     training.add_argument("--name", required=True)
     training.add_argument(
-        "--model", choices=("logistic", "catboost", "lightgbm", "mlp"), required=True
+        "--model",
+        choices=("logistic", "glm", "catboost", "lightgbm", "mlp"),
+        required=True,
     )
     training.add_argument(
-        "--feature-set", choices=("raw", "behavior", "digits"), default="raw"
+        "--feature-set",
+        choices=("raw", "behavior", "digits", "value_digits"),
+        default="raw",
     )
     training.add_argument("--id-column", default="id")
     training.add_argument("--target", default="is_fraud")
@@ -71,6 +75,7 @@ def parser() -> argparse.ArgumentParser:
     training.add_argument("--l2-leaf-reg", type=float, default=3.0)
     training.add_argument("--num-leaves", type=int, default=4)
     training.add_argument("--min-child-samples", type=int, default=100)
+    training.add_argument("--target-smoothing", type=float, default=20.0)
     training.add_argument("--epochs", type=int, default=30)
     training.add_argument("--hidden-dims", type=int, nargs="+", default=[128, 64])
     training.add_argument("--dropout", type=float, default=0.1)
@@ -82,6 +87,11 @@ def parser() -> argparse.ArgumentParser:
         default="standard",
     )
     training.add_argument("--batch-size", type=int, default=4096)
+    training.add_argument(
+        "--neural-categorical-transform",
+        choices=("embedding", "target"),
+        default="embedding",
+    )
     training.add_argument(
         "--patience", type=int, help="Defaults: CatBoost 100 iterations; MLP 5 epochs."
     )
@@ -117,6 +127,21 @@ def parser() -> argparse.ArgumentParser:
         "--output", type=Path, default=Path("artifacts/holdout/evaluation.json")
     )
     holdout.add_argument("--device", choices=("auto", "cpu", "cuda"), default="auto")
+    holdout.add_argument(
+        "--development-run",
+        type=Path,
+        help="The matching pre-holdout development blend, for an explicit provenance chain.",
+    )
+    final = commands.add_parser(
+        "refit",
+        help="Refit one frozen selected model on all labeled data, without early stopping.",
+    )
+    final.add_argument("--run", type=Path, required=True)
+    final.add_argument(
+        "--holdout-report", type=Path, default=Path("artifacts/holdout/evaluation.json")
+    )
+    final.add_argument("--output", type=Path, default=Path("artifacts/runs"))
+    final.add_argument("--name", required=True)
     return root
 
 
@@ -161,6 +186,8 @@ def validate_training_config(config: dict) -> None:
         or not math.isfinite(config["weight_decay"])
         or config["l2_leaf_reg"] < 0
         or config["weight_decay"] < 0
+        or not math.isfinite(config["target_smoothing"])
+        or config["target_smoothing"] < 0
     ):
         raise ValueError("Regularization values must be nonnegative.")
     if config["split"] != "group" and config["group_column"]:
@@ -246,7 +273,26 @@ def main() -> None:
                         arguments.weights,
                         arguments.output,
                         arguments.device,
+                        arguments.development_run,
                     ),
+                    indent=2,
+                )
+            )
+        elif arguments.command == "refit":
+            from .refit import refit
+
+            metrics = refit(
+                arguments.run,
+                arguments.holdout_report,
+                arguments.output,
+                arguments.name,
+            )
+            print(
+                json.dumps(
+                    {
+                        key: metrics[key]
+                        for key in ("model", "phase", "rows", "elapsed_seconds")
+                    },
                     indent=2,
                 )
             )

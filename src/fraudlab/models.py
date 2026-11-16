@@ -1,4 +1,4 @@
-"""Three deliberately small baselines, each fitted inside its training fold."""
+"""Small tabular models, each fitted inside its training fold."""
 
 from __future__ import annotations
 
@@ -13,6 +13,7 @@ from sklearn.linear_model import LogisticRegression
 from sklearn.metrics import roc_auc_score
 from sklearn.pipeline import Pipeline
 from sklearn.preprocessing import (
+    FunctionTransformer,
     OneHotEncoder,
     QuantileTransformer,
     StandardScaler,
@@ -40,6 +41,11 @@ def clean_features(
     for name in categorical:
         result[name] = result[name].astype("string").fillna("__MISSING__").astype(str)
     return result
+
+
+def log_odds(values: np.ndarray) -> np.ndarray:
+    probabilities = np.clip(values, 1e-6, 1 - 1e-6)
+    return np.log(probabilities / (1 - probabilities))
 
 
 def fit_logistic(
@@ -133,20 +139,23 @@ def fit_catboost(
         "verbose": False,
     }
     model = CatBoostClassifier(**parameters)
-    model.fit(
-        training,
-        y,
-        cat_features=categorical,
-        eval_set=(validation, validation_y),
-        early_stopping_rounds=config["patience"],
-        use_best_model=True,
-    )
+    if config.get("refit"):
+        model.fit(training, y, cat_features=categorical)
+    else:
+        model.fit(
+            training,
+            y,
+            cat_features=categorical,
+            eval_set=(validation, validation_y),
+            early_stopping_rounds=config["patience"],
+            use_best_model=True,
+        )
     model.save_model(str(path.with_suffix(".cbm")))
     details = {
         **parameters,
         "best_iteration": int(model.get_best_iteration()),
         "trees_used": int(model.tree_count_),
-        "early_stopping_patience": config["patience"],
+        "early_stopping_patience": None if config.get("refit") else config["patience"],
         "preprocessing": "Numeric missing values handled by CatBoost; categorical missing values mapped to __MISSING__; native ordered categorical statistics.",
     }
     return (
@@ -159,9 +168,17 @@ def fit_catboost(
 class NeuralPreprocessor:
     """Training-fold-only numeric statistics and categorical vocabularies."""
 
-    def __init__(self, numeric_transform: str = "standard", seed: int = 42):
+    def __init__(
+        self,
+        numeric_transform: str = "standard",
+        seed: int = 42,
+        categorical_transform: str = "embedding",
+        smoothing: float = 20.0,
+    ):
         self.numeric_transform = numeric_transform
         self.seed = seed
+        self.categorical_transform = categorical_transform
+        self.smoothing = smoothing
 
     def fit(self, frame: pd.DataFrame) -> "NeuralPreprocessor":
         self.numeric, self.categorical = feature_types(frame)
@@ -190,6 +207,36 @@ class NeuralPreprocessor:
         ]
         return self
 
+    def fit_transform(
+        self, frame: pd.DataFrame, y: np.ndarray
+    ) -> tuple[np.ndarray, np.ndarray]:
+        self.fit(frame)
+        if self.categorical_transform == "embedding":
+            return self.transform(frame)
+        numbers = (
+            self.scaler.transform(self.imputer.transform(frame[self.numeric])).astype(
+                np.float32
+            )
+            if self.numeric
+            else np.empty((len(frame), 0), dtype=np.float32)
+        )
+        self.cardinalities = []
+        self.target_encoder = TargetEncoder(
+            target_type="binary",
+            smooth=self.smoothing,
+            cv=5,
+            shuffle=True,
+            random_state=self.seed,
+        )
+        self.target_scaler = StandardScaler()
+        if self.categorical:
+            encoded = self.target_encoder.fit_transform(frame[self.categorical], y)
+            encoded = self.target_scaler.fit_transform(log_odds(encoded)).astype(
+                np.float32
+            )
+            numbers = np.column_stack([numbers, encoded])
+        return numbers, np.empty((len(frame), 0), dtype=np.int64)
+
     def transform(self, frame: pd.DataFrame) -> tuple[np.ndarray, np.ndarray]:
         numbers = (
             self.scaler.transform(self.imputer.transform(frame[self.numeric])).astype(
@@ -198,6 +245,14 @@ class NeuralPreprocessor:
             if self.numeric
             else np.empty((len(frame), 0), dtype=np.float32)
         )
+        if getattr(self, "categorical_transform", "embedding") == "target":
+            if self.categorical:
+                encoded = self.target_encoder.transform(frame[self.categorical])
+                encoded = self.target_scaler.transform(log_odds(encoded)).astype(
+                    np.float32
+                )
+                numbers = np.column_stack([numbers, encoded])
+            return numbers, np.empty((len(frame), 0), dtype=np.int64)
         categories = (
             np.column_stack(
                 [
@@ -289,9 +344,16 @@ def fit_neural(
         torch.backends.cudnn.benchmark = False
         torch.backends.cudnn.deterministic = True
     preprocessing = NeuralPreprocessor(
-        config.get("neural_numeric_transform", "standard"), seed
-    ).fit(training)
-    arrays = [preprocessing.transform(frame) for frame in (training, validation, test)]
+        config.get("neural_numeric_transform", "standard"),
+        seed,
+        config.get("neural_categorical_transform", "embedding"),
+        config.get("target_smoothing", 20.0),
+    )
+    arrays = [
+        preprocessing.fit_transform(training, y),
+        preprocessing.transform(validation),
+        preprocessing.transform(test),
+    ]
     tensors = [
         tuple(torch.as_tensor(value, device=device) for value in pair)
         for pair in arrays
@@ -299,7 +361,7 @@ def fit_neural(
     labels = torch.as_tensor(y, dtype=torch.float32, device=device)
     model, embedding_dims = build_network(
         torch,
-        len(preprocessing.numeric),
+        arrays[0][0].shape[1],
         preprocessing.cardinalities,
         config["hidden_dims"],
         config["dropout"],
@@ -347,8 +409,16 @@ def fit_neural(
                 )
             loss.backward()
             optimizer.step()
-        score = roc_auc_score(validation_y, predict(tensors[1]))
         epochs_completed = epoch + 1
+        if config.get("refit"):
+            best_epoch = epochs_completed
+            if epochs_completed == config["epochs"]:
+                best_state = {
+                    name: tensor.detach().cpu().clone()
+                    for name, tensor in model.state_dict().items()
+                }
+            continue
+        score = roc_auc_score(validation_y, predict(tensors[1]))
         if score > best_auc + 1e-6:
             best_auc, best_epoch, stale = score, epoch + 1, 0
             best_state = {
@@ -364,7 +434,11 @@ def fit_neural(
     model.load_state_dict(best_state)
     details = {
         "architecture": {
-            "numeric_features": len(preprocessing.numeric),
+            "numeric_features": int(arrays[0][0].shape[1]),
+            "raw_numeric_features": len(preprocessing.numeric),
+            "categorical_transform": config.get(
+                "neural_categorical_transform", "embedding"
+            ),
             "categorical_cardinalities": preprocessing.cardinalities,
             "embedding_dims": embedding_dims,
             "hidden_dims": config["hidden_dims"],
@@ -380,16 +454,30 @@ def fit_neural(
         "batch_size": config["batch_size"],
         "epochs_completed": epochs_completed,
         "best_epoch": best_epoch,
-        "early_stopping_patience": config["patience"],
+        "early_stopping_patience": None if config.get("refit") else config["patience"],
         "device": str(device),
         "numeric_transform": config.get("neural_numeric_transform", "standard"),
+        "target_encoder": (
+            {
+                "internal_folds": 5,
+                "smooth": config.get("target_smoothing", 20.0),
+                "unknown": "training prior",
+                "log_odds": True,
+            }
+            if config.get("neural_categorical_transform") == "target"
+            else None
+        ),
         "preprocessing": "Fold-local numeric median imputation and "
         + (
             "quantile-to-normal transformation"
             if config.get("neural_numeric_transform") == "quantile"
             else "standard scaling"
         )
-        + "; categorical training vocabularies with index 0 reserved for unknown categories.",
+        + (
+            "; categorical target-encoding logits cross-fitted into five inner partitions, then scaled using training-only statistics."
+            if config.get("neural_categorical_transform") == "target"
+            else "; categorical training vocabularies with index 0 reserved for unknown categories."
+        ),
     }
     torch.save(
         {"state_dict": best_state, "architecture": details["architecture"]},
@@ -417,6 +505,8 @@ def fit_predict(
     ]
     if name == "logistic":
         return fit_logistic(training, y, validation, test, config, seed, path)
+    if name == "glm":
+        return fit_glm(training, y, validation, test, config, seed, path)
     if name == "catboost":
         return fit_catboost(
             training, y, validation, validation_y, test, config, seed, path
@@ -436,7 +526,7 @@ def predict_saved(
     name: str, path: Path, frame: pd.DataFrame, device: str = "auto"
 ) -> np.ndarray:
     """Load only locally trained checkpoints; never download executable artifacts."""
-    if name in ("logistic", "lightgbm"):
+    if name in ("logistic", "glm", "lightgbm"):
         return joblib.load(path.with_suffix(".joblib")).predict_proba(
             clean_features(frame)
         )[:, 1]
@@ -507,7 +597,7 @@ def fit_lightgbm(
                 "categorical",
                 TargetEncoder(
                     target_type="binary",
-                    smooth="auto",
+                    smooth=config.get("target_smoothing", "auto"),
                     cv=5,
                     shuffle=True,
                     random_state=seed,
@@ -535,27 +625,115 @@ def fit_lightgbm(
         "force_col_wise": True,
     }
     classifier = LGBMClassifier(**parameters)
-    classifier.fit(
-        encoded_training,
-        y,
-        eval_X=encoded_validation,
-        eval_y=validation_y,
-        eval_metric="auc",
-        callbacks=[
-            early_stopping(config["patience"], first_metric_only=True, verbose=False)
-        ],
-    )
+    if config.get("refit"):
+        classifier.fit(encoded_training, y)
+    else:
+        classifier.fit(
+            encoded_training,
+            y,
+            eval_X=encoded_validation,
+            eval_y=validation_y,
+            eval_metric="auc",
+            callbacks=[
+                early_stopping(
+                    config["patience"], first_metric_only=True, verbose=False
+                )
+            ],
+        )
     model = Pipeline([("preprocessing", preprocessing), ("classifier", classifier)])
     joblib.dump(model, path.with_suffix(".joblib"))
     details = {
         **parameters,
-        "best_iteration": int(classifier.best_iteration_),
+        "best_iteration": int(classifier.best_iteration_ or classifier.n_estimators_),
         "target_encoder": {
             "internal_folds": 5,
-            "smooth": "auto",
+            "smooth": config.get("target_smoothing", "auto"),
             "unknown": "training prior",
         },
         "preprocessing": "Fold-local median imputation and supervised categorical target encoding, internally cross-fitted into five partitions.",
+    }
+    return (
+        model.predict_proba(validation)[:, 1],
+        model.predict_proba(test)[:, 1],
+        details,
+    )
+
+
+def fit_glm(
+    training: pd.DataFrame,
+    y: np.ndarray,
+    validation: pd.DataFrame,
+    test: pd.DataFrame,
+    config: dict,
+    seed: int,
+    path: Path,
+) -> tuple[np.ndarray, np.ndarray, dict]:
+    numeric, categorical = feature_types(training)
+    nominal = [name for name in categorical if "__" not in name]
+    encoding = Pipeline(
+        [
+            (
+                "target",
+                TargetEncoder(
+                    target_type="binary",
+                    smooth=config["target_smoothing"],
+                    cv=5,
+                    shuffle=True,
+                    random_state=seed,
+                ),
+            ),
+            ("log_odds", FunctionTransformer(log_odds)),
+            ("scale", StandardScaler()),
+        ]
+    )
+    preprocessing = ColumnTransformer(
+        [
+            (
+                "numeric",
+                Pipeline(
+                    [
+                        (
+                            "impute",
+                            SimpleImputer(strategy="median", keep_empty_features=True),
+                        ),
+                        ("scale", StandardScaler()),
+                    ]
+                ),
+                numeric,
+            ),
+            ("target_logits", encoding, categorical),
+            (
+                "one_hot",
+                OneHotEncoder(
+                    handle_unknown="ignore", sparse_output=False, dtype=np.float32
+                ),
+                nominal,
+            ),
+        ]
+    )
+    classifier = LogisticRegression(
+        C=config["logistic_c"],
+        solver="newton-cholesky",
+        max_iter=100,
+        tol=1e-7,
+        random_state=seed,
+    )
+    model = Pipeline([("preprocessing", preprocessing), ("classifier", classifier)])
+    with threadpool_limits(limits=config["threads"]):
+        model.fit(training, y)
+    joblib.dump(model, path.with_suffix(".joblib"))
+    details = {
+        "algorithm": "logistic_regression_with_cross_fitted_target_logits",
+        "C": config["logistic_c"],
+        "solver": "newton-cholesky",
+        "iterations_used": int(classifier.n_iter_[0]),
+        "target_encoder": {
+            "internal_folds": 5,
+            "smooth": config["target_smoothing"],
+            "unknown": "training prior",
+            "log_odds": True,
+        },
+        "preprocessing": "Fold-local numeric imputation and scaling, cross-fitted target-encoding logits with scaling, plus one-hot encoding of original categorical features.",
     }
     return (
         model.predict_proba(validation)[:, 1],

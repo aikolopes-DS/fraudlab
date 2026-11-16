@@ -97,8 +97,12 @@ def train(config: dict) -> dict:
             random_state=config["holdout_seed"],
         )
         frame = frame.iloc[np.sort(development)].reset_index(drop=True)
-    frame = transform_features(frame, config.get("feature_set", "raw"))
-    test = transform_features(test, config.get("feature_set", "raw"))
+    frame = transform_features(
+        frame, config.get("feature_set", "raw"), (id_column, target)
+    )
+    test = transform_features(
+        test, config.get("feature_set", "raw"), (id_column, target)
+    )
     excluded = [id_column, target]
     if config["split"] == "group":
         excluded.append(config["group_column"])
@@ -120,6 +124,7 @@ def train(config: dict) -> dict:
     )
     run = create_run(Path(config["output"]), config["name"])
     write_json(run / "config.json", config)
+    config_hash = fingerprint(run / "config.json")
     write_json(
         run / "status.json",
         {"status": "running", "started_at": datetime.now(timezone.utc).isoformat()},
@@ -178,6 +183,7 @@ def train(config: dict) -> dict:
         numeric, categorical = feature_types(frame[features])
         metrics = {
             "status": "complete",
+            "config_sha256": config_hash,
             "model": config["model"],
             "roc_auc": float(roc_auc_score(frame.loc[covered, target], oof[covered])),
             "fold_scores": scores,
@@ -209,7 +215,8 @@ def train(config: dict) -> dict:
                 "time_column": config["time_column"],
                 "holdout_fraction": holdout_fraction,
                 "holdout_seed": config.get("holdout_seed"),
-                "early_stopping_uses_validation": config["model"] != "logistic",
+                "early_stopping_uses_validation": config["model"]
+                in ("catboost", "lightgbm", "mlp"),
             },
             "elapsed_seconds": round(time.perf_counter() - started, 3),
             "versions": versions(),
@@ -245,6 +252,7 @@ def blend(
     target: str = "is_fraud",
 ) -> dict:
     started = time.perf_counter()
+    provenance = source_provenance()
     if len(runs) < 2:
         raise ValueError("Blending requires at least two runs.")
     coefficients = np.asarray(
@@ -264,6 +272,13 @@ def blend(
     metrics = [
         json.loads((run / "metrics.json").read_text(encoding="utf-8")) for run in runs
     ]
+    phases = [metric.get("phase") == "full_data_refit" for metric in metrics]
+    if any(phases):
+        if not all(phases):
+            raise ValueError("Cannot mix development OOF runs with full-data refits.")
+        from .refit import blend_refits
+
+        return blend_refits(runs, weights, output, name, id_column, target)
     oofs = [pd.read_csv(run / "oof.csv") for run in runs]
     predictions = [pd.read_csv(run / "predictions.csv") for run in runs]
     reference, expected = oofs[0], predictions[0]
@@ -328,7 +343,7 @@ def blend(
         "fold_std": float(np.std(fold_scores)),
         "elapsed_seconds": round(time.perf_counter() - started, 3),
         "created_at": datetime.now(timezone.utc).isoformat(),
-        "git_revision": git_revision(),
+        **provenance,
         "model_details": {
             "method": "weighted_probability_average",
             "sources": [str(source) for source in runs],
