@@ -1,7 +1,7 @@
 {
-  "submission_id": 58437018,
-  "remote_download_sha256": "0560d11162fb58dd85d54bfdc0ec1420066503b3e01bbc3946ea90457f6e530f",
-  "local_sha256": "0560d11162fb58dd85d54bfdc0ec1420066503b3e01bbc3946ea90457f6e530f",
+  "submission_id": 58438450,
+  "remote_download_sha256": "f5f658279779eab4d94b6b1b118fc39e2774c9ee6fdb4b80e2f06770cceb47d4",
+  "local_sha256": "f5f658279779eab4d94b6b1b118fc39e2774c9ee6fdb4b80e2f06770cceb47d4",
   "identical_bytes": true,
-  "scope": "Official Kaggle download of the submitted file; does not prove ranking by itself"
+  "scope": "Official Kaggle download of the submitted file; ranking is independently checked in public.json"
 }

@@ -28,6 +28,7 @@ def main() -> None:
     server = ThreadingHTTPServer(("127.0.0.1", 0), handler)
     threading.Thread(target=server.serve_forever, daemon=True).start()
     base = f"http://127.0.0.1:{server.server_port}"
+    evidence = json.loads((SITE_DIR / "dist" / "evidence.json").read_text(encoding="utf-8"))
     try:
         with sync_playwright() as playwright:
             browser = playwright.chromium.launch()
@@ -41,13 +42,35 @@ def main() -> None:
                 assert page.locator("h1").is_visible(), "Hero must be visible"
                 assert not page.locator("[data-load-error]").is_visible(), "Evidence must load"
                 assert page.evaluate("document.documentElement.scrollWidth <= innerWidth"), f"Horizontal overflow at {label} width"
+                displayed = {key: page.locator(selector).inner_text() for key, selector in (("local_auc", "[data-local-auc]"), ("public_auc", "[data-public-auc]"), ("ranking", "[data-ranking]"))}
+                if evidence.get("checks", {}).get("training_verified") and evidence.get("results", {}).get("local_auc") is not None:
+                    assert displayed["local_auc"] == f"{evidence['results']['local_auc']:.5f}".replace(".", ",")
+                if evidence.get("checks", {}).get("submission_verified") and evidence.get("results", {}).get("public_auc") is not None:
+                    assert displayed["public_auc"] == f"{evidence['results']['public_auc']:.5f}".replace(".", ",")
+                    assert displayed["ranking"] == f"{evidence['results']['ranking']:,}º".replace(",", ".")
+                assert page.locator(".metric-card").count() == 3
+                weights = evidence.get("run", {}).get("effective_weights", {})
+                if weights:
+                    assert page.locator("[data-composition]").is_visible()
+                    composition = page.locator("[data-composition-weights]").inner_text().replace("\u00a0", "")
+                    for weight in weights.values():
+                        percent = f"{weight * 100:.2f}".rstrip("0").rstrip(".").replace(".", ",") + "%"
+                        assert percent in composition
+                    attribution = page.locator("[data-component-credits]").inner_text()
+                    for component in evidence.get("external_components", []):
+                        assert component["trained_by"] in attribution
+                        assert component["predictions_license"] in attribution
+                        assert component["code_license"] in attribution
+                    if evidence.get("run", {}).get("phase") == "exploratory_full_data_cv":
+                        assert page.locator("[data-independent-note]").is_visible()
+                        assert not page.locator("[data-holdout]").is_visible()
                 page.locator('nav a[href="#resultados"]').click()
                 assert "#resultados" in page.url, "Results navigation must work"
                 page.locator('nav a[href="#materiais"]').click()
                 assert "#materiais" in page.url, "Materials navigation must work"
                 page.goto(base, wait_until="networkidle")
                 page.screenshot(path=str(args.screenshots / f"{label}.png"), full_page=True)
-                checks.append({"viewport": label, "overflow": False, "evidence_loaded": True, "navigation": True})
+                checks.append({"viewport": label, "overflow": False, "evidence_loaded": True, "navigation": True, "displayed_results": displayed, "effective_weights": weights, "external_authorship_visible": bool(weights)})
                 page.close()
 
             # Separate browser-only fixtures verify labels and trust boundaries.
@@ -65,7 +88,7 @@ def main() -> None:
             assert errors == [], f"Browser errors: {errors}"
             checks.append({"test_fixture_only": True, "unverified_results_hidden": True, "unsafe_video_link_hidden": True, "date_only_preserved": True})
             browser.close()
-            (args.screenshots / "checks.json").write_text(json.dumps({"scope": "local static-site QA, not competition verification", "checks": checks, "page_errors": errors}, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
+            (args.screenshots / "checks.json").write_text(json.dumps({"scope": "Local rendering of the current public evidence. UI fixtures are separate checks, not competition results.", "observed_at": evidence.get("results", {}).get("observed_at"), "checks": checks, "page_errors": errors}, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
             print("Browser checks passed: desktop, mobile, evidence rendering, and navigation.")
     finally:
         server.shutdown()

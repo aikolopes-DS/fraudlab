@@ -115,6 +115,19 @@ def main() -> None:
     if not math.isfinite(public_score) or not 0 <= public_score <= 1:
         raise ValueError("Unexpected ROC-AUC returned by Kaggle.")
 
+    with tempfile.TemporaryDirectory(prefix="fraudlab-submission-") as directory:
+        kaggle(
+            "competitions", "submission-download", str(args.ref), "-p", directory
+        )
+        downloaded = Path(directory) / f"{args.ref}.raw"
+        if not downloaded.is_file():
+            raise ValueError("Kaggle did not return the requested submission file.")
+        remote_digest = fingerprint(downloaded)
+        if remote_digest != digest:
+            raise ValueError(
+                "The requested Kaggle submission does not match the local CSV SHA-256."
+            )
+
     with tempfile.TemporaryDirectory(prefix="fraudlab-leaderboard-") as directory:
         kaggle(
             "competitions", "leaderboard", competition, "--download", "-p", directory
@@ -149,12 +162,28 @@ def main() -> None:
         submission_id=str(args.ref),
         observed_at=observed,
     )
-    evidence["run"] = {
+    previous_run = evidence.get("run", {})
+    same_run = (
+        bool(previous_run.get("path"))
+        and Path(previous_run["path"]).resolve() == args.run.resolve()
+        and previous_run.get("submission_sha256") == digest
+    )
+    public_run = {
         "path": args.run.as_posix(),
         "phase": metrics.get("phase", "development"),
         "submission_sha256": digest,
         **{key: metrics[key] for key in ("model", "validation", "rows", "features")},
     }
+    if same_run:
+        for key in ("effective_weights", "selection_reason"):
+            if key in previous_run:
+                public_run[key] = previous_run[key]
+    effective_weights = metrics.get("effective_weights")
+    if effective_weights is None:
+        effective_weights = metrics.get("model_details", {}).get("effective_weights")
+    if effective_weights is not None:
+        public_run["effective_weights"] = effective_weights
+    evidence["run"] = public_run
     evidence["checks"].update(
         data_verified=True, training_verified=True, submission_verified=True
     )
@@ -163,12 +192,18 @@ def main() -> None:
             holdout_auc=holdout["roc_auc"], holdout_observed_at=holdout["evaluated_at"]
         )
         evidence["checks"]["holdout_verified"] = True
+    else:
+        evidence["checks"]["holdout_verified"] = False
+        evidence["results"].update(holdout_auc=None, holdout_observed_at=None)
+    evidence["external_components"] = metrics.get("external_components", [])
     evidence["updated_at"] = observed
     write_json(args.evidence, evidence)
     record = {
         "ref": args.ref,
         "run": args.run.name,
         "submission_sha256": digest,
+        "downloaded_submission_sha256": remote_digest,
+        "submission_file_verified": True,
         "public_auc": public_score,
         "ranking": int(own[0]["Rank"]),
         "total_teams": len(rows),

@@ -618,6 +618,74 @@ h2 {
   line-height: 1.7;
 }
 
+.composition {
+  margin-top: 23px;
+  padding: 23px 0;
+  border-bottom: 1px solid var(--line);
+}
+
+.composition>.eyebrow {
+  color: var(--muted);
+}
+
+.composition-weights {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 14px 38px;
+  margin-top: 14px;
+}
+
+.composition-weights p {
+  display: flex;
+  align-items: baseline;
+  gap: 9px;
+}
+
+.composition-weights strong {
+  font-size: 24px;
+  font-weight: 500;
+  letter-spacing: -.04em;
+  font-variant-numeric: tabular-nums;
+}
+
+.composition-weights span {
+  font-size: 11px;
+  color: var(--muted);
+}
+
+.composition-explanation,
+.composition-selection,
+.composition-credits {
+  font-size: 11px;
+  line-height: 1.8;
+  color: var(--muted);
+  max-width: 1030px;
+}
+
+.composition-explanation {
+  margin-top: 6px;
+  font-size: 10px;
+}
+
+.composition-selection {
+  margin-top: 15px;
+}
+
+.composition-credits {
+  margin-top: 14px;
+}
+
+.composition-credits a {
+  color: var(--accent);
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+
+.composition-credits .method-credits {
+  font-size: 10px;
+  margin-top: 6px;
+}
+
 .result-note {
   margin-top: 16px;
   font-size: 11px;
@@ -1196,6 +1264,21 @@ body [hidden] {
 }
 
 @media (max-width:600px) {
+  .composition {
+    padding: 18px 0;
+    margin-top: 18px;
+  }
+  .composition-weights {
+    gap: 10px 25px;
+  }
+  .composition-weights strong {
+    font-size: 22px;
+  }
+  .composition-explanation,
+  .composition-selection,
+  .composition-credits {
+    font-size: 10px;
+  }
   .holdout-note {
     display: block;
     font-size: 10px;

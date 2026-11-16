@@ -1,0 +1,124 @@
+{
+  "protocol_id": "hybrid5fold-public25",
+  "phase": "exploratory_full_data_cv",
+  "source_revision": "30dc7eb723e4cf31291bb075ed6c0d943557264c",
+  "competition": "playground-series-s6e11",
+  "rows": {
+    "train": 699960,
+    "test": 299984
+  },
+  "data_hashes": {
+    "train.csv": "87eaa10b8d17a7e4f657b8da1c66242431338bdd8b6ad45861521ac0c0e9fbd5",
+    "test.csv": "10f516959020357b565abaaa4fd25baae97fc2f536d0805695bb7cc15c1660f0",
+    "sample_submission.csv": "13fc6ed8b73de5329884ec490f2a0b750cf29a7cda772b78cfa0cf486f6f35fa"
+  },
+  "common": {
+    "phase": "exploratory_full_data_cv",
+    "feature_set": "value_digits",
+    "id_column": "id",
+    "target": "is_fraud",
+    "split": "stratified",
+    "folds": 5,
+    "seed": 42,
+    "holdout_fraction": 0.0,
+    "fixed_training": true,
+    "validation_note": "Exploratory full-data five-fold CV aligned with approved public GPT-2 release2. All labels, including the historical holdout, participate in fold training. No independent holdout remains for this stage. Own model settings are frozen; no new hyperparameter selection."
+  },
+  "models": {
+    "glm": {
+      "name": "explore5-glm",
+      "model": "glm",
+      "threads": 4,
+      "device": "auto",
+      "logistic_c": 0.3,
+      "target_smoothing": 50.0
+    },
+    "lightgbm": {
+      "name": "explore5-lgbm",
+      "model": "lightgbm",
+      "threads": 6,
+      "device": "auto",
+      "iterations": 1438,
+      "learning_rate": 0.04,
+      "l2_leaf_reg": 5.0,
+      "num_leaves": 4,
+      "min_child_samples": 100,
+      "target_smoothing": 20.0,
+      "patience": 150
+    }
+  },
+  "own_weights": {
+    "glm": 0.75,
+    "lightgbm": 0.25
+  },
+  "hybrid_weights": {
+    "own": 0.75,
+    "external_gpt2": 0.25
+  },
+  "effective_weights": {
+    "glm": 0.5625,
+    "lightgbm": 0.1875,
+    "external_gpt2": 0.25
+  },
+  "public_component": {
+    "name": "GPT-2 target-first",
+    "kind": "gpt2_target_first",
+    "source_type": "external_predictions",
+    "trained_by": "Masaya Kawamata",
+    "model_architecture": "GPT-2 target-first classifier",
+    "training_code_url": "https://github.com/Matapanino/s6e11-gpt2-target-first",
+    "training_code_commit": "8446fb73c11583df4f7006aa08fa34472249b318",
+    "code_license": "MIT",
+    "predictions_source_url": "https://www.kaggle.com/datasets/masayakawamata/s6e11-gpt2-target-first-oof",
+    "predictions_source_version": 2,
+    "predictions_download_ref": "masayakawamata/s6e11-gpt2-target-first-oof/2",
+    "predictions_license": "CC BY 4.0",
+    "data_license": "CC BY 4.0 (prediction dataset)",
+    "method_credits": [
+      "Chris Deotte: target-first GPT-2 method",
+      "Borisov et al.: GReaT / Language Models are Realistic Tabular Data Generators",
+      "uditjain13: original Credit Card Fraud Detection 2026 dataset"
+    ],
+    "training_executed_locally": false,
+    "trained_by_us": false,
+    "oof_auc": 0.9500272037932734,
+    "validation": {
+      "method": "StratifiedKFold",
+      "n_splits": 5,
+      "shuffle": true,
+      "seed": 42
+    },
+    "inference": {
+      "method": "target-first label likelihood ratio",
+      "target_first": true,
+      "likelihood_ratio": true,
+      "prior": "training rate of the fold's fit rows",
+      "orders": 10,
+      "order_aggregation": "log-sum-exp over orders per label, then the difference, plus the prior",
+      "test_aggregation": "mean of fold log-odds",
+      "test_ensemble_folds": 5,
+      "source_test_aggregation": "mean over fold models of the per-fold log-odds",
+      "import_transform": "sigmoid(log_odds), float64"
+    },
+    "weight": 0.25,
+    "mixture_space": "probability",
+    "manifest_sha256": "0083d23b46f71311ceeed66874b093ec927d25d98b37f6d2e78b1de17f0f22d0",
+    "array_sha256": {
+      "oof.npy": "3468aaaeb7851739ec0de1e06b780da6d2777fcaeef638a6852c56e68e67a206",
+      "test.npy": "6c27aff7be744f7a0cc17809e0cd04fcdea0664234af88e3040a25235fb67906",
+      "fold_ids.npy": "1d459900f6c3a001ff971c09d9c607b383bdc732105c54701587189e52eeab45"
+    }
+  },
+  "observed_local_results": {
+    "own_oof_auc": 0.9506227499782469,
+    "hybrid_oof_auc": 0.9512586315198723,
+    "scope": "Recorded local exploratory OOF; not outputs of a saved, unexecuted Kaggle notebook."
+  },
+  "historical_protocol": {
+    "source_revision": "1fe34b540f3ea28276da652c3dd1de02726897f4",
+    "independent_holdout_applies_to_hybrid": false,
+    "regenerate_argument": "--protocol artifacts/holdout/evaluation.json",
+    "note": "The earlier 3-fold/15-percent holdout protocol is historical only; no independent holdout remains for the hybrid."
+  },
+  "output": "submission.csv"
+}

@@ -153,6 +153,7 @@ def make_notebook(
     revision: str, configs: dict, hashes: dict, record: dict
 ) -> tuple[dict, dict[str, bytes]]:
     cells = []
+    hybrid = record.get("phase") == "exploratory_full_data_cv"
 
     def cell(kind: str, text: str, metadata: dict | None = None) -> None:
         value = {
@@ -167,13 +168,26 @@ def make_notebook(
 
     cell(
         "markdown",
-        "# FraudLab · protocolo final reproduzível\n\n"
-        "**Esta versão foi salva sem execução no Kaggle.** As células não contêm resultados de uma execução nesta plataforma. Os treinamentos locais e as submissões realmente processadas estão documentados no [repositório público e suas evidências](https://github.com/aikolopes-og/fraudlab). O ranking é uma observação datada e provisória.\n\n"
-        "O fluxo abaixo reproduz o protocolo escolhido: desenvolver GLM e LightGBM em 85% dos rótulos, combinar com pesos congelados 75/25, avaliar uma vez os 15% reservados, refitar ambos em 100% e gerar o CSV final. A MLP com target encoding tem uma célula opcional de comparação e não entra no blend. Código MIT; dados sob os [termos da competição](https://www.kaggle.com/competitions/playground-series-s6e11/rules).",
+        (
+            "# FraudLab · protocolo híbrido 5/42\n\n"
+            if hybrid
+            else "# FraudLab · protocolo próprio reproduzível\n\n"
+        )
+        + "**Esta versão foi salva sem execução no Kaggle.** As células não contêm resultados de uma execução nesta plataforma. Os treinamentos locais e as submissões realmente processadas estão documentados no [repositório público e suas evidências](https://github.com/aikolopes-og/fraudlab). O ranking é uma observação datada e provisória.\n\n"
+        + (
+            "O fluxo canônico treina GLM e LightGBM próprios em CV estratificada 5-fold/seed42, com configurações fixas. Combina a composição própria 75/25 com 25% de previsões públicas GPT-2 de Masaya Kawamata, sem atribuir seu treinamento a nós. Todos os rótulos participam da CV; a reserva do protocolo anterior é apenas histórica e não é uma avaliação independente desta mistura.\n\nCódigo próprio MIT; previsões públicas CC BY 4.0, com os créditos abaixo. Dados da competição sob seus termos."
+            if hybrid
+            else "O fluxo abaixo reproduz o protocolo escolhido: desenvolver GLM e LightGBM em 85% dos rótulos, combinar com pesos congelados 75/25, avaliar uma vez os 15% reservados, refitar ambos em 100% e gerar o CSV final. A MLP com target encoding tem uma célula opcional de comparação e não entra no blend. Código MIT; dados sob os termos da competição."
+        ),
     )
     cell(
         "markdown",
-        f"## 1. Fonte fixada e execução offline\n\nRevisão [{revision}](https://github.com/aikolopes-og/fraudlab/tree/{revision}). Cada módulo abaixo é exportado com `git show` dessa revisão; os hashes conferem a integridade. Não há `pip install`, clone remoto ou importação de predições de terceiros. O notebook usa as bibliotecas já instaladas na imagem Kaggle; o preflight interrompe se forem incompatíveis. Ative GPU apenas se quiser executar a comparação neural opcional.",
+        f"## 1. Fonte fixada e execução offline\n\nRevisão [{revision}](https://github.com/aikolopes-og/fraudlab/tree/{revision}). Cada módulo abaixo é exportado com `git show` dessa revisão; os hashes conferem a integridade. Não há `pip install`, clone remoto ou execução de código de treinamento de terceiros. O notebook usa as bibliotecas já instaladas na imagem Kaggle; o preflight interrompe se forem incompatíveis. "
+        + (
+            "O GPT-2 entra por arrays públicos anexados como input, com versão e hashes fixados. O protocolo híbrido não exige GPU."
+            if hybrid
+            else "Ative GPU apenas se quiser executar a comparação neural opcional."
+        ),
     )
     cell("code", "from pathlib import Path\nPath('fraudlab').mkdir(exist_ok=True)\n")
     files = {}
@@ -218,6 +232,13 @@ def make_notebook(
         "    versions[package] = installed\n"
         "print(json.dumps(versions, indent=2))\n",
     )
+    if hybrid:
+        if "fraudlab/external.py" not in files:
+            raise ValueError(
+                "The hybrid notebook requires a published source revision containing external.py."
+            )
+        hybrid_cells(cell, record["recipe"])
+        return document(cells, revision, manifest, record), files
     cell(
         "markdown",
         "## 2. Dados oficiais e partição independente\n\n"
@@ -327,7 +348,11 @@ def make_notebook(
         "O notebook publicado compartilha o código e o protocolo; esta versão não foi executada no Kaggle. As métricas locais, o arquivo exato submetido e os scores/posições processados são comprovados pelos registros do [repositório](https://github.com/aikolopes-og/fraudlab). Salvar um notebook, gerar um CSV e receber uma pontuação da competição são estados diferentes.\n\n"
         "Use `submission.csv` somente depois de conferir as regras e o processamento pela plataforma. O score público mede o arquivo enviado e não é a OOF nem a avaliação do holdout; a classificação final privada só existe após o encerramento. Esta reprodução não faz otimização sobre rótulos do teste, reconstrução do split público ou combinação de arquivos de terceiros.",
     )
-    notebook = {
+    return document(cells, revision, manifest, record), files
+
+
+def document(cells: list, revision: str, manifest: dict, record: dict) -> dict:
+    return {
         "cells": cells,
         "metadata": {
             "kernelspec": {
@@ -346,7 +371,98 @@ def make_notebook(
         "nbformat": 4,
         "nbformat_minor": 5,
     }
-    return notebook, files
+
+
+def hybrid_cells(cell, recipe: dict) -> None:
+    public = recipe["public_component"]
+    cell(
+        "markdown",
+        "## 2. Receita pública, inputs e créditos\n\n"
+        "A receita portátil está em `notebooks/hybrid-recipe.json` no repositório e é incorporada abaixo. Entradas: a competição S6E11 e o dataset público na **versão 2**. A referência versionada é `masayakawamata/s6e11-gpt2-target-first-oof/2`; o importador rejeita bytes diferentes do manifesto aprovado. Os arquivos são anexados como inputs, sem download pela internet durante a execução.\n\n"
+        f"Previsões GPT-2: [Masaya Kawamata]({public['predictions_source_url']}), CC BY 4.0. [Código de treinamento MIT]({public['training_code_url']}) no commit `{public['training_code_commit']}`. Método target-first: Chris Deotte; réplica GReaT: Borisov et al.; dataset original: uditjain13. O GPT-2 foi treinado pelo autor externo; este projeto verifica e combina suas previsões públicas, sem executar seu treinamento.\n\n"
+        "Os arrays são logits float64 em ordem exata dos CSVs oficiais. O manifesto usa 10 ordens de atributos, log-sum-exp por rótulo e prior do treino de cada fold. No teste, o autor calcula a média dos cinco logits antes da sigmoid. O nosso importador aplica sigmoid e conserva autoria, versão, hashes e conversão nos metadados.",
+    )
+    cell(
+        "code",
+        "RECIPE = " + pprint.pformat(recipe, width=100, sort_dicts=False) + "\n"
+        "candidates = [Path('/kaggle/input/competitions/playground-series-s6e11'),\n"
+        "              Path('/kaggle/input/playground-series-s6e11')]\n"
+        "data = next((path for path in candidates if (path / 'train.csv').is_file()), None)\n"
+        "if data is None:\n"
+        "    raise FileNotFoundError('Adicione playground-series-s6e11 aos inputs.')\n"
+        "for filename, expected in RECIPE['data_hashes'].items():\n"
+        "    if hashlib.sha256((data / filename).read_bytes()).hexdigest() != expected:\n"
+        "        raise ValueError(f'{filename}: versão diferente do protocolo documentado.')\n"
+        "manifest_hash = RECIPE['public_component']['manifest_sha256']\n"
+        "public_source = next((path.parent for path in Path('/kaggle/input').rglob('manifest.json')\n"
+        "                      if hashlib.sha256(path.read_bytes()).hexdigest() == manifest_hash), None)\n"
+        "if public_source is None:\n"
+        "    raise FileNotFoundError('Adicione o dataset GPT-2 versão 2; o manifesto deve coincidir com a receita.')\n\n"
+        "runs = Path('artifacts/runs')\n"
+        "def run(*arguments):\n"
+        "    subprocess.run([sys.executable, '-m', 'fraudlab', *map(str, arguments)], check=True)\n\n"
+        "run('inspect', '--data', data, '--output', 'artifacts/profile.json')\n"
+        "public_run = runs / 'explore5-public-gpt2'\n"
+        "run('import-public-gpt2', '--source', public_source, '--data', data,\n"
+        "    '--output', runs, '--name', public_run.name)\n",
+    )
+    cell(
+        "markdown",
+        "## 3. Treinos próprios fixos em 5/42\n\n"
+        "Todas as 699.960 linhas participam da CV; cada previsão OOF vem do modelo que excluiu seu fold. GLM: C=0,3 e target encoding interno com suavização 50. LGB: 1.438 árvores fixas, 4 folhas, taxa 0,04, L2=5 e suavização 20. Atributos e demais parâmetros permanecem congelados. Não há early stopping, nova escolha de árvores ou reserva independente.\n\n"
+        "Os treinos são sequenciais para limitar RAM. O teste de cada família recebe a média de probabilidades dos cinco modelos. Essas previsões são diferentes do refit único do protocolo histórico; os registros mantêm os protocolos separados.",
+    )
+    cell(
+        "code",
+        "def train_model(model):\n"
+        "    configuration = {'data': str(data), 'output': str(runs),\n"
+        "                     **RECIPE['common'], **RECIPE['models'][model]}\n"
+        "    arguments = ['train']\n"
+        "    for key, value in configuration.items():\n"
+        "        if value is None or value is False:\n"
+        "            continue\n"
+        "        arguments.append('--' + key.replace('_', '-'))\n"
+        "        if value is not True:\n"
+        "            arguments.extend(map(str, value if isinstance(value, list) else [value]))\n"
+        "    run(*arguments)\n"
+        "    return runs / configuration['name']\n\n"
+        "glm_run = train_model('glm')\n"
+        "lgbm_run = train_model('lightgbm')\n",
+    )
+    cell(
+        "markdown",
+        "## 4. Composição congelada e arquivo de submissão\n\n"
+        "A composição própria usa 75% GLM e 25% LGB. Ela recebe 75% do peso total; o GPT-2 público recebe 25%. Pesos efetivos: **56,25% GLM / 18,75% LGB / 25% GPT-2 externo**, em probabilidades. Não há ajuste pelos scores do Kaggle.\n\n"
+        "A grade local predefinida testou 10/25/50/75% de GPT-2. A opção de 25% melhorou os cinco folds; 25% e 50% ficaram praticamente empatadas. Mantivemos 25% para preservar maior contribuição própria com o mesmo ganho observado. Esses resultados são seleção exploratória por OOF, não uma avaliação independente; esta versão salva não os executou no Kaggle.",
+    )
+    cell(
+        "code",
+        "own_run = runs / 'explore5-own'\n"
+        "hybrid_run = runs / 'explore5-public25'\n"
+        "run('blend', '--runs', glm_run, lgbm_run,\n"
+        "    '--weights', RECIPE['own_weights']['glm'], RECIPE['own_weights']['lightgbm'],\n"
+        "    '--output', runs, '--name', own_run.name)\n"
+        "run('blend', '--runs', own_run, public_run,\n"
+        "    '--weights', RECIPE['hybrid_weights']['own'], RECIPE['hybrid_weights']['external_gpt2'],\n"
+        "    '--output', runs, '--name', hybrid_run.name)\n"
+        "final_csv = hybrid_run / 'submission.csv'\n"
+        "run('validate-submission', '--file', final_csv, '--sample', data / 'sample_submission.csv')\n"
+        "shutil.copyfile(final_csv, 'submission.csv')\n"
+        "metrics = json.loads((hybrid_run / 'metrics.json').read_text())\n"
+        "assert metrics['phase'] == 'exploratory_full_data_cv'\n"
+        "assert metrics['validation']['independent_holdout'] is False\n"
+        "assert metrics['external_components'][0]['trained_by_us'] is False\n"
+        "assert metrics['external_components'][0]['weight'] == RECIPE['hybrid_weights']['external_gpt2']\n"
+        "assert hashlib.sha256(Path('submission.csv').read_bytes()).hexdigest() == metrics['submission_sha256']\n"
+        "print({'file': 'submission.csv', 'sha256': metrics['submission_sha256'],\n"
+        "       'exploratory_oof_auc': metrics['roc_auc'], 'external_components': metrics['external_components']})\n",
+    )
+    cell(
+        "markdown",
+        "## Histórico e limites da reprodução\n\n"
+        "O protocolo próprio anterior usou 3 folds e uma reserva de 15%, avaliada uma vez antes de refits em 100%. Ele pode ser regenerado pelo mesmo script com `--protocol artifacts/holdout/evaluation.json` ou consultado na história Git. **Seu holdout não é independente desta composição híbrida**: a CV nova e o componente público usam todos os rótulos. O notebook canônico não chama a avaliação dessa reserva novamente.\n\n"
+        f"OOF exploratória local registrada: {recipe['observed_local_results']['hybrid_oof_auc']:.8f}. Scores e posições realmente processados pelo Kaggle constam nas evidências do repositório; não são outputs deste notebook salvo sem execução. Diferenças de bibliotecas/hardware podem mudar a reprodução. Nenhuma submissão é enviada automaticamente, e a classificação privada final só existe após o encerramento.",
+    )
 
 
 def verify(notebook: dict, sources: dict[str, bytes]) -> dict:
@@ -381,21 +497,44 @@ def verify(notebook: dict, sources: dict[str, bytes]) -> dict:
 def main() -> None:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument(
-        "--revision", default=REVISION, help="Full published Git commit SHA to export"
+        "--revision",
+        help="Full published Git commit SHA to export; required until the hybrid recipe is pinned",
     )
     parser.add_argument(
         "--protocol",
         type=Path,
-        help="Optional local holdout report with the selected source runs",
+        help="Regenerate the historical own-model protocol from its local holdout report",
     )
     args = parser.parse_args()
-    if not re.fullmatch(r"[0-9a-f]{40}", args.revision):
+    recipe_path = ROOT / "notebooks" / "hybrid-recipe.json"
+    recipe = (
+        None if args.protocol else json.loads(recipe_path.read_text(encoding="utf-8"))
+    )
+    revision = args.revision or (
+        REVISION if args.protocol else recipe.get("source_revision")
+    )
+    if revision is None or not re.fullmatch(r"[0-9a-f]{40}", revision):
         parser.error("revision must be a full Git commit SHA")
-    configs, hashes, record = protocol(args.protocol)
-    notebook, sources = make_notebook(args.revision, configs, hashes, record)
+    if recipe is None:
+        configs, hashes, record = protocol(args.protocol)
+        dataset_sources = []
+    else:
+        recipe["source_revision"] = revision
+        configs, hashes = {}, recipe["data_hashes"]
+        record = {
+            "origin": "portable_hybrid_recipe",
+            "phase": recipe["phase"],
+            "recipe": recipe,
+        }
+        dataset_sources = [recipe["public_component"]["predictions_download_ref"]]
+    notebook, sources = make_notebook(revision, configs, hashes, record)
     checks = verify(notebook, sources)
     output = ROOT / "notebooks"
     output.mkdir(exist_ok=True)
+    if recipe is not None:
+        recipe_path.write_text(
+            json.dumps(recipe, indent=2, ensure_ascii=False) + "\n", encoding="utf-8"
+        )
     (output / "fraudlab.ipynb").write_text(
         json.dumps(notebook, indent=2, ensure_ascii=False) + "\n", encoding="utf-8"
     )
@@ -415,7 +554,7 @@ def main() -> None:
         language="python",
         kernel_type="notebook",
         enable_internet=False,
-        dataset_sources=[],
+        dataset_sources=dataset_sources,
         competition_sources=["playground-series-s6e11"],
         kernel_sources=[],
     )
@@ -423,7 +562,7 @@ def main() -> None:
     print(
         json.dumps(
             {
-                "revision": args.revision,
+                "revision": revision,
                 "notebook": "notebooks/fraudlab.ipynb",
                 **checks,
             },

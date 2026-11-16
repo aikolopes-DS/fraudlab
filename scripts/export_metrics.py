@@ -7,6 +7,10 @@ from pathlib import Path
 FIELDS = (
     "status",
     "model",
+    "phase",
+    "selection",
+    "evaluation_scope",
+    "external_components",
     "roc_auc",
     "fold_scores",
     "fold_std",

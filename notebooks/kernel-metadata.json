@@ -7,7 +7,9 @@
   "is_private": false,
   "enable_gpu": false,
   "enable_internet": false,
-  "dataset_sources": [],
+  "dataset_sources": [
+    "masayakawamata/s6e11-gpt2-target-first-oof/2"
+  ],
   "competition_sources": [
     "playground-series-s6e11"
   ],

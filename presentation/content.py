@@ -3,8 +3,13 @@
 from __future__ import annotations
 
 from dataclasses import asdict, dataclass
+from datetime import datetime
 import math
+import re
 from typing import Any
+from zoneinfo import ZoneInfo
+
+from .external import components_from, gpt2_slides
 
 
 KAGGLE = "https://www.kaggle.com/competitions/playground-series-s6e11"
@@ -41,7 +46,34 @@ def number(value: Any, digits: int = 0) -> str:
     return f"{value:,.0f}".replace(",", ".")
 
 
-def validate_evidence(evidence: dict, runs: list[dict], draft: bool) -> list[str]:
+def is_refit(run: dict) -> bool:
+    return run.get("phase") == "full_data_refit"
+
+
+def run_label(run: dict) -> str:
+    return str(run.get("run_name", run.get("model", "modelo")))
+
+
+def observation_time(value: str | None, spoken: bool = False) -> str:
+    if not value:
+        return "não verificada"
+    local = datetime.fromisoformat(value.replace("Z", "+00:00")).astimezone(ZoneInfo("America/Sao_Paulo"))
+    if not spoken:
+        return local.strftime("%d/%m/%Y às %Hh%M (São Paulo)")
+    months = ("janeiro", "fevereiro", "março", "abril", "maio", "junho",
+              "julho", "agosto", "setembro", "outubro", "novembro", "dezembro")
+    return (f"{local.day} de {months[local.month - 1]} de {local.year}, "
+            f"às {local.hour} horas e {local.minute} minutos, no horário de São Paulo")
+
+
+def submission_matches(evidence: dict, selected: dict) -> bool:
+    recorded = (evidence.get("run") or {}).get("submission_sha256")
+    expected = selected.get("submission_sha256")
+    return isinstance(recorded, str) and bool(re.fullmatch(r"[a-f0-9]{64}", recorded)) and recorded == expected
+
+
+def validate_evidence(evidence: dict, runs: list[dict], draft: bool, holdout: dict | None = None,
+                      historical_holdout: bool = False) -> list[str]:
     """A final deck requires evidence, never merely a successful rendering."""
     missing = []
     checks = evidence.get("checks", {})
@@ -71,8 +103,12 @@ def validate_evidence(evidence: dict, runs: list[dict], draft: bool) -> list[str
         missing.append("results.holdout_auc")
     if not runs:
         missing.append("experiment metrics")
+    if runs and not submission_matches(evidence, runs[0]):
+        missing.append("run.submission_sha256 matching selected metrics")
     for run in runs:
         auc = run.get("roc_auc")
+        if is_refit(run):
+            auc = run.get("selection", {}).get("development_roc_auc")
         if not isinstance(auc, (float, int)) or isinstance(auc, bool) or not math.isfinite(auc) or not 0 <= auc <= 1:
             missing.append("experiment.roc_auc")
         if run.get("status") != "complete":
@@ -81,6 +117,31 @@ def validate_evidence(evidence: dict, runs: list[dict], draft: bool) -> list[str
             missing.append("experiment.data_hashes")
         elif runs and run["data_hashes"] != runs[0].get("data_hashes"):
             missing.append("experiment compatible data_hashes")
+        if is_refit(run) and not any(
+            not is_refit(other) and other.get("model") == run.get("model") and
+            other.get("roc_auc") == run.get("selection", {}).get("development_roc_auc")
+            for other in runs
+        ):
+            missing.append("refit development source metrics")
+    selected_components = components_from(runs[:1])
+    needs_holdout = (runs and is_refit(runs[0]) and not selected_components and
+                     runs[0].get("validation", {}).get("independent_holdout") is not False)
+    if needs_holdout and (not holdout or historical_holdout):
+        missing.append("independent holdout report")
+    if selected_components and holdout and not historical_holdout:
+        missing.append("old holdout must be historical for the external extension")
+    for component in selected_components:
+        fields = ("trained_by", "training_code_url", "training_code_commit", "code_license", "predictions_source_url")
+        if any(not component.get(field) for field in fields) or not component.get("predictions_license", component.get("data_license")):
+            missing.append("external component provenance and licenses")
+    if holdout:
+        score = holdout.get("roc_auc")
+        if holdout.get("status") != "complete" or holdout.get("kind") != "independent_holdout":
+            missing.append("completed independent holdout report")
+        if not isinstance(score, (int, float)) or isinstance(score, bool) or not math.isfinite(score) or not 0 <= score <= 1:
+            missing.append("holdout.roc_auc")
+        if runs and holdout.get("data_hashes") != runs[0].get("data_hashes"):
+            missing.append("holdout compatible data_hashes")
     neural = next((run for run in runs if run.get("model") == "mlp"), None)
     if not neural or not neural.get("model_details", {}).get("architecture"):
         missing.append("trained MLP architecture")
@@ -97,17 +158,32 @@ def ensure_pairs(slides: list[Slide]) -> None:
             raise ValueError(f"Slide técnico {index + 1} sem analogia imediatamente após.")
 
 
-def create_slides(evidence: dict, runs: list[dict], draft: bool = False) -> list[Slide]:
-    missing = validate_evidence(evidence, runs, draft)
+def create_slides(evidence: dict, runs: list[dict], draft: bool = False, holdout: dict | None = None,
+                  historical_holdout: bool = False) -> list[Slide]:
+    missing = validate_evidence(evidence, runs, draft, holdout, historical_holdout)
     selected = runs[0] if runs else {}
+    development_runs = [run for run in runs if not is_refit(run)]
+    evaluation_run = next((run for run in development_runs if run.get("model") == selected.get("model")),
+                          development_runs[0] if development_runs else selected)
     neural = next((run for run in runs if run.get("model") == "mlp"), {})
     details = neural.get("model_details", {})
     architecture = details.get("architecture", {})
-    results = evidence.get("results", {})
+    results = evidence.get("results", {}).copy()
+    if not submission_matches(evidence, selected):
+        for key in ("public_auc", "ranking", "total_teams", "submission_id", "observed_at"):
+            results[key] = None
+    if holdout:
+        results["holdout_auc"] = holdout.get("roc_auc")
+        results["holdout_observed_at"] = holdout.get("evaluated_at")
     rows = selected.get("rows", {})
     features = selected.get("features", {})
-    validation = selected.get("validation", {})
+    raw_run = next((run for run in runs if run.get("model_details", {}).get("feature_set") == "raw"), {})
+    raw_count = raw_run.get("features", {}).get("count")
+    validation = evaluation_run.get("validation", {})
     reserved_run = next((run for run in runs if run.get("validation", {}).get("holdout_fraction", 0) > 0), {})
+    all_names = {name for run in runs for name in run.get("features", {}).get("names", [])}
+    target_runs = [run for run in runs if run.get("model_details", {}).get("target_encoder")]
+    external_components = components_from(runs)
     slides: list[Slide] = []
 
     def add(chapter: str, title: str, points: list[str], narration: str, **kwargs: Any) -> None:
@@ -159,13 +235,15 @@ def create_slides(evidence: dict, runs: list[dict], draft: bool = False) -> list
           "certeza, e uma fila bem ordenada não elimina a necessidade de verificação.")
     add("02 / Os dados", "O que foi observado nos arquivos", [
         f"Treino: {number(rows.get('train'))} registros; teste: {number(rows.get('test'))}",
-        f"Variáveis de entrada: {number(features.get('count'))}",
+        (f"Colunas originais: {number(raw_count)}; entradas após representação: {number(features.get('count'))}"
+         if raw_count is not None else f"Entradas após representação: {number(features.get('count'))}"),
         "Taxa positiva no treino: " + (number(selected.get("target", {}).get("positive_rate", 0) * 100, 3) + "%" if selected.get("target", {}).get("positive_rate") is not None else "não verificada"),
         "Identificadores e alvo são tratados separadamente das entradas",
     ], "Antes de escolher uma arquitetura, é preciso conhecer os arquivos. "
        + (f"Neste experimento foram registrados {number(rows.get('train'))} exemplos de treino "
-          f"e {number(rows.get('test'))} exemplos de teste. A quantidade de entradas é "
-          f"{number(features.get('count'))}. " if selected else
+          f"e {number(rows.get('test'))} exemplos de teste. "
+          + (f"O arquivo possui {number(raw_count)} colunas originais de entrada. " if raw_count is not None else "")
+          + f"Depois da representação selecionada, o modelo usa {number(features.get('count'))} entradas. " if selected else
           "Os arquivos ainda não foram verificados nesta versão. Nenhuma quantidade é apresentada como resultado. ")
        + "O perfil dos dados deve revelar valores ausentes, tipos de variáveis, duplicatas e "
        "desbalanceamento. Os hashes dos arquivos ligam cada experimento à versão dos dados utilizada.")
@@ -182,11 +260,17 @@ def create_slides(evidence: dict, runs: list[dict], draft: bool = False) -> list
            "O identificador da linha não representa uma explicação da fraude "
            "e o rótulo é a resposta que o modelo precisa aprender a estimar, "
            "por isso ficam separados das entradas.")
-    method = str(validation.get("method", "não verificado"))
+    method = {"stratified": "estratificado", "StratifiedKFold": "estratificado",
+              "group": "por grupos", "time": "temporal"}.get(
+                  validation.get("method"), "não verificado")
+    validation_note = (f"{number(validation.get('n_splits'))} folds sobre todos os rótulos; sem nova reserva independente. "
+                       "Os parâmetros dos modelos próprios permaneceram fixos."
+                       if validation.get("independent_holdout") is False else
+                       "A justificativa técnica da divisão permanece registrada nas métricas da execução.")
     add("02 / Os dados", "A divisão precisa representar a pergunta", [
         f"Estratégia registrada: {method}",
         f"Divisões registradas: {number(validation.get('n_splits'))}",
-        str(validation.get("note", "Tempo, grupos e duplicatas precisam ser inspecionados antes da escolha.")),
+        validation_note,
         "Pré-processamento é ajustado somente no treino de cada divisão",
     ], "Uma divisão aleatória não é automaticamente correta. Se houver transações ligadas "
        "à mesma pessoa, ou se o desafio for prever o futuro, a validação precisa considerar "
@@ -223,7 +307,11 @@ def create_slides(evidence: dict, runs: list[dict], draft: bool = False) -> list
     if reserved_run:
         reserved = reserved_run["rows"]
         fraction = reserved_run["validation"]["holdout_fraction"]
-        pair("03 / A avaliação", "Uma reserva fora da seleção de modelos", [
+        reserve_title = ("Protocolo inicial: uma reserva separada" if historical_holdout
+                         else "Uma reserva fora da seleção de modelos")
+        reserve_note = ("Após a extensão neural, essa reserva deixou de ser independente para a nova composição. "
+                        if historical_holdout else "")
+        pair("03 / A avaliação", reserve_title, [
             f"Reserva registrada: {number(fraction * 100, 0)}% do treino ({number(reserved.get('holdout'))} linhas)",
             f"Desenvolvimento: {number(reserved.get('development'))} linhas para comparar configurações",
             "A reserva não participa dos folds usados na escolha",
@@ -233,7 +321,7 @@ def create_slides(evidence: dict, runs: list[dict], draft: bool = False) -> list
            "é a parte usada para escolher os modelos e reserva é a parte "
            "mantida fora desse processo. A interseção é vazia: a mesma linha "
            "não pertence às duas partes. Essa reserva só cumpre seu papel "
-           "se não for consultada repetidamente para escolher configurações.",
+           "se não for consultada repetidamente para escolher configurações. " + reserve_note,
            r"D=D_{\mathrm{dev}}\cup D_{\mathrm{reserva}},\quad D_{\mathrm{dev}}\cap D_{\mathrm{reserva}}=\varnothing",
            "Dados completos = desenvolvimento união reserva; a interseção entre desenvolvimento e reserva é vazia",
            "No dia a dia: uma prova lacrada", [
@@ -264,7 +352,167 @@ def create_slides(evidence: dict, runs: list[dict], draft: bool = False) -> list
           "Se o sistema colocou o fraudulento antes na fila, acertou a ordem desse par. "
           "A AUC resume esse raciocínio para todos os pares. Isso explica por que mandar "
           "probabilidades é útil, mesmo sem decidir um ponto fixo de aprovação ou bloqueio.")
-    if any(run.get("model") == "logistic" for run in runs):
+    if any(name.endswith("__log1p") for name in all_names):
+        pair("04 / Representar os dados", "Logs: outra visão da escala", [
+            "A transformação preserva o sinal e comprime magnitudes grandes",
+            "O valor original continua disponível para o modelo",
+            "É uma hipótese de representação; o ganho precisa ser medido",
+        ], "Para algumas entradas contínuas, criamos uma segunda visão com "
+           "log de um mais o valor absoluto, preservando o sinal. Isso "
+           "reduz diferenças de escala entre valores muito grandes, "
+           "sem apagar o valor original. A transformação não descobre "
+           "fraude por si só. Sua utilidade depende da comparação com "
+           "o experimento que não a utiliza.",
+           r"u(x)=\mathrm{sgn}(x)\log(1+|x|)",
+           "Nova visão = sinal de x vezes log de um mais o valor absoluto de x",
+           "No dia a dia: olhar uma diferença de perto e de longe", [
+               "Uma régua comum destaca diferenças absolutas",
+               "Uma escala comprimida destaca diferenças relativas",
+               "Manter as duas visões permite testar qual ajuda",
+           ], "Imagine comparar o tamanho de objetos pequenos e muito grandes. "
+              "Uma única régua pode dificultar enxergar os menores. Uma "
+              "escala comprimida dá outra perspectiva. No experimento, "
+              "o modelo recebe essa perspectiva junto da medida original.")
+    if any(name.endswith("__sin") for name in all_names):
+        pair("04 / Representar os dados", "Hora e dia formam ciclos", [
+            "Hora do dia usa período 24; dia da semana usa período 7",
+            "Seno e cosseno colocam a posição em um círculo",
+            "A passagem do último valor ao primeiro fica contínua",
+        ], "Uma hora do dia não é apenas um número em uma reta. "
+           "Depois de vinte e três horas vem zero, e esses momentos "
+           "são próximos. Representar a posição por seno e cosseno "
+           "mantém essa proximidade. O período T é vinte e quatro "
+           "para a hora e sete para o dia da semana.",
+           r"v(t)=\left(\sin\frac{2\pi t}{T},\cos\frac{2\pi t}{T}\right)",
+           "Posição de t no ciclo = seno e cosseno de dois pi t dividido pelo período",
+           "No dia a dia: um relógio redondo", [
+               "23 horas e 0 hora estão próximas no relógio",
+               "Numa reta, os números parecem distantes",
+               "A representação circular preserva essa vizinhança",
+           ], "Pense no mostrador de um relógio. O fim e o começo "
+              "do dia ficam lado a lado. Se desenharmos as horas "
+              "apenas numa reta, essa vizinhança desaparece. Seno "
+              "e cosseno levam a informação de volta para o círculo.")
+    if "amount_balance_ratio" in all_names:
+        pair("04 / Representar os dados", "Relacionar valor e saldo", [
+            "A razão combina duas entradas disponíveis",
+            "O módulo e o acréscimo de 1 evitam divisão por zero",
+            "Esta construção não define uma regra operacional de bloqueio",
+        ], "Uma quantia pode ter significados diferentes conforme o saldo. "
+           "Testamos a razão entre o valor da transação e o módulo "
+           "do saldo acrescido de um. Essa escolha evita divisão "
+           "por zero. É uma variável construída para o experimento, "
+           "não uma medida bancária universal de risco ou de utilização.",
+           r"r=\frac{\mathrm{amount}}{|\mathrm{balance}|+1}",
+           "Razão = valor da transação dividido pelo módulo do saldo mais um",
+           "No dia a dia: o mesmo gasto em bolsos diferentes", [
+               "Um gasto de 100 pesa de formas diferentes em dois orçamentos",
+               "A relação entre valores pode trazer contexto",
+               "O experimento decide se esse contexto melhora a previsão",
+           ], "Imagine gastar cem reais com dez mil disponíveis "
+              "ou com cento e poucos disponíveis. O número do gasto "
+              "é o mesmo, mas a relação com o orçamento muda. "
+              "A variável testa essa ideia sem transformar a analogia "
+              "em uma regra de fraude.")
+    if any(name.endswith("__cents_key") for name in all_names):
+        pair("04 / Representar os dados", "Dígitos: investigar a geração sintética", [
+            "São criadas categorias para valores arredondados e suas partes",
+            "Centavos e dígitos iniciais oferecem outras visões do mesmo número",
+            "Uma associação neste dataset não comprova uma regra de fraude real",
+        ], "A pesquisa de soluções públicas sugeriu testar padrões de "
+           "arredondamento e partes dos valores numéricos. Uma das "
+           "visões arredonda cem vezes o valor absoluto e usa "
+           "o resto da divisão por cem, isolando os centavos. "
+           "Outras usam o valor arredondado e dígitos iniciais. "
+           "São hipóteses sobre dados sintéticos. A associação "
+           "precisa sobreviver à validação e não deve ser "
+           "interpretada como lei de comportamento bancário.",
+           r"c(x)=\mathrm{round}(100|x|)\;\mathrm{mod}\;100",
+           "Categoria de centavos = arredondamento de cem vezes módulo de x, módulo cem",
+           "No dia a dia: perceber o padrão de uma impressora", [
+               "Uma máquina pode repetir marcas que passam despercebidas no valor completo",
+               "Separar as partes ajuda a investigar essas marcas",
+               "Um padrão da máquina pode desaparecer fora daquele processo",
+           ], "Imagine uma impressora que deixa uma marca recorrente "
+              "em seus documentos. Separar e observar pequenos detalhes "
+              "pode revelar essa marca. Mas a marca diz algo sobre "
+              "a impressora, não sobre todos os documentos do mundo. "
+              "Os padrões numéricos de uma distribuição sintética "
+              "exigem o mesmo cuidado.")
+    if target_runs:
+        encoders = [run["model_details"]["target_encoder"] for run in target_runs]
+        smooth_values = ", ".join(sorted({str(encoder.get("smooth")) for encoder in encoders}))
+        pair("04 / Representar os dados", "Target encoding com suavização", [
+            "Cada categoria recebe uma estimativa baseada no alvo de treino",
+            "A média da categoria é combinada com a média disponível no treino",
+            "Suavização registrada: " + smooth_values,
+            "Categoria desconhecida usa a média de referência do treino",
+        ], "O target encoding representa uma categoria por uma "
+           "estimativa do alvo baseada nos dados de treino. Para "
+           "evitar confiar demais em categorias com poucos exemplos, "
+           "a estimativa combina a média da categoria com a média "
+           "de referência. O peso w depende da suavização. Quando "
+           "o parâmetro é auto, a biblioteca usa uma estimativa "
+           "empírica de Bayes. Isso é diferente de considerar "
+           "toda média de categoria igualmente confiável.",
+           r"\mathrm{TE}(c)=w_c\bar y_c+(1-w_c)\bar y,\quad 0\leq w_c\leq1",
+           "Codificação da categoria = peso vezes média da categoria, mais um menos peso vezes média de referência",
+           "No dia a dia: avaliar uma loja com poucas opiniões", [
+               "Uma única avaliação excelente ainda traz pouca evidência",
+               "A média geral funciona como uma referência inicial",
+               "Com mais evidência, a avaliação específica ganha influência",
+           ], "Pense em uma loja com uma única avaliação excelente. "
+              "Não convém confiar nela como se fossem milhares "
+              "de avaliações. A suavização mistura a informação "
+              "específica com uma referência geral. Quanto confiar "
+              "em cada parte é controlado pela regra de suavização.")
+        inner_folds = sorted({encoder["internal_folds"] for encoder in encoders if "internal_folds" in encoder})
+        pair("04 / Representar os dados", "Cross-fitting também dentro do treino", [
+            "Divisões internas registradas: " + ", ".join(str(value) for value in inner_folds),
+            "O próprio rótulo da linha não constrói sua codificação de treino",
+            "Validação externa e teste usam mapeamentos ajustados no treino externo",
+        ], "Codificar uma linha usando uma média que inclui sua "
+           "própria resposta pode deixar a resposta escapar para "
+           "a entrada, principalmente em categorias raras. O "
+           "cross-fitting interno evita isso. O treino externo "
+           "é dividido novamente, e cada parte recebe codificações "
+           "calculadas nas demais. A validação externa e o teste "
+           "continuam fora desse ajuste.",
+           r"\mathrm{TE}_i=g_{D_{\mathrm{treino}}\setminus I_j}(c_i),\quad i\in I_j",
+           "Codificação da linha i usa mapeamento ajustado no treino menos a divisão interna j que contém i",
+           "No dia a dia: a resposta não pode estar na pista", [
+               "Uma pista útil ajuda a resolver a pergunta",
+               "Uma pista que contém a própria resposta vicia o teste",
+               "Outra parte do treino precisa fornecer essa informação",
+           ], "Imagine um exercício cuja pista revela a própria "
+              "resposta. O aluno parece acertar, mas não precisou "
+              "aprender. O cross-fitting impede esse atalho na "
+              "codificação de treino: a pista de uma linha é "
+              "construída sem consultar sua própria resposta.")
+        if any(encoder.get("log_odds") for encoder in encoders):
+            pair("04 / Representar os dados", "Transformar risco codificado em logit", [
+                "A probabilidade codificada vira uma razão de chances em log",
+                "A implementação limita valores extremos para evitar log de zero",
+                "Os logits são escalonados no treino antes do modelo seguinte",
+            ], "Alguns experimentos transformam a probabilidade "
+               "codificada em logit: o log da razão entre p e um "
+               "menos p. Valores próximos de zero ou um precisam "
+               "ser limitados para evitar infinitos. Depois, esses "
+               "logits são escalonados usando apenas estatísticas "
+               "de treino. A transformação altera a representação, "
+               "não cria novos rótulos.",
+               r"\mathrm{logit}(p)=\log\frac{p}{1-p}",
+               "Logit de p = log da razão entre p e um menos p",
+               "No dia a dia: comparar duas possibilidades", [
+                   "Uma chance de 80% corresponde a 4 para 1",
+                   "O log transforma essa razão em uma escala aditiva",
+                   "Uma representação diferente pode ajudar um modelo simples",
+               ], "Imagine comparar a chance de acontecer algo "
+                  "com a de não acontecer. Com oitenta por cento, "
+                  "a relação é quatro para um. O logit coloca "
+                  "essa razão em uma escala que pode ser somada "
+                  "com outras pistas pelo modelo seguinte.")
+    if any(run.get("model") in ("logistic", "glm") for run in runs):
         pair("04 / Os modelos", "Referência: regressão logística", [
             "Combina as entradas por uma soma ponderada",
             "A sigmoid transforma a soma em um número entre 0 e 1",
@@ -303,11 +551,111 @@ def create_slides(evidence: dict, runs: list[dict], draft: bool = False) -> list
               "Na revisão seguinte, você procura os pontos em que a versão atual errou "
               "e faz uma correção. O processo se repete com ajustes controlados. "
               "No boosting, as árvores cumprem o papel dessas correções sucessivas.")
+    lightgbm_runs = [run for run in runs if run.get("model") == "lightgbm"]
+    if lightgbm_runs:
+        leaves = sorted({run["model_details"]["num_leaves"] for run in lightgbm_runs
+                         if "num_leaves" in run.get("model_details", {})})
+        pair("04 / Os modelos", "LightGBM: limitar as folhas de cada árvore", [
+            "Limites de folhas registrados: " + ", ".join(str(value) for value in leaves),
+            "Cada folha atribui uma contribuição aos exemplos de sua região",
+            "Muitas árvores pequenas podem modelar relações sem árvores muito profundas",
+        ], "O LightGBM também combina árvores em sequência. Cada "
+           "árvore divide o espaço de características em regiões e "
+           "atribui um valor a cada folha. O número de folhas limita "
+           "sua complexidade. Quatro folhas não significam quatro "
+           "camadas nem uma profundidade fixa. A escolha é avaliada "
+           "contra outras configurações, em vez de presumir que "
+           "uma árvore maior será melhor.",
+           r"h(x)=\sum_{\ell=1}^{L}v_{\ell}\,\mathbf{1}[x\in R_{\ell}]",
+           "Valor da árvore = soma do valor de cada folha multiplicado pelo indicador de que x pertence à sua região",
+           "No dia a dia: uma triagem com poucas saídas", [
+               "Uma sequência de perguntas encaminha cada caso a uma saída",
+               "Cada saída tem uma contribuição para a avaliação",
+               "Limitar as saídas impede uma regra diferente para cada detalhe",
+           ], "Imagine uma triagem com algumas perguntas e poucas "
+              "saídas possíveis. Cada saída acrescenta uma avaliação. "
+              "Se criarmos uma saída para cada detalhe observado, "
+              "podemos decorar os exemplos. Limitar as folhas testa "
+              "uma forma mais simples de fazer essa triagem.")
+    if any(run.get("model") == "glm" for run in runs):
+        pair("04 / Os modelos", "GLM: combinar logits e categorias originais", [
+            "Uma regressão logística recebe múltiplas representações das entradas",
+            "Logits codificados e one-hot têm pesos aprendidos distintos",
+            "O total de pesos depende da codificação, não só do número de colunas brutas",
+        ], "O experimento GLM usa regressão logística sobre entradas "
+           "numéricas e representações das categorias. As categorias "
+           "codificadas por alvo passam pela transformação logit e "
+           "pelo escalonamento. As categorias originais também têm "
+           "uma representação one-hot. A combinação continua sendo "
+           "uma soma ponderada antes da sigmoid. O total de pesos "
+           "não é simplesmente o número de colunas do arquivo.",
+           r"z=b+w_x^{\top}x+w_t^{\top}\mathrm{logit}(\mathrm{TE}(c))+w_o^{\top}\mathrm{OHE}(c)",
+           "Logit final = viés mais contribuições das entradas numéricas, logits codificados e one-hot",
+           "No dia a dia: uma ficha com mais de uma perspectiva", [
+               "A mesma informação pode aparecer como medida, rótulo e histórico agregado",
+               "A ficha aprende quanto cada perspectiva deve pesar",
+               "Continuamos medindo se essas perspectivas melhoram a previsão",
+           ], "Pense em uma ficha que reúne medidas, o tipo de item "
+              "e um resumo do histórico de itens parecidos. Cada "
+              "perspectiva pode ajudar de uma forma. A regressão "
+              "aprende os pesos dessa ficha, e a validação decide "
+              "se o conjunto trouxe ganho.")
+        glm_details = next(run["model_details"] for run in runs if run.get("model") == "glm")
+        pair("04 / Os modelos", "GLM: controlar o tamanho dos pesos", [
+            f"C registrado: {glm_details.get('C', 'não registrado')}",
+            "C menor representa maior força de regularização",
+            "A penalidade L2 atua sobre os pesos; λ representa sua intensidade",
+        ], "A regressão logística usa regularização para evitar "
+           "pesos desnecessariamente grandes. A expressão mostra "
+           "uma perda somada com uma penalidade quadrática. "
+           "Lambda representa a intensidade da penalidade. No "
+           "scikit-learn, C controla inversamente a força de "
+           "regularização. A equivalência numérica exata depende "
+           "da normalização da perda; não igualamos automaticamente "
+           "lambda a um sobre C numa perda média.",
+           r"\mathcal{J}(w)=\sum_i\ell(y_i,\hat p_i)+\lambda\|w\|_2^2",
+           "Objetivo = soma das perdas mais lambda vezes norma quadrática dos pesos",
+           "No dia a dia: evitar ajustes exagerados", [
+               "Uma pequena evidência não deveria provocar uma correção enorme",
+               "A penalidade desestimula pesos excessivos",
+               "A força desse controle também precisa ser escolhida no desenvolvimento",
+           ], "Imagine ajustar uma receita depois de provar "
+              "uma colher. Um pequeno sinal de diferença não "
+              "deveria levar a despejar um pacote inteiro de "
+              "tempero. A regularização desestimula ajustes "
+              "exagerados nos pesos sem impedir o modelo de aprender.")
+        if glm_details.get("solver") == "newton-cholesky":
+            pair("04 / Os modelos", "GLM: o passo de Newton com Cholesky", [
+                "g é o gradiente; H é a matriz de curvaturas da perda",
+                "Cholesky fatoriza H para resolver o sistema do passo Δ",
+                "A atualização do GLM é diferente do AdamW usado na rede",
+            ], "O solver registrado do GLM é Newton Cholesky. "
+               "Além do gradiente, ele utiliza a Hessiana, que "
+               "reúne informações de curvatura da função de perda. "
+               "O passo é obtido resolvendo H vezes delta igual "
+               "ao gradiente. A fatoração de Cholesky permite "
+               "resolver esse sistema por fatores triangulares. "
+               "Os parâmetros são então atualizados com o passo "
+               "de Newton. Esse solver não é o AdamW da MLP.",
+               r"H=RR^{\top},\quad H\Delta=g,\quad\theta_{t+1}=\theta_t-\Delta",
+               "Hessiana = R vezes R transposta; Hessiana vezes passo = gradiente; novo parâmetro = parâmetro menos passo",
+               "No dia a dia: considerar a inclinação e a curva", [
+                   "A inclinação sugere para onde descer",
+                   "A curvatura ajuda a dimensionar o próximo passo",
+                   "O sistema matemático combina essas informações",
+               ], "Imagine descer até o fundo de uma superfície "
+                  "curva. A inclinação aponta a direção, mas "
+                  "a forma da curva ajuda a decidir o tamanho "
+                  "do passo. Newton usa informações equivalentes "
+                  "de inclinação e curvatura. Cholesky é a "
+                  "maneira de resolver o sistema que calcula esse passo.")
     if neural:
         hidden = architecture.get("hidden_dims", [])
         hidden_text = " → ".join(str(size) for size in hidden)
-        add("05 / A rede neural", "A arquitetura que foi treinada", [
-            f"Entradas numéricas: {number(architecture.get('numeric_features'))}",
+        neural_title = ("MLP-TE: a arquitetura treinada" if architecture.get("categorical_transform") == "target"
+                        else "MLP: a arquitetura treinada")
+        add("05 / A rede neural", neural_title, [
+            f"Valores numéricos de entrada da rede: {number(architecture.get('numeric_features'))}",
             "Camadas ocultas: " + (hidden_text or "ver configuração registrada"),
             f"Saída: {architecture.get('output_activation', 'ver configuração registrada')}",
             f"Dropout: {architecture.get('dropout', 'não registrado')}",
@@ -325,7 +673,8 @@ def create_slides(evidence: dict, runs: list[dict], draft: bool = False) -> list
            "e a saída atribui uma prioridade. A rede faz esse percurso com "
            "operações numéricas. O número de etapas e suas dimensões são "
            "decisões registradas, que precisam ser avaliadas em experimentos.", kind="analogy")
-        if "standard scaling" in str(details.get("preprocessing", "")).lower():
+        if any(run.get("model") == "mlp" and "standard scaling" in
+               str(run.get("model_details", {}).get("preprocessing", "")).lower() for run in runs):
             pair("05 / A rede neural", "Preparar entradas numéricas", [
                 "Ausências são preenchidas com a mediana do treino da divisão",
                 "Média e desvio do treino ajustam a escala de cada variável",
@@ -347,6 +696,29 @@ def create_slides(evidence: dict, runs: list[dict], draft: bool = False) -> list
                   "diretamente, expressamos cada um em relação à sua escala "
                   "de referência. A referência vem do treino e é mantida "
                   "quando avaliamos os exemplos que ficaram de fora.")
+        if any(run.get("model_details", {}).get("numeric_transform") == "quantile" for run in runs):
+            pair("05 / A rede neural", "Quantis: outra preparação numérica", [
+                "A posição acumulada é estimada no treino de cada divisão",
+                "Essa posição é mapeada para quantis de uma distribuição normal",
+                "A transformação preserva a ordem, mas muda as distâncias",
+            ], "Outra variante usa transformação por quantis. "
+               "Primeiro estimamos a posição acumulada de cada "
+               "valor na distribuição do treino. Depois aplicamos "
+               "a função inversa da distribuição normal. A fórmula "
+               "resume esse caminho. É uma transformação não linear "
+               "e valores fora da faixa observada são limitados "
+               "pelas regras da implementação.",
+               r"x'_j=\Phi^{-1}\left(\widehat F_{j,\mathrm{treino}}(x_j)\right)",
+               "Entrada transformada = quantil normal correspondente à posição acumulada estimada no treino",
+               "No dia a dia: comparar a posição numa fila", [
+                   "Em vez do valor absoluto, observamos a posição relativa",
+                   "Essa posição é transferida para outra escala de referência",
+                   "A ordem fica; a distância entre os valores pode mudar",
+               ], "Imagine comparar a posição de uma pessoa em "
+                  "uma fila em vez de sua distância exata da porta. "
+                  "Depois colocamos essa posição numa outra escala. "
+                  "A primeira continua antes da segunda, mas a "
+                  "distância entre as duas pode mudar.")
         pair("05 / A rede neural", "Como uma camada transforma as entradas", [
             "W: matriz de pesos; b: viés; h: representação intermediária",
             "A transformação é repetida nas camadas registradas",
@@ -385,12 +757,16 @@ def create_slides(evidence: dict, runs: list[dict], draft: bool = False) -> list
                   "valor está acima de zero. Um único portão faz pouco. Muitos "
                   "portões conectados permitem comportamentos diferentes conforme "
                   "a combinação de sinais recebida.")
-        if architecture.get("categorical_cardinalities"):
+        if any(run.get("model") == "mlp" and run.get("model_details", {}).get("architecture", {}).get("categorical_cardinalities")
+               for run in runs):
             pair("05 / A rede neural", "Embeddings para categorias", [
+                "Usados nas variantes com embeddings; a MLP-TE usa logits codificados",
                 "Cada categoria é associada a um vetor aprendido",
                 "A dimensão vem da configuração do treinamento",
-                "Categoria desconhecida precisa ter tratamento definido",
-            ], "Uma categoria, como uma classe de estabelecimento quando essa variável "
+            ], "As variantes iniciais com embeddings atribuem "
+               "vetores aprendidos às categorias. A MLP com target "
+               "encoding usa logits codificados no lugar desses embeddings. "
+               "Uma categoria, como uma classe de estabelecimento quando essa variável "
                "existe, não possui uma distância numérica natural em relação a outra. "
                "Uma tabela de embeddings atribui um vetor a cada categoria. O treinamento "
                "ajusta os números desse vetor junto com os demais parâmetros. A notação "
@@ -404,28 +780,29 @@ def create_slides(evidence: dict, runs: list[dict], draft: bool = False) -> list
                   "explica sua relação com os outros. A ficha guarda características "
                   "que são ajustadas a partir dos exemplos. O embedding faz isso com "
                   "números aprendidos e uma regra explícita para categorias desconhecidas.")
-        pair("06 / O aprendizado", "Sigmoid: do logit à probabilidade", [
-            "O logit z pode assumir qualquer valor real",
-            "A sigmoid o transforma para o intervalo entre 0 e 1",
-            "Valores maiores de z mantêm uma ordem maior de p",
-        ], "O logit é uma pontuação que pode ser negativa, zero ou positiva. "
-           "A sigmoid o transforma para o intervalo entre zero e um, "
-           "mantendo a ordem. Para um logit igual a zero, a saída é "
-           "zero vírgula cinco. Logits muito positivos se aproximam de um "
-           "e logits muito negativos se aproximam de zero. Esse formato "
-           "não garante, sozinho, uma probabilidade bem calibrada.",
-           r"p=\sigma(z)=\frac{1}{1+e^{-z}}",
-           "Probabilidade p = sigmoid de z = um dividido por um mais exponencial de menos z",
-           "No dia a dia: colocar uma nota em uma escala", [
-               "A pontuação interna precisa virar uma escala de 0 a 1",
-               "A escala preserva qual caso parece mais suspeito",
-               "Estar na escala certa não prova que a confiança está calibrada",
-           ], "Imagine uma avaliação interna que produz notas sem um limite "
-              "fixo. Precisamos colocá-las em uma escala de zero a um. "
-              "A sigmoid faz essa conversão sem trocar a ordem dos casos. "
-              "Mas usar essa escala não significa que, entre cem casos "
-              "com nota zero vírgula oito, exatamente oitenta serão fraude. "
-              "Essa é uma pergunta de calibração, que exige avaliação própria.")
+        if not any(run.get("model") in ("logistic", "glm") for run in runs):
+            pair("06 / O aprendizado", "Sigmoid: do logit à probabilidade", [
+                "O logit z pode assumir qualquer valor real",
+                "A sigmoid o transforma para o intervalo entre 0 e 1",
+                "Valores maiores de z mantêm uma ordem maior de p",
+            ], "O logit é uma pontuação que pode ser negativa, zero ou positiva. "
+               "A sigmoid o transforma para o intervalo entre zero e um, "
+               "mantendo a ordem. Para um logit igual a zero, a saída é "
+               "zero vírgula cinco. Logits muito positivos se aproximam de um "
+               "e logits muito negativos se aproximam de zero. Esse formato "
+               "não garante, sozinho, uma probabilidade bem calibrada.",
+               r"p=\sigma(z)=\frac{1}{1+e^{-z}}",
+               "Probabilidade p = sigmoid de z = um dividido por um mais exponencial de menos z",
+               "No dia a dia: colocar uma nota em uma escala", [
+                   "A pontuação interna precisa virar uma escala de 0 a 1",
+                   "A escala preserva qual caso parece mais suspeito",
+                   "Estar na escala certa não prova que a confiança está calibrada",
+               ], "Imagine uma avaliação interna que produz notas sem um limite "
+                  "fixo. Precisamos colocá-las em uma escala de zero a um. "
+                  "A sigmoid faz essa conversão sem trocar a ordem dos casos. "
+                  "Mas usar essa escala não significa que, entre cem casos "
+                  "com nota zero vírgula oito, exatamente oitenta serão fraude. "
+                  "Essa é uma pergunta de calibração, que exige avaliação própria.")
         pair("06 / O aprendizado", "Entropia cruzada binária: medir o erro", [
             "O rótulo observado é comparado à probabilidade prevista",
             "A perda penaliza previsões incompatíveis com o rótulo",
@@ -558,11 +935,22 @@ def create_slides(evidence: dict, runs: list[dict], draft: bool = False) -> list
            "Por isso não apresenta uma arquitetura hipotética como se tivesse sido "
            "executada. O roteiro matemático específico será incluído a partir "
            "dos mecanismos registrados no experimento real.")
+    for component in external_components:
+        slides.extend(Slide(**specification) for specification in gpt2_slides(component))
     if selected.get("model") == "blend":
+        weights = selected.get("model_details", {}).get("weights", [])
+        source_names = [str(path).replace("\\", "/").rsplit("/", 1)[-1]
+                        for path in selected.get("model_details", {}).get("sources", [])]
+        composition = "; ".join(f"{number(weight * 100)}% {name}" for weight, name in zip(weights, source_names))
+        effective = (evidence.get("run") or {}).get("effective_weights", {})
+        if effective:
+            labels = {"glm": "GLM", "lightgbm": "LightGBM", "external_gpt2": "GPT-2 externo"}
+            composition = "; ".join(f"{number(weight * 100, 2)}% {labels.get(name, name)}"
+                                    for name, weight in effective.items())
         pair("07 / Os experimentos", "Combinar previsões", [
             "A combinação usa previsões compatíveis por id e divisão",
             "Pesos não negativos somam 1",
-            "O ganho deve ser comparado com os modelos isolados",
+            composition or "O ganho deve ser comparado com os modelos isolados",
         ], "Uma combinação ponderada soma as previsões de modelos diferentes. "
            "Os pesos somam um e as previsões devem estar alinhadas pelo mesmo "
            "identificador. Se os erros forem complementares, a combinação "
@@ -579,40 +967,203 @@ def create_slides(evidence: dict, runs: list[dict], draft: bool = False) -> list
               "fora do padrão. A combinação pode ajudar se elas trouxerem "
               "informações diferentes. Se as duas repetem os mesmos erros, "
               "ter duas opiniões não resolve o problema.")
-    scores = [f"{run.get('model', 'modelo')}: AUC OOF {number(run.get('roc_auc'), 5)}"
-              for run in runs]
-    add("07 / Os experimentos", "Resultados locais registrados", scores[:5] or [
-        "Nenhum resultado de treinamento verificado nesta versão",
-    ], "Os números deste slide vêm dos arquivos de métricas das execuções "
-       "fornecidas. " + (". ".join(scores) + ". " if scores else
-       "Não há métricas de treinamento para comparar neste rascunho. ") +
-       "A mesma estratégia de validação e os mesmos dados são necessários "
-       "para uma comparação justa. Diferenças pequenas precisam ser lidas "
-       "junto da variação entre divisões, sementes e custo de execução.")
-    if selected:
+        own_source = next((run for run in development_runs if run_label(run) in source_names and
+                           run.get("model") == "blend" and not components_from([run])), None)
+        if components_from([selected]) and own_source:
+            improvement = selected["roc_auc"] - own_source["roc_auc"]
+            paired = list(zip(selected.get("fold_scores", []), own_source.get("fold_scores", [])))
+            improved = sum(candidate > baseline for candidate, baseline in paired)
+            add("07 / Os experimentos", "A fonte complementar trouxe ganho medido?", [
+                f"Base própria: {number(own_source['roc_auc'], 5)}; mistura: {number(selected['roc_auc'], 5)}",
+                f"Ganho OOF observado: {number(improvement, 5)}",
+                f"Melhora em {improved} de {len(paired)} folds alinhados",
+                "É evidência local usada na seleção, sem uma reserva independente nova",
+            ], "A composição foi comparada com a base própria "
+               "no mesmo protocolo. A base teve AUC " + number(own_source["roc_auc"], 5) +
+               ", e a mistura teve " + number(selected["roc_auc"], 5) + ". "
+               "O ganho local foi " + number(improvement, 5) + ", com melhora em " +
+               str(improved) + " dos " + str(len(paired)) + " folds. "
+               "Essa consistência motivou a escolha, mas os "
+               "folds também foram usados para selecionar "
+               "a composição. Portanto não chamamos esse "
+               "resultado de avaliação independente final.")
+    protocols = {}
+    for run in development_runs:
+        contract = run.get("validation", {})
+        key = (str(contract.get("method", "não verificado")).lower().replace("stratifiedkfold", "stratified"),
+               contract.get("n_splits"), run.get("seed"), run.get("rows", {}).get("oof"), contract.get("holdout_fraction", 0))
+        protocols.setdefault(key, []).append(run)
+    if not protocols:
+        protocols[("não verificado", None, None, None, None)] = []
+    for protocol, members in protocols.items():
+        scores = [f"{run_label(run)}{' [fonte externa]' if run.get('model') == 'external_gpt2' else ''}: AUC OOF {number(run.get('roc_auc'), 5)}"
+                  for run in members]
+        for start in range(0, max(1, len(scores)), 5):
+            group = scores[start:start + 5]
+            title = f"Resultados: {number(protocol[1])} folds, {number(protocol[3])} OOF" if members else "Resultados locais registrados"
+            add("07 / Os experimentos", title, group or ["Nenhum resultado de treinamento verificado nesta versão"],
+                "Os números vêm dos arquivos de métricas fornecidos. " +
+                (". ".join(group).replace("-", " ") + ". " if group else "Não há resultados neste rascunho. ") +
+                "As comparações são agrupadas por protocolo. AUC de três folds "
+                "com uma reserva separada e AUC de cinco folds sobre todos "
+                "os rótulos não são a mesma avaliação. A fonte externa foi "
+                "auditada e sua métrica reproduzida, sem executar seu treinamento.")
+    raw_logistic = next((run for run in development_runs if run.get("model") == "logistic" and
+                         run.get("model_details", {}).get("feature_set", "raw") == "raw"), None)
+    basic_neural = next((run for run in development_runs if run.get("model") == "mlp" and
+                         run.get("model_details", {}).get("feature_set", "raw") == "raw" and
+                         run.get("model_details", {}).get("numeric_transform", "standard") == "standard"), None)
+    if raw_logistic and basic_neural:
+        difference = basic_neural["roc_auc"] - raw_logistic["roc_auc"]
+        add("07 / Os experimentos", "A rede básica superou a referência?", [
+            f"Regressão logística: {number(raw_logistic['roc_auc'], 5)}",
+            f"MLP básica: {number(basic_neural['roc_auc'], 5)}",
+            "Diferença MLP − referência: " + number(difference, 5),
+            "Não superou nesta execução" if difference <= 0 else "Superou nesta execução",
+        ], "A rede básica e a referência simples precisam ser comparadas "
+           "com honestidade. A regressão logística obteve " + number(raw_logistic["roc_auc"], 5) +
+           ", e a MLP básica obteve " + number(basic_neural["roc_auc"], 5) + ". "
+           + ("A rede não superou a referência neste experimento. " if difference <= 0 else
+              "A rede superou a referência neste experimento. ") +
+           "Uma diferença pequena, diante da variação entre divisões, "
+           "não prova superioridade geral de uma família de modelos. "
+           "Mais flexibilidade não garante melhor ordenação, e este "
+           "experimento não isolou uma causa única para a diferença.")
+    raw_tree = next((run for run in development_runs if run.get("model") == "lightgbm" and
+                     run.get("model_details", {}).get("feature_set") == "raw"), None)
+    digits_tree = next((run for run in development_runs if run.get("model") == "lightgbm" and
+                        run.get("model_details", {}).get("feature_set") == "digits"), None)
+    if raw_tree and digits_tree:
+        delta = digits_tree["roc_auc"] - raw_tree["roc_auc"]
+        pair("07 / Os experimentos", "Ablação: a visão de dígitos ajudou?", [
+            f"LightGBM raw: {number(raw_tree['roc_auc'], 5)}",
+            f"LightGBM digits: {number(digits_tree['roc_auc'], 5)}",
+            f"Diferença observada: {number(delta, 5)}",
+            "A interpretação depende de manter os demais fatores da comparação",
+        ], "Uma ablação pergunta o que muda ao alterar uma parte "
+           "do procedimento. Os registros raw e digits do LightGBM "
+           "permitem examinar a representação adicionada. A "
+           "diferença de AUC observada foi " + number(delta, 5) + ". "
+           "Esse número só pode ser atribuído à representação "
+           "quando dados, divisões e demais configurações são "
+           "mantidos na comparação. Ele não demonstra uma "
+           "regra universal sobre os dígitos das transações.",
+           r"\Delta\mathrm{AUC}=\mathrm{AUC}_{\mathrm{digits}}-\mathrm{AUC}_{\mathrm{raw}}",
+           "Diferença de AUC = AUC com dígitos menos AUC sem essa representação",
+           "No dia a dia: mudar uma coisa na receita", [
+               "Para testar um ingrediente, preserve o restante da receita",
+               "Se vários ingredientes mudarem, o resultado tem causas misturadas",
+               "Variações combinadas precisam ser descritas como combinadas",
+           ], "Imagine testar se um ingrediente melhora uma receita. "
+              "Se você também muda o forno e o tempo, não sabe "
+              "qual mudança trouxe o efeito. A ablação procura "
+              "controlar essa comparação. Uma variante que troca "
+              "representações e modelo ao mesmo tempo continua "
+              "sendo útil, mas não isola o efeito de uma única parte.")
+    if selected and not is_refit(selected):
         add("07 / Os experimentos", "O resultado selecionado e seus limites", [
             f"Modelo selecionado: {selected.get('model', 'não verificado')}",
             f"AUC OOF: {number(selected.get('roc_auc'), 5)}; desvio entre divisões: {number(selected.get('fold_std'), 5)}",
-            f"Tempo registrado: {number(selected.get('elapsed_seconds'), 1)} segundos",
+            f"Tempo desta etapa registrada: {number(selected.get('elapsed_seconds'), 1)} segundos",
             "Score local e score público medem amostras diferentes",
         ], "A execução selecionada é " + str(selected.get("model")) +
            ". Seu resultado local é uma estimativa sobre as divisões usadas. "
            "O desvio entre divisões descreve a variação observada, não "
-           "um intervalo de confiança automático. O tempo registrado "
-           "ajuda a avaliar o custo do ganho. Uma pontuação maior no "
+           "um intervalo de confiança automático. Em uma composição, "
+           "o tempo dessa etapa mede combinar artefatos e não "
+           "treinar todas as fontes. Uma pontuação maior no "
            "ranking público pode não se repetir na parte privada do teste.")
+    if is_refit(selected):
+        final_composition = ("Um GLM + um LightGBM, com composição congelada" if
+                             selected.get("model") == "blend" and
+                             {run.get("model") for run in runs if is_refit(run)}.issuperset({"glm", "lightgbm"})
+                             else "A configuração foi escolhida e congelada antes do refit")
+        pair("07 / Os experimentos", "Refit final: aprender novamente com todos os rótulos", [
+            f"Registros usados no refit: {number(rows.get('train'))}",
+            final_composition,
+            "Os pesos são aprendidos novamente; os hiperparâmetros ficam definidos",
+            "Este refit não produz uma nova AUC OOF ou independente",
+        ], "Depois da seleção e da conferência registradas, o "
+           "refit usa todos os rótulos disponíveis. A configuração "
+           "é mantida e os parâmetros do modelo são aprendidos "
+           "novamente. Quando existe um número de épocas ou "
+           "árvores a fixar, ele vem da regra registrada no "
+           "desenvolvimento. A reserva avaliou médias dos checkpoints "
+           "de desenvolvimento. Este arquivo usa modelos aprendidos "
+           "novamente com todos os rótulos. Por isso nem a AUC OOF "
+           "nem a AUC da reserva são apresentadas como uma nova "
+           "medição deste arquivo. Sua avaliação externa vem do Kaggle.",
+           r"\theta_{\mathrm{final}}=\mathrm{Train}(D_{\mathrm{todo}};h^*)",
+           "Parâmetros finais = treinamento com todos os dados rotulados sob hiperparâmetros já escolhidos",
+           "No dia a dia: seguir a receita escolhida", [
+               "Os testes ajudaram a escolher a receita",
+               "Agora usamos os ingredientes disponíveis seguindo essa escolha",
+               "Preparar uma porção maior não cria uma nova avaliação independente",
+           ], "Pense em escolher uma receita depois de alguns "
+              "testes e uma conferência separada. Na produção "
+              "seguinte, você usa os ingredientes disponíveis "
+              "e segue a escolha definida. Isso não transforma "
+              "o resultado dos testes anteriores em uma nova "
+              "avaliação independente da porção maior.")
+    selection_reason = (evidence.get("run") or {}).get("selection_reason")
+    if selection_reason:
+        add("07 / Os experimentos", "Por que esta solução foi submetida", [
+            f"Execução selecionada: {run_label(selected)}",
+            str(selection_reason),
+            "A justificativa é vinculada aos experimentos e à seleção registrada",
+        ], "A solução submetida foi escolhida pelo seguinte motivo: "
+           + str(selection_reason) + " A explicação deve ser lida junto "
+           "das métricas e das limitações, incluindo os métodos "
+           "que não melhoraram a referência. A presença de uma "
+           "rede neural no estudo não justifica declarar um "
+           "ganho que não foi observado.")
     if results.get("holdout_auc") is not None:
-        add("07 / Os experimentos", "Conferência independente registrada", [
-            f"AUC da reserva: {number(results['holdout_auc'], 5)}",
-            f"Observação: {results.get('holdout_observed_at') or 'data não informada'}",
-            "O registro precisa identificar a configuração congelada avaliada",
-            "A reserva não deve voltar a orientar a seleção de hiperparâmetros",
-        ], "Além das métricas usadas no desenvolvimento, foi fornecido "
-           "um registro de avaliação da reserva, com AUC de "
-           + number(results["holdout_auc"], 5) + ". Esse resultado só representa "
-           "uma conferência independente se a configuração tiver sido definida "
-           "antes de consultar a reserva. A data e a configuração avaliada "
-           "devem acompanhar essa evidência.")
+        held_rows = (holdout or {}).get("rows")
+        positive_rows = (holdout or {}).get("positive_rows")
+        held_sources = {str(path).replace("\\", "/").rsplit("/", 1)[-1]
+                        for path in (holdout or {}).get("selection", {}).get("sources", [])}
+        checkpoint_counts = {run.get("validation", {}).get("n_splits") for run in development_runs
+                             if run_label(run) in held_sources}
+        checkpoint_note = (f"Média de {next(iter(checkpoint_counts))} checkpoints de cada família" if
+                           len(checkpoint_counts) == 1 else "Média dos checkpoints de cada família")
+        held_title = "Reserva histórica do protocolo inicial" if historical_holdout else "O que exatamente a reserva avaliou"
+        held_limit = ("Não é independente para o GPT-2 nem para a nova composição" if historical_holdout
+                      else "Esse score não é uma avaliação do refit final")
+        held_explanation = ("Este resultado pertence ao protocolo inicial. O componente "
+                            "neural externo usou parte dessas linhas no treinamento "
+                            "de seus folds. A antiga reserva não oferece uma avaliação "
+                            "independente da nova composição. O protocolo novo é "
+                            "descrito por seus cinco folds alinhados e pelo Kaggle. "
+                            if historical_holdout else "")
+        held_intro = ("No protocolo inicial, foi registrada uma avaliação "
+                      "da reserva. " if historical_holdout else
+                      "Além das métricas usadas no desenvolvimento, foi fornecido "
+                      "um registro de avaliação da reserva. ")
+        pair("07 / Os experimentos", held_title, [
+            f"Reserva: {number(held_rows)} linhas; {number(positive_rows)} positivas",
+            f"AUC do protocolo de desenvolvimento: {number(results['holdout_auc'], 5)}",
+            checkpoint_note + "; composição congelada antes da consulta",
+            held_limit,
+        ], held_intro + "Ela contém "
+           + number(held_rows) + " linhas, com " + number(positive_rows) + " positivas. "
+           "A AUC do protocolo foi " + number(results["holdout_auc"], 5) + ". "
+           + checkpoint_note + " de desenvolvimento. "
+           "Essas médias foram combinadas pelos pesos congelados. "
+           "Naquele procedimento, a reserva não entrou no ajuste. O refit "
+           "posterior usa modelos diferentes, treinados com todos "
+           "os rótulos, e não recebeu uma nova avaliação nessa reserva. " + held_explanation,
+           r"\hat p_{\mathrm{reserva}}=\sum_jw_j\left(\frac{1}{K_j}\sum_{k=1}^{K_j}p_{j,k}\right)",
+           "Previsão da reserva = soma dos pesos de cada família vezes a média de seus checkpoints",
+           "No dia a dia: conferir a equipe do ensaio", [
+               "A conferência observou uma equipe que combinava tentativas dos ensaios",
+               "Depois, uma nova execução segue a receita escolhida",
+               "O resultado da conferência não muda de dono automaticamente",
+           ], "Imagine conferir o trabalho de uma equipe que "
+              "combina várias tentativas feitas nos ensaios. "
+              "Depois uma nova execução segue a receita definida. "
+              "A conferência anterior continua sendo evidência "
+              "sobre o processo testado. Ela não se transforma "
+              "automaticamente em uma avaliação daquela nova execução.")
     add("08 / Da execução à competição", "Como o código produz a submissão", [
         "Inspecionar arquivos → definir validação → treinar e avaliar",
         "Salvar configurações, hashes, métricas e previsões por id",
@@ -639,10 +1190,10 @@ def create_slides(evidence: dict, runs: list[dict], draft: bool = False) -> list
         f"AUC pública: {number(results.get('public_auc'), 5)}",
         f"Posição: {number(results.get('ranking'))} de {number(results.get('total_teams'))} equipes",
         f"Submissão: {results.get('submission_id') or 'não verificada'}",
-        f"Consulta: {results.get('observed_at') or 'não verificada'}",
+        f"Consulta: {observation_time(results.get('observed_at'))}",
     ], "A prova de participação é a submissão processada pela plataforma. "
        + (f"O registro fornecido informa AUC pública de {number(results.get('public_auc'), 5)} "
-          f"e posição {number(results.get('ranking'))}, observadas em {results.get('observed_at')}. "
+          f"e posição {number(results.get('ranking'))}, observadas em {observation_time(results.get('observed_at'), spoken=True)}. "
           if not draft else "Neste rascunho, os campos ausentes permanecem explicitamente não verificados. ") +
        "Essa é uma fotografia da classificação na data indicada. "
        "A classificação definitiva depende do encerramento e da avaliação "
@@ -657,15 +1208,40 @@ def create_slides(evidence: dict, runs: list[dict], draft: bool = False) -> list
         "A generalização fora desta competição não foi comprovada",
     ])[:4], "A conclusão precisa respeitar os limites da evidência. "
        + " ".join(limitations) + " " +
-       "Não basta um teste passar, um build terminar ou uma página abrir "
-       "para provar o fluxo operacional inteiro. O valor deste trabalho "
-       "está em ligar cada escolha a código, experimento, resultado "
-       "e evidência verificáveis.")
-    add("Referências", "Fontes e próximos pontos de inspeção", [name + ": " + url for name, url in SOURCES],
-        "As fontes primárias listadas documentam a competição, a métrica "
-        "e as operações matemáticas utilizadas. O repositório registra "
-        "as versões instaladas e as configurações dos experimentos. "
-        "Esses materiais permitem revisar as decisões e localizar "
-        "os trechos de código por trás de cada explicação.")
+       "As conclusões se referem a estes dados e a este procedimento "
+       "de avaliação. A comparação entre modelos, o efeito observado "
+       "das representações e a posição datada permitem avaliar "
+       "o trabalho sem atribuir ao modelo uma capacidade que "
+       "o experimento não mediu.")
+    sources = SOURCES.copy()
+    if target_runs:
+        sources.append(("TargetEncoder", "https://scikit-learn.org/1.7/modules/generated/sklearn.preprocessing.TargetEncoder.html"))
+    if any(run.get("model") == "glm" for run in runs):
+        sources.append(("Regressão logística e Newton-Cholesky", "https://scikit-learn.org/1.7/modules/generated/sklearn.linear_model.LogisticRegression.html"))
+    if lightgbm_runs:
+        sources.append(("LightGBM", "https://lightgbm.readthedocs.io/en/latest/pythonapi/lightgbm.LGBMClassifier.html"))
+    if any(run.get("model_details", {}).get("numeric_transform") == "quantile" for run in runs):
+        sources.append(("QuantileTransformer", "https://scikit-learn.org/1.7/modules/generated/sklearn.preprocessing.QuantileTransformer.html"))
+    if any(name.endswith("__cents_key") for name in all_names):
+        sources.append(("Pesquisa e atribuição das ideias", "docs/research.md no repositório"))
+    if external_components:
+        sources.extend([
+            ("GPT-2 e atenção causal", "https://huggingface.co/docs/transformers/model_doc/gpt2"),
+            ("Transformer", "https://arxiv.org/abs/1706.03762"),
+            ("GPT-2: arquitetura e normalização", "https://cdn.openai.com/better-language-models/language_models_are_unsupervised_multitask_learners.pdf"),
+        ])
+        for component in external_components:
+            sources.append(("Código externo: " + str(component.get("trained_by")), str(component.get("training_code_url"))))
+            sources.append(("Previsões externas e licença", str(component.get("predictions_source_url"))))
+        sources.extend([
+            ("GReaT: Borisov e coautores", "https://arxiv.org/abs/2210.06280"),
+            ("Receita target-first: Chris Deotte", "https://www.kaggle.com/competitions/playground-series-s6e10/discussion/754683"),
+            ("Licença das previsões externas", "https://creativecommons.org/licenses/by/4.0/"),
+        ])
+    for start in range(0, len(sources), 3):
+        group = sources[start:start + 3]
+        add("Referências", "Fontes e próximos pontos de inspeção", [name + ": " + url for name, url in group],
+            "Este grupo reúne as referências de " + "; ".join(name for name, _ in group) +
+            ". Os links completos estão no slide e no repositório.")
     ensure_pairs(slides)
     return slides

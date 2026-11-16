@@ -93,6 +93,58 @@ function renderFolds(folds) {
   select("[data-fold-panel]").hidden = false;
 }
 
+function renderComposition(run, components, checks) {
+  const weights = run.effective_weights || {};
+  const names = { glm: "GLM", lightgbm: "LightGBM", external_gpt2: "GPT-2 público" };
+  const entries = Object.entries(weights);
+  if (checks.training_verified !== true || !entries.length || !entries.every(([name, weight]) => names[name] && validScore(weight))) return;
+  const total = entries.reduce((sum, [, weight]) => sum + weight, 0);
+  if (Math.abs(total - 1) > 1e-8) return;
+  const holder = select("[data-composition-weights]");
+  holder.replaceChildren();
+  for (const [name, weight] of entries) {
+    const item = document.createElement("p");
+    const percent = document.createElement("strong");
+    percent.textContent = weight.toLocaleString("pt-BR", { style: "percent", maximumFractionDigits: 2 });
+    const label = document.createElement("span");
+    label.textContent = names[name];
+    item.append(percent, label);
+    holder.append(item);
+  }
+  text("[data-composition-title]", checks.submission_verified === true ? "Composição submetida" : "Composição avaliada");
+  if (typeof run.selection_reason === "string" && run.selection_reason.trim()) {
+    text("[data-selection-reason]", run.selection_reason);
+    select("[data-selection-reason]").hidden = false;
+  }
+  const credits = select("[data-component-credits]");
+  credits.replaceChildren();
+  for (const component of components) {
+    if (component.trained_by_us !== false || !component.trained_by) continue;
+    const paragraph = document.createElement("p");
+    paragraph.textContent = `${component.name || "Componente externo"} — treinamento: ${component.trained_by}. Previsões: ${component.predictions_license || "licença não informada"}; código: ${component.code_license || "licença não informada"}. `;
+    const source = safeLink(component.predictions_source_url);
+    if (source) {
+      if (Number.isInteger(component.predictions_source_version) && !/\/versions\/\d+\/?$/.test(source.pathname)) {
+        source.pathname = source.pathname.replace(/\/$/, "") + `/versions/${component.predictions_source_version}`;
+      }
+      const anchor = document.createElement("a");
+      anchor.href = source.href;
+      anchor.target = "_blank";
+      anchor.rel = "noopener noreferrer";
+      anchor.textContent = component.predictions_source_version ? `Fonte · versão ${component.predictions_source_version} ↗` : "Fonte ↗";
+      paragraph.append(anchor);
+    }
+    credits.append(paragraph);
+    if (Array.isArray(component.method_credits) && component.method_credits.length) {
+      const methods = document.createElement("p");
+      methods.className = "method-credits";
+      methods.textContent = "Método e dados: " + component.method_credits.join(" · ");
+      credits.append(methods);
+    }
+  }
+  select("[data-composition]").hidden = false;
+}
+
 function render(evidence) {
   const competition = evidence.competition || {};
   const checks = evidence.checks || {};
@@ -109,6 +161,9 @@ function render(evidence) {
   if (materials.video_status === "review" && safeLink(links.video)) {
     text("[data-video-status]", "Vídeo gerado · revisão audiovisual pendente.");
   }
+  if (materials.video_status === "checked" && safeLink(links.video)) {
+    text("[data-video-status]", "Vídeo narrado · verificação técnica, transcrição integral automática e revisão visual dos slides.");
+  }
   if (competition.title) text("[data-competition-title]", competition.title.replace(/\s*[·—]\s*Playground.*$/i, ""));
   const deadline = dateLabel(competition.deadline_utc, true);
   if (deadline) text("[data-deadline]", `${deadline} · SP`);
@@ -121,6 +176,8 @@ function render(evidence) {
   const isRefit = checks.training_verified === true && run.phase === "full_data_refit";
   text("[data-stage]", isRefit ? "Treino final com todos os rótulos" : (stages[evidence.stage] || "Experimento em desenvolvimento"));
   if (isRefit) select("[data-refit-note]").hidden = false;
+  if (checks.training_verified === true && run.phase === "exploratory_full_data_cv") select("[data-independent-note]").hidden = false;
+  renderComposition(run, evidence.external_components || [], checks);
   const updated = dateLabel(evidence.updated_at);
   text("[data-updated]", updated ? `Registro atualizado em ${updated}` : "Registro sem data informada");
 

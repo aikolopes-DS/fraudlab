@@ -39,6 +39,18 @@ def positive_integer(value: object) -> int | None:
     return value if type(value) is int and value > 0 else None
 
 
+def video_review_status(verification: dict) -> str:
+    if verification.get("watched_in_full") is True and verification.get("audio_reviewed") is True:
+        return "reviewed"
+    if (
+        verification.get("technical_checks") == "passed"
+        and verification.get("whole_audio_asr") is True
+        and verification.get("all_slides_visually_reviewed") is True
+    ):
+        return "checked"
+    return "review"
+
+
 def public_link(value: object) -> str | None:
     if not isinstance(value, str) or not value.strip():
         return None
@@ -54,6 +66,46 @@ def public_link(value: object) -> str | None:
     elif ".." in Path(link.path).parts:
         raise ValueError("Public file links cannot traverse parent directories")
     return value
+
+
+def public_weights(value: object) -> dict:
+    if value is None:
+        return {}
+    if not isinstance(value, dict):
+        raise ValueError("effective_weights must be a model-to-weight object")
+    allowed = {"glm", "lightgbm", "external_gpt2"}
+    if set(value) - allowed or any(score(weight) is None for weight in value.values()):
+        raise ValueError("Composition needs known model names and finite weights in [0, 1]")
+    if value and not math.isclose(sum(value.values()), 1.0, abs_tol=1e-8):
+        raise ValueError("Composition weights must sum to one")
+    return {name: float(weight) for name, weight in value.items()}
+
+
+def public_components(value: object) -> list:
+    if value is None:
+        return []
+    if not isinstance(value, list):
+        raise ValueError("external_components must be a list")
+    result = []
+    text_fields = ("name", "kind", "source_type", "trained_by", "model_architecture", "training_code_commit", "code_license", "predictions_license", "mixture_space")
+    for item in value:
+        if not isinstance(item, dict) or item.get("source_type") != "external_predictions" or item.get("trained_by_us") is not False:
+            raise ValueError("External prediction components must retain their external training attribution")
+        component = {key: item.get(key) for key in text_fields if isinstance(item.get(key), str)}
+        credits = item.get("method_credits") or []
+        if not isinstance(credits, list) or any(not isinstance(credit, str) for credit in credits):
+            raise ValueError("External method credits must be text entries")
+        component.update(
+            trained_by_us=False,
+            training_executed_locally=item.get("training_executed_locally") is True,
+            method_credits=credits,
+            weight=score(item.get("weight")),
+            predictions_source_version=positive_integer(item.get("predictions_source_version")),
+        )
+        for key in ("training_code_url", "predictions_source_url"):
+            component[key] = public_link(item.get(key))
+        result.append(component)
+    return result
 
 
 def normalize(evidence: dict, metrics: dict | None = None) -> dict:
@@ -82,6 +134,15 @@ def normalize(evidence: dict, metrics: dict | None = None) -> dict:
     limitations = evidence.get("limitations") or []
     if not isinstance(limitations, list) or any(not isinstance(item, str) for item in limitations):
         raise ValueError("limitations must be a list of text entries")
+    weights = public_weights(run.get("effective_weights"))
+    components = public_components(evidence.get("external_components"))
+    if weights.get("external_gpt2", 0) > 0:
+        gpt2 = [item for item in components if item.get("kind") == "gpt2_target_first"]
+        required = ("name", "trained_by", "predictions_license", "code_license", "predictions_source_url", "predictions_source_version")
+        if len(gpt2) != 1 or any(not gpt2[0].get(key) for key in required):
+            raise ValueError("A submitted GPT-2 weight needs its author, licenses and versioned prediction source")
+        if gpt2[0]["weight"] is None or not math.isclose(gpt2[0]["weight"], weights["external_gpt2"], abs_tol=1e-8):
+            raise ValueError("External attribution weight differs from the submitted composition")
     return {
         "competition": {key: competition.get(key) for key in ("title", "url", "deadline_utc")},
         "stage": evidence.get("stage", "implementation"),
@@ -99,7 +160,8 @@ def normalize(evidence: dict, metrics: dict | None = None) -> dict:
             "observed_at": results.get("observed_at") if submission_verified else None,
         },
         "links": {key: public_link((evidence.get("links") or {}).get(key)) for key in ("github", "kaggle", "notebook", "presentation", "video", "captions")},
-        "run": {key: run.get(key) for key in ("model", "phase", "validation", "rows", "features")},
+        "run": {**{key: run.get(key) for key in ("model", "phase", "validation", "rows", "features")}, "effective_weights": weights, "selection_reason": run.get("selection_reason") if isinstance(run.get("selection_reason"), str) else None},
+        "external_components": components,
         "limitations": limitations,
     }
 
@@ -135,7 +197,7 @@ def presentation_assets(directory: Path) -> tuple[dict, list[Path]]:
     return manifest, assets
 
 
-def build(evidence_path: Path, run_dir: Path | None = None, output_dir: Path | None = None, presentation_dir: Path | None = None) -> Path:
+def build(evidence_path: Path, run_dir: Path | None = None, output_dir: Path | None = None, presentation_dir: Path | None = None, video_url: str | None = None) -> Path:
     output = (output_dir or SITE_DIR / "dist").resolve()
     if output.name != "dist" or not output.is_relative_to(SITE_DIR):
         raise ValueError("Build output must be a dist/ subdirectory inside site/")
@@ -144,7 +206,22 @@ def build(evidence_path: Path, run_dir: Path | None = None, output_dir: Path | N
     public_evidence = normalize(evidence, metrics)
     if presentation_dir and presentation_dir.resolve().is_relative_to(output):
         raise ValueError("Presentation source cannot be inside the generated build output")
+    external_video = public_link(video_url) if video_url is not None else None
+    if video_url is not None and (
+        not external_video
+        or urlsplit(external_video).scheme != "https"
+        or not urlsplit(external_video).path.lower().endswith(".mp4")
+    ):
+        raise ValueError("--video-url must be a public HTTPS MP4 URL")
     manifest, media = presentation_assets(presentation_dir) if presentation_dir else ({}, [])
+    names = {source.name for source in media}
+    if external_video and (
+        manifest.get("status") != "evidence-backed"
+        or manifest.get("video_generated") is not True
+        or "video.mp4" not in names
+    ):
+        raise ValueError("An external video requires a generated evidence-backed MP4 verified by its local manifest")
+    packaged_media = [source for source in media if not (external_video and source.name == "video.mp4")]
     # Only the validated, generated dist/ target is replaced. This removes stale
     # media and unexpected files from earlier builds before public packaging.
     if output.exists():
@@ -155,18 +232,21 @@ def build(evidence_path: Path, run_dir: Path | None = None, output_dir: Path | N
     if presentation_dir:
         destination = output / "presentation"
         destination.mkdir()
-        for source in media:
+        for source in packaged_media:
             shutil.copyfile(source, destination / source.name)
-        public_manifest = {key: manifest.get(key) for key in ("status", "slides", "duration_seconds", "video_generated", "verification")}
-        public_manifest["files"] = {source.name: manifest["files"][source.name] for source in media}
+        public_manifest = {key: manifest.get(key) for key in ("status", "slides", "duration_seconds", "video_generated")}
+        verification = manifest.get("verification") or {}
+        verification_fields = ("rendered", "watched_in_full", "audio_reviewed", "human_listening_review", "technical_checks", "whole_audio_asr", "all_slides_visually_reviewed")
+        public_manifest["verification"] = {key: verification.get(key) for key in verification_fields if key in verification}
+        public_manifest["files"] = {source.name: manifest["files"][source.name] for source in packaged_media}
+        if external_video:
+            public_manifest["external_video"] = {"url": external_video, "sha256": manifest["files"]["video.mp4"]}
         (destination / "manifest.json").write_text(json.dumps(public_manifest, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
         public_evidence["links"]["presentation"] = "presentation/slides.html"
         public_evidence["materials"] = {"presentation_status": manifest["status"], "video_status": None}
-        names = {source.name for source in media}
         if "video.mp4" in names and manifest["status"] == "evidence-backed" and manifest.get("video_generated") is True:
-            public_evidence["links"]["video"] = "presentation/video.mp4"
-            verification = manifest.get("verification") or {}
-            public_evidence["materials"]["video_status"] = "reviewed" if verification.get("watched_in_full") is True and verification.get("audio_reviewed") is True else "review"
+            public_evidence["links"]["video"] = external_video or "presentation/video.mp4"
+            public_evidence["materials"]["video_status"] = video_review_status(verification)
             if "captions.vtt" in names:
                 public_evidence["links"]["captions"] = "presentation/captions.vtt"
         elif manifest["status"] == "draft":
@@ -187,8 +267,9 @@ def main() -> None:
     parser.add_argument("--evidence", type=Path, default=ROOT / "evidence" / "public.json")
     parser.add_argument("--run-dir", type=Path, help="Verified run whose metrics will be displayed")
     parser.add_argument("--presentation-dir", type=Path, help="Generated presentation with a verified file manifest")
+    parser.add_argument("--video-url", help="Public HTTPS URL for the same MP4 hosted externally; its local manifest is still verified")
     args = parser.parse_args()
-    output = build(args.evidence, args.run_dir, presentation_dir=args.presentation_dir)
+    output = build(args.evidence, args.run_dir, presentation_dir=args.presentation_dir, video_url=args.video_url)
     print(f"Static site built: {output}")
 
 

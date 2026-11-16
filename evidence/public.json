@@ -4,24 +4,26 @@
     "url": "https://www.kaggle.com/competitions/playground-series-s6e11",
     "deadline_utc": "2026-11-30T23:59:00Z"
   },
-  "stage": "experimentation",
-  "updated_at": "2026-11-16T16:21:43.202867+00:00",
+  "stage": "submitted",
+  "updated_at": "2026-11-16T17:23:17.333618+00:00",
   "results": {
-    "local_auc": 0.9505188657556217,
+    "local_auc": 0.9512586315198723,
     "fold_scores": [
-      0.9492771010504355,
-      0.9528110799842545,
-      0.949479647024171
+      0.9503028064353239,
+      0.9518728494495995,
+      0.9563594490012233,
+      0.951530469092596,
+      0.94636140814146
     ],
-    "public_auc": 0.95065,
-    "ranking": 881,
-    "total_teams": 2003,
-    "submission_id": "58437018",
-    "observed_at": "2026-11-16T16:21:43.202867+00:00",
+    "public_auc": 0.95097,
+    "ranking": 804,
+    "total_teams": 2010,
+    "submission_id": "58438450",
+    "observed_at": "2026-11-16T17:23:17.333618+00:00",
     "local_auc_scope": "development_oof",
-    "local_auc_run": "dev-blend-selected",
-    "holdout_auc": 0.9485517227500961,
-    "holdout_observed_at": "2026-11-16T16:09:36.560482+00:00"
+    "local_auc_run": "explore5-public25",
+    "holdout_auc": null,
+    "holdout_observed_at": null
   },
   "links": {
     "github": "https://github.com/aikolopes-og/fraudlab",
@@ -31,19 +33,25 @@
     "notebook": "https://www.kaggle.com/code/aikoog/fraudlab-reproducible-neural-fraud-detection"
   },
   "run": {
-    "path": "artifacts/runs/final-blend",
-    "phase": "full_data_refit",
-    "submission_sha256": "0560d11162fb58dd85d54bfdc0ec1420066503b3e01bbc3946ea90457f6e530f",
+    "path": "artifacts/runs/explore5-public25",
+    "phase": "exploratory_full_data_cv",
+    "submission_sha256": "f5f658279779eab4d94b6b1b118fc39e2774c9ee6fdb4b80e2f06770cceb47d4",
     "model": "blend",
     "validation": {
-      "method": "no_new_selection_full_data_refit",
-      "n_splits": 0,
+      "method": "stratified",
+      "n_splits": 5,
+      "note": "Exploratory full-data five-fold CV aligned with approved public GPT-2 release2. All labels, including the historical holdout, participate in fold training. No independent holdout remains for this stage. Own model settings are frozen; no new hyperparameter selection.",
+      "group_column": null,
+      "time_column": null,
+      "holdout_fraction": 0.0,
+      "holdout_seed": null,
+      "independent_holdout": false,
       "early_stopping_uses_validation": false
     },
     "rows": {
       "train": 699960,
       "test": 299984,
-      "oof": 0
+      "oof": 699960
     },
     "features": {
       "count": 78,
@@ -133,18 +141,70 @@
         "id",
         "is_fraud"
       ]
+    },
+    "selection_reason": "A mistura com 25% do GPT-2 público melhorou a OOF nos cinco folds alinhados. As opções de 25% e 50% ficaram praticamente empatadas; escolhemos a menor dependência externa. Os pesos efetivos são 56,25% GLM, 18,75% LightGBM e 25% GPT-2 de Masaya Kawamata. A escolha foi feita antes de consultar seu score no Kaggle.",
+    "effective_weights": {
+      "glm": 0.5625,
+      "lightgbm": 0.1875,
+      "external_gpt2": 0.25
     }
   },
   "checks": {
     "data_verified": true,
     "training_verified": true,
     "submission_verified": true,
-    "holdout_verified": true
+    "holdout_verified": false
   },
   "limitations": [
-    "Otimização em andamento; a segunda submissão foi processada, ainda distante das primeiras posições.",
-    "OOF de desenvolvimento, avaliação independente e score público são medidas distintas.",
-    "O ranking público é provisório até o encerramento da competição.",
-    "CI remota não iniciou: GitHub informa bloqueio da conta por cobrança. Os testes locais foram executados separadamente."
+    "A posição pública é provisória; as primeiras posições ainda não foram alcançadas.",
+    "A CV 5/42 desta extensão foi usada na seleção e não é uma avaliação final independente.",
+    "A reserva de 15% pertence ao protocolo inicial; não é independente para a extensão neural pública.",
+    "O componente GPT-2 usa previsões licenciadas de Masaya Kawamata. Seu treinamento foi auditado por leitura de código, sem reexecução pelo FraudLab.",
+    "CI remota não iniciou: GitHub informa bloqueio da conta por cobrança. Testes locais foram executados separadamente."
+  ],
+  "external_components": [
+    {
+      "name": "GPT-2 target-first",
+      "kind": "gpt2_target_first",
+      "source_type": "external_predictions",
+      "trained_by": "Masaya Kawamata",
+      "model_architecture": "GPT-2 target-first classifier",
+      "training_code_url": "https://github.com/Matapanino/s6e11-gpt2-target-first",
+      "training_code_commit": "8446fb73c11583df4f7006aa08fa34472249b318",
+      "code_license": "MIT",
+      "predictions_source_url": "https://www.kaggle.com/datasets/masayakawamata/s6e11-gpt2-target-first-oof",
+      "predictions_source_version": 2,
+      "predictions_download_ref": "masayakawamata/s6e11-gpt2-target-first-oof/2",
+      "predictions_license": "CC BY 4.0",
+      "data_license": "CC BY 4.0 (prediction dataset)",
+      "method_credits": [
+        "Chris Deotte: target-first GPT-2 method",
+        "Borisov et al.: GReaT / Language Models are Realistic Tabular Data Generators",
+        "uditjain13: original Credit Card Fraud Detection 2026 dataset"
+      ],
+      "training_executed_locally": false,
+      "trained_by_us": false,
+      "oof_auc": 0.9500272037932734,
+      "validation": {
+        "method": "StratifiedKFold",
+        "n_splits": 5,
+        "shuffle": true,
+        "seed": 42
+      },
+      "inference": {
+        "method": "target-first label likelihood ratio",
+        "target_first": true,
+        "likelihood_ratio": true,
+        "prior": "training rate of the fold's fit rows",
+        "orders": 10,
+        "order_aggregation": "log-sum-exp over orders per label, then the difference, plus the prior",
+        "test_aggregation": "mean of fold log-odds",
+        "test_ensemble_folds": 5,
+        "source_test_aggregation": "mean over fold models of the per-fold log-odds",
+        "import_transform": "sigmoid(log_odds), float64"
+      },
+      "weight": 0.25,
+      "mixture_space": "probability"
+    }
   ]
 }

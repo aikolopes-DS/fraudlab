@@ -14,6 +14,129 @@ SPEC.loader.exec_module(MODULE)
 
 
 class PublicBuildTests(unittest.TestCase):
+    def external_fixture(self):
+        return {
+            "run": {"effective_weights": {"glm": 0.5625, "lightgbm": 0.1875, "external_gpt2": 0.25}},
+            "external_components": [{
+                "name": "GPT-2 target-first", "kind": "gpt2_target_first", "source_type": "external_predictions",
+                "trained_by": "Masaya Kawamata", "trained_by_us": False, "training_executed_locally": False,
+                "predictions_license": "CC BY 4.0", "code_license": "MIT", "predictions_source_version": 2,
+                "predictions_source_url": "https://www.kaggle.com/datasets/masayakawamata/s6e11-gpt2-target-first-oof",
+                "method_credits": ["Chris Deotte", "Borisov et al.", "Udit Jain"], "weight": 0.25,
+            }],
+        }
+
+    def test_public_composition_preserves_credit_and_excludes_private_payloads(self):
+        evidence = self.external_fixture()
+        evidence["run"]["path"] = "C:/private/run"
+        evidence["external_components"][0].update(path="C:/private/gpt2", logits=[1, 2], token="fixture-secret")
+        public = MODULE.normalize(evidence)
+        self.assertEqual(public["run"]["effective_weights"], evidence["run"]["effective_weights"])
+        component = public["external_components"][0]
+        self.assertEqual(component["trained_by"], "Masaya Kawamata")
+        self.assertFalse(component["trained_by_us"])
+        self.assertEqual(component["predictions_license"], "CC BY 4.0")
+        self.assertEqual(component["predictions_source_version"], 2)
+        serialized = json.dumps(public)
+        self.assertNotIn("C:/private", serialized)
+        self.assertNotIn("fixture-secret", serialized)
+        self.assertNotIn("logits", serialized)
+
+    def test_composition_rejects_invalid_weights_or_missing_external_credit(self):
+        for weights in ({"glm": True}, {"glm": float("nan")}, {"glm": 1, "lightgbm": 1}, {"unknown": 1}):
+            with self.subTest(weights=weights), self.assertRaises(ValueError):
+                MODULE.public_weights(weights)
+        evidence = self.external_fixture()
+        evidence["external_components"] = []
+        with self.assertRaisesRegex(ValueError, "author"):
+            MODULE.normalize(evidence)
+        evidence = self.external_fixture()
+        evidence["external_components"][0]["trained_by_us"] = True
+        with self.assertRaisesRegex(ValueError, "external training attribution"):
+            MODULE.normalize(evidence)
+
+    def test_loading_metrics_does_not_discard_canonical_composition(self):
+        evidence = self.external_fixture()
+        evidence["checks"] = {"training_verified": True}
+        public = MODULE.normalize(evidence, {"model": "blend", "phase": "exploratory_full_data_cv", "roc_auc": 0.91})
+        self.assertEqual(public["run"]["effective_weights"]["external_gpt2"], 0.25)
+        self.assertFalse(public["external_components"][0]["trained_by_us"])
+
+    def test_technical_asr_and_slide_checks_do_not_claim_full_listening(self):
+        verification = {"technical_checks": "passed", "whole_audio_asr": True, "all_slides_visually_reviewed": True, "watched_in_full": False, "audio_reviewed": False, "human_listening_review": False}
+        self.assertEqual(MODULE.video_review_status(verification), "checked")
+        for field in ("technical_checks", "whole_audio_asr", "all_slides_visually_reviewed"):
+            incomplete = {**verification, field: False}
+            self.assertEqual(MODULE.video_review_status(incomplete), "review")
+        self.assertEqual(MODULE.video_review_status({"watched_in_full": True, "audio_reviewed": True}), "reviewed")
+
+    def test_build_keeps_checked_video_distinct_from_human_review(self):
+        with tempfile.TemporaryDirectory(dir=Path(__file__).parent, prefix=".test-build-") as directory:
+            path = Path(directory)
+            evidence = path / "source.json"
+            evidence.write_text("{}", encoding="utf-8")
+            media = path / "presentation"
+            media.mkdir()
+            for name, value in {"slides.html": "<h1>Contract fixture</h1>", "video.mp4": "contract fixture, not playable media"}.items():
+                (media / name).write_text(value, encoding="utf-8")
+            manifest = {"status": "evidence-backed", "video_generated": True, "verification": {"technical_checks": "passed", "whole_audio_asr": True, "all_slides_visually_reviewed": True, "watched_in_full": False, "audio_reviewed": False, "human_listening_review": False, "private_report_path": "C:/private/report.json"}, "files": {item.name: hashlib.sha256(item.read_bytes()).hexdigest() for item in media.iterdir()}}
+            (media / "manifest.json").write_text(json.dumps(manifest), encoding="utf-8")
+            output = MODULE.build(evidence, output_dir=path / "dist", presentation_dir=media)
+            public = MODULE.read_json(output / "evidence.json")
+            self.assertEqual(public["materials"]["video_status"], "checked")
+            self.assertEqual(public["links"]["video"], "presentation/video.mp4")
+            self.assertTrue((output / "presentation" / "video.mp4").is_file())
+            packaged = MODULE.read_json(output / "presentation" / "manifest.json")
+            self.assertFalse(packaged["verification"]["audio_reviewed"])
+            self.assertFalse(packaged["verification"]["watched_in_full"])
+            self.assertNotIn("C:/private", json.dumps(packaged))
+
+    def test_external_video_preserves_hash_check_captions_and_review_status(self):
+        with tempfile.TemporaryDirectory(dir=Path(__file__).parent, prefix=".test-build-") as directory:
+            path = Path(directory)
+            evidence = path / "source.json"
+            evidence.write_text("{}", encoding="utf-8")
+            media = path / "presentation"
+            media.mkdir()
+            for name, value in {
+                "slides.html": "<h1>Contract fixture</h1>",
+                "video.mp4": "contract fixture, not playable media",
+                "captions.vtt": "WEBVTT\n\n00:00:00.000 --> 00:00:01.000\nExemplo.\n",
+            }.items():
+                (media / name).write_text(value, encoding="utf-8")
+            manifest = {
+                "status": "evidence-backed", "video_generated": True,
+                "verification": {"technical_checks": "passed", "whole_audio_asr": True, "all_slides_visually_reviewed": True},
+                "files": {item.name: hashlib.sha256(item.read_bytes()).hexdigest() for item in media.iterdir()},
+            }
+            (media / "manifest.json").write_text(json.dumps(manifest), encoding="utf-8")
+            url = "https://github.com/example/repository/releases/download/v1/video.mp4"
+            output = MODULE.build(evidence, output_dir=path / "dist", presentation_dir=media, video_url=url)
+            public = MODULE.read_json(output / "evidence.json")
+            packaged = MODULE.read_json(output / "presentation" / "manifest.json")
+            self.assertEqual(public["links"]["video"], url)
+            self.assertEqual(public["links"]["captions"], "presentation/captions.vtt")
+            self.assertEqual(public["materials"]["video_status"], "checked")
+            self.assertTrue((output / "presentation" / "captions.vtt").is_file())
+            self.assertTrue((output / "presentation" / "slides.html").is_file())
+            self.assertFalse((output / "presentation" / "video.mp4").exists())
+            self.assertNotIn("video.mp4", packaged["files"])
+            self.assertEqual(packaged["external_video"], {"url": url, "sha256": manifest["files"]["video.mp4"]})
+            (media / "video.mp4").write_bytes(b"changed local bytes")
+            with self.assertRaisesRegex(ValueError, "differs from its manifest"):
+                MODULE.build(evidence, output_dir=path / "dist", presentation_dir=media, video_url=url)
+
+    def test_external_video_requires_https_mp4_and_verified_local_source(self):
+        with tempfile.TemporaryDirectory(dir=Path(__file__).parent, prefix=".test-build-") as directory:
+            path = Path(directory)
+            evidence = path / "source.json"
+            evidence.write_text("{}", encoding="utf-8")
+            for url in ("http://example.com/video.mp4", "presentation/video.mp4", "https://example.com/video.html", ""):
+                with self.subTest(url=url), self.assertRaises(ValueError):
+                    MODULE.build(evidence, output_dir=path / "dist", video_url=url)
+            with self.assertRaisesRegex(ValueError, "verified by its local manifest"):
+                MODULE.build(evidence, output_dir=path / "dist", video_url="https://example.com/video.mp4")
+
     def test_unverified_scores_are_not_published(self):
         public = MODULE.normalize({"results": {"local_auc": 0.99, "public_auc": 0.98, "ranking": 1, "observed_at": "2026-11-16T18:00:00Z"}})
         self.assertIsNone(public["results"]["local_auc"])

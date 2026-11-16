@@ -1,10 +1,12 @@
 # Executar o projeto
 
-Os comandos partem da raiz do repositório e usam PowerShell. São receitas de execução; os resultados realmente obtidos ficam registrados no README, nos experimentos e em `evidence/public.json`.
+Os comandos partem da raiz do repositório e usam PowerShell. A receita operacional é a [híbrida 5/42](../notebooks/hybrid-recipe.json): modelos próprios fixos mais previsões públicas GPT-2 versão 2. Os resultados observados e o acompanhamento ficam no [README](../README.md) e em `evidence/public.json`.
+
+Use um clone novo ou novos nomes de execução: `artifacts/runs/` não sobrescreve runs existentes. Versões e hardware podem alterar resultados; reproduzir o código não transfere uma pontuação já processada pelo Kaggle para outro arquivo.
 
 ## Ambiente
 
-O núcleo aceita Python 3.10 ou superior. O ambiente local foi iniciado com 3.10; a CI usa 3.11. Em um clone novo:
+O núcleo aceita Python 3.10 ou superior; a CI usa 3.11. A instalação abaixo inclui apresentação, testes e PyTorch CPU para as comparações neurais próprias:
 
 ```powershell
 py -3.11 -m venv .venv
@@ -14,105 +16,130 @@ python -m pip install "torch>=2.2,<3" --index-url https://download.pytorch.org/w
 python -m pip install -e ".[dev,presentation]"
 ```
 
-Sem ativação, substitua `python` por `.\.venv\Scripts\python.exe`. No Linux, crie o ambiente com `python3.11 -m venv .venv` e ative com `source .venv/bin/activate`; os demais comandos Python são iguais.
+Sem ativação, substitua `python` por `.\.venv\Scripts\python.exe`. No Linux, use `python3.11 -m venv .venv` e `source .venv/bin/activate`. A receita híbrida roda em CPU e não treina o GPT-2. Para treinar a MLP própria em CUDA, instale PyTorch pelo [seletor oficial](https://pytorch.org/get-started/locally/) e confirme `torch.cuda.is_available()`.
 
-Essa instalação do PyTorch usa CPU. Para CUDA, siga o [seletor oficial do PyTorch](https://pytorch.org/get-started/locally/) e confirme `torch.cuda.is_available()` antes de usar `--device cuda`. As versões efetivamente utilizadas ficam em cada `metrics.json`.
+## Dados oficiais e componente público
 
-## Dados e regras
-
-Confirme as regras e a inscrição na [competição S6E11](https://www.kaggle.com/competitions/playground-series-s6e11/rules). Os arquivos esperados são `data/raw/train.csv`, `test.csv` e `sample_submission.csv`. Dados, credenciais e artefatos gerados são ignorados pelo Git.
-
-A CLI Kaggle 2.2.5 utilizada neste projeto exige Python 3.11 e usa ambiente separado. Com a autenticação configurada pelo mecanismo oficial da CLI:
+Confira inscrição e [regras da S6E11](https://www.kaggle.com/competitions/playground-series-s6e11/rules). Configure a autenticação pelo mecanismo oficial da CLI; credenciais, dados e artefatos locais ficam fora do Git. A CLI 2.2.5 utilizada tem um ambiente Python 3.11 separado:
 
 ```powershell
 py -3.11 -m venv .local/kaggle-cli
 .\.local\kaggle-cli\Scripts\python.exe -m pip install kaggle==2.2.5 six==1.17.0
-.\.local\kaggle-cli\Scripts\kaggle.exe competitions download playground-series-s6e11 -p data/raw --unzip
+$fraudKaggle = ".\.local\kaggle-cli\Scripts\kaggle.exe"
+& $fraudKaggle competitions download playground-series-s6e11 -p data/raw --unzip
+& $fraudKaggle datasets download masayakawamata/s6e11-gpt2-target-first-oof/2 -p .local/research/public-models/gpt2 --unzip
 python -m fraudlab inspect --data data/raw --output artifacts/profile.json
 ```
 
-A inspeção grava agregados, tipos, ausências, duplicatas e hashes dos arquivos. Leia o perfil antes de decidir a divisão: uma coluna de tempo, uma entidade repetida ou duplicatas podem exigir outra estratégia.
+Os CSVs esperados são `train.csv`, `test.csv` e `sample_submission.csv`. O perfil registra tipos, ausências, duplicatas e hashes. Nesta versão inspecionada, os dados são sintéticos e não têm IDs de entidade ou timestamp cronológico; a hora do dia é recorrente. Essa inspeção sustenta a divisão estratificada usada na receita.
 
-## Comparar modelos
-
-O exemplo abaixo serve para dados cuja hipótese de linhas independentes sustente validação estratificada. A justificativa deve refletir a inspeção real. Grupo e tempo são alternativas explícitas: `--split group --group-column NOME` e `--split time --time-column NOME`.
+As previsões [GPT-2 de Masaya Kawamata](https://www.kaggle.com/datasets/masayakawamata/s6e11-gpt2-target-first-oof/versions/2) são CC BY 4.0. Seu [treinamento público MIT](https://github.com/Matapanino/s6e11-gpt2-target-first/tree/8446fb73c11583df4f7006aa08fa34472249b318) foi realizado pelo autor externo. Créditos e auditoria estão em [external-gpt2.json](../evidence/external-gpt2.json) e na receita, incluindo Chris Deotte, Borisov et al./GReaT e uditjain13.
 
 ```powershell
-$splitReason = "Divisao estratificada sob hipotese IID, justificada pela inspecao dos dados."
-python -m fraudlab train --name logistic-dev --model logistic --folds 3 --holdout-fraction 0.15 --holdout-seed 2026 --validation-note "$splitReason"
-python -m fraudlab train --name catboost-dev --model catboost --folds 3 --holdout-fraction 0.15 --holdout-seed 2026 --validation-note "$splitReason"
-python -m fraudlab train --name mlp-dev --model mlp --folds 3 --holdout-fraction 0.15 --holdout-seed 2026 --validation-note "$splitReason" --device cpu
+python -m fraudlab import-public-gpt2 --source .local/research/public-models/gpt2 --data data/raw --name explore5-public-gpt2-v2
 ```
 
-Cada nome cria uma execução imutável em `artifacts/runs/`. A pasta contém configuração, status, modelos por fold, métricas, previsões OOF, previsões de teste e `submission.csv`. O ID e o alvo são excluídos das entradas. Imputação, escala e codificação são ajustadas dentro de cada fold de treino.
+O importador não executa código externo. Confere manifesto fixado, hashes dos arrays e CSVs, formas, tipos, valores finitos, ordem dos IDs e folds exatos 5/42. Os arrays contêm logits: aplica sigmoid e grava o contrato OOF/probabilidades com autoria, versão e licenças. No teste público, o autor já fez a média dos cinco logits; essa média recebe a sigmoid na importação.
 
-O holdout é reservado antes da validação cruzada e não participa do treino nem da parada antecipada. A opção atual suporta apenas a estratégia estratificada. Para grupo ou tempo, defina um protocolo independente coerente com essa estrutura; o programa rejeita combinar essas estratégias com o holdout aleatório.
+## Receita híbrida congelada
 
-Uma combinação só deve ser adotada quando os experimentos sustentarem a escolha. Os pesos iguais abaixo exemplificam o comando; não representam uma configuração vencedora comprovada:
+Todas as 699.960 linhas entram na CV de cinco folds, seed 42. Cada OOF exclui a linha de seu treino; o teste recebe a média das probabilidades dos cinco modelos de cada família própria. Não há reserva independente nesta etapa, nem early stopping ou escolha nova do número de árvores.
+
+Execute os treinos sequencialmente para limitar RAM:
 
 ```powershell
-python -m fraudlab blend --runs artifacts/runs/catboost-dev artifacts/runs/mlp-dev --weights 1 1 --name blend-dev
+$fraudRecipe = Get-Content notebooks/hybrid-recipe.json -Raw -Encoding UTF8 | ConvertFrom-Json
+$fraudCvArgs = @(
+    "--data", "data/raw", "--phase", "exploratory_full_data_cv",
+    "--feature-set", "value_digits", "--split", "stratified",
+    "--folds", "5", "--seed", "42", "--holdout-fraction", "0",
+    "--fixed-training", "--validation-note", $fraudRecipe.common.validation_note
+)
+python -m fraudlab train @fraudCvArgs --model glm --name explore5-glm --threads 4 --logistic-c 0.3 --target-smoothing 50
+python -m fraudlab train @fraudCvArgs --model lightgbm --name explore5-lgbm --threads 6 --iterations 1438 --num-leaves 4 --learning-rate 0.04 --l2-leaf-reg 5 --min-child-samples 100 --target-smoothing 20 --patience 150
+python -m fraudlab blend --runs artifacts/runs/explore5-glm artifacts/runs/explore5-lgbm --weights 0.75 0.25 --name explore5-own
+python -m fraudlab blend --runs artifacts/runs/explore5-own artifacts/runs/explore5-public-gpt2-v2 --weights 0.75 0.25 --name explore5-public25
+python -m fraudlab validate-submission --file artifacts/runs/explore5-public25/submission.csv --sample data/raw/sample_submission.csv
 ```
 
-O programa exige os mesmos dados, IDs, divisões e rótulos OOF. Compare a ROC-AUC e a variação entre folds. Usar repetidamente os mesmos resultados para escolher modelos não produz uma avaliação final independente.
+O LGB usa 1.438 árvores fixas; `--fixed-training` desativa early stopping, portanto `patience` não seleciona árvores nesta execução. O GLM usa C=0,3, target encoding com suavização 50 e Newton-Cholesky. O LGB usa suavização 20. Transformações aprendidas são ajustadas somente dentro do treino de cada fold; o target encoding usa mais cinco divisões internas.
 
-Depois de congelar a seleção e os pesos, avalie uma vez no holdout reservado:
+A média final é em **probabilidades**: 75% da composição própria mais 25% GPT-2, equivalentes a **56,25% GLM / 18,75% LGB / 25% GPT-2 externo**. A grade local anterior comparou 10/25/50/75% de GPT-2 por OOF compatível; esta receita reproduz a escolha congelada, sem repetir seleção pelo leaderboard. `phase=exploratory_full_data_cv` e `independent_holdout=false` permanecem nos metadados.
+
+Cada run salva configuração, status, métricas, OOF, previsões do teste e submissão; treinos próprios também salvam os modelos. O blend exige hashes dos dados, IDs, folds e rótulos OOF compatíveis e propaga créditos e peso efetivo do componente externo.
+
+## Notebook público
 
 ```powershell
-python -m fraudlab evaluate-holdout --runs artifacts/runs/catboost-dev artifacts/runs/mlp-dev --weights 1 1 --output artifacts/holdout/evaluation.json --device cpu
+python scripts/kaggle_notebook.py --revision 30dc7eb723e4cf31291bb075ed6c0d943557264c
 ```
 
-O comando registra a seleção antes da avaliação e rejeita sobrescrever a saída existente. Usar esse resultado para reajustar modelos transforma o holdout em parte da seleção. Ao encerrar essa fase, a configuração escolhida pode ser treinada novamente com todos os dados, em novos nomes de execução e com `--holdout-fraction 0`.
+O gerador cria um único `notebooks/fraudlab.ipynb`, incorpora a receita e exporta os módulos por `git show` desse SHA, com hashes. A metadata anexa a competição e `masayakawamata/s6e11-gpt2-target-first-oof/2`, com internet desativada. Não há pip remoto nem treinamento de GPT-2 no notebook; a imagem precisa fornecer as bibliotecas compatíveis, incluindo LightGBM >=4.7.
 
-## Validar e submeter
+A versão 3 foi publicada por **Save sem execução**. Sintaxe, comandos e exportação foram conferidos; isso não comprova execução do notebook no ambiente Kaggle. Treinos locais e avaliação dos CSVs pela competição têm registros separados. Ao executá-lo futuramente, os inputs precisam estar anexados na versão indicada.
+
+## Histórico próprio: reserva e refits
+
+A primeira etapa usou três folds nos 85% de desenvolvimento e reservou 15% com seed 2026. Após congelar a composição própria 75/25, a reserva foi avaliada uma vez pelas médias dos três checkpoints de cada família. Em seguida, `final-glm` e `final-lgbm` foram refitados em todos os rótulos, sem nova OOF ou early stopping; a regra congelada definiu 1.438 árvores no LGB. Esses refits compõem a submissão própria anterior **58437018**.
+
+A híbrida **58438450** usa as médias de teste das novas CVs `explore5-glm`/`explore5-lgbm` e GPT-2 v2. Ela não usa os refits únicos anteriores. Como a nova etapa e o componente externo incluem os antigos rótulos reservados, aquele holdout é apenas histórico para a híbrida.
+
+O gerador aceita `--protocol artifacts/holdout/evaluation.json` para reconstruir o notebook próprio anterior, desde que o relatório e os configs de origem estejam disponíveis localmente. Ele regrava o mesmo notebook; o comando híbrido acima restaura a versão canônica. Esses artefatos locais não são incluídos no clone público.
+
+A MLP-TE própria permanece uma comparação histórica real, fora da composição final. Para reproduzir suas métricas de desenvolvimento necessárias à apresentação:
 
 ```powershell
-python -m fraudlab validate-submission --file artifacts/runs/blend-dev/submission.csv --sample data/raw/sample_submission.csv
+$fraudHistoricalNote = "Comparacao historica: 3 folds nos 85% de desenvolvimento, seed 42 e reserva 15% seed 2026; nao e holdout independente da receita hibrida."
+python -m fraudlab train --model mlp --name dev-mlp-te-values --feature-set value_digits --target-smoothing 20 --neural-categorical-transform target --neural-numeric-transform quantile --folds 3 --seed 42 --holdout-fraction 0.15 --holdout-seed 2026 --epochs 20 --patience 4 --threads 6 --device auto --validation-note "$fraudHistoricalNote"
 ```
 
-A validação exige colunas exatas, IDs únicos na ordem esperada e probabilidades finitas entre zero e um. Isso verifica o arquivo, não seu desempenho. Para enviar o arquivo real após a seleção, respeitando as regras e os limites da conta:
+A execução original usou CUDA; `auto` permite CPU quando CUDA não estiver disponível. Isso não reabre nem repete a avaliação histórica da reserva.
+
+## Submissão e evidência
 
 ```powershell
-.\.local\kaggle-cli\Scripts\kaggle.exe competitions submit playground-series-s6e11 -f artifacts/runs/blend-dev/submission.csv -m "FraudLab: blend-dev"
+& $fraudKaggle competitions submit playground-series-s6e11 -f artifacts/runs/explore5-public25/submission.csv -m "FraudLab: hybrid5fold-public25"
 ```
 
-Confirme o processamento na plataforma. Registre em `evidence/public.json` o identificador, a pontuação pública, a posição, o total de equipes e a data da observação. Flags de verificação só devem ser ativadas após a conferência correspondente. O ranking público é provisório.
+Enviar é uma ação explícita, sujeita às regras e limites da conta. Confirme o processamento e registre identificador, score, posição, total de equipes e data. [record_submission.py](../scripts/record_submission.py) confere o arquivo e a resposta da plataforma; seus argumentos estão em `python scripts/record_submission.py --help`. Para a híbrida, não forneça o relatório antigo como holdout independente. O ranking público é provisório; a meta da liderança não foi alcançada.
 
-## Apresentação e vídeo
+## Apresentação, vídeo e site
 
-Para revisar o conteúdo antes de ter todas as evidências:
-
-```powershell
-python -m presentation.build --draft --output artifacts/presentation-draft
-```
-
-A prévia é marcada como rascunho e não substitui os experimentos. A versão final exige dados e treino verificados, métricas de uma MLP realmente treinada, submissão e ranking documentados:
+Com evidências correspondentes à submissão, as métricas híbridas e a comparação MLP histórica disponíveis:
 
 ```powershell
-python -m presentation.build --metrics artifacts/runs/blend-dev/metrics.json --comparison artifacts/runs/mlp-dev/metrics.json --comparison artifacts/runs/catboost-dev/metrics.json --comparison artifacts/runs/logistic-dev/metrics.json --output artifacts/presentation --video
-```
-
-`--video` usa por padrão a voz online `pt-BR-AntonioNeural`, pelo pacote `edge-tts` do extra `presentation`, e requer FFmpeg no `PATH`. A alternativa local no Windows é `--speech-engine sapi --voice "Microsoft Maria Desktop"`. O comando gera slides HTML editáveis, imagens, roteiro, vídeo MP4, legendas SRT e WebVTT e um manifest com hashes. Não há duração fixa: cada slide técnico é seguido imediatamente por explicação simples com exemplo cotidiano. O vídeo exportado precisa de revisão visual e auditiva; geração bem-sucedida não marca essa revisão como realizada.
-
-## Site
-
-```powershell
-python site/build.py --presentation-dir artifacts/presentation-draft
+python -m presentation.build --evidence evidence/public.json --metrics artifacts/runs/explore5-public25/metrics.json --comparison artifacts/runs/explore5-glm/metrics.json --comparison artifacts/runs/explore5-lgbm/metrics.json --comparison artifacts/runs/dev-mlp-te-values/metrics.json --historical-holdout artifacts/holdout/evaluation.json --output artifacts/presentation-hybrid --video
+python -m presentation.review --presentation-dir artifacts/presentation-hybrid
+python site/build.py --run-dir artifacts/runs/explore5-public25 --presentation-dir artifacts/presentation-hybrid
 python -m http.server 8000 --directory site/dist
 ```
 
-Abra `http://localhost:8000`. Para a versão com resultados, use `--run-dir artifacts/runs/blend-dev --presentation-dir artifacts/presentation`. O build usa `evidence/public.json`, valida os hashes da apresentação e inclui somente arquivos públicos previstos. Métricas locais não são convertidas em score público ou ranking. A hospedagem estática recebe `site/dist/`; o servidor acima é apenas local, e o build não realiza deploy.
+O relatório histórico é opcional: omita `--historical-holdout` se não o possuir; a apresentação híbrida não exige uma reserva independente inexistente. Para revisar um rascunho sem todas as evidências, use `--draft` e outra pasta de saída.
 
-## Testes e seus limites
+`--video` usa a voz online `pt-BR-AntonioNeural` via `edge-tts` e requer FFmpeg no PATH. No Windows, há a alternativa `--speech-engine sapi --voice "Microsoft Maria Desktop"`. São gerados slides HTML, imagens, roteiro, MP4, legendas SRT/WebVTT e manifest de hashes. Cada slide complexo é seguido por explicação simples e exemplo cotidiano; a cobertura determina a duração.
+
+`presentation.review` verifica formato, timeline e legendas e extrai quadros. A transcrição integral automática é opcional: instale `pip install -e ".[review]"` e acrescente `--asr`; o modelo ASR pode precisar de download inicial. Nenhuma dessas verificações declara que uma pessoa assistiu ou ouviu o vídeo inteiro.
+
+O site estático é montado em `site/dist/`, com evidência pública e arquivos permitidos pelo manifest; datasets, pesos e caminhos locais não são publicados. O servidor acima é apenas preview local. Hospedagem e acesso público são verificados separadamente; o build não faz deploy.
+
+O mirror da hospedagem Sites limita cada arquivo a 32 MiB; o MP4 desta versão tem cerca de 49 MiB. Para usar o vídeo publicado na release GitHub e manter slides/legendas no site:
 
 ```powershell
-python -m pytest tests presentation/test_presentation.py site/test_build.py -q
+python site/build.py --run-dir artifacts/runs/explore5-public25 --presentation-dir artifacts/presentation --video-url https://github.com/aikolopes-og/fraudlab/releases/download/v0.1.0/video.mp4
+```
+
+O build ainda confere o hash do MP4 local, registra o hash e a URL externa no manifesto público e exclui o binário de `site/dist/`. A igualdade dos bytes publicados e a reprodução anônima precisam ser verificadas após o upload.
+
+## Testes e limites
+
+```powershell
+python -m pytest tests presentation site/test_build.py -q
 node --check site/app.js
 ```
 
-Os testes cobrem contratos, divisões, pequenos treinos sintéticos, persistência, combinação de previsões, barreiras de evidência e empacotamento público. A CI instala PyTorch CPU para executar também o teste neural. Ela não acessa a conta Kaggle, não usa os dados da competição, não submete arquivos e não valida a síntese de voz, a reprodução integral do vídeo ou a publicação.
+A CI usa o mesmo comando com Python 3.11 e PyTorch CPU. Os testes exercitam contratos, treinos sintéticos pequenos, persistência, importação simulada, mistura, evidências e empacotamento. Não acessam a conta Kaggle, não treinam na competição, não submetem CSVs e não substituem revisão audiovisual ou verificação da publicação.
 
-A verificação visual local é separada:
+Para a verificação visual local separada:
 
 ```powershell
 python -m pip install playwright
@@ -120,6 +147,4 @@ python -m playwright install chromium
 python site/check_browser.py
 ```
 
-Esse comando verifica o site local em desktop e mobile, exercita a navegação e registra capturas em `artifacts/qa/site/`. Não comprova o funcionamento da competição.
-
-As ações da CI estão fixadas nos commits oficiais das versões [checkout v7.0.1](https://github.com/actions/checkout/releases/tag/v7.0.1) e [setup-python v7.1.0](https://github.com/actions/setup-python/releases/tag/v7.1.0), conferidos pela API do GitHub em 16/11/2026.
+O comando verifica desktop/mobile e registra capturas em `artifacts/qa/site/`. A qualidade competitiva exige os experimentos reais e o resultado processado na plataforma.

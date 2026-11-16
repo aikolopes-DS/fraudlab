@@ -1,0 +1,59 @@
+{
+  "verified_at": "2026-11-16T18:15:19.771529+00:00",
+  "video_sha256": "e5bbaf7a69e7c1d336c89cf9d4d1c3593b3fdb14a3003e1384746f6401574968",
+  "slides": 116,
+  "duration_seconds": 2666.72916099773,
+  "bytes": 51276892,
+  "format": {
+    "video": "H.264",
+    "audio": "AAC",
+    "width": 1920,
+    "height": 1080
+  },
+  "speech_engine": "edge",
+  "voice": "pt-BR-AntonioNeural",
+  "caption_cues": 604,
+  "full_av_decode": {
+    "scope": "entire video and audio streams",
+    "exit_code": 0,
+    "error_output": ""
+  },
+  "asr": {
+    "method": "automatic speech recognition",
+    "engine": "faster-whisper",
+    "version": "1.2.1",
+    "model": "base",
+    "device": "cpu",
+    "language": "pt",
+    "input_duration_seconds": 2666.765375,
+    "input_media": "video.mp4",
+    "input_media_sha256": "e5bbaf7a69e7c1d336c89cf9d4d1c3593b3fdb14a3003e1384746f6401574968",
+    "whole_input_processed": true,
+    "elapsed_seconds": 120.157,
+    "limitation": "ASR can misrecognize speech and is not a human listening review.",
+    "reviewed_alignment_slides": [
+      7,
+      39,
+      41,
+      65,
+      79,
+      83,
+      105,
+      107,
+      109
+    ],
+    "observed_limitations": [
+      "The base recognizer distorts technical vocabulary and proper names, including Newton-Cholesky, Hessiana, sigmoid and Masaya Kawamata.",
+      "ASR on slide 109 transcribed 2016 where the source narration and visible slide say 2026. This is a transcription discrepancy; no human listening claim is made.",
+      "All 116 slides contain ASR text; this verifies automatic transcription coverage, not exact pronunciation or human audio approval."
+    ]
+  },
+  "all_slides_visually_reviewed": true,
+  "visual_scope": "Team inspection of all 116 midpoint frames in 13 contact sheets. Root additionally inspected the final sheets 1,5,9,12,13 and the corrected slide7 at 1080p, after reviewing all sheets of the preceding export.",
+  "watched_in_full": false,
+  "human_listening_review": false,
+  "limitation": "Frame inspection and ASR do not mean continuous full playback or human listening. ASR may misrecognize names and numbers; the published captions use the original narration text.",
+  "input_snapshot_sha256": "42f2d325d98d52d65a442530023225b964faa3821d619578e983fb71a4e08d07",
+  "manifest_sha256": "29b41e41ee515064fe50b5635cbdf40bba451651c9ae02b24e1d10d864fa4487",
+  "review_report_sha256": "c95ee440f359855a5e7405386e9f5f8434b5cb55dce971d9a7a0a9a647e8726d"
+}

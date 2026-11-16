@@ -130,7 +130,7 @@
       <li>
        <span>03</span>
        <h3>Modelos</h3>
-       <p>Referência simples, árvores e rede neural, comparadas no mesmo protocolo.</p>
+       <p>MLPs próprias comparadas às referências; GLM, LightGBM e GPT-2 na composição submetida.</p>
       </li>
       <li>
        <span>04</span>
@@ -150,7 +150,7 @@
      </ol>
      <div class="method-note">
       <span aria-hidden="true" class="note-mark">↳</span>
-      <p><strong>Um papel real para a rede neural.</strong> Seu desempenho será medido ao lado das alternativas. A apresentação explicará os mecanismos utilizados e os resultados que sustentam a escolha final.</p>
+      <p><strong>Redes neurais na comparação e na solução.</strong> As MLPs próprias foram treinadas e comparadas. A composição submetida usa também previsões do GPT-2 público de Masaya Kawamata, com autoria e licenças identificadas nos resultados.</p>
      </div>
     </div>
    </section>
@@ -189,7 +189,15 @@
       <p class="metric-context" data-ranking-context="">O ranking será registrado após a avaliação</p>
      </article>
     </div>
+    <div class="composition" data-composition="" hidden="">
+     <p class="eyebrow" data-composition-title="">Composição submetida</p>
+     <div class="composition-weights" data-composition-weights=""></div>
+     <p class="composition-explanation">Pesos na média de probabilidades de cada modelo.</p>
+     <p class="composition-selection" data-selection-reason="" hidden=""></p>
+     <div class="composition-credits" data-component-credits=""></div>
+    </div>
     <p class="result-note" data-refit-note="" hidden="">O modelo final foi treinado com 100% dos dados rotulados. A AUC OOF acima pertence à etapa de desenvolvimento; o treino final não gera uma nova OOF.</p>
+    <p class="result-note" data-independent-note="" hidden="">Esta extensão foi selecionada pela CV de cinco folds. A reserva de 15% pertence ao protocolo inicial e não é independente para esta composição.</p>
     <div class="holdout-note" data-holdout="" hidden="">
      <p><strong>Reserva independente</strong><span data-holdout-auc=""></span></p>
      <p>Avaliação separada da OOF, realizada após congelar a escolha dos modelos e seus pesos.</p>

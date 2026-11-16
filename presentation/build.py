@@ -18,9 +18,11 @@ import shutil
 import socket
 import subprocess
 import sys
+from uuid import uuid4
 import wave
 
 from .content import Slide, create_slides, ensure_pairs, validate_evidence
+from .external import components_from
 
 
 WIDTH, HEIGHT = 1920, 1080
@@ -59,6 +61,12 @@ def input_name(path: Path) -> str:
         return path.resolve().relative_to(Path.cwd().resolve()).as_posix()
     except ValueError:
         return path.name
+
+
+def verify_inputs(captured: dict[Path, str]) -> None:
+    changed = [input_name(path) for path, expected in captured.items() if sha256(path) != expected]
+    if changed:
+        raise ValueError("Inputs changed during generation: " + ", ".join(changed))
 
 
 def write_html(slides: list[Slide], output: Path, draft: bool) -> None:
@@ -109,7 +117,9 @@ document.addEventListener('keydown',e=>{if(!document.body.classList.contains('pr
     (output / "slides.html").write_text(document, encoding="utf-8")
 
 
-def insert_code_slides(slides: list[Slide], source_root: Path, required: bool) -> list[Path]:
+def insert_code_slides(slides: list[Slide], source_root: Path, required: bool,
+                       include_external: bool = False,
+                       captured: dict[Path, str] | None = None) -> list[Path]:
     """Show literal current implementation, with its file and line reference."""
     specifications = [
         ("src/fraudlab/models.py", "loss.backward()", 2, "O gradiente vira uma atualização", [
@@ -128,6 +138,28 @@ def insert_code_slides(slides: list[Slide], source_root: Path, required: bool) -
             "Só depois de validá-lo e conferir o processamento no Kaggle "
             "podemos apresentar uma pontuação pública como observada."),
     ]
+    if include_external:
+        specifications.extend([
+            ("src/fraudlab/external.py", "oof_probability = np.exp", 3,
+             "A importação converte os log-odds auditados", [
+                 "Trecho próprio: conversão numericamente estável para probabilidades",
+                 "AUC reproduzida é conferida contra o manifesto da fonte",
+             ], "Este trecho pertence à importação feita pelo projeto. "
+                "Os arrays auditados contêm log-odds. A expressão "
+                "implementa uma sigmoid numericamente estável, "
+                "converte OOF e teste e calcula a AUC reproduzida. "
+                "Ele não treina nem executa o GPT-2 externo."),
+            ("src/fraudlab/experiment.py", "prediction_result[target] = sum(", 4,
+             "O blend combina probabilidades alinhadas", [
+                 "Pesos normalizados multiplicam as previsões de cada fonte",
+                 "IDs, folds, dados e ordem são validados antes desta soma",
+             ], "Depois de conferir os contratos de alinhamento, "
+                "o código soma as previsões ponderadas. Todas "
+                "as fontes já estão no espaço de probabilidades. "
+                "A composição registrada multiplica os pesos "
+                "de misturas aninhadas para identificar a "
+                "contribuição efetiva de cada modelo."),
+        ])
     used, additions = [], []
     for relative, marker, count, title, points, narration in specifications:
         path = source_root / relative
@@ -135,7 +167,13 @@ def insert_code_slides(slides: list[Slide], source_root: Path, required: bool) -
             if required:
                 raise ValueError(f"Falta código fonte para a apresentação final: {relative}")
             continue
-        text = path.read_text(encoding="utf-8").splitlines()
+        source_bytes = path.read_bytes()
+        digest = hashlib.sha256(source_bytes).hexdigest()
+        if captured is not None:
+            if path in captured and captured[path] != digest:
+                raise ValueError("Source changed while extracting code: " + relative)
+            captured[path] = digest
+        text = source_bytes.decode("utf-8").splitlines()
         start = next((index for index, line in enumerate(text) if marker in line), None)
         if start is None:
             if required:
@@ -155,6 +193,28 @@ def insert_code_slides(slides: list[Slide], source_root: Path, required: bool) -
                "seguindo uma regra. O backward calcula a sensibilidade; "
                "o step aplica a atualização. Essa separação ajuda a localizar "
                "o comportamento no código.", kind="analogy"))
+        elif "external.py" in relative:
+            additions.append(Slide("08 / Da execução à competição", "No dia a dia: conferir a unidade da medida", [
+                "Antes de combinar medidas, precisamos saber em qual escala estão",
+                "A conversão respeita a escala declarada pela fonte",
+                "Conferir uma medida recebida não equivale a fabricar o instrumento",
+            ], "Imagine receber uma medição em outra escala. "
+               "Primeiro você confere a procedência e a unidade. "
+               "Depois converte para a escala usada no trabalho. "
+               "Essa conversão não significa ter fabricado "
+               "o instrumento que produziu a medição.", kind="analogy"))
+        elif marker == "prediction_result[target] = sum(":
+            additions.append(Slide("08 / Da execução à competição", "No dia a dia: pesar cada contribuição", [
+                "Uma mistura usa proporções definidas",
+                "Uma mistura dentro de outra multiplica suas proporções",
+                "O total mantém os pesos efetivos de cada origem",
+            ], "Imagine uma mistura que já contém dois "
+               "ingredientes. Se essa mistura representa "
+               "setenta e cinco por cento de outra, "
+               "a participação de cada ingrediente é "
+               "multiplicada por esse fator. O mesmo "
+               "raciocínio identifica os pesos efetivos "
+               "das fontes na previsão final.", kind="analogy"))
         else:
             additions.append(Slide("08 / Da execução à competição", "No dia a dia: guardar os comprovantes", [
                 "O caderno de ensaios fica separado da versão enviada",
@@ -359,23 +419,30 @@ async def edge_segments(slides: list[Slide], output: Path, voice: str, rate: int
         mp3_path = audio_dir / f"edge-{index:02}.mp3"
         metadata_path = audio_dir / f"edge-{index:02}.jsonl"
         wave_path = audio_dir / f"edge-{index:02}.wav"
-        try:
-            # Some Windows networks resolve Bing to IPv6 but reset the connection.
-            family = socket.AF_INET if sys.platform == "win32" else socket.AF_UNSPEC
-            async with aiohttp.TCPConnector(family=family) as connector:
-                speech = edge_tts.Communicate(slide.narration, voice, rate=f"{rate * 10:+d}%",
-                                             boundary="WordBoundary", connector=connector)
-                await speech.save(str(mp3_path), str(metadata_path))
-        except Exception as error:
-            raise RuntimeError("A voz neural Edge falhou. Nenhum fallback foi aplicado. "
-                               "Para usar a voz local, escolha --speech-engine sapi. "
-                               f"Motivo: {type(error).__name__}: {error}") from error
+        request_path = audio_dir / f"edge-{index:02}.request.json"
+        request = {"text": slide.narration, "voice": voice, "rate": rate}
+        cached = (request_path.is_file() and mp3_path.is_file() and metadata_path.is_file()
+                  and read_json(request_path) == request and mp3_path.stat().st_size > 0)
+        if not cached:
+            request_path.unlink(missing_ok=True)
+            try:
+                # Some Windows networks resolve Bing to IPv6 but reset the connection.
+                family = socket.AF_INET if sys.platform == "win32" else socket.AF_UNSPEC
+                async with aiohttp.TCPConnector(family=family) as connector:
+                    speech = edge_tts.Communicate(slide.narration, voice, rate=f"{rate * 10:+d}%",
+                                                 boundary="WordBoundary", connector=connector)
+                    await speech.save(str(mp3_path), str(metadata_path))
+            except Exception as error:
+                raise RuntimeError("A voz neural Edge falhou. Nenhum fallback foi aplicado. "
+                                   "Para usar a voz local, escolha --speech-engine sapi. "
+                                   f"Motivo: {type(error).__name__}: {error}") from error
         boundaries = [json.loads(line) for line in metadata_path.read_text(encoding="utf-8").splitlines()]
         cues = word_captions([item for item in boundaries if item.get("type") == "WordBoundary"], text=slide.narration)
         if not cues:
             raise RuntimeError("O serviço Edge não retornou tempos por palavra; revise antes de gerar legendas.")
         subprocess.run(["ffmpeg", "-hide_banner", "-loglevel", "error", "-y", "-i", str(mp3_path),
                         "-ac", "1", "-ar", "22050", "-c:a", "pcm_s16le", str(wave_path)], check=True)
+        write_json(request_path, request)
         segments.append({"slide": index, "path": str(wave_path), "captions": cues})
         print(f"Voz neural: slide {index}/{len(slides)}", flush=True)
     return segments
@@ -449,6 +516,21 @@ def narrate(slides: list[Slide], output: Path, voice: str, rate: int, engine: st
     return timeline
 
 
+def validate_encoded_video(path: Path) -> None:
+    probe = subprocess.run(["ffprobe", "-v", "quiet", "-show_streams", "-of", "json", str(path)],
+                           capture_output=True, text=True, check=True)
+    streams = json.loads(probe.stdout)["streams"]
+    video = next(item for item in streams if item["codec_type"] == "video")
+    audio = next(item for item in streams if item["codec_type"] == "audio")
+    if (video["codec_name"], video["width"], video["height"], audio["codec_name"]) != ("h264", 1920, 1080, "aac"):
+        raise ValueError("Encoded output must be 1080p H.264 with AAC audio.")
+    decoded = subprocess.run(["ffmpeg", "-v", "error", "-xerror", "-i", str(path), "-t", "2",
+                              "-map", "0:v:0", "-map", "0:a:0", "-f", "null", "-"],
+                             stdout=subprocess.DEVNULL, stderr=subprocess.PIPE, text=True)
+    if decoded.returncode or decoded.stderr.strip():
+        raise RuntimeError("Encoded output failed initial AV decoding: " + decoded.stderr[-1500:])
+
+
 def encode_video(output: Path, timeline: list[dict]) -> None:
     if not shutil.which("ffmpeg"):
         raise RuntimeError("FFmpeg não encontrado no PATH.")
@@ -458,13 +540,21 @@ def encode_video(output: Path, timeline: list[dict]) -> None:
         concat.extend((f"file 'slide-{item['slide']:02}.png'", f"duration {item['duration']:.6f}"))
     concat.append(f"file 'slide-{timeline[-1]['slide']:02}.png'")
     (output / "video-input.txt").write_text("\n".join(concat) + "\n", encoding="utf-8")
-    subprocess.run([
-        "ffmpeg", "-hide_banner", "-loglevel", "warning", "-y", "-f", "concat", "-safe", "0",
-        "-i", "video-input.txt", "-i", "narration.wav", "-vf", "fps=24", "-c:v", "libx264",
-        "-preset", "veryfast", "-tune", "stillimage", "-crf", "22", "-pix_fmt", "yuv420p",
-        "-c:a", "aac", "-b:a", "128k", "-movflags", "+faststart",
-        "-t", f"{sum(item['duration'] for item in timeline):.6f}", "video.mp4",
-    ], cwd=output, check=True)
+    # An interrupted child may survive its parent. It must never share the final
+    # output handle with another encoder. Promote only a validated, unique file.
+    candidate = output / f".video-{uuid4().hex}.mp4"
+    try:
+        subprocess.run([
+            "ffmpeg", "-hide_banner", "-loglevel", "warning", "-y", "-f", "concat", "-safe", "0",
+            "-i", "video-input.txt", "-i", "narration.wav", "-vf", "fps=24", "-c:v", "libx264",
+            "-preset", "veryfast", "-tune", "stillimage", "-crf", "22", "-pix_fmt", "yuv420p",
+            "-c:a", "aac", "-b:a", "128k", "-movflags", "+faststart",
+            "-t", f"{sum(item['duration'] for item in timeline):.6f}", str(candidate),
+        ], cwd=output, check=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True)
+        validate_encoded_video(candidate)
+        candidate.replace(output / "video.mp4")
+    finally:
+        candidate.unlink(missing_ok=True)
 
 
 def main(argv: list[str] | None = None) -> int:
@@ -475,6 +565,9 @@ def main(argv: list[str] | None = None) -> int:
     parser.add_argument("--evidence", type=Path, default=Path("evidence/public.json"))
     parser.add_argument("--metrics", type=Path, help="Selected run's metrics.json")
     parser.add_argument("--comparison", type=Path, action="append", default=[], help="Other executed runs; repeat as needed")
+    reports = parser.add_mutually_exclusive_group()
+    reports.add_argument("--holdout", type=Path, help="Frozen independent holdout evaluation JSON for the selected protocol")
+    reports.add_argument("--historical-holdout", type=Path, help="Earlier protocol report; not independent for the current extension")
     parser.add_argument("--output", type=Path, default=Path("artifacts/presentation"))
     parser.add_argument("--draft", action="store_true", help="Mark incomplete evidence explicitly; never a final delivery")
     parser.add_argument("--video", action="store_true", help="Render PT-BR speech, measured captions and MP4")
@@ -482,12 +575,19 @@ def main(argv: list[str] | None = None) -> int:
     parser.add_argument("--voice", help="Default: pt-BR-AntonioNeural (edge) or Microsoft Maria Desktop (sapi)")
     parser.add_argument("--rate", type=int, default=0, choices=range(-3, 4), help="Speech pace; Edge uses steps of 10 percent")
     args = parser.parse_args(argv)
-    evidence = read_json(args.evidence)
     paths = ([args.metrics] if args.metrics else []) + args.comparison
-    runs = [read_json(path) for path in paths]
-    missing = validate_evidence(evidence, runs, args.draft)
-    slides = create_slides(evidence, runs, args.draft)
-    source_paths = insert_code_slides(slides, Path(__file__).resolve().parents[1], not args.draft)
+    holdout_path = args.holdout or args.historical_holdout
+    input_paths = [args.evidence] + paths + ([holdout_path] if holdout_path else [])
+    captured = {path: sha256(path) for path in input_paths}
+    evidence = read_json(args.evidence)
+    runs = [{**read_json(path), "run_name": path.parent.name} for path in paths]
+    holdout = read_json(holdout_path) if holdout_path else None
+    if args.holdout and runs and runs[0].get("selection", {}).get("holdout_report_sha256") != sha256(args.holdout):
+        raise ValueError("O relatório de reserva não corresponde ao hash registrado no modelo selecionado.")
+    missing = validate_evidence(evidence, runs, args.draft, holdout, bool(args.historical_holdout))
+    slides = create_slides(evidence, runs, args.draft, holdout, bool(args.historical_holdout))
+    insert_code_slides(slides, Path(__file__).resolve().parents[1], not args.draft,
+                       bool(components_from(runs[:1])), captured)
     ensure_pairs(slides)
     args.output.mkdir(parents=True, exist_ok=True)
     render_slides(slides, args.output, args.draft)
@@ -497,6 +597,7 @@ def main(argv: list[str] | None = None) -> int:
     timeline = narrate(slides, args.output, voice, args.rate, args.speech_engine) if args.video else []
     if args.video:
         encode_video(args.output.resolve(), timeline)
+    verify_inputs(captured)
     manifest = {
         "status": "draft" if args.draft else "evidence-backed",
         "created_at": datetime.now(timezone.utc).isoformat(),
@@ -506,12 +607,12 @@ def main(argv: list[str] | None = None) -> int:
         "subtitle_timing": ("Edge service word boundaries" if args.speech_engine == "edge"
                             else "measured utterance WAV durations") if args.video else None,
         "missing_evidence": missing,
-        "inputs": {input_name(path): sha256(path) for path in [args.evidence] + paths + source_paths},
+        "inputs": {input_name(path): digest for path, digest in captured.items()},
         "files": {path.name: sha256(path) for path in
                   [args.output / "slides.html", args.output / "script.json"] +
                   [args.output / f"slide-{index:02}.png" for index in range(1, len(slides) + 1)] +
                   [args.output / f"formula-{index:02}.png" for index, slide in enumerate(slides, 1) if slide.formula] +
-                  ([args.output / name for name in ("video.mp4", "captions.srt", "captions.vtt")] if args.video else [])},
+                  ([args.output / name for name in ("video.mp4", "captions.srt", "captions.vtt", "timeline.json")] if args.video else [])},
         "verification": {"rendered": True, "watched_in_full": False, "audio_reviewed": False},
     }
     write_json(args.output / "manifest.json", manifest)

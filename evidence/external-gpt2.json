@@ -1,0 +1,116 @@
+{
+  "verified_on": "2026-11-16",
+  "purpose": "Proveniência de um candidato externo auditado. Este registro não comprova seleção ou ganho de combinação.",
+  "dataset": {
+    "owner": "masayakawamata",
+    "slug": "s6e11-gpt2-target-first-oof",
+    "id": 13062211,
+    "version": 2,
+    "url": "https://www.kaggle.com/datasets/masayakawamata/s6e11-gpt2-target-first-oof",
+    "version_url": "https://www.kaggle.com/datasets/masayakawamata/s6e11-gpt2-target-first-oof/versions/2",
+    "author": "Masaya Kawamata",
+    "license": "CC BY 4.0",
+    "license_url": "https://creativecommons.org/licenses/by/4.0/",
+    "license_evidence": "Licença confirmada no metadata da API oficial, na resposta de download da versão 2 e no README distribuído com as previsões."
+  },
+  "reproduction": {
+    "kaggle_cli_version": "2.2.5",
+    "versioned_dataset_spec": "masayakawamata/s6e11-gpt2-target-first-oof/2",
+    "download_command": "kaggle datasets download masayakawamata/s6e11-gpt2-target-first-oof/2 --unzip -p .local/research/public-models/gpt2",
+    "manifest_command_verified": "kaggle datasets download masayakawamata/s6e11-gpt2-target-first-oof/2 -f manifest.json -p OUTPUT_DIR",
+    "version_verification": "O manifesto baixado explicitamente da versão 2 tem o mesmo SHA-256 da cópia auditada. A CLI usa owner/slug/version, sem a parte /versions/ da URL pública.",
+    "manifest_sha256": "0083d23b46f71311ceeed66874b093ec927d25d98b37f6d2e78b1de17f0f22d0"
+  },
+  "training": {
+    "trained_by": "Masaya Kawamata",
+    "trained_by_fraudlab": false,
+    "external_code_executed_by_fraudlab": false,
+    "repository": "https://github.com/Matapanino/s6e11-gpt2-target-first",
+    "commit": "8446fb73c11583df4f7006aa08fa34472249b318",
+    "code_license": "MIT",
+    "code_license_url": "https://github.com/Matapanino/s6e11-gpt2-target-first/blob/8446fb73c11583df4f7006aa08fa34472249b318/LICENSE",
+    "member_notebook": "https://www.kaggle.com/code/masayakawamata/s6e11-gpt-2-target-first-classifier-cv-0-9500",
+    "base_model_identifier": "gpt2",
+    "base_model_evidence": "README do repositório e train_replica.py:134 no commit auditado. Nenhum config.json de checkpoint foi inspecionado para afirmar dimensões internas.",
+    "original_dataset": {
+      "url": "https://www.kaggle.com/datasets/uditjain13/credit-card-fraud-detection-2026",
+      "author": "Udit Jain (uditjain13)",
+      "license": "CC0-1.0"
+    },
+    "recipe_reviewed": "Réplica GPT-2 treinada nos dados originais; cinco classificadores treinados somente nas linhas fora de sua fold. Na inferência, o alvo é removido da tabela e cada transação é pontuada sob as duas classes possíveis.",
+    "review_scope": "Leitura estática do código e validação dos artefatos publicados. O treinamento externo não foi reexecutado ou observado integralmente."
+  },
+  "alignment": {
+    "train_rows": 699960,
+    "test_rows": 299984,
+    "row_order": "Ordem original dos CSVs oficiais, confirmada por hashes completos. Não ordenar os arrays por ID.",
+    "train_csv_sha256": "87eaa10b8d17a7e4f657b8da1c66242431338bdd8b6ad45861521ac0c0e9fbd5",
+    "test_csv_sha256": "10f516959020357b565abaaa4fd25baae97fc2f536d0805695bb7cc15c1660f0",
+    "folds": {
+      "class": "StratifiedKFold",
+      "n_splits": 5,
+      "shuffle": true,
+      "random_state": 42,
+      "target": "is_fraud",
+      "exact_fold_array_reproduced": true,
+      "rows_per_fold": [139992, 139992, 139992, 139992, 139992]
+    }
+  },
+  "representation": {
+    "oof": "Log-odds float64. Cada linha é prevista pelo modelo que excluiu sua fold.",
+    "test": "Log-odds float64. Média dos log-odds dos cinco modelos de fold.",
+    "probability_conversion": "sigmoid(z) = 1 / (1 + exp(-z)); usar implementação numericamente estável.",
+    "feature_orders_per_label": 10,
+    "order_aggregation": "Log-sum-exp por classe, diferença entre as classes e prior das linhas de treino da fold."
+  },
+  "files": {
+    "manifest.json": {
+      "bytes": 4894,
+      "sha256": "0083d23b46f71311ceeed66874b093ec927d25d98b37f6d2e78b1de17f0f22d0"
+    },
+    "README.md": {
+      "bytes": 2186,
+      "sha256": "77f8cd8c822955a30d02714988622aa9d9aa93d50ea5b4f40cd9d7d297598725"
+    },
+    "oof.npy": {
+      "shape": [699960],
+      "dtype": "float64",
+      "bytes": 5599808,
+      "sha256": "3468aaaeb7851739ec0de1e06b780da6d2777fcaeef638a6852c56e68e67a206"
+    },
+    "test.npy": {
+      "shape": [299984],
+      "dtype": "float64",
+      "bytes": 2400000,
+      "sha256": "6c27aff7be744f7a0cc17809e0cd04fcdea0664234af88e3040a25235fb67906"
+    },
+    "fold_ids.npy": {
+      "shape": [699960],
+      "dtype": "int8",
+      "bytes": 700088,
+      "sha256": "1d459900f6c3a001ff971c09d9c607b383bdc732105c54701587189e52eeab45"
+    }
+  },
+  "verification": {
+    "all_array_hashes_match_manifest": true,
+    "arrays_loaded_without_pickle": true,
+    "all_logits_finite": true,
+    "reported_oof_auc": 0.9500272037932737,
+    "reproduced_oof_auc": 0.9500272037932734,
+    "test_labels_used": false,
+    "submission_performed_by_this_audit": false
+  },
+  "attribution": {
+    "readme_requirement": "Creditar Masaya Kawamata e preservar os créditos de método e fontes fornecidos no README.",
+    "suggested_credit": "Previsões GPT-2 target-first de Masaya Kawamata, CC BY 4.0. Método de Chris Deotte; GReaT de Borisov et al.; dados originais de Udit Jain, CC0. FraudLab importou e validou os artefatos; o treinamento desse componente foi externo.",
+    "method_source": "https://www.kaggle.com/competitions/playground-series-s6e10/discussion/754683",
+    "great_paper": "https://arxiv.org/abs/2210.06280",
+    "great_library": "https://github.com/tabularis-ai/be_great"
+  },
+  "limitations": [
+    "A validação desta fonte não estabelece ganho ao combiná-la com os modelos próprios.",
+    "A OOF externa de cinco folds não corresponde ao protocolo anterior de três folds com reserva de 15%.",
+    "Rótulos da reserva anterior participaram de treinos externos. Essa reserva não é independente para esta ampliação.",
+    "OOF usa um modelo por linha; teste usa a média dos cinco modelos. Essa diferença pode afetar a transferência de pesos de combinação."
+  ]
+}
