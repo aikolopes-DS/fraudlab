@@ -234,7 +234,7 @@ usam dados fabricados e não comprovam desempenho competitivo.
 
 ## Receita selecionada — rodada 10
 
-A R10 usa `value_digits_bpe` e `--glm-frequency` com o modelo `offset`.
+A R10 usa `bpe_digits` e `--glm-frequency` com o modelo `offset`.
 Mantém C=0,3, suavização=50, cinco divisões internas para target encoding e
 1.000 árvores de quatro folhas, taxa 0,03, L2=5 e mínimo de 100 exemplos por folha.
 Os comandos completos e os pesos prospectivos estão no
