@@ -5,7 +5,7 @@
     "deadline_utc": "2026-11-30T23:59:00Z"
   },
   "stage": "submitted",
-  "updated_at": "2026-11-17T20:53:43.234376+00:00",
+  "updated_at": "2026-11-17T21:59:16.262839+00:00",
   "results": {
     "local_auc": 0.9516524825255244,
     "fold_scores": [
@@ -15,12 +15,12 @@
       0.9518625895354618,
       0.9470964306274507
     ],
-    "public_auc": 0.95141,
-    "ranking": 714,
-    "total_teams": 2125,
-    "submission_id": "58481744",
-    "observed_at": "2026-11-17T20:53:43.234376+00:00",
-    "local_auc_scope": "exploratory_full_data_oof; no independent holdout",
+    "public_auc": 0.95162,
+    "ranking": 657,
+    "total_teams": 2126,
+    "submission_id": "58483010",
+    "observed_at": "2026-11-17T21:59:16.262839+00:00",
+    "local_auc_scope": "historical_exploratory_cv_of_selection_source; no new OOF of full-data refits",
     "local_auc_run": "round18-pooled-share100-public25",
     "holdout_auc": null,
     "holdout_observed_at": null
@@ -36,25 +36,20 @@
     "delivery": "https://github.com/aikolopes-DS/fraudlab/releases/download/v0.3.0/AED-FraudLab-entrega.zip"
   },
   "run": {
-    "path": "artifacts/runs/round18-pooled-share100-public25",
-    "phase": "exploratory_full_data_cv",
-    "submission_sha256": "18c92eab3d28dcefed12c5a1eebdd9380f45e13972875bf5b31cd4a0e6151e53",
+    "path": "artifacts/runs/round20-refit-joint-public25",
+    "phase": "full_data_refit",
+    "submission_sha256": "3df0138f44e79314ceb4c2de22ab0fcb0e7fdcc051db24fcefd4c77bcf8677cf",
     "model": "blend",
     "validation": {
-      "method": "stratified",
-      "n_splits": 5,
-      "note": "Prospective R18: fold-local hierarchical token/decimal statistics, fixed CV5/42, all labels reused, no independent holdout or outer-validation early stopping.",
-      "group_column": null,
-      "time_column": null,
-      "holdout_fraction": 0.0,
-      "holdout_seed": null,
+      "method": "all_labels_refit_of_audited_exploratory_cv",
+      "n_splits": 0,
       "independent_holdout": false,
       "early_stopping_uses_validation": false
     },
     "rows": {
       "train": 699960,
       "test": 299984,
-      "oof": 699960
+      "oof": 0
     },
     "features": {
       "count": 92,
@@ -164,14 +159,14 @@
       "lightgbm": 0.1875,
       "external_gpt2": 0.25
     },
+    "selection_reason_pt": "Receita R18 congelada e reestimada com todos os 699.960 rótulos; pesos preservados. O refit R20 melhorou o score público, sem produzir uma nova AUC local.",
     "own_component": {
-      "run": "round18-joint-bpe-pooled-offset",
-      "representation": "BPE + fold-local frequency +16 pooled target logits +8 fixed interactions",
+      "name": "R20 full-data refit of R18 offset",
+      "representation": "joint_bpe + frequency + pooled target logits",
       "encoded_features": 223,
-      "source_revision": "8a1c7fd141b43e41b0d43e3a07b0c5ad0bf41ae5"
-    },
-    "selection_reason": "R18 passed the prospective R10 comparison: pooled OOF delta+0.0001603443 and5/5 improved folds; independent all-row arithmetic/checkpoint audit, followed by public AUC0.95141. All labels were reused for exploratory CV.",
-    "selection_reason_pt": "R18 passou no critério prospectivo contra R10: ganho OOF de 0,0001603443 e melhora em 5/5 folds, com auditoria independente dos cálculos e checkpoints. O Kaggle confirmou 0,95141. A CV é exploratória e reutiliza todos os rótulos, sem holdout independente."
+      "source_revision": "8a1c7fd141b43e41b0d43e3a07b0c5ad0bf41ae5",
+      "training_rows": 699960
+    }
   },
   "checks": {
     "data_verified": true,
@@ -209,7 +204,6 @@
       ],
       "training_executed_locally": false,
       "trained_by_us": false,
-      "oof_auc": 0.9500272037932734,
       "validation": {
         "method": "StratifiedKFold",
         "n_splits": 5,
@@ -233,18 +227,13 @@
     }
   ],
   "public_evaluation": {
-    "plan": "evidence/round18-plan.json",
-    "results": "evidence/round18-public.json",
-    "verification": "evidence/round18-verification.json",
+    "plan": "evidence/round20-plan.json",
+    "results": "evidence/round20-public.json",
+    "verification": "evidence/round20-verification.json",
     "protocol_deviation": false,
-    "consistency_gate_passed": true,
-    "reference_run": "round10-offset-bpe-frequency-public25",
-    "reference_oof_auc": 0.9514921382152453,
-    "delta_vs_reference": 0.00016034431027911467,
-    "improved_folds": 5,
-    "required_folds": 4,
-    "total_folds": 5,
-    "selected_share_of_own_offset": 1.0
+    "new_local_oof": false,
+    "selection_source": "evidence/round18-results.json",
+    "selection_consistency_gate_passed": true
   },
   "historical_submissions": [
     {
@@ -284,7 +273,7 @@
       "holdout_observed_at": null
     }
   ],
-  "curated_at": "2026-11-17T21:32:03.443843+00:00",
+  "curated_at": "2026-11-17T22:00:35.835962+00:00",
   "presentation_context": {
     "string_storage_probe": {
       "rows": 1000000,

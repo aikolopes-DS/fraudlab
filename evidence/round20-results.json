@@ -1,0 +1,44 @@
+{
+  "round": 20,
+  "status": "complete",
+  "phase": "full_data_refit",
+  "training_source_revision": "8a1c7fd141b43e41b0d43e3a07b0c5ad0bf41ae5",
+  "local_oof_auc": null,
+  "independent_holdout": false,
+  "reference_cv_run": "round18-pooled-share100-public25",
+  "reference_cv_auc": 0.9516524825255244,
+  "training_rows_per_own_component": 699960,
+  "test_rows": 299984,
+  "effective_weights": {
+    "offset": 0.5625,
+    "lightgbm": 0.1875,
+    "external_gpt2": 0.25
+  },
+  "training_elapsed_seconds": 172.306,
+  "elapsed_scope": "Two serialized CPU fits, component and formula checks; no inference benchmark claim",
+  "new_own_checkpoints": [
+    {
+      "role": "offset",
+      "model_sha256": "43da6386631e966647d2600a77e1c811dc3dc984925525ab1f7e7e8a7dbef17a",
+      "test_rows_reloaded": 1024,
+      "max_abs_error": 0.0,
+      "training_prior_matches_all_labels": true,
+      "trees": 1000,
+      "parameters_unchanged": true
+    },
+    {
+      "role": "lightgbm",
+      "model_sha256": "93566d24f2e38273f02cdf5f29b55820f3f9137500601339e81392436138f315",
+      "test_rows_reloaded": 1024,
+      "max_abs_error": 0.0,
+      "training_prior_matches_all_labels": true,
+      "trees": 1438,
+      "parameters_unchanged": true
+    }
+  ],
+  "submission_sha256": "3df0138f44e79314ceb4c2de22ab0fcb0e7fdcc051db24fcefd4c77bcf8677cf",
+  "public_result": "evidence/round20-public.json",
+  "verification": "evidence/round20-verification.json",
+  "reference_cv_scope": "Historical exploratory CV of R18 selection; not a new local score of these refits",
+  "full_metrics_sha256": "6c238807cf51796d0492e306c1e0a327cfb9df9733adcf430f129e0412e6d883"
+}

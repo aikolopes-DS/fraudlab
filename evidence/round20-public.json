@@ -1,0 +1,22 @@
+{
+  "ref": 58483010,
+  "run": "round20-refit-joint-public25",
+  "submission_sha256": "3df0138f44e79314ceb4c2de22ab0fcb0e7fdcc051db24fcefd4c77bcf8677cf",
+  "downloaded_submission_sha256": "3df0138f44e79314ceb4c2de22ab0fcb0e7fdcc051db24fcefd4c77bcf8677cf",
+  "submission_file_verified": true,
+  "public_auc": 0.95162,
+  "ranking": 657,
+  "total_teams": 2126,
+  "observed_at": "2026-11-17T21:59:16.262839+00:00",
+  "source": "https://www.kaggle.com/competitions/playground-series-s6e11/leaderboard",
+  "plan": "evidence/round20-plan.json",
+  "integrity_audit": "evidence/round20-verification.json",
+  "phase": "full_data_refit",
+  "local_oof_auc": null,
+  "reference_cv_run": "round18-pooled-share100-public25",
+  "reference_cv_auc": 0.9516524825255244,
+  "previous_public_auc": 0.95141,
+  "public_delta": 0.00021,
+  "protocol_deviation": false,
+  "winning_position_reached": false
+}

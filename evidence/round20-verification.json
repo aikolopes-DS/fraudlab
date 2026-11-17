@@ -1,0 +1,36 @@
+{
+  "status": "passed",
+  "recorded_at": "2026-11-17T21:58:24.569165+00:00",
+  "source_revision": "8a1c7fd141b43e41b0d43e3a07b0c5ad0bf41ae5",
+  "plan_sha256": "d3173140b2ac14bbb9e2483343bbdf492f7337f4ed8bfaafdf1af4aba700a209",
+  "auditor_sha256": "edf133b6e4fe090b5a2359c82fe21bf8e6aff7cdef16d06774aac63b4f5d8bad",
+  "local_auc": null,
+  "reference_cv_auc": 0.9516524825255244,
+  "reference_cv_scope": "Selection source only; no new score of full-data fits",
+  "checkpoints": [
+    {
+      "role": "offset",
+      "model_sha256": "43da6386631e966647d2600a77e1c811dc3dc984925525ab1f7e7e8a7dbef17a",
+      "test_rows_reloaded": 1024,
+      "max_abs_error": 0.0,
+      "training_prior_matches_all_labels": true,
+      "trees": 1000,
+      "parameters_unchanged": true
+    },
+    {
+      "role": "lightgbm",
+      "model_sha256": "93566d24f2e38273f02cdf5f29b55820f3f9137500601339e81392436138f315",
+      "test_rows_reloaded": 1024,
+      "max_abs_error": 0.0,
+      "training_prior_matches_all_labels": true,
+      "trees": 1438,
+      "parameters_unchanged": true
+    }
+  ],
+  "formula_rows": 299984,
+  "formula_max_abs_error": 1.1102230246251565e-16,
+  "submission_sha256": "3df0138f44e79314ceb4c2de22ab0fcb0e7fdcc051db24fcefd4c77bcf8677cf",
+  "new_submissions": 0,
+  "full_private_report_sha256": "c91c29b6851f40d98fb4d2f878faaa69a5cb2ad28b24b579eadcb8f3ad7c7b7d",
+  "round": 20
+}
