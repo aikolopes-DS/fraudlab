@@ -155,6 +155,12 @@ def parser() -> argparse.ArgumentParser:
     )
     blending.add_argument("--runs", type=Path, nargs="+", required=True)
     blending.add_argument("--weights", type=float, nargs="+")
+    blending.add_argument(
+        "--space",
+        choices=("probability", "logit", "rank", "rank_logit"),
+        default="probability",
+        help="Combine probabilities, logits or whole-vector normalized ranks.",
+    )
     blending.add_argument("--name", required=True)
     blending.add_argument("--output", type=Path, default=Path("artifacts/runs"))
     blending.add_argument("--id-column", default="id")
@@ -361,6 +367,7 @@ def main() -> None:
                 arguments.name,
                 arguments.id_column,
                 arguments.target,
+                arguments.space,
             )
             print(
                 json.dumps(

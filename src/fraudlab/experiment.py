@@ -287,16 +287,21 @@ def blend(
     name: str,
     id_column: str = "id",
     target: str = "is_fraud",
+    space: str = "probability",
 ) -> dict:
+    from .scores import LOGIT_CLIP, SPACES, blend_scores
+
     started = time.perf_counter()
     provenance = source_provenance()
+    if space not in SPACES:
+        raise ValueError(f"Unknown score space: {space}")
     if len(runs) < 2:
         raise ValueError("Blending requires at least two runs.")
     coefficients = np.asarray(
         weights if weights is not None else [1.0] * len(runs), dtype=float
-    )
+    ).copy()
     if (
-        len(coefficients) != len(runs)
+        coefficients.shape != (len(runs),)
         or not np.isfinite(coefficients).all()
         or (coefficients < 0).any()
         or not np.isfinite(coefficients.sum())
@@ -313,9 +318,35 @@ def blend(
     if any(phases):
         if not all(phases):
             raise ValueError("Cannot mix development OOF runs with full-data refits.")
+        if space != "probability":
+            raise ValueError("Full-data refits support probability blending only.")
         from .refit import blend_refits
 
         return blend_refits(runs, weights, output, name, id_column, target)
+    for coefficient, metric in zip(coefficients, metrics):
+        components = metric.get("model_details", {}).get("external_components", [])
+        if not components or coefficient <= 0:
+            continue
+        source_space = metric.get("model_details", {}).get(
+            "mixture_space", "probability"
+        )
+        if (
+            source_space != "probability"
+            or any(
+                component.get("mixture_space", "probability") != "probability"
+                for component in components
+            )
+            or (space != "probability" and metric.get("model") == "blend")
+        ):
+            raise ValueError(
+                "Cannot flatten nested external mixtures across nonlinear score spaces."
+            )
+        if space != "probability" and (
+            len(components) != 1 or components[0].get("weight", 1.0) != 1.0
+        ):
+            raise ValueError(
+                "Nonlinear external blending requires an atomic unit-weight source."
+            )
     oofs = [pd.read_csv(run / "oof.csv") for run in runs]
     predictions = [pd.read_csv(run / "predictions.csv") for run in runs]
     reference, expected = oofs[0], predictions[0]
@@ -359,14 +390,23 @@ def blend(
         ):
             raise ValueError(f"Source {index} has invalid OOF probabilities.")
     oof_result, prediction_result = reference.copy(), expected.copy()
-    oof_result["prediction"] = sum(
-        weight * frame["prediction"].to_numpy()
-        for weight, frame in zip(coefficients, oofs)
-    )
-    prediction_result[target] = sum(
-        weight * frame[target].to_numpy()
-        for weight, frame in zip(coefficients, predictions)
-    )
+    if space == "probability":
+        # Keep the original arithmetic and its summation order exactly.
+        oof_result["prediction"] = sum(
+            weight * frame["prediction"].to_numpy()
+            for weight, frame in zip(coefficients, oofs)
+        )
+        prediction_result[target] = sum(
+            weight * frame[target].to_numpy()
+            for weight, frame in zip(coefficients, predictions)
+        )
+    else:
+        oof_result["prediction"] = blend_scores(
+            [frame["prediction"].to_numpy() for frame in oofs], weights, space=space
+        )
+        prediction_result[target] = blend_scores(
+            [frame[target].to_numpy() for frame in predictions], weights, space=space
+        )
     fold_scores = [
         float(roc_auc_score(group["target"], group["prediction"]))
         for _, group in oof_result.groupby("fold")
@@ -376,18 +416,27 @@ def blend(
     prediction_result.to_csv(run / "predictions.csv", index=False)
     prediction_result.to_csv(run / "submission.csv", index=False)
     external_components = {}
-    for weight, metric in zip(coefficients, metrics):
+    for weight, metric, source in zip(coefficients, metrics, runs):
         if weight <= 0:
             continue
         for component in metric.get("model_details", {}).get("external_components", []):
-            entry = {
-                **component,
-                "weight": float(weight) * component.get("weight", 1.0),
-                "mixture_space": "probability",
-            }
-            key = entry["predictions_source_url"]
+            entry = {**component, "mixture_space": space}
+            if space == "probability":
+                entry["weight"] = float(weight) * component.get("weight", 1.0)
+                key = entry["predictions_source_url"]
+            else:
+                entry.pop("weight", None)
+                entry.update(
+                    coefficient=float(weight),
+                    coefficient_space=space,
+                    coefficient_interpretation="direct source coefficient, not a probability share",
+                    source_run=str(source),
+                    source_prediction_space="probability",
+                )
+                key = (entry["predictions_source_url"], str(source))
             if key in external_components:
-                external_components[key]["weight"] += entry["weight"]
+                field = "weight" if space == "probability" else "coefficient"
+                external_components[key][field] += entry[field]
             else:
                 external_components[key] = entry
     result = {
@@ -401,17 +450,42 @@ def blend(
         "created_at": datetime.now(timezone.utc).isoformat(),
         **provenance,
         "model_details": {
-            "method": "weighted_probability_average",
+            "method": {
+                "probability": "weighted_probability_average",
+                "logit": "sigmoid_weighted_logit_average",
+                "rank": "weighted_normalized_rank_average",
+                "rank_logit": "sigmoid_weighted_rank_logit_average",
+            }[space],
             "sources": [str(source) for source in runs],
             "weights": coefficients.tolist(),
             "external_components": list(external_components.values()),
-            "mixture_space": "probability",
+            "mixture_space": space,
         },
         "submission_sha256": fingerprint(run / "submission.csv"),
     }
+    blend_config = {
+        "sources": [str(source) for source in runs],
+        "weights": coefficients.tolist(),
+    }
+    if space != "probability":
+        blend_config["space"] = space
+        result["model_details"]["score_transform"] = {
+            "input_space": "probability",
+            "coefficient_space": space,
+            "logit_clip": LOGIT_CLIP if space in ("logit", "rank_logit") else None,
+            "rank_method": "average" if space in ("rank", "rank_logit") else None,
+            "rank_normalization": (
+                "rank/(n+1)" if space in ("rank", "rank_logit") else None
+            ),
+            "rank_scope": (
+                "full OOF vector and full test vector separately; no labels"
+                if space in ("rank", "rank_logit")
+                else None
+            ),
+        }
     write_json(
         run / "config.json",
-        {"sources": [str(source) for source in runs], "weights": coefficients.tolist()},
+        blend_config,
     )
     result["config_sha256"] = fingerprint(run / "config.json")
     write_json(run / "metrics.json", result)
