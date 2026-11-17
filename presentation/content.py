@@ -12,12 +12,12 @@ from zoneinfo import ZoneInfo
 from .external import components_from, gpt2_slides
 from .competitive import (append_pooling_pairs, append_joint_pair, append_neural_offset_pair,
                           append_transductive_pair, append_storage_pair, append_nested_stack_pair,
-                          append_later_results, append_context, has_transductive, round_number, pooling_run)
+                          append_later_results, append_nested_result, append_context, has_transductive, round_number, pooling_run)
 from .continuation import (append_feature_pairs, append_offset_pair, append_tabm_pair,
                            append_tabm_embedding_pair, append_tabm_backbone_pair,
                            append_proposal, append_one_hot_pair,
                            append_tabm_result, append_selection_note, continuation_sources,
-                           has_frequency,
+                           has_frequency, selected_runs,
                            missing_selection_context, append_submission_history,
                            append_historical_deviations)
 
@@ -217,8 +217,13 @@ def create_slides(evidence: dict, runs: list[dict], draft: bool = False, holdout
         results["holdout_auc"] = holdout.get("roc_auc")
         results["holdout_observed_at"] = holdout.get("evaluated_at")
     rows = selected.get("rows", {})
-    features = selected.get("features", {})
-    target = selected.get("target") or evaluation_run.get("target") or {}
+    selected_members = selected_runs(runs)
+    has_stack = any(run.get("model") == "nested_stack" for run in selected_members)
+    feature_source = max((run for run in selected_members if (run.get("features") or {}).get("names")),
+                         key=lambda run: run["features"].get("count", 0), default={})
+    features = ((feature_source.get("features") or {}) if has_stack else
+                (selected.get("features") or feature_source.get("features") or {}))
+    target = selected.get("target") or evaluation_run.get("target") or feature_source.get("target") or {}
     raw_run = next((run for run in runs if run.get("model_details", {}).get("feature_set") == "raw"), {})
     raw_count = raw_run.get("features", {}).get("count")
     validation = evaluation_run.get("validation", {})
@@ -278,7 +283,9 @@ def create_slides(evidence: dict, runs: list[dict], draft: bool = False, holdout
           "certeza, e uma fila bem ordenada não elimina a necessidade de verificação.")
     add("02 / Os dados", "O que foi observado nos arquivos", [
         f"Treino: {number(rows.get('train'))} registros; teste: {number(rows.get('test'))}",
-        (f"Colunas originais: {number(raw_count)}; colunas após engenharia: {number(features.get('count'))}"
+        (f"Colunas originais: {number(raw_count)}; exemplo de base: {number(features.get('count'))} colunas após engenharia"
+         if has_stack else
+         f"Colunas originais: {number(raw_count)}; colunas após engenharia: {number(features.get('count'))}"
          if raw_count is not None else f"Colunas após engenharia: {number(features.get('count'))}"),
         "Taxa positiva no treino: " + (number(target["positive_rate"] * 100, 3) + "%" if target.get("positive_rate") is not None else "não verificada"),
         "Identificadores e alvo são tratados separadamente das entradas",
@@ -286,7 +293,10 @@ def create_slides(evidence: dict, runs: list[dict], draft: bool = False, holdout
        + (f"Neste experimento foram registrados {number(rows.get('train'))} exemplos de treino "
           f"e {number(rows.get('test'))} exemplos de teste. "
           + (f"O arquivo possui {number(raw_count)} colunas originais de entrada. " if raw_count is not None else "")
-          + f"Depois da engenharia há {number(features.get('count'))} colunas. A codificação ainda pode expandi-las; "
+          + (f"Como exemplo de base própria, {run_label(feature_source)} registra {number(features.get('count'))} colunas após engenharia. "
+             "As bases usam representações distintas. Os três logits do stack são entradas do meta-modelo, não colunas originais. "
+             if has_stack else f"Depois da engenharia há {number(features.get('count'))} colunas. ")
+          + "A codificação ainda pode expandi-las; "
             "a dimensão da matriz é apresentada na construção do componente. " if selected else
           "Os arquivos ainda não foram verificados nesta versão. Nenhuma quantidade é apresentada como resultado. ")
        + "O perfil dos dados deve revelar valores ausentes, tipos de variáveis, duplicatas e "
@@ -1037,7 +1047,7 @@ def create_slides(evidence: dict, runs: list[dict], draft: bool = False, holdout
         effective = (evidence.get("run") or {}).get("effective_weights", {})
         if effective:
             labels = {"glm": "GLM", "lightgbm": "LightGBM", "external_gpt2": "GPT-2 externo",
-                      "offset": "GLM com árvores residuais"}
+                      "offset": "GLM com árvores residuais", "nested_stack": "stack próprio aprendido"}
             composition = "; ".join(f"{number(weight * 100, 2)}% {labels.get(name, name)}"
                                     for name, weight in effective.items())
         pair("07 / Os experimentos", "Combinar previsões", [
@@ -1104,6 +1114,7 @@ def create_slides(evidence: dict, runs: list[dict], draft: bool = False, holdout
                 "os rótulos não são a mesma avaliação. A fonte externa foi "
                 "auditada e sua métrica reproduzida, sem executar seu treinamento.")
     append_later_results(add, runs, number)
+    append_nested_result(add, runs, evidence, number)
     append_tabm_result(add, runs, number)
     raw_logistic = next((run for run in development_runs if run.get("model") == "logistic" and
                          run.get("model_details", {}).get("feature_set", "raw") == "raw"), None)

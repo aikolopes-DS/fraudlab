@@ -49,6 +49,7 @@ $fraudComparisons = @(
   "round16-original-token-pooled-offset", "round16-pooled-share025-public25",
   "round17-neural-pooled-offset-resumed", "round17-pooled-share050-public25",
   "round19-transductive-pooled-offset", "round19-pooled-share100-public25",
+  "round21-nested-owned-stack", "round21-nested-public25",
   "round9-glm-bpe-frequency", "round9-bpe-frequency-public25",
   "explore5-glm", "explore5-lgbm", "explore5-public-gpt2-v2", "explore5-public25",
   "round8-tabm", "round8-tabm10", "dev-mlp-te-values", "dev-logistic-raw",
@@ -76,10 +77,21 @@ sem holdout independente. Fonte e critérios estão no
 [plano R18](../evidence/round18-plan.json). A R9 permanece uma exceção pública
 histórica declarada; resultados negativos não são reclassificados como ganhos.
 
-As métricas da R19 rejeitada e do refit R20 estão incluídas no exemplo.
-Inclua o stacking R21 somente depois de sua execução completa, com o snapshot
-final correspondente. R19 usa contagens sem alvo;
-R21 usa um meta-treino interno separado e mantém o GPT-2 fora dele. Esses
+As métricas da R19 rejeitada, do refit R20 e do stacking R21 estão incluídas
+no exemplo. A R21 executada teve OOF própria **0,9512688820** e híbrida
+**0,9516568348**, com melhora em quatro dos cinco folds contra a R18.
+O ganho híbrido de **0,0000043523** passou o gate predefinido; não demonstra
+superioridade robusta nem cria um holdout independente. O envio R21 **58483343**
+recebeu **0,95138**, abaixo dos **0,95162** do refit R20; a R21 não foi promovida.
+Seu CSV foi conferido byte a byte com o download oficial, e o histórico do
+snapshot vincula o resultado ao SHA daquele arquivo. Não lhe atribuímos a
+posição da melhor submissão da equipe. R19 usa contagens sem alvo.
+R21 usa um meta-treino interno separado e mantém o GPT-2 fora dele. Seus três
+logits são entradas do meta-modelo, não três colunas originais. Na OOF, cada
+linha usa o meta-fold correspondente. No teste, cada meta-fold aplica sigmoid
+e as cinco probabilidades são promediadas. As bases do meta-treino viram 60%
+dos rótulos totais, enquanto os checkpoints de inferência viram 80%; essa
+diferença de distribuição permanece uma limitação declarada. Esses
 conceitos são condicionados à evidência fornecida; um plano não vira treino
 executado. Para o vídeo final, congele todos os JSONs, forneça o snapshot em
 `--evidence`, selecione as métricas do CSV realmente enviado e remova `--draft`.

@@ -1,0 +1,22 @@
+{
+  "checked_at": "2026-11-17T22:24:55.910964+00:00",
+  "status": "passed",
+  "url": "https://www.kaggle.com/code/aikoog/fraudlab-reproducible-neural-fraud-detection",
+  "version": 6,
+  "public": true,
+  "saved_without_running": true,
+  "cloud_training_performed": false,
+  "source_revision": "8a1c7fd141b43e41b0d43e3a07b0c5ad0bf41ae5",
+  "cells": 39,
+  "code_cells": 31,
+  "all_remote_cells_equal_local": true,
+  "all_execution_counts_empty": true,
+  "all_outputs_empty": true,
+  "local_notebook_sha256": "a7e01f6854b93c2142c7e14d5a1c6280e214c3c677cbf9f064b348c9cf484ac5",
+  "downloaded_notebook_sha256": "ab355ee7b0bdedbd7cafcce2599f524ec24d0c82c830bfa10d0c26e04744b450",
+  "recipe_sha256": "96373980ce47d17c06ac442a51ac71217d006aeeee718ccc54647cddb2c2ce99",
+  "generator_sha256": "e3e50c95c9727b2dc6d356f1779c62297da4bf7b476aab9e33707c0b2f4893be",
+  "local_verification": "Offline tokenizer preflight and manufactured callback contracts only; no Kaggle runtime or numerical notebook training was tested.",
+  "scope": "Actual official SDK metadata and downloaded saved notebook, not a cloud execution claim",
+  "comparison_method": "All cell fields compared after joining source arrays/strings into text. Kaggle changed only that allowed notebook serialization; all source text bytes and cell metadata match."
+}

@@ -59,7 +59,7 @@ A primeira etapa reservou 15% dos rótulos com seed 2026 e usou três folds nos 
 
 Em seguida, os refits únicos `final-glm` e `final-lgbm` utilizaram todos os 699.960 rótulos, sem nova OOF ou early stopping. A mediana das árvores escolhidas no desenvolvimento fixou 1.438 árvores. A própria `final-blend`, ligada à submissão 58437018, registra `phase=full_data_refit`, `roc_auc=null` e a referência de desenvolvimento separada em `selection`.
 
-A híbrida v0.1, submissão 58438450, usava `explore5-glm` e `explore5-lgbm` mais GPT-2 v2, com OOF 0,95125863. Sua [receita](../notebooks/hybrid-recipe.json) permanece como baseline histórica. A R10 substitui seu GLM pelo offset com BPE e frequência, mantendo o LightGBM, o componente externo e os pesos efetivos. Ambas usam médias de cinco modelos próprios, sem os refits únicos anteriores.
+A híbrida v0.1, submissão 58438450, usava `explore5-glm` e `explore5-lgbm` mais GPT-2 v2, com OOF 0,95125863. Sua [receita histórica congelada](https://github.com/aikolopes-DS/fraudlab/blob/1418f08/notebooks/hybrid-recipe.json) permanece no histórico Git. A R10 substituiu seu GLM pelo offset com BPE e frequência, mantendo o LightGBM, o componente externo e os pesos efetivos. A receita canônica atual reproduz a seleção R18 e os refits R20.
 
 Todos os rótulos, inclusive a antiga reserva, participam da CV atual: `phase=exploratory_full_data_cv`, `holdout_fraction=0` e `independent_holdout=false`. O holdout anterior não é reavaliado nem atribuído às rodadas atuais. R12–R17 e R19 falharam em seus critérios de promoção. Após falta de memória, a recuperação R17 preservou três checkpoints completos e treinou apenas os dois folds restantes, sem mudar o modelo; o tempo original completo permanece indisponível.
 
@@ -73,14 +73,14 @@ Todos os rótulos, inclusive a antiga reserva, participam da CV atual: `phase=ex
 | `tabm.py` e MLP em `models.py` | Redes próprias treinadas como comparações |
 | `external.py` | Importação da única release pública aprovada e atribuição |
 | `holdout.py`, `refit.py` | Avaliação reservada e refits do protocolo próprio histórico |
-| `notebooks/hybrid-recipe.json`, `scripts/kaggle_notebook.py` | Receita e exportação da baseline v0.1; o notebook V5 contextualiza a R10 em Markdown |
+| `notebooks/hybrid-recipe.json`, `scripts/kaggle_notebook.py` | Receita R18/R20 e exportação de 22 módulos congelados, vocabulários oficiais e protocolo portátil |
 | `evidence/`, `presentation/`, `site/` | Fatos públicos, conteúdo didático, mídia e estudo de caso |
 
 O núcleo é uma CLI Python sobre arquivos locais. Não há banco de dados ou servidor de treinamento. `evidence/public.json` concentra os fatos publicados; o README mantém o acompanhamento único do trabalho. Dados, credenciais e artefatos privados ficam fora do Git.
 
 Os planos e resultados das ablações ficam em `evidence/`. Splines, pares, one-hot esparso e TabM não foram promovidos. Frequência e BPE foram integrados à R10 com o offset após a comparação prospectiva. A R9 teve [envio exploratório em exceção declarada](../evidence/public-evaluation-results.json): melhorou apenas três folds e não passou no critério original. A R10 passou no seu critério sem essa exceção. A [R11](../evidence/round11-results.json), com 2.000 árvores residuais, ficou abaixo da R10 na OOF e não foi submetida.
 
-O [notebook V5](https://www.kaggle.com/code/aikoog/fraudlab-reproducible-neural-fraud-detection) mantém células executáveis da baseline v0.1, fonte `30dc7eb723e4cf31291bb075ed6c0d943557264c`, e Markdown sobre R10. Foi salvo sem execução na nuvem; 22 células remotas conferem com as locais, sem contagens de execução ou outputs. Ele não executou R18 na nuvem. A fonte atual está no [GitHub](https://github.com/aikolopes-DS/fraudlab). A [mídia v0.3, 139 slides e 54min51s](https://github.com/aikolopes-DS/fraudlab/releases/tag/v0.3.0), documenta o marco R10. A revisão v0.4 está em montagem, ainda não publicada.
+O [notebook V6](https://www.kaggle.com/code/aikoog/fraudlab-reproducible-neural-fraud-detection) exporta o core `8a1c7fd` e a receita R18/R20. Foi salvo sem execução na nuvem; suas 39 células e os 22 módulos exportados foram [conferidos com a versão remota](../evidence/notebook-v6.json), sem contagens de execução ou outputs. O preflight local validou os vocabulários sem rede; os contratos de refit usaram dados fabricados e callbacks simulados, sem validar o runtime do Kaggle. A fonte atual está no [GitHub](https://github.com/aikolopes-DS/fraudlab). A [mídia v0.3, 139 slides e 54min51s](https://github.com/aikolopes-DS/fraudlab/releases/tag/v0.3.0), documenta o marco R10. A revisão v0.4 está em montagem, ainda não publicada.
 
 ## Critérios de verificação
 

@@ -357,9 +357,9 @@ def append_nested_stack_pair(pair, runs):
         "06 / Experimento de composição",
         "Stacking: aprender a combinar sem ver o fold externo",
         [
-            "Três bases próprias; novos fits em 75% do treino externo",
-            "25% internos ensinam o meta-modelo a combinar logits das bases",
-            "Os coeficientes são aprendidos; não são percentuais que somam 1",
+            "Três logits de bases próprias são entradas meta, não três colunas originais",
+            "Bases internas veem 60% dos rótulos; bases na inferência veem 80%; diferença declarada",
+            "OOF usa só o fold correspondente; teste faz média de cinco probabilidades após sigmoid",
             "GPT-2 de Masaya fica fora desse meta-treino; entra depois no híbrido 75/25",
         ],
         "Uma média fixa escolhe pesos antes da avaliação. O stacking "
@@ -367,6 +367,8 @@ def append_nested_stack_pair(pair, runs):
         "o treino externo é separado novamente. Três bases próprias novas "
         "aprendem nos setenta e cinco por cento internos e produzem "
         "previsões para os vinte e cinco por cento restantes. "
+        "São três logits como entradas do meta-modelo, não três colunas "
+        "originais nem a dimensão codificada das bases. "
         "As probabilidades extremas são limitadas antes da transformação "
         "logit, evitando infinitos. Esses logits são entradas para uma "
         "regressão logística, que aprende os coeficientes e o intercepto. "
@@ -374,26 +376,114 @@ def append_nested_stack_pair(pair, runs):
         + " Os alvos "
         "do fold externo ficam fora de todos esses ajustes. Na aplicação "
         "externa, usamos as bases do respectivo fold já treinadas no "
-        "treino externo completo. Os coeficientes do meta-modelo não "
+        "treino externo completo. Isso significa sessenta por cento dos "
+        "rótulos totais para as bases internas e oitenta por cento para "
+        "as bases de inferência. Essa diferença de distribuição é uma "
+        "limitação conhecida; não fizemos uma calibração depois do resultado. "
+        "Na OOF, cada linha recebe somente a previsão do seu fold externo. "
+        "No teste, cada um dos cinco meta-modelos aplica sua própria sigmoid. "
+        "Depois calculamos a média dessas cinco probabilidades; não aplicamos "
+        "sigmoid à média das margens. Os coeficientes do meta-modelo não "
         "precisam ser positivos nem somar um; não são percentuais de "
         "probabilidade. Só depois combinamos setenta e cinco por cento "
         "da previsão própria com vinte e cinco por cento do GPT-2 "
         "externo auditado. Ele não participou do meta-treino.",
-        r"p_{\mathrm{own}}=\sigma\left(b+\sum_j a_j\,\mathrm{logit}(p_j)\right),\quad p=0.75p_{\mathrm{own}}+0.25p_{\mathrm{Masaya}}",
-        "O meta-modelo aplica sigmoid ao intercepto mais soma de coeficientes vezes logits das bases; o híbrido mistura a previsão própria e a previsão externa depois",
+        r"p_k=\sigma\left(b_k+\sum_j a_{jk}\,\mathrm{logit}(p_{jk})\right),\quad\bar p_{\mathrm{teste}}=\frac{1}{5}\sum_{k=1}^{5}p_k,\quad p=0.75\bar p_{\mathrm{teste}}+0.25p_{\mathrm{Masaya}}",
+        "Cada fold aplica sua sigmoid; no teste a média é feita sobre cinco probabilidades; a OOF usa apenas o fold da linha; o híbrido combina probabilidades próprias e externas depois",
         "No dia a dia: um supervisor aprende com três revisores",
         [
             "Três revisores praticam em exemplos separados dos usados pelo supervisor",
             "O supervisor aprende como combinar suas estimativas",
+            "No teste, cinco equipes dão notas; fazemos a média das cinco notas prontas",
             "A prova externa continua reservada; uma opinião externa só entra depois",
         ],
         "Imagine três revisores e um supervisor. Os revisores "
         "praticam num conjunto, e o supervisor aprende a combinar "
         "suas estimativas em outro. A prova final fica de fora "
-        "dessas duas etapas. Uma opinião externa pode ser combinada "
+        "dessas duas etapas. Repetimos a organização em cinco equipes. "
+        "Para um novo recibo, cada equipe dá sua nota pronta e fazemos "
+        "a média dessas notas. No ensaio fora do treino, o recibo é avaliado "
+        "somente pela equipe que não o usou. Uma opinião externa pode ser combinada "
         "depois, sem ter ensinado o supervisor. Separar essas funções "
         "ajuda a entender o protocolo; não garante que a composição "
         "aprendida seja melhor que a média fixa.",
+    )
+
+
+def append_nested_result(add, runs, evidence, number):
+    own = next(
+        (
+            run
+            for run in complete(runs)
+            if run.get("model") == "nested_stack"
+            and run.get("model_details", {}).get("algorithm")
+            == "nested_owned_logit_holdout_stack"
+        ),
+        None,
+    )
+    if not own:
+        return
+    hybrid = next(
+        (
+            run
+            for run in complete(runs)
+            if run.get("model") == "blend"
+            and name(own)
+            in [
+                str(path).replace("\\", "/").split("/")[-1]
+                for path in run.get("model_details", {}).get("sources", [])
+            ]
+        ),
+        None,
+    )
+    reference = next(
+        (
+            run
+            for run in complete(runs)
+            if name(run) == "round18-pooled-share100-public25"
+        ),
+        None,
+    )
+    if not hybrid or not reference:
+        return
+    folds = list(zip(hybrid.get("fold_scores", []), reference.get("fold_scores", [])))
+    points = [
+        f"Própria: OOF {number(own['roc_auc'], 8)}; híbrida: {number(hybrid['roc_auc'], 8)}",
+        f"Contra R18: Δ {number(hybrid['roc_auc'] - reference['roc_auc'], 8)}; melhora em {sum(a > b for a, b in folds)}/{len(folds)} folds",
+        "Ganho local pequeno; validação exploratória reutilizada, sem nova reserva independente",
+    ]
+    record = next(
+        (
+            item
+            for item in evidence.get("historical_submissions", [])
+            if item.get("run") == name(hybrid)
+            and item.get("submission_file_verified") is True
+            and isinstance(item.get("submission_sha256"), str)
+            and re.fullmatch(r"[a-f0-9]{64}", item["submission_sha256"])
+            and item.get("submission_sha256") == hybrid.get("submission_sha256")
+        ),
+        None,
+    )
+    narration = (
+        "O stack e a mistura foram executados com o protocolo definido. "
+        + ". ".join(points)
+        + ". "
+    )
+    if record:
+        points.append(
+            f"Envio {record['submission_id']}: AUC pública {number(record['public_auc'], 5)}; "
+            + str(record.get("note", "Resultado vinculado ao seu próprio CSV"))
+        )
+        narration += (
+            f"A submissão {record['submission_id']} recebeu AUC pública {number(record['public_auc'], 5)}. "
+            + str(record.get("note", ""))
+            + " Não atribuímos a este teste a posição do melhor arquivo da equipe."
+        )
+    add(
+        "07 / Os experimentos",
+        "R21: pequeno ganho local, avaliação pública separada",
+        points,
+        narration,
     )
 
 

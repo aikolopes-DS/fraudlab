@@ -14,7 +14,7 @@ from .build import insert_code_slides, main
 from .content import Slide, create_slides, ensure_pairs, number, spoken_year_2026, development_source, validate_evidence
 from .competitive import (append_pooling_pairs, append_joint_pair, append_neural_offset_pair,
                           append_transductive_pair, append_storage_pair, append_nested_stack_pair,
-                          append_later_results, append_context)
+                          append_later_results, append_nested_result, append_context)
 from .continuation import (append_feature_pairs, append_offset_pair, append_tabm_pair,
                            append_tabm_embedding_pair, append_tabm_backbone_pair, append_proposal,
                            append_tabm_result, append_selection_note, has_frequency,
@@ -84,6 +84,75 @@ class ContinuationTests(unittest.TestCase):
                  "model_details": {"base_runs": ["runs/a", "runs/b", "runs/c"], "weights": [-2, 0, 3]}}
         bases = [{"run_name": key, "model": "offset", "status": "complete"} for key in ("a", "b", "c")]
         self.assertEqual({run['run_name'] for run in selected_runs([stack, *bases])}, {"stack", "a", "b", "c"})
+
+    def test_stack_explains_fold_oof_and_mean_of_probabilities_separately(self):
+        slides, _, pair = collector()
+        stack = {"status": "complete", "model_details": {"algorithm": "nested_owned_logit_holdout_stack",
+                 "inner_fraction": 0.25, "inner_seed": 2026, "base_runs": ["a", "b", "c"],
+                 "architecture": {"external_teacher_in_meta": False}}}
+        append_nested_stack_pair(pair, [stack])
+        ensure_pairs(slides)
+        MathTextParser("path").parse("$" + slides[0].formula + "$")
+        self.assertIn(r"\bar p_{\mathrm{teste}}=\frac{1}{5}\sum_{k=1}^{5}p_k", slides[0].formula)
+        self.assertIn("cada linha recebe somente a previsão do seu fold externo", slides[0].narration)
+        self.assertIn("não aplicamos sigmoid à média das margens", slides[0].narration)
+        self.assertIn("sessenta por cento", slides[0].narration)
+        self.assertIn("oitenta por cento", slides[0].narration)
+        self.assertIn("não três colunas originais", slides[0].narration)
+        self.assertIn("cinco equipes", slides[1].narration)
+
+    def test_stack_meta_width_is_not_reported_as_original_feature_count(self):
+        from .test_presentation import fixture
+        evidence, neural = fixture()
+        neural.update(run_name="neural", features={"count": 24})
+        neural["model_details"]["feature_set"] = "raw"
+        base = copy.deepcopy(neural)
+        base.update(run_name="base", model="logistic", features={"count": 92, "names": ["amount"],
+                    "numeric": 24, "categorical": 68}, target={"positive_rate": 0.02})
+        base["model_details"]["feature_set"] = "joint_bpe"
+        stack = copy.deepcopy(neural)
+        stack.update(run_name="stack", model="nested_stack", features={"count": 3},
+            model_details={"algorithm": "nested_owned_logit_holdout_stack", "base_runs": ["base", "base", "base"],
+            "inner_fraction": 0.25, "inner_seed": 2026, "architecture": {"external_teacher_in_meta": False}})
+        slides = create_slides(evidence, [stack, base, neural])
+        data = next(slide for slide in slides if slide.title == "O que foi observado nos arquivos")
+        self.assertIn("Colunas originais: 24; exemplo de base: 92 colunas após engenharia", data.points)
+        self.assertIn("não colunas originais", data.narration)
+        self.assertIn("Taxa positiva no treino: 2,000%", data.points)
+
+    def test_stack_keeps_both_frequency_protocols_when_both_bases_are_used(self):
+        slides, _, pair = collector()
+        stack = {"run_name": "stack", "model": "nested_stack", "status": "complete",
+                 "model_details": {"base_runs": ["local", "transductive", "third"]}}
+        local, transductive = own(), own()
+        local["run_name"] = "local"
+        transductive["run_name"] = "transductive"
+        transductive["model_details"]["transductive_frequency"] = {"label_usage": "none"}
+        append_feature_pairs(pair, [stack, local, transductive])
+        append_transductive_pair(pair, [stack, local, transductive])
+        self.assertTrue(any(slide.title == "Frequência: quantas vezes uma chave apareceu no treino" for slide in slides))
+        self.assertTrue(any(slide.title == "Experimento: contar entradas conhecidas do teste" for slide in slides))
+        ensure_pairs(slides)
+
+    def test_stack_trial_public_score_requires_matching_submission_bytes(self):
+        slides, add, _ = collector()
+        own_run = {"run_name": "stack", "status": "complete", "model": "nested_stack", "roc_auc": 0.8,
+                   "model_details": {"algorithm": "nested_owned_logit_holdout_stack"}}
+        hybrid = {"run_name": "hybrid", "status": "complete", "model": "blend", "roc_auc": 0.81,
+                  "fold_scores": [0.81] * 5, "submission_sha256": "a" * 64, "model_details": {"sources": ["stack"]}}
+        reference = {"run_name": "round18-pooled-share100-public25", "status": "complete",
+                     "roc_auc": 0.80999, "fold_scores": [0.80999] * 5}
+        record = {"run": "hybrid", "submission_file_verified": True, "submission_sha256": "b" * 64,
+                  "submission_id": "fixture-trial", "public_auc": 0.79, "note": "Não promovida."}
+        evidence = {"historical_submissions": [record]}
+        append_nested_result(add, [own_run, hybrid, reference], evidence, number)
+        self.assertFalse(any("AUC pública" in point for point in slides[0].points))
+        record["submission_sha256"] = "a" * 64
+        slides.clear()
+        append_nested_result(add, [own_run, hybrid, reference], evidence, number)
+        self.assertIn("AUC pública 0,79000", slides[0].points[-1])
+        self.assertIn("Não promovida", slides[0].points[-1])
+        self.assertIn("Não atribuímos", slides[0].narration)
 
     def test_unexecuted_and_comparison_only_pooling_are_not_selected_facts(self):
         slides, _, pair = collector()

@@ -173,8 +173,8 @@ def append_feature_pairs(pair, runs):
               "Mas o código novecentos não é automaticamente melhor ou pior que o código "
               "duzentos. Aqui acontece o mesmo: os pedaços recebem nomes numéricos, mas são "
               "tratados como rótulos. Só o experimento informa se essa representação ajuda.")
-    if has_frequency(runs) and not any(run.get("model_details", {}).get("transductive_frequency")
-                                     for run in selected_runs(runs)):
+    if any(has_frequency([run]) and not run.get("model_details", {}).get("transductive_frequency")
+           for run in selected_runs(runs)):
         pair("04 / Representar os dados", "Frequência: quantas vezes uma chave apareceu no treino", [
             "Cada coluna tem sua própria tabela de contagens, ajustada no treino do fold",
             "A entrada adicional é log1p da contagem; depois ela é escalonada",
@@ -470,6 +470,15 @@ def method_code_specs(runs):
             "Código: compartilhar textos mantendo a sequência", ["Conversão dos valores distintos; índices inversos restauram as posições"],
             "A conversão para string acontece nos valores distintos. Os índices inversos reconstroem o array "
             "com dtype object e referências compartilhadas. Essa mudança de armazenamento preserva os valores."))
+    if any(run.get("status") == "complete" and run.get("model_details", {}).get("algorithm") ==
+           "nested_owned_logit_holdout_stack" for run in runs):
+        specifications.append(("scripts/train_nested_stack.py", "predictions += t / 5", 1,
+            "Código: a média recebe probabilidades prontas", [
+                "t vem de predict_proba do meta-modelo do fold, depois da sigmoid",
+                "O acumulador soma t/5 em cada um dos cinco folds; OOF recebe apenas sua divisão"],
+            "Este é o acumulador real do teste na R21. A variável t contém probabilidades produzidas "
+            "pelo meta-modelo daquele fold. Somamos um quinto de cada resultado, sem aplicar "
+            "uma nova sigmoid à média. O vetor OOF é preenchido separadamente na validação correspondente."))
     return specifications
 
 
@@ -482,5 +491,6 @@ def method_code_analogy(relative):
         "src/fraudlab/joints.py": ("No dia a dia: preencher rua e número", "Juntar dois campos preserva a combinação específica. O número da casa sozinho não informa o endereço completo."),
         "src/fraudlab/neural_offset.py": ("No dia a dia: avaliar o orçamento corrigido", "A avaliação olha o orçamento inicial junto das correções. Medir apenas a correção perderia o total que será usado."),
         "src/fraudlab/strings.py": ("No dia a dia: várias fichas para um verbete", "As fichas podem apontar para um mesmo verbete sem mudar sua ordem nem o significado. Economizar cópias não acrescenta informação."),
+        "scripts/train_nested_stack.py": ("No dia a dia: tirar a média das notas prontas", "Cinco equipes entregam notas prontas. Cada uma contribui com um quinto para a média. Não tiramos a média de seus cálculos intermediários para só depois transformar o resultado em nota."),
     }
     return labels.get(relative)
