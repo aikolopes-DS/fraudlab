@@ -132,6 +132,24 @@ O build ainda confere o hash do MP4 local, registra o hash e a URL externa no ma
 
 ## Testes e limites
 
+A continuação de 17/11 é reproduzida em um clone com os mesmos CSVs e novos
+nomes de execução. Todos os candidatos abaixo usam cinco folds/seed42,
+pré-processamento local ao treino e nenhuma reserva independente:
+
+```powershell
+$fraudRoundArgs = @("--phase", "exploratory_full_data_cv", "--folds", "5", "--seed", "42", "--holdout-fraction", "0", "--fixed-training", "--threads", "4", "--logistic-c", "0.3", "--target-smoothing", "50", "--validation-note", "Exploratory full-data CV5/42, no independent holdout; fixed candidates and fold-local preprocessing.")
+python -m fraudlab train @fraudRoundArgs --model offset --feature-set value_digits --name round2-offset1000 --iterations 1000 --num-leaves 4 --learning-rate 0.03 --l2-leaf-reg 5 --min-child-samples 100
+python -m fraudlab train @fraudRoundArgs --model glm --feature-set value_digits --name round2-glm-splines12 --glm-spline-knots 12
+python -m fraudlab train @fraudRoundArgs --model glm --feature-set paired_digits --name round3-glm-pairs
+python -m fraudlab train @fraudRoundArgs --model glm --feature-set paired_digits --name round3-glm-pairs-frequency --glm-frequency
+```
+
+Os planos das rodadas 2/3 descrevem as combinações de probabilidades e seus pesos.
+A rodada 4 contém a fórmula de duas operações fixas em log-odds; como elas não
+atingiram o critério, não foi acrescentada uma API de produção para essa operação.
+Os resultados negativos não alteram a receita selecionada nem enviam arquivos
+automaticamente ao Kaggle. Não reexecute a avaliação histórica da reserva.
+
 ```powershell
 python -m pytest tests presentation site/test_build.py -q
 node --check site/app.js

@@ -63,12 +63,20 @@ A híbrida atual 58438450 usa `explore5-glm` e `explore5-lgbm`, com médias de t
 | --- | --- |
 | `src/fraudlab/data.py`, `splits.py`, `features.py` | Contratos, hashes, divisões e transformações determinísticas |
 | `models.py`, `experiment.py` | Modelos, ajustes por fold, OOF, checkpoints, médias e metadados |
+| `offset.py`, `frequency.py` | Experimentos opcionais: árvores residuais sobre o GLM e contagens por categoria ajustadas no treino |
 | `external.py` | Importação da única release pública aprovada e atribuição |
 | `holdout.py`, `refit.py` | Avaliação reservada e refits do protocolo próprio histórico |
 | `notebooks/hybrid-recipe.json`, `scripts/kaggle_notebook.py` | Receita portátil e exportação offline da fonte Git fixada |
 | `evidence/`, `presentation/`, `site/` | Fatos públicos, conteúdo didático, mídia e estudo de caso |
 
 O núcleo é uma CLI Python sobre arquivos locais. Não há banco de dados ou servidor de treinamento. `evidence/public.json` concentra os fatos publicados; o README mantém o acompanhamento único do trabalho. Dados, credenciais e artefatos privados ficam fora do Git.
+
+As extensões de 17/11 são opcionais: `--glm-spline-knots`, `--glm-frequency` e
+`--feature-set paired_digits`. Seus planos e resultados ficam em `evidence/`.
+Elas não atingiram o critério de promoção; a receita operacional híbrida acima
+permanece a mesma. Os quatro pares usam bins fixos, sem seleção por rótulos;
+as contagens são aprendidas só no treino de cada fold. O offset persiste GLM e
+árvores juntos e soma explicitamente as margens antes da sigmoid.
 
 O notebook canônico é um único arquivo, exportado do SHA `30dc7eb723e4cf31291bb075ed6c0d943557264c` com hashes de cada módulo e sem instalação remota. A versão 3 foi publicada por Save sem execução, com os inputs anexados e internet desativada. Isso compartilha o código; não comprova treino naquele notebook. O gerador preserva acesso ao protocolo anterior por `--protocol` e pela história Git.
 

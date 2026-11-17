@@ -109,6 +109,29 @@ contém EDA, sem uma equação geradora verificável. Por isso não reconstruím
 coeficientes ou distribuições como se fossem fatos conhecidos. Nenhum CSV
 externo foi acrescentado aos treinos desta rodada.
 
-Esses são candidatos, não melhorias comprovadas. O resultado e a decisão de
-submeter serão registrados após medir as OOF compatíveis; a antiga reserva
-continua apenas histórica.
+Esses candidatos foram medidos pelas OOF compatíveis. O resultado e a decisão
+estão registrados abaixo; a antiga reserva continua apenas histórica.
+
+### Resultado da continuação
+
+As quatro configurações próprias foram treinadas nos cinco folds. Curvas e
+árvores residuais, quatro pares predefinidos e frequências de categoria não
+produziram uma melhoria que atendesse ao plano. A melhor combinação nova teve
+OOF 0,95132140 contra 0,95125863 da composição publicada, com somente três folds
+melhores. Duas combinações fixas em log-odds também ficaram abaixo do critério.
+Não houve novo envio ao Kaggle. Planos, folds e decisões estão nas evidências
+das [rodadas 2](../evidence/round2-results.json),
+[3](../evidence/round3-results.json) e [4](../evidence/round4-results.json).
+
+As frequências usam `log(1 + contagem no treino)`; os quatro pares são
+codificados pelo mesmo target encoder internamente cross-fitted. Não houve
+seleção de pares por estatísticas calculadas com os rótulos do fold avaliado.
+O ganho da frequência foi medido na comparação própria, mas não bastou para
+substituir a composição final pelo critério previamente registrado.
+
+Uma segunda fonte neural [Megayak v4](https://www.kaggle.com/datasets/megayak/s6e11-target-first-lm/versions/4)
+foi auditada e não incorporada. O código visível exclui folds, mas faltam os
+vínculos que associam a execução aos vetores finais. Além disso, o OOF é descrito
+como log-odds e o teste como uma combinação de ranks. Isso impede tratar os dois
+como probabilidades equivalentes. A [auditoria](../evidence/external-megayak-audit.json)
+registra evidências positivas, lacunas e hashes; não afirma vazamento pelo autor.

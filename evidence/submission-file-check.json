@@ -1,7 +1,12 @@
 {
-  "submission_id": 58438450,
-  "remote_download_sha256": "f5f658279779eab4d94b6b1b118fc39e2774c9ee6fdb4b80e2f06770cceb47d4",
-  "local_sha256": "f5f658279779eab4d94b6b1b118fc39e2774c9ee6fdb4b80e2f06770cceb47d4",
-  "identical_bytes": true,
-  "scope": "Official Kaggle download of the submitted file; ranking is independently checked in public.json"
+  "ref": 58438450,
+  "run": "explore5-public25",
+  "submission_sha256": "f5f658279779eab4d94b6b1b118fc39e2774c9ee6fdb4b80e2f06770cceb47d4",
+  "downloaded_submission_sha256": "f5f658279779eab4d94b6b1b118fc39e2774c9ee6fdb4b80e2f06770cceb47d4",
+  "submission_file_verified": true,
+  "public_auc": 0.95097,
+  "ranking": 828,
+  "total_teams": 2046,
+  "observed_at": "2026-11-17T05:19:02.006857+00:00",
+  "source": "https://www.kaggle.com/competitions/playground-series-s6e11/leaderboard"
 }

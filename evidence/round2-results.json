@@ -108,5 +108,21 @@
   ],
   "decision": "do_not_submit",
   "new_kaggle_submissions": 0,
-  "reason": "Neither fixed comparison met the predeclared pooled gain and fold-consistency thresholds. Published selected solution remains unchanged."
+  "reason": "Neither fixed comparison met the predeclared pooled gain and fold-consistency thresholds. Published selected solution remains unchanged.",
+  "real_checkpoint_reload_check": [
+    {
+      "run": "round2-offset1000",
+      "real_test_rows": 1024,
+      "averaged_checkpoints": 5,
+      "max_absolute_error": 2.220446049250313e-16,
+      "passed": true
+    },
+    {
+      "run": "round2-glm-splines12",
+      "real_test_rows": 1024,
+      "averaged_checkpoints": 5,
+      "max_absolute_error": 1.1102230246251565e-16,
+      "passed": true
+    }
+  ]
 }

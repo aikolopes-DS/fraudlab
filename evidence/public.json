@@ -5,7 +5,7 @@
     "deadline_utc": "2026-11-30T23:59:00Z"
   },
   "stage": "submitted",
-  "updated_at": "2026-11-16T17:23:17.333618+00:00",
+  "updated_at": "2026-11-17T05:19:02.006857+00:00",
   "results": {
     "local_auc": 0.9512586315198723,
     "fold_scores": [
@@ -16,10 +16,10 @@
       0.94636140814146
     ],
     "public_auc": 0.95097,
-    "ranking": 804,
-    "total_teams": 2010,
+    "ranking": 828,
+    "total_teams": 2046,
     "submission_id": "58438450",
-    "observed_at": "2026-11-16T17:23:17.333618+00:00",
+    "observed_at": "2026-11-17T05:19:02.006857+00:00",
     "local_auc_scope": "development_oof",
     "local_auc_run": "explore5-public25",
     "holdout_auc": null,
@@ -144,12 +144,12 @@
         "is_fraud"
       ]
     },
-    "selection_reason": "A mistura com 25% do GPT-2 público melhorou a OOF nos cinco folds alinhados. As opções de 25% e 50% ficaram praticamente empatadas; escolhemos a menor dependência externa. Os pesos efetivos são 56,25% GLM, 18,75% LightGBM e 25% GPT-2 de Masaya Kawamata. A escolha foi feita antes de consultar seu score no Kaggle.",
     "effective_weights": {
       "glm": 0.5625,
       "lightgbm": 0.1875,
       "external_gpt2": 0.25
-    }
+    },
+    "selection_reason": "A mistura com 25% do GPT-2 público melhorou a OOF nos cinco folds alinhados. As opções de 25% e 50% ficaram praticamente empatadas; escolhemos a menor dependência externa. Os pesos efetivos são 56,25% GLM, 18,75% LightGBM e 25% GPT-2 de Masaya Kawamata. A escolha foi feita antes de consultar seu score no Kaggle."
   },
   "checks": {
     "data_verified": true,
@@ -162,7 +162,8 @@
     "A CV 5/42 desta extensão foi usada na seleção e não é uma avaliação final independente.",
     "A reserva de 15% pertence ao protocolo inicial; não é independente para a extensão neural pública.",
     "O componente GPT-2 usa previsões licenciadas de Masaya Kawamata. Seu treinamento foi auditado por leitura de código, sem reexecução pelo FraudLab.",
-    "CI remota não iniciou: GitHub informa bloqueio da conta por cobrança. Testes locais foram executados separadamente."
+    "CI remota não iniciou: GitHub informa bloqueio da conta por cobrança. Testes locais foram executados separadamente.",
+    "As rodadas exploratórias de 17/11 não atingiram o critério prévio de melhoria; a composição submetida permanece a mesma. O vídeo v0.1 conserva o snapshot de 16/11."
   ],
   "external_components": [
     {

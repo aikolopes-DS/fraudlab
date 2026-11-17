@@ -1,0 +1,107 @@
+{
+  "created_at": "2026-11-17T05:13:22.654521+00:00",
+  "decision": "reject_integration_pending_provenance",
+  "scope": "Independent read-only provenance audit. No foreign Python imported or executed; arrays loaded with allow_pickle=False. No fit, blend or submission.",
+  "dataset": {
+    "ref": "megayak/s6e11-target-first-lm/4",
+    "url": "https://www.kaggle.com/datasets/megayak/s6e11-target-first-lm/versions/4",
+    "license": "CC0-1.0",
+    "license_evidence": "Official Kaggle CLI 2.2.5 versioned dataset download output",
+    "files_listed_by_official_cli": [
+      "README.md",
+      "lm_member.py",
+      "lm_oof.npy",
+      "lm_test.npy"
+    ]
+  },
+  "files": {
+    "lm_member.py": {
+      "bytes": 24618,
+      "sha256": "e090cfe92942abf4af45797df50f7ccb92dff7d992eb1e35a144a6543e831a7f"
+    },
+    "lm_oof.npy": {
+      "bytes": 2799968,
+      "sha256": "181ceac8f3a48fcf9a1702e1222ee13178f0688a28c1aff22c8f881532ea981a"
+    },
+    "lm_test.npy": {
+      "bytes": 1200064,
+      "sha256": "3168779be644a530c6bdc4c141cae168bfc2feb01ac21090c917cc978a7687d3"
+    },
+    "README.md": {
+      "bytes": 804,
+      "sha256": "e63cded25262c9f029731b6edf1427531dbcec58fda6b0696ce490c31cf5e5c0"
+    }
+  },
+  "arrays": {
+    "lm_oof.npy": {
+      "shape": [
+        699960
+      ],
+      "dtype": "float32",
+      "finite": true,
+      "nan_count": 0,
+      "min": -15.64698314666748,
+      "max": 9.727743148803711,
+      "unique_values": 679927,
+      "expected_shape_matches": true,
+      "auc_assuming_claimed_train_order": 0.9504282674228537,
+      "fold_auc_assuming_claimed_split": [
+        0.948505568399054,
+        0.9506818231843808,
+        0.9560849667798148,
+        0.9506042586063622,
+        0.946380901046167
+      ]
+    },
+    "lm_test.npy": {
+      "shape": [
+        299984
+      ],
+      "dtype": "float32",
+      "finite": true,
+      "nan_count": 0,
+      "min": 6.667022262263345e-06,
+      "max": 0.9999983310699463,
+      "unique_values": 239603,
+      "expected_shape_matches": true
+    }
+  },
+  "primary_notebook": {
+    "ref": "megayak/s6e11-per-value-digit-te-shallow-tree-stack",
+    "url": "https://www.kaggle.com/code/megayak/s6e11-per-value-digit-te-shallow-tree-stack",
+    "sha256": "785171eb00c096e0fffec092a34a9b706c33debaaa65f1d96f9b433b1de5cf4c",
+    "finding": "Section 4b says train-row OOF 5/42 and test rank mean of five-fold mean log-odds plus full-data refit. Its code loads the two distributed arrays; it does not create them.",
+    "exported_metadata_contains_dataset_version": false,
+    "runtime_input_version_limit": "The CLI-exported dataset_sources contains an unversioned slug; the runtime input version is not confirmed by that export."
+  },
+  "positive_evidence": [
+    "README explicitly claims train.csv/test.csv row order and StratifiedKFold(5,shuffle=True,random_state=42).",
+    "lm_member.py build_cache reads CSV row order without sorting, concatenates train/test/original blocks and records ntr/nte.",
+    "run creates deterministic folds and passes training indices folds[f][0] to train, validation indices folds[f][1] to score.",
+    "score restores row order after its length sort using res[srt]=out.",
+    "Original-only replica training selects rows after ntr+nte; no competition test labels are used in visible training code.",
+    "Version 4 arrays have expected lengths and finite float32 values. OOF AUC 0.9504282674 is compatible with the author report 0.95043, conditional on the claimed row order.",
+    "A separate author freezes copies with matching hash prefixes 181ceac8/3168779b, supporting byte identity across publications, not row/fold identity."
+  ],
+  "blocking_gaps": [
+    "No source-side raw CSV hashes, ID arrays or ordered row fingerprints bind the published vectors to our exact competition CSVs.",
+    "No fold_ids.npy, row-index file, per-fold likelihood arrays or fold logs are distributed; the claimed 5/42 split cannot be independently compared to the producing assignment.",
+    "lm_member.py exports only oof_f.npy/test_f.npy likelihood tensors; the concat/aggregation exporter for lm_oof.npy/lm_test.npy is absent from both the dataset and inspected primary notebook.",
+    "The dataset lacks a manifest binding output hashes to exporter revision, actual environment flags/hyperparameters and input data/cache.",
+    "OOF contains logits, while test is rank-based; treating both arrays as probabilities or both as logits would violate the source-described representation."
+  ],
+  "representation": {
+    "oof": "Claimed per-row target-first log-odds; observed outside[0,1].",
+    "test": "Primary notebook describes rank mean of five-fold-mean log-odds and full-data refit, not calibrated probabilities. Observed mean0.500001667 and near-uniform quantiles support this, but do not reconstruct the missing aggregation."
+  },
+  "minimum_to_reconsider": [
+    "Producer manifest for the immutable release with raw train/test hashes or ordered IDs, array hashes and explicit representations.",
+    "Fold assignment matching raw row order and an auditable exporter assigning OOF scores only to excluded indices.",
+    "Explicit test aggregation source for the fold average/refit rank combination, with producing settings/version."
+  ],
+  "limits": [
+    "This is insufficient evidence under our established import contract, not evidence that the author leaked labels.",
+    "A high pooled or per-fold AUC does not prove row identity, source data identity or exclusion from training.",
+    "No competitive blend was measured, and the existing validated Masaya component remains unchanged."
+  ]
+}

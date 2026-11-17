@@ -1,0 +1,110 @@
+{
+  "recorded_at": "2026-11-17T05:18:18.170054+00:00",
+  "plan": "evidence/round3-plan.json",
+  "baseline_oof_auc": 0.9512586315198723,
+  "results": [
+    {
+      "run": "round3-glm-pairs",
+      "model": "glm",
+      "oof_auc": 0.9503419823057347,
+      "fold_scores": [
+        0.949516560838945,
+        0.9510346374576999,
+        0.9554667618988872,
+        0.9506950380283624,
+        0.9451685206743733
+      ],
+      "delta_vs_published_oof": -0.0009166492141375882,
+      "fold_deltas": [
+        -0.000786245596378965,
+        -0.0008382119918995956,
+        -0.0008926871023360317,
+        -0.0008354310642335605,
+        -0.0011928874670866785
+      ],
+      "improved_folds": 0,
+      "eligible_to_submit": false,
+      "source_commit": "c834602a4ba7c19961fe8955f06d760d05566116",
+      "source_was_dirty": false,
+      "submission_sha256": "c3b99c67dcc1b198b382b5e96ebd5ae7c9f464a0c732815f88ce2108b3304a60"
+    },
+    {
+      "run": "round3-glm-pairs-frequency",
+      "model": "glm",
+      "oof_auc": 0.9504778725307367,
+      "fold_scores": [
+        0.9494261970716266,
+        0.9511255970962419,
+        0.9556611223316966,
+        0.9507135164382281,
+        0.9456334327436776
+      ],
+      "delta_vs_published_oof": -0.0007807589891356548,
+      "fold_deltas": [
+        -0.0008766093636973782,
+        -0.000747252353357597,
+        -0.0006983266695266277,
+        -0.0008169526543678751,
+        -0.0007279753977823544
+      ],
+      "improved_folds": 0,
+      "eligible_to_submit": false,
+      "source_commit": "c834602a4ba7c19961fe8955f06d760d05566116",
+      "source_was_dirty": false,
+      "submission_sha256": "6be127f358ebf5d5506924451bb05ebde305f4f9030e7cf413830306a9e21ef5"
+    },
+    {
+      "run": "round3-pairs-public25",
+      "model": "blend",
+      "oof_auc": 0.9512534705541472,
+      "fold_scores": [
+        0.9502961729203786,
+        0.9518866360150231,
+        0.9563375930847955,
+        0.9515106452730325,
+        0.9463688311986601
+      ],
+      "delta_vs_published_oof": -5.160965725115041e-06,
+      "fold_deltas": [
+        -6.633514945342256e-06,
+        1.3786565423612451e-05,
+        -2.1855916427782063e-05,
+        -1.982381956344703e-05,
+        7.423057200139915e-06
+      ],
+      "improved_folds": 2,
+      "eligible_to_submit": false,
+      "source_commit": "c834602a4ba7c19961fe8955f06d760d05566116",
+      "source_was_dirty": false,
+      "submission_sha256": "7159059a3ed1b533b93e30466d78b224f19058515010b505234162ed70a6ddb3"
+    },
+    {
+      "run": "round3-frequency-public25",
+      "model": "blend",
+      "oof_auc": 0.9513213957790125,
+      "fold_scores": [
+        0.9502685944083852,
+        0.9519309195693204,
+        0.9564639404162851,
+        0.9514939472783095,
+        0.9465809709254417
+      ],
+      "delta_vs_published_oof": 6.276425914020223e-05,
+      "fold_deltas": [
+        -3.421202693876246e-05,
+        5.807011972092102e-05,
+        0.0001044914150618581,
+        -3.6521814286483156e-05,
+        0.00021956278398171936
+      ],
+      "improved_folds": 3,
+      "eligible_to_submit": false,
+      "source_commit": "c834602a4ba7c19961fe8955f06d760d05566116",
+      "source_was_dirty": false,
+      "submission_sha256": "b5b367331e46ce85129f840ebeb14e3653d5d586e5049b02ecb0b73819f6e9c8"
+    }
+  ],
+  "decision": "do_not_submit",
+  "new_kaggle_submissions": 0,
+  "reason": "No fixed candidate met both predeclared delta>0.0001 and at least four improved folds. Frequency improves the own-model ablation but not enough to promote the final mixture."
+}

@@ -1,0 +1,58 @@
+{
+  "recorded_at": "2026-11-17T05:18:18.280608+00:00",
+  "plan": "evidence/round4-plan.json",
+  "baseline_oof_auc": 0.9512586315198723,
+  "results": [
+    {
+      "name": "round4-logit-original",
+      "oof_auc": 0.9512281071067344,
+      "delta": -3.0524413137889006e-05,
+      "fold_scores": [
+        0.9503004315499358,
+        0.9518864340482093,
+        0.956326065440504,
+        0.951552952659737,
+        0.9462137735078031
+      ],
+      "fold_deltas": [
+        -2.37488538812336e-06,
+        1.3584598609783782e-05,
+        -3.338356071924675e-05,
+        2.2483567141073912e-05,
+        -0.0001476346336568568
+      ],
+      "improved_folds": 2,
+      "eligible_to_submit": false
+    },
+    {
+      "name": "round4-logit-frequency",
+      "oof_auc": 0.9513176199871042,
+      "delta": 5.8988467231846364e-05,
+      "fold_scores": [
+        0.95026721423939,
+        0.9519615657029181,
+        0.9564433584443748,
+        0.9515613855510058,
+        0.9464926461770236
+      ],
+      "fold_deltas": [
+        -3.5592195933964454e-05,
+        8.871625331863253e-05,
+        8.390944315150861e-05,
+        3.091645840980206e-05,
+        0.0001312380355635856
+      ],
+      "improved_folds": 4,
+      "eligible_to_submit": false
+    }
+  ],
+  "input_oof_sha256": {
+    "explore5-glm": "aaa2b451d2cc80ef025b8af7288b3e599c9de9489802ebb828d6c2dc1f4d9491",
+    "explore5-lgbm": "2a188175419c819bf5d5098125423afa8e95cd79cd965d2108b834cc4016a234",
+    "explore5-public-gpt2-v2": "4c37722b34d520a6de7d94565140cd0681baad6fb6c012d0b7a86a25b82a4dcb",
+    "round3-glm-pairs-frequency": "0e761067bcf5f53f6d19349f56d50fdd805f2e8619422613bee6d9b987ddd1eb"
+  },
+  "decision": "do_not_submit",
+  "new_kaggle_submissions": 0,
+  "scope": "Two fixed operations on compatible OOF; not a new fitted model or independent evaluation. No production logit-pooling API was added."
+}

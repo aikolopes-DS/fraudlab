@@ -1,0 +1,14 @@
+{
+  "date": "2026-11-17",
+  "scope": "Two fixed, label-free log-odds pooling comparisons on already trained compatible OOF predictions; no new training or weight search",
+  "baseline_run": "explore5-public25",
+  "baseline_oof_auc": 0.9512586315198723,
+  "weights": [0.5625, 0.1875, 0.25],
+  "candidates": [
+    {"name": "round4-logit-original", "sources": ["explore5-glm", "explore5-lgbm", "explore5-public-gpt2-v2"]},
+    {"name": "round4-logit-frequency", "sources": ["round3-glm-pairs-frequency", "explore5-lgbm", "explore5-public-gpt2-v2"]}
+  ],
+  "operation": "sigmoid(sum_j w_j * logit(clip(p_j,1e-6,1-1e-6)))",
+  "validation": "Exploratory aligned OOF5/42; no independent holdout and no public feedback",
+  "submission_rule": "Select highest local OOF before public feedback; submit at most one candidate only if delta exceeds 0.0001 and at least four of five folds improve; otherwise retain the published solution."
+}

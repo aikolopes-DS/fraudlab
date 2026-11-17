@@ -2,18 +2,18 @@
   "site": {
     "url": "https://aikolopes-fraudlab.aikol9pes.chatgpt.site",
     "project_id": "appgprj_6afb134a2cec819188da595bd6a8ba6d",
-    "version_id": "appgprj_6afb134a2cec819188da595bd6a8ba6d~appgver_0db38dee6d148191a57c887148001387",
-    "version_number": 3,
-    "source_commit": "5ebb8895355883a09916e028ed77c5d37c0ffc1c",
-    "deployment_id": "appgdep_6afb4a0d01b08191ace4430ba061afab",
+    "version_id": "appgprj_6afb134a2cec819188da595bd6a8ba6d~appgver_e369f66fbdb881918a9d2250bb98d1d5",
+    "version_number": 4,
+    "source_commit": "b0987aa1ce09241871b820825ecad41461f34020",
+    "deployment_id": "appgdep_6afbe4cf6a708191afbb071e7f5b7642",
     "deployment_status": "succeeded",
-    "published_at": "2026-11-16T18:23:22.833299+00:00",
-    "archive_sha256": "sha256:17b4237e7f1c48648bdcf3c7e3ff98908dd46fc2b637d16e8a99af8b7372971c",
+    "published_at": "2026-11-17T05:23:40.861520+00:00",
+    "archive_sha256": "sha256:c0f960d003f4ff1e938a898304fe13f2c7949769b8718ce8799bf5089633306b",
     "video_host": "GitHub Release",
     "site_audience": "public",
     "browser_check": {
       "url": "https://aikolopes-fraudlab.aikol9pes.chatgpt.site",
-      "observed_at": "2026-11-16T18:23:32.896979+00:00",
+      "observed_at": "2026-11-17T05:24:10.576161+00:00",
       "scope": "Anonymous real published page: responsive UI, links, captions and sampled video playback/seek; not continuous full watching or human listening",
       "viewports": [
         {
@@ -31,37 +31,9 @@
           "playback_started": true,
           "seek_samples": [
             {
-              "slide": 1,
-              "requested_time": 11.584013605442177,
-              "time": 11.584013,
-              "error": null,
-              "activeCues": 1
-            },
-            {
-              "slide": 73,
-              "requested_time": 1601.944829931975,
-              "time": 1601.944829,
-              "error": null,
-              "activeCues": 1
-            },
-            {
-              "slide": 97,
-              "requested_time": 2271.8209977324273,
-              "time": 2271.820997,
-              "error": null,
-              "activeCues": 1
-            },
-            {
               "slide": 109,
               "requested_time": 2518.4091383219948,
               "time": 2518.409138,
-              "error": null,
-              "activeCues": 1
-            },
-            {
-              "slide": 116,
-              "requested_time": 2661.0491609977303,
-              "time": 2661.04916,
               "error": null,
               "activeCues": 1
             }
@@ -95,7 +67,8 @@
       ],
       "page_errors": [],
       "passed": true
-    }
+    },
+    "delta_check_scope": "Updated ranking/date and explicit historical video label; video bytes unchanged, sampled playback/captions verified. Prior full audiovisual QA remains valid for the unchanged v0.1 asset."
   },
   "release": {
     "assets": [
@@ -126,6 +99,7 @@
     "media_hashes_match_reviewed_files": true,
     "zip_sha256": "e2f55fea77a06d63ef72409407654145ff38fa85e610153252990f76d327dfab"
   },
-  "code_commit": "447289dcfbf4cfd062b8e57001936fb7d861be1d",
-  "verified_at": "2026-11-16T18:26:20.391204+00:00"
+  "code_commit": "c834602a4ba7c19961fe8955f06d760d05566116",
+  "verified_at": "2026-11-17T05:26:34.672169+00:00",
+  "release_code_commit": "447289dcfbf4cfd062b8e57001936fb7d861be1d"
 }
