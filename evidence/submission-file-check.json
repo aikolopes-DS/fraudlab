@@ -1,31 +1,14 @@
 {
-  "ref": 58470267,
-  "run": "round10-offset-bpe-frequency-public25",
-  "submission_sha256": "274cbe4ea90d9dc4893140cad55682f3627ced02163fff48655df4b095e428e7",
-  "downloaded_submission_sha256": "274cbe4ea90d9dc4893140cad55682f3627ced02163fff48655df4b095e428e7",
+  "ref": 58481744,
+  "run": "round18-pooled-share100-public25",
+  "submission_sha256": "18c92eab3d28dcefed12c5a1eebdd9380f45e13972875bf5b31cd4a0e6151e53",
+  "downloaded_submission_sha256": "18c92eab3d28dcefed12c5a1eebdd9380f45e13972875bf5b31cd4a0e6151e53",
   "submission_file_verified": true,
-  "public_auc": 0.95134,
-  "ranking": 723,
-  "total_teams": 2112,
-  "observed_at": "2026-11-17T18:24:25.231115+00:00",
+  "public_auc": 0.95141,
+  "ranking": 714,
+  "total_teams": 2125,
+  "observed_at": "2026-11-17T20:53:43.234376+00:00",
   "source": "https://www.kaggle.com/competitions/playground-series-s6e11/leaderboard",
-  "scope": "Official Kaggle completed submission, original uploaded bytes matched to local CSV by SHA-256, and fresh matching best leaderboard row.",
-  "passed": true,
-  "history": [
-    {
-      "ref": 58470267,
-      "run": "round10-offset-bpe-frequency-public25",
-      "submission_sha256": "274cbe4ea90d9dc4893140cad55682f3627ced02163fff48655df4b095e428e7",
-      "downloaded_submission_sha256": "274cbe4ea90d9dc4893140cad55682f3627ced02163fff48655df4b095e428e7",
-      "submission_file_verified": true,
-      "public_auc": 0.95134,
-      "ranking": 712,
-      "total_teams": 2089,
-      "observed_at": "2026-11-17T13:34:51.848445+00:00",
-      "source": "https://www.kaggle.com/competitions/playground-series-s6e11/leaderboard",
-      "scope": "Official Kaggle completed submission, original uploaded bytes matched to local CSV by SHA-256, and fresh matching best leaderboard row.",
-      "passed": true
-    }
-  ],
-  "current_service_audit": "evidence/aed-services.json"
+  "method": "Official Kaggle CLI downloaded the original submitted CSV; local/remote SHA256 matched",
+  "evidence_scope": "Selected R18 only; prior R10 proof remains in its historical record"
 }

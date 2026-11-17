@@ -1,0 +1,161 @@
+{
+  "date": "2026-11-17",
+  "status": "prospective; no R20 full-data fit performed",
+  "hypothesis": "Refit the fixed R18 own recipe and the unchanged selected LightGBM on every699960labelled row to estimate rare values/interactions with more support. This changes inference from five80%-trained models to one100%-trained model per family; improvement is not established.",
+  "operation": "refit_selected_exploratory_cv",
+  "name": "round20-refit-joint-public25",
+  "source": {
+    "revision": "8a1c7fd141b43e41b0d43e3a07b0c5ad0bf41ae5",
+    "sha256": {
+      "__init__.py": "14479eff95a0233e8bf2d9f359843c36f53f36b92cc95c3e452f75bfb2982dcc",
+      "__main__.py": "b8fc5d9e4cf77f7319f9e2f7956f490bb71da6ce3c6842e279f46194672a7fae",
+      "bpe.py": "fb71799ca075c657a8344f85d6a7e91653d1f319e24b5e287c17565cea456d4e",
+      "data.py": "f22355cc51fa6e6162b24e639923f40a11a23af00afcb65553090176271c8326",
+      "experiment.py": "85a0995157f4b4453206d88a41ee1196765f7bb5cd6cf9dd55d5dd89ba87bb7a",
+      "external.py": "05ec4ec64e4a2c5cf1137c949646bed14fe83fb04506b8f2f973c2c7633c5e08",
+      "features.py": "184fe327468194f34563b25aee2268348ca854d59e4916f8e3eacdd1b6420424",
+      "frequency.py": "de06b4f581f6864066d94b140d67e4ed16f7cef054a30ef20bc408a972279ce6",
+      "holdout.py": "e3702891766326710c3b56dd7a7fe69f2f778acea3316665f130aa6955e2f4e3",
+      "joints.py": "620851854c56aceceba02d5855fe22525e748973e80ffe0f83040f5e75a271e8",
+      "models.py": "e00d858bac42b79362ef408cbb7f359bca44a4828931b0e4943d660a3eb095b5",
+      "neural_offset.py": "042eec5ea088477bb37b045ace2f537c6e6e39ff49b3e810dc5e501b4ea8e487",
+      "offset.py": "a4ea551e4ddf89aedc87f313eb07425aebc60f7d967986524a873a73565fdc4f",
+      "original.py": "4db9d8d54929ba9d9a36fd55b8f8655611a800d22fade59af079e0497ce7b934",
+      "pooled.py": "6f15acb31c8a878efc262410a0ddf3f6b733b1a636a7bfa917758d568164601a",
+      "refit.py": "981074be27e2ed24aa45dbaabeda32677f83ae59aa74f12dd6a56de152fde4e9",
+      "scores.py": "8bae07482b56eb488a388c54ecd7ec0cf87a8644d9e98e53d7c1fcc75d2e58a1",
+      "splits.py": "41215280332984010f5b616bbf6a675c623b7af3e3f00604eb3238e79c709af9",
+      "strings.py": "f3248a9c0e7bbda655e29ecac02886dfa4cd4f34f35007ad90cf99a17efccbb0",
+      "tabm.py": "df22ff1a120c8a6fde59052ea7a1b509ff1b7e7acc83d774f670a1daf4a4e667",
+      "tokens.py": "8e3abfcbe2e437eee859d120f2a89b0a45bd84dfe389a06c11b622ee5ac9cbb4",
+      "transductive.py": "b2848df445f94d1135df27b99e7586048c279860b244dcf9544c30687263ca3b"
+    }
+  },
+  "entrypoint": "scripts/refit_selected_cv.py",
+  "entrypoint_sha256": "b58c0b9919a6aa17874170c3276cc528c26a86639c50012cb0a35aa26e3bc754",
+  "data": "data/raw",
+  "output": "artifacts/runs",
+  "id_column": "id",
+  "target": "is_fraud",
+  "rows": {
+    "train": 699960,
+    "test": 299984
+  },
+  "data_hashes": {
+    "train.csv": "87eaa10b8d17a7e4f657b8da1c66242431338bdd8b6ad45861521ac0c0e9fbd5",
+    "test.csv": "10f516959020357b565abaaa4fd25baae97fc2f536d0805695bb7cc15c1660f0",
+    "sample_submission.csv": "13fc6ed8b73de5329884ec490f2a0b750cf29a7cda772b78cfa0cf486f6f35fa"
+  },
+  "reference_cv_auc": 0.9516524825255244,
+  "reference_cv_scope": "Historical exploratory all-label CV5/42 of round18-pooled-share100-public25, reused only to explain recipe selection. It is not a score of these refits. No independent holdout remains.",
+  "weights": [
+    0.5625,
+    0.1875,
+    0.25
+  ],
+  "refit_names": {
+    "offset": "round20-refit-joint-offset",
+    "lightgbm": "round20-refit-lgbm"
+  },
+  "inputs": {
+    "selection": {
+      "path": "artifacts/runs/round18-pooled-share100-public25",
+      "sha256": {
+        "config.json": "929e7de4e6b6c76fe397672cea0d6187df4db6e9a88b3770af93a3f3bd59a90e",
+        "metrics.json": "a027c62b262accdf9bf23f0d2bf29baf1465ddade0f1202472f1163f25799563",
+        "status.json": "970587076af8c4ebf6e94dc3999b017a4c3792faf7660c408eb91572fd86128b",
+        "oof.csv": "0eda1f90dcfa9f829d4d042da64d1fbe8d3e1c95fd583bc942e0b166133e11b8",
+        "predictions.csv": "18c92eab3d28dcefed12c5a1eebdd9380f45e13972875bf5b31cd4a0e6151e53",
+        "submission.csv": "18c92eab3d28dcefed12c5a1eebdd9380f45e13972875bf5b31cd4a0e6151e53"
+      }
+    },
+    "offset": {
+      "path": "artifacts/runs/round18-joint-bpe-pooled-offset",
+      "sha256": {
+        "config.json": "0780db71a21e97d5fbd8cbc338403ae7cf31506f962e525f807df6a4a79565e6",
+        "metrics.json": "4523e4220096af21367ca76f1de6157d7d1a5a6d3052f1319f7b13b0f49c9b55",
+        "status.json": "970587076af8c4ebf6e94dc3999b017a4c3792faf7660c408eb91572fd86128b",
+        "oof.csv": "4c268f8a229c644904e765660532669f9e3729ffb1d030783b3c8fefe3a5b767",
+        "predictions.csv": "51b34e8ff57a9e41633de7f5ba93ef841666409048ea98b8b5fe3da49f3e0bde",
+        "submission.csv": "51b34e8ff57a9e41633de7f5ba93ef841666409048ea98b8b5fe3da49f3e0bde",
+        "fold-0.joblib": "bca790c60cb088cf174b9a0858e99899789a571437a9e2885b5f2e49fd55903e",
+        "fold-1.joblib": "bac7493cc7f9f246d3af1053e701fd8fefd137d8e1617072ca27b5835f01390e",
+        "fold-2.joblib": "6329dc964cece07a19f878d0e9ec794796c2170c6e50c610fcac1165b1572e37",
+        "fold-3.joblib": "90c35c979c9721867fbb5aa2629b27f9dd56e7554e567a6ac671fff7b5d85da5",
+        "fold-4.joblib": "2ae14333c16fb0074417ef746341c336dbef9f919c1fe1a11d82d0c7a4332192"
+      },
+      "parameters_sha256": "c5268c2277c9b11975a06525e73b13854a459ee98db7f70f51d3389ec40116ed",
+      "parameters_summary": {
+        "feature_set": "joint_bpe",
+        "iterations": 1000,
+        "num_leaves": 4,
+        "learning_rate": 0.03,
+        "l2_leaf_reg": 5.0,
+        "min_child_samples": 100,
+        "target_smoothing": 50.0,
+        "threads": 4,
+        "seed": 42,
+        "fixed_training": true,
+        "glm_frequency": true,
+        "glm_pooled_tokens": true,
+        "glm_inner_folds": 5,
+        "logistic_c": 0.3,
+        "glm_spline_knots": 0
+      },
+      "encoded_features": 223
+    },
+    "lightgbm": {
+      "path": "artifacts/runs/explore5-lgbm",
+      "sha256": {
+        "config.json": "50968cd9ae1c1734ae439657839a24658480341e5dbd7aeb9a78a8e4dbb7230a",
+        "metrics.json": "cbbec3ffbcc1461e2f34835955808e3de7ef9306336ea93bf21f3453a0950e4d",
+        "status.json": "970587076af8c4ebf6e94dc3999b017a4c3792faf7660c408eb91572fd86128b",
+        "oof.csv": "2a188175419c819bf5d5098125423afa8e95cd79cd965d2108b834cc4016a234",
+        "predictions.csv": "54c9fc1229d1b8aa253520b79c4493b0ae97902ee1f76b73baa9b09d48ccd142",
+        "submission.csv": "54c9fc1229d1b8aa253520b79c4493b0ae97902ee1f76b73baa9b09d48ccd142",
+        "fold-0.joblib": "3384d6490f2879ca4f5b1490a1697b4f56dd18df9d95a00ba7a8e496add58fbf",
+        "fold-1.joblib": "b6c6c321cbb4366b889f0619434e0fad9e956b4fde3db8940c68618d6f2ecea2",
+        "fold-2.joblib": "b12283a1ee1d1e423e85fe0804767989a0e58a4530424dc4e8237ffa3a383430",
+        "fold-3.joblib": "e2f894fe6793b85a4575b88428f53c3b9ff00c50cab37a925406c878ccebda8a",
+        "fold-4.joblib": "a380078e28d8f24fa441025d9c62c5c586bb208ba91dc798e1a78cb2a95e049d"
+      },
+      "parameters_sha256": "12b2d437dc3e1a4e70dd2b030d42c6e5ebe8709be26d08afb33073a3f81805e1",
+      "parameters_summary": {
+        "feature_set": "value_digits",
+        "iterations": 1438,
+        "num_leaves": 4,
+        "learning_rate": 0.04,
+        "l2_leaf_reg": 5.0,
+        "min_child_samples": 100,
+        "target_smoothing": 20.0,
+        "threads": 6,
+        "seed": 42,
+        "fixed_training": true
+      }
+    },
+    "external": {
+      "path": "artifacts/runs/explore5-public-gpt2-v2",
+      "sha256": {
+        "config.json": "843e20a6839bc22dc5522a4f12c7d46f64472f20782bad6a606c295dfe741d31",
+        "metrics.json": "14f9e508e5f78c926cd5a4341259623f490872da3e73d5b96f1ae8903fe29bc7",
+        "status.json": "970587076af8c4ebf6e94dc3999b017a4c3792faf7660c408eb91572fd86128b",
+        "oof.csv": "4c37722b34d520a6de7d94565140cd0681baad6fb6c012d0b7a86a25b82a4dcb",
+        "predictions.csv": "78ada898faa132accf86daa3311ba114e44a472d31f0648357d10000ab243d58",
+        "submission.csv": "78ada898faa132accf86daa3311ba114e44a472d31f0648357d10000ab243d58"
+      }
+    }
+  },
+  "audit": {
+    "path": "evidence/round18-verification.json",
+    "sha256": "a29082e474258fb163ce030c8ef8ce3d9d3d70bcbfc3373ceae870d06f1549c6"
+  },
+  "public_proof": {
+    "path": "artifacts/runs/round18-pooled-share100-public25/submission-receipt.json",
+    "sha256": "de66b8c1617b78711c07f7af6429de2382d593ec2fc3e0619d399cbcc24adda2",
+    "ref": 58481744
+  },
+  "validation": "Two new sequential all-label fits, seed42, same configurations/threads and fixed tree counts, without outer validation, original-data augmentation or transductive counts. Keep full_data_refit roc_auc=null, fold_scores=[] and OOF rows0; no new OOF file. All ordinary independent-holdout refit guards remain unchanged.",
+  "verification": "Before/after fitting, compare source/core/script/plan and input/data hashes. Reload each final checkpoint on first1024 real test rows with atol1e-12/rtol0. Verify exact CSV schema/order/range and direct fixed probability formula across all299984test rows. Preserve the approved Masaya v2 predictions and full credit unchanged.",
+  "training_gate": "Review and publish this plan and entrypoint, pin clean core8a1c7f, then obtain explicit execution authorization. Fit only these two recipes; no parameter/weight search, no preexisting historical refit reuse.",
+  "public_evaluation_gate": "This protocol has no independent local performance estimate. No submission by the script. Root must separately approve any public evaluation after both checkpoint/CSV/provenance audits; do not manufacture a refit AUC or replace the frozen CV reference."
+}

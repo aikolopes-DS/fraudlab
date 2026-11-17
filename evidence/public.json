@@ -5,23 +5,23 @@
     "deadline_utc": "2026-11-30T23:59:00Z"
   },
   "stage": "submitted",
-  "updated_at": "2026-11-17T18:24:25.231115+00:00",
+  "updated_at": "2026-11-17T20:53:43.234376+00:00",
   "results": {
-    "local_auc": 0.9514921382152453,
+    "local_auc": 0.9516524825255244,
     "fold_scores": [
-      0.9504894214476117,
-      0.9519294871585336,
-      0.9565314284038893,
-      0.9517951792274013,
-      0.9468101628656655
+      0.9506790019581457,
+      0.9520317507242809,
+      0.9566745172306466,
+      0.9518625895354618,
+      0.9470964306274507
     ],
-    "public_auc": 0.95134,
-    "ranking": 723,
-    "total_teams": 2112,
-    "submission_id": "58470267",
-    "observed_at": "2026-11-17T18:24:25.231115+00:00",
-    "local_auc_scope": "development_oof",
-    "local_auc_run": "round10-offset-bpe-frequency-public25",
+    "public_auc": 0.95141,
+    "ranking": 714,
+    "total_teams": 2125,
+    "submission_id": "58481744",
+    "observed_at": "2026-11-17T20:53:43.234376+00:00",
+    "local_auc_scope": "exploratory_full_data_oof; no independent holdout",
+    "local_auc_run": "round18-pooled-share100-public25",
     "holdout_auc": null,
     "holdout_observed_at": null
   },
@@ -36,14 +36,14 @@
     "delivery": "https://github.com/aikolopes-DS/fraudlab/releases/download/v0.3.0/AED-FraudLab-entrega.zip"
   },
   "run": {
-    "path": "artifacts/runs/round10-offset-bpe-frequency-public25",
+    "path": "artifacts/runs/round18-pooled-share100-public25",
     "phase": "exploratory_full_data_cv",
-    "submission_sha256": "274cbe4ea90d9dc4893140cad55682f3627ced02163fff48655df4b095e428e7",
+    "submission_sha256": "18c92eab3d28dcefed12c5a1eebdd9380f45e13972875bf5b31cd4a0e6151e53",
     "model": "blend",
     "validation": {
       "method": "stratified",
       "n_splits": 5,
-      "note": "Predeclared R10 shallow residual trees over the combined BPE and frequency GLM: six deterministic keys, fold-local TE5/50, fixed GLM, outer CV5/42 over all labels, no independent holdout or public-score selection.",
+      "note": "Prospective R18: fold-local hierarchical token/decimal statistics, fixed CV5/42, all labels reused, no independent holdout or outer-validation early stopping.",
       "group_column": null,
       "time_column": null,
       "holdout_fraction": 0.0,
@@ -57,9 +57,9 @@
       "oof": 699960
     },
     "features": {
-      "count": 84,
+      "count": 92,
       "numeric": 24,
-      "categorical": 60,
+      "categorical": 68,
       "names": [
         "amount_usd",
         "hours_since_last_txn",
@@ -144,20 +144,34 @@
         "amount_usd__gpt2_second_cents_key",
         "account_balance_usd__gpt2_first_key",
         "account_balance_usd__gpt2_second_key",
-        "account_balance_usd__gpt2_second_cents_key"
+        "account_balance_usd__gpt2_second_cents_key",
+        "foreign_ip__joint_key",
+        "category_risk10__joint_key",
+        "category_amount_log2__joint_key",
+        "scam_velocity5__joint_key",
+        "newmerchant_weekday__joint_key",
+        "hour_weekday__joint_key",
+        "age_cardyears__joint_key",
+        "auth_channel__joint_key"
       ],
       "excluded": [
         "id",
         "is_fraud"
       ]
     },
-    "selection_reason": "A rodada 10 combina GLM com tokens numéricos e frequência, correções de árvores pequenas, LightGBM e GPT-2 público. A OOF da mistura melhorou nos cinco folds sobre a referência original e superou a rodada 9. Os pesos e hiperparâmetros foram congelados antes do envio. O Kaggle processou o arquivo e confirmou o maior score público observado do projeto.",
-    "selection_reason_pt": "A rodada 10 combina GLM com tokens numéricos e frequência, correções de árvores pequenas, LightGBM e GPT-2 público. A OOF da mistura melhorou nos cinco folds sobre a referência original e superou a rodada 9. Os pesos e hiperparâmetros foram congelados antes do envio. O Kaggle processou o arquivo e confirmou o maior score público observado do projeto.",
     "effective_weights": {
       "offset": 0.5625,
       "lightgbm": 0.1875,
       "external_gpt2": 0.25
-    }
+    },
+    "own_component": {
+      "run": "round18-joint-bpe-pooled-offset",
+      "representation": "BPE + fold-local frequency +16 pooled target logits +8 fixed interactions",
+      "encoded_features": 223,
+      "source_revision": "8a1c7fd141b43e41b0d43e3a07b0c5ad0bf41ae5"
+    },
+    "selection_reason": "R18 passed the prospective R10 comparison: pooled OOF delta+0.0001603443 and5/5 improved folds; independent all-row arithmetic/checkpoint audit, followed by public AUC0.95141. All labels were reused for exploratory CV.",
+    "selection_reason_pt": "R18 passou no critério prospectivo contra R10: ganho OOF de 0,0001603443 e melhora em 5/5 folds, com auditoria independente dos cálculos e checkpoints. O Kaggle confirmou 0,95141. A CV é exploratória e reutiliza todos os rótulos, sem holdout independente."
   },
   "checks": {
     "data_verified": true,
@@ -214,20 +228,23 @@
         "source_test_aggregation": "mean over fold models of the per-fold log-odds",
         "import_transform": "sigmoid(log_odds), float64"
       },
-      "weight": 0.25,
-      "mixture_space": "probability"
+      "mixture_space": "probability",
+      "weight": 0.25
     }
   ],
   "public_evaluation": {
-    "plan": "evidence/round10-plan.json",
-    "results": "evidence/round10-public.json",
+    "plan": "evidence/round18-plan.json",
+    "results": "evidence/round18-public.json",
+    "verification": "evidence/round18-verification.json",
     "protocol_deviation": false,
     "consistency_gate_passed": true,
-    "reference_run": "explore5-public25",
+    "reference_run": "round10-offset-bpe-frequency-public25",
+    "reference_oof_auc": 0.9514921382152453,
+    "delta_vs_reference": 0.00016034431027911467,
     "improved_folds": 5,
     "required_folds": 4,
-    "current_oof_exceeds_r9": true,
-    "previous_exploratory_results": "evidence/public-evaluation-results.json"
+    "total_folds": 5,
+    "selected_share_of_own_offset": 1.0
   },
   "historical_submissions": [
     {
@@ -266,5 +283,24 @@
       "holdout_auc": null,
       "holdout_observed_at": null
     }
-  ]
+  ],
+  "curated_at": "2026-11-17T21:32:03.443843+00:00",
+  "presentation_context": {
+    "string_storage_probe": {
+      "rows": 1000000,
+      "unique_values": 100,
+      "values_exact": true,
+      "legacy_bytes": 65000000,
+      "shared_bytes": 8005700,
+      "process_rss_measured": false,
+      "scope_pt": "Prova sintética de buffer e objetos distintos; não mede RSS do processo ou do pipeline completo."
+    },
+    "tests": {
+      "passed": 315,
+      "subtests": 53,
+      "scope": "Core, scripts, apresentação e site; fonte 2dcd8b8, sem skips",
+      "observed_at": "2026-11-17T20:47:48.865837+00:00",
+      "ci_url": "https://github.com/aikolopes-DS/fraudlab/actions/runs/44173305084"
+    }
+  }
 }

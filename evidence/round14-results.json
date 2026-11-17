@@ -1,0 +1,193 @@
+{
+  "recorded_at": "2026-11-17T19:57:04.826776+00:00",
+  "plan": "evidence/round14-plan.json",
+  "plan_sha256": "ee2ea6249c144042d4dbbca46ab72052cd16ecc60f486f96595cbb583bab9dff",
+  "source_commit": "671ed3071168b4e67f7f9b245d92d1851d4776b5",
+  "source_was_dirty": false,
+  "validation": "Exploratory full-data StratifiedKFold5/42, same ordered IDs, labels and folds as R10. All supervised statistics, numeric scaling and category frequency maps are fitted on outer-training rows only; target-based attributes use internal crossfit5. No independent holdout, global pair selection, transductive counts or outer-validation early stopping.",
+  "baseline_run": "round10-offset-bpe-frequency-public25",
+  "baseline_oof_auc": 0.9514921382152453,
+  "candidate": "round14-full-token-pooled-offset",
+  "own_oof_auc": 0.9508982066576837,
+  "own_fold_scores": [
+    0.9498585101414522,
+    0.951036386801025,
+    0.9559896850514592,
+    0.9512168550242313,
+    0.9465034778126032
+  ],
+  "comparisons": [
+    {
+      "run": "round14-pooled-share025-public25",
+      "share": 0.25,
+      "weights": [
+        0.140625,
+        0.421875,
+        0.1875,
+        0.25
+      ],
+      "oof_auc": 0.9515401792848892,
+      "fold_scores": [
+        0.9505235371113999,
+        0.9519420805661652,
+        0.9565838962749152,
+        0.9517999052508426,
+        0.9469470186858328
+      ],
+      "delta_vs_r10": 4.8041069643955936e-05,
+      "fold_deltas": [
+        3.411566378819231e-05,
+        1.2593407631600329e-05,
+        5.2467871025974055e-05,
+        4.726023441259386e-06,
+        0.0001368558201672032
+      ],
+      "improved_folds": 5,
+      "eligible_to_submit": false,
+      "submission_sha256": "d72ff6ebc31fbc880efb130953e54ecb6a033c01ecc85b038a9fa0200625b0d5"
+    },
+    {
+      "run": "round14-pooled-share050-public25",
+      "share": 0.5,
+      "weights": [
+        0.28125,
+        0.28125,
+        0.1875,
+        0.25
+      ],
+      "oof_auc": 0.9515653777892247,
+      "fold_scores": [
+        0.9505401923940037,
+        0.9519455916815425,
+        0.9566250353612819,
+        0.9517921621539221,
+        0.9470228587779804
+      ],
+      "delta_vs_r10": 7.323957397942227e-05,
+      "fold_deltas": [
+        5.077094639194257e-05,
+        1.6104523008819704e-05,
+        9.360695739257796e-05,
+        -3.0170734791612475e-06,
+        0.00021269591231487528
+      ],
+      "improved_folds": 4,
+      "eligible_to_submit": false,
+      "submission_sha256": "03fd70b5207a002548d8a997cd224dd930f4b41b9a00b2a914b30d7f879d7567"
+    },
+    {
+      "run": "round14-pooled-share100-public25",
+      "share": 1.0,
+      "weights": [
+        0.5625,
+        0.0,
+        0.1875,
+        0.25
+      ],
+      "oof_auc": 0.9515730151384698,
+      "fold_scores": [
+        0.9505326916107034,
+        0.9519089766518035,
+        0.9566745172306466,
+        0.9517313856788973,
+        0.9471160493730184
+      ],
+      "delta_vs_r10": 8.087692322455986e-05,
+      "fold_deltas": [
+        4.327016309169096e-05,
+        -2.051050673013144e-05,
+        0.00014308882675728718,
+        -6.379354850405416e-05,
+        0.0003058865073528594
+      ],
+      "improved_folds": 3,
+      "eligible_to_submit": false,
+      "submission_sha256": "fdf6dc92bf9bdb19414f3142430a428d3c03c1e3cc3dffebd494a7cf5a55e88e"
+    }
+  ],
+  "selected": null,
+  "decision": "do_not_submit",
+  "input_oof_sha256": {
+    "round14-full-token-pooled-offset": "e886d2bc127a10b1926b50d71c7b6f35c4c94f0438276cd2b6a350adaec5e3c6",
+    "round10-offset-bpe-frequency": "f16b28c7d3bb09a4360f8dbaef59e9dd78a63537bd7f7b01a9a3de43a483f3b4",
+    "explore5-lgbm": "2a188175419c819bf5d5098125423afa8e95cd79cd965d2108b834cc4016a234",
+    "explore5-public-gpt2-v2": "4c37722b34d520a6de7d94565140cd0681baad6fb6c012d0b7a86a25b82a4dcb"
+  },
+  "checkpoint_reload": {
+    "validation_rows_per_fold": 1024,
+    "fold_errors": [
+      1.1102230246251565e-16,
+      1.1102230246251565e-16,
+      1.1102230246251565e-16,
+      9.952975943416931e-17,
+      1.1102230246251565e-16
+    ],
+    "test_rows": 1024,
+    "test_mean_error": 2.220446049250313e-16,
+    "passed": true
+  },
+  "training_elapsed_seconds": 700.375,
+  "versions": {
+    "python": "3.10.11",
+    "fraudlab": "0.1.0",
+    "numpy": "2.2.6",
+    "pandas": "2.3.3",
+    "scikit-learn": "1.7.2",
+    "catboost": "1.2.10",
+    "lightgbm": "4.7.0",
+    "torch": "2.11.0+cu128",
+    "tiktoken": "0.14.0",
+    "regex": "2026.9.29"
+  },
+  "feature_encoding": {
+    "algorithm": "complete_numeric_token_and_integer_prefix_keys",
+    "tiktoken": "0.14.0",
+    "encoding": "gpt2",
+    "vocabulary_size": 50257,
+    "encoding_files": [
+      {
+        "url": "https://openaipublic.blob.core.windows.net/gpt-2/encodings/main/vocab.bpe",
+        "sha256": "1ce1664773c50f3e0cc8842619a93edc4624525b728b188a9e0be33b7726adc5"
+      },
+      {
+        "url": "https://openaipublic.blob.core.windows.net/gpt-2/encodings/main/encoder.json",
+        "sha256": "196139668be63f3b5d6574427317ae82f612a97c5d1cdaf36ed2256dbf636783"
+      }
+    ],
+    "input_columns": [
+      "amount_usd",
+      "hours_since_last_txn",
+      "distance_from_home_km",
+      "account_balance_usd",
+      "velocity_score",
+      "merchant_risk_score"
+    ],
+    "output_suffixes": [
+      "__fulltoken_first_key",
+      "__fulltoken_second_key",
+      "__fulltoken_last_key",
+      "__fulltoken_length_key",
+      "__integer_tens_key",
+      "__integer_length_first_key",
+      "__integer_length_two_key"
+    ],
+    "output_count": 42,
+    "base_feature_set": "value_digits",
+    "canonical_text": "float64 -> Decimal(str(float(value))) -> fixed decimal notation, at least .0; one leading ASCII space",
+    "zero": "-0.0 normalized to 0.0",
+    "fractional_cents": "retained; no cent rounding or decimal padding",
+    "csv_lexemes": "not preserved; trailing zeros and exponent spelling may differ",
+    "second_token_missing": "-1",
+    "integer_keys": "floor(x/10), integer-digit-length:first-digit, integer-digit-length:first-two-digits; floor(0) has length1",
+    "numeric_range": "finite, nonnegative, at most (2**53-1)/100 to support inherited exact-cent views",
+    "category_semantics": "all seven keys are categorical labels, not ordered token magnitudes",
+    "label_usage": "none; only the six declared input columns are read",
+    "inspiration": [
+      "https://www.kaggle.com/code/megayak/s6e11-per-value-digit-te-shallow-tree-stack",
+      "https://www.kaggle.com/code/goodpjw2008/s6e11-part-12-wide-stack-2nd-lm-lb-0-95298"
+    ]
+  },
+  "new_kaggle_submissions": 0,
+  "private_full_report_sha256": "c0b78b640e294a5549753070faa2c651977c443603d14f3c5275c56bfb61efa8",
+  "publication_note": "Aggregate metrics and file fingerprints only. Repeated pooled manifests replaced by canonical JSON SHA256; no data rows, prediction arrays or model binaries."
+}

@@ -1,0 +1,949 @@
+{
+  "recorded_at": "2026-11-17T21:07:59.211946+00:00",
+  "plan": "evidence/round17-plan.json",
+  "plan_sha256": "b304d71b297aec0f206849408544991b52e3a69541dd194a33c315e6434e5bbc",
+  "amendment": "evidence/round17b-plan.json",
+  "amendment_sha256": "81360a7b1ed609d5ef46266ef8a8c70169f5463df81380bd8cd40a96fd912032",
+  "source_commit": "f436de035a0c0cdfcffa2ff22cdb3af5d54860a8",
+  "source_was_dirty": false,
+  "evaluator_sha256": "3583588798fbef42bc10fa237d542131f56fda363ab029b9ca6bed496802f65a",
+  "source_import": ".\\.local\\worktrees\\original-neural\\src\\fraudlab\\__init__.py",
+  "entrypoint_publication_revision": "2dcd8b81e9106f2b2a5dc531602bc9c4323a6064",
+  "entrypoint_sha256": "4bb48df2f5266626601016803581a0b0fa8354032a98b588d33039ccdeb60000",
+  "baseline_run": "round10-offset-bpe-frequency-public25",
+  "baseline_oof_auc": 0.9514921382152453,
+  "validation": "Exploratory full-data StratifiedKFold5/42, same699960 OOF IDs/labels/folds as R10. Within each outer-training fold, reserve15% stratified at seed42. Fit inner preprocessing, target maps, frequency, scaling, pooled maps and GLM using inner-training rows only. Use exactly that cross-fitted matrix for the inner GLM and neural residual. Choose epoch E<=40 with inner AUC/patience6 and minimum increment1e-6. Discard preprocessing, GLM, network and optimizer; fit all of them anew on the complete outer-training fold for exactly E epochs. Outer validation labels are absent from the model API. No original augmentation, public-score selection or independent holdout.",
+  "candidate": "round17-neural-pooled-offset-resumed",
+  "own_oof_auc": 0.9506838285116785,
+  "own_fold_scores": [
+    0.9493542495457761,
+    0.9511248234079861,
+    0.9558006953823042,
+    0.9512350724308302,
+    0.946330701417818
+  ],
+  "comparisons": [
+    {
+      "run": "round17-pooled-share010-public25",
+      "share": 0.1,
+      "weights": [
+        0.05625,
+        0.50625,
+        0.1875,
+        0.25
+      ],
+      "oof_auc": 0.9515092773795689,
+      "fold_scores": [
+        0.9505068507439088,
+        0.9519355958778537,
+        0.9565539865433925,
+        0.9518028197873237,
+        0.9468468835395841
+      ],
+      "delta_vs_r10": 1.7139164323665135e-05,
+      "fold_deltas": [
+        1.7429296297111208e-05,
+        6.108719320052636e-06,
+        2.2558139503248142e-05,
+        7.64055992241719e-06,
+        3.6720673918577695e-05
+      ],
+      "improved_folds": 5,
+      "passes_r10_gate": false,
+      "delta_vs_r18": -0.00014320514595544953,
+      "exceeds_selected_r18": false,
+      "eligible_to_submit": false,
+      "submission_sha256": "403d2c6306fb41360e02043809b8c6db8a49c629dce24bb769e56620b1d7cd10"
+    },
+    {
+      "run": "round17-pooled-share025-public25",
+      "share": 0.25,
+      "weights": [
+        0.140625,
+        0.421875,
+        0.1875,
+        0.25
+      ],
+      "oof_auc": 0.951525217443766,
+      "fold_scores": [
+        0.950514615748751,
+        0.9519416797397195,
+        0.9565736891828674,
+        0.9518090186149146,
+        0.946889793719548
+      ],
+      "delta_vs_r10": 3.307922852069378e-05,
+      "fold_deltas": [
+        2.5194301139230824e-05,
+        1.2192581185899165e-05,
+        4.226077897817593e-05,
+        1.3839387513314705e-05,
+        7.963085388240643e-05
+      ],
+      "improved_folds": 5,
+      "passes_r10_gate": false,
+      "delta_vs_r18": -0.00012726508175842088,
+      "exceeds_selected_r18": false,
+      "eligible_to_submit": false,
+      "submission_sha256": "1b48ea3b919cc1a7372519c16f80f024def3f19df6506f73406d7f0371a93689"
+    },
+    {
+      "run": "round17-pooled-share050-public25",
+      "share": 0.5,
+      "weights": [
+        0.28125,
+        0.28125,
+        0.1875,
+        0.25
+      ],
+      "oof_auc": 0.9515281861705639,
+      "fold_scores": [
+        0.9504988930127655,
+        0.9519327994142788,
+        0.9565902349256847,
+        0.9518014370914452,
+        0.9469369172379645
+      ],
+      "delta_vs_r10": 3.604795531864102e-05,
+      "fold_deltas": [
+        9.471565153740258e-06,
+        3.312255745124837e-06,
+        5.880652179546253e-05,
+        6.257864043845984e-06,
+        0.00012675437229892061
+      ],
+      "improved_folds": 5,
+      "passes_r10_gate": false,
+      "delta_vs_r18": -0.00012429635496047364,
+      "exceeds_selected_r18": false,
+      "eligible_to_submit": false,
+      "submission_sha256": "4bd30d928fce5a2e08bc92975812652dc60a28c8344fd432ec2e42d44d18d22e"
+    },
+    {
+      "run": "round17-pooled-share100-public25",
+      "share": 1.0,
+      "weights": [
+        0.5625,
+        0.0,
+        0.1875,
+        0.25
+      ],
+      "oof_auc": 0.9514458522294391,
+      "fold_scores": [
+        0.9503381126502948,
+        0.9518586744864572,
+        0.9565537597191248,
+        0.9517233877930736,
+        0.9469501880112176
+      ],
+      "delta_vs_r10": -4.6285985806138186e-05,
+      "fold_deltas": [
+        -0.00015130879731695135,
+        -7.081267207642572e-05,
+        2.2331315235546434e-05,
+        -7.179143432767265e-05,
+        0.00014002514555200296
+      ],
+      "improved_folds": 2,
+      "passes_r10_gate": false,
+      "delta_vs_r18": -0.00020663029608525285,
+      "exceeds_selected_r18": false,
+      "eligible_to_submit": false,
+      "submission_sha256": "6284f9feda64d964fb72eb3d5a4ee5ba29b77e50876216908f77694ce7e5fa0b"
+    }
+  ],
+  "selected": null,
+  "selected_reference": {
+    "run": "round18-pooled-share100-public25",
+    "oof_auc": 0.9516524825255244,
+    "receipt_sha256": "96e9f1fb74a8821695793c3d9aa6879f3edbeb417a6facbbc4061dd9a2ded2c6"
+  },
+  "decision": "do_not_submit",
+  "input_oof_sha256": {
+    "round17-neural-pooled-offset-resumed": "3c8d1150d4358a26969aa77f821e3382e0549139293209e767187cdfcf0556a5",
+    "round10-offset-bpe-frequency": "f16b28c7d3bb09a4360f8dbaef59e9dd78a63537bd7f7b01a9a3de43a483f3b4",
+    "explore5-lgbm": "2a188175419c819bf5d5098125423afa8e95cd79cd965d2108b834cc4016a234",
+    "explore5-public-gpt2-v2": "4c37722b34d520a6de7d94565140cd0681baad6fb6c012d0b7a86a25b82a4dcb"
+  },
+  "checkpoint_sha256": {
+    "fold-0.glm.joblib": "571d870da57643ec13b5774b7d450959b21d54f995d5ac991fa33e486917aa87",
+    "fold-0.pt": "a8102311471eb1d99ba960453504c5133148e45faa1c01038e13c00f646024ab",
+    "fold-1.glm.joblib": "4c49312f1c3d1c0b7bd3b30f00c4179a9a59e650fa92c2aa5c309a21fa3188fc",
+    "fold-1.pt": "cb47db90ebc174f8b7ef29e0c6ed27194f5275d4be17a9c86f58cce574cf15d8",
+    "fold-2.glm.joblib": "bb18a925e395d8a731679367aa8e56ddadd5a0490ac828ca23930c52a6d3036f",
+    "fold-2.pt": "d102b64b6804a92f02fcef0155e78f8c758d04e36e63e367f119d5a1ba40a0b6",
+    "fold-3.glm.joblib": "7b6eacf4ae14721509b84e52c256b30921351bbc0d1ab361c342db22202ef8fc",
+    "fold-3.pt": "1a47b904d319b48c329121eb4d2641cdbba1fbfa1a6d2e1e3b68ec8ff6c0fe89",
+    "fold-4.glm.joblib": "8df156862ee9a719af676ac38f3815408d9e493fc4ca4883eaa23f2eaef36a5a",
+    "fold-4.pt": "76306034753acb2f1dca5766b7e1beaccac01a3effbf71411d10398b179ae132"
+  },
+  "checkpoint_tolerance": 1e-06,
+  "training_elapsed_seconds": null,
+  "resume_elapsed_seconds": 408.072,
+  "versions": {
+    "python": "3.10.11",
+    "fraudlab": "0.1.0",
+    "numpy": "2.2.6",
+    "pandas": "2.3.3",
+    "scikit-learn": "1.7.2",
+    "catboost": "1.2.10",
+    "lightgbm": "4.7.0",
+    "torch": "2.11.0+cu128",
+    "tiktoken": "0.14.0",
+    "regex": "2026.9.29"
+  },
+  "feature_encoding": {
+    "tiktoken": "0.14.0",
+    "encoding": "gpt2",
+    "vocabulary_size": 50257,
+    "encoding_files": [
+      {
+        "url": "https://openaipublic.blob.core.windows.net/gpt-2/encodings/main/vocab.bpe",
+        "sha256": "1ce1664773c50f3e0cc8842619a93edc4624525b728b188a9e0be33b7726adc5"
+      },
+      {
+        "url": "https://openaipublic.blob.core.windows.net/gpt-2/encodings/main/encoder.json",
+        "sha256": "196139668be63f3b5d6574427317ae82f612a97c5d1cdaf36ed2256dbf636783"
+      }
+    ],
+    "input_columns": [
+      "amount_usd",
+      "account_balance_usd"
+    ],
+    "output_suffixes": [
+      "__gpt2_first_key",
+      "__gpt2_second_key",
+      "__gpt2_second_cents_key"
+    ],
+    "representation": "cents=np.rint(float64_USD*100); ' ' + str(cents // 100)",
+    "rounding": "NumPy rint; nearest representable cent, halfway ties to even",
+    "second_token_missing": "-1",
+    "third_key": "second_token_id + ':' + str(cents % 100)",
+    "more_than_two_tokens": "retain first two; discard later integer tokens",
+    "label_usage": "none in extraction; fold-local cross-fitted TE downstream"
+  },
+  "model_details": {
+    "architecture": {
+      "name": "GLM_logit_plus_neural_residual",
+      "input_features": 207,
+      "hidden_dims": [
+        256,
+        256
+      ],
+      "activation": "SiLU",
+      "dropout": 0.1,
+      "zero_initialized_head": true,
+      "glm_margin_dtype": "float32",
+      "parameters": 119297
+    },
+    "config": {
+      "hidden_width": 256,
+      "dropout": 0.1,
+      "learning_rate": 0.001,
+      "weight_decay": 0.0001,
+      "batch_size": 4096,
+      "epochs": 40,
+      "patience": 6,
+      "gradient_clip": 1.0,
+      "inner_fraction": 0.15,
+      "inner_seed": 42
+    },
+    "selected_epoch": 5,
+    "selection_epochs_completed": 11,
+    "refit_epochs_completed": 5,
+    "inner_history": [
+      {
+        "epoch": 1,
+        "inner_auc": 0.9497672331686074
+      },
+      {
+        "epoch": 2,
+        "inner_auc": 0.9497529811078256
+      },
+      {
+        "epoch": 3,
+        "inner_auc": 0.949757209693828
+      },
+      {
+        "epoch": 4,
+        "inner_auc": 0.9497751337206183
+      },
+      {
+        "epoch": 5,
+        "inner_auc": 0.9498180624983112
+      },
+      {
+        "epoch": 6,
+        "inner_auc": 0.9489112120258846
+      },
+      {
+        "epoch": 7,
+        "inner_auc": 0.9469053520514024
+      },
+      {
+        "epoch": 8,
+        "inner_auc": 0.9460899123896526
+      },
+      {
+        "epoch": 9,
+        "inner_auc": 0.9434685687778521
+      },
+      {
+        "epoch": 10,
+        "inner_auc": 0.942290730665919
+      },
+      {
+        "epoch": 11,
+        "inner_auc": 0.9396798679065674
+      }
+    ],
+    "inner_training_rows": 475972,
+    "inner_validation_rows": 83996,
+    "refit_rows": 559968,
+    "inner_glm_iterations_used": 10,
+    "inner_glm_converged": true,
+    "glm": {
+      "feature_set": "bpe_digits",
+      "logistic_c": 0.3,
+      "target_smoothing": 50.0,
+      "glm_inner_folds": 5,
+      "glm_frequency": true,
+      "glm_pooled_tokens": true,
+      "glm_spline_knots": 0
+    },
+    "glm_iterations_used": 10,
+    "glm_converged": true,
+    "optimizer": "AdamW",
+    "loss": "unweighted mean BCEWithLogits",
+    "prediction": "sigmoid(frozen GLM decision_function + neural residual)",
+    "training_encoding": "same cross-fitted matrix for GLM and residual; no full-map training retransform",
+    "epoch_selection": "inner 15% AUC; fresh GLM, preprocessing, network and AdamW for full outer refit",
+    "outer_validation_usage": "inference only; no labels accepted",
+    "seed": 42,
+    "threads": 4,
+    "device": "cpu",
+    "pooled_tokens_sha256": "747cba503a751b59973425cec3c45aba7614c5a1b69977be6ee16b97134bcb4f",
+    "recovery_metadata": {
+      "origin": "reused complete checkpoint; no retraining",
+      "payload_facts": [
+        "architecture",
+        "config",
+        "epoch_metadata"
+      ],
+      "outer_glm_facts": "Saved fitted parameters and iterations; convergence also implied by pinned abort-on-warning code, not a recovered warning log",
+      "execution_fields": "Seed matches the saved pooled encoder; device/threads and optimizer/protocol derive from original config and pinned source, not separate runtime telemetry",
+      "not_persisted": [
+        "original per-fold elapsed time",
+        "original package-version snapshot",
+        "warning messages/list",
+        "original OOF/test arrays",
+        "inner models and optimizer states"
+      ]
+    },
+    "feature_set": "bpe_digits",
+    "folds": [
+      {
+        "architecture": {
+          "name": "GLM_logit_plus_neural_residual",
+          "input_features": 207,
+          "hidden_dims": [
+            256,
+            256
+          ],
+          "activation": "SiLU",
+          "dropout": 0.1,
+          "zero_initialized_head": true,
+          "glm_margin_dtype": "float32",
+          "parameters": 119297
+        },
+        "config": {
+          "hidden_width": 256,
+          "dropout": 0.1,
+          "learning_rate": 0.001,
+          "weight_decay": 0.0001,
+          "batch_size": 4096,
+          "epochs": 40,
+          "patience": 6,
+          "gradient_clip": 1.0,
+          "inner_fraction": 0.15,
+          "inner_seed": 42
+        },
+        "selected_epoch": 5,
+        "selection_epochs_completed": 11,
+        "refit_epochs_completed": 5,
+        "inner_history": [
+          {
+            "epoch": 1,
+            "inner_auc": 0.9497672331686074
+          },
+          {
+            "epoch": 2,
+            "inner_auc": 0.9497529811078256
+          },
+          {
+            "epoch": 3,
+            "inner_auc": 0.949757209693828
+          },
+          {
+            "epoch": 4,
+            "inner_auc": 0.9497751337206183
+          },
+          {
+            "epoch": 5,
+            "inner_auc": 0.9498180624983112
+          },
+          {
+            "epoch": 6,
+            "inner_auc": 0.9489112120258846
+          },
+          {
+            "epoch": 7,
+            "inner_auc": 0.9469053520514024
+          },
+          {
+            "epoch": 8,
+            "inner_auc": 0.9460899123896526
+          },
+          {
+            "epoch": 9,
+            "inner_auc": 0.9434685687778521
+          },
+          {
+            "epoch": 10,
+            "inner_auc": 0.942290730665919
+          },
+          {
+            "epoch": 11,
+            "inner_auc": 0.9396798679065674
+          }
+        ],
+        "inner_training_rows": 475972,
+        "inner_validation_rows": 83996,
+        "refit_rows": 559968,
+        "inner_glm_iterations_used": 10,
+        "inner_glm_converged": true,
+        "glm": {
+          "feature_set": "bpe_digits",
+          "logistic_c": 0.3,
+          "target_smoothing": 50.0,
+          "glm_inner_folds": 5,
+          "glm_frequency": true,
+          "glm_pooled_tokens": true,
+          "glm_spline_knots": 0
+        },
+        "glm_iterations_used": 10,
+        "glm_converged": true,
+        "optimizer": "AdamW",
+        "loss": "unweighted mean BCEWithLogits",
+        "prediction": "sigmoid(frozen GLM decision_function + neural residual)",
+        "training_encoding": "same cross-fitted matrix for GLM and residual; no full-map training retransform",
+        "epoch_selection": "inner 15% AUC; fresh GLM, preprocessing, network and AdamW for full outer refit",
+        "outer_validation_usage": "inference only; no labels accepted",
+        "seed": 42,
+        "threads": 4,
+        "device": "cpu",
+        "pooled_tokens_sha256": "747cba503a751b59973425cec3c45aba7614c5a1b69977be6ee16b97134bcb4f",
+        "recovery_metadata": {
+          "origin": "reused complete checkpoint; no retraining",
+          "payload_facts": [
+            "architecture",
+            "config",
+            "epoch_metadata"
+          ],
+          "outer_glm_facts": "Saved fitted parameters and iterations; convergence also implied by pinned abort-on-warning code, not a recovered warning log",
+          "execution_fields": "Seed matches the saved pooled encoder; device/threads and optimizer/protocol derive from original config and pinned source, not separate runtime telemetry",
+          "not_persisted": [
+            "original per-fold elapsed time",
+            "original package-version snapshot",
+            "warning messages/list",
+            "original OOF/test arrays",
+            "inner models and optimizer states"
+          ]
+        }
+      },
+      {
+        "architecture": {
+          "name": "GLM_logit_plus_neural_residual",
+          "input_features": 207,
+          "hidden_dims": [
+            256,
+            256
+          ],
+          "activation": "SiLU",
+          "dropout": 0.1,
+          "zero_initialized_head": true,
+          "glm_margin_dtype": "float32",
+          "parameters": 119297
+        },
+        "config": {
+          "hidden_width": 256,
+          "dropout": 0.1,
+          "learning_rate": 0.001,
+          "weight_decay": 0.0001,
+          "batch_size": 4096,
+          "epochs": 40,
+          "patience": 6,
+          "gradient_clip": 1.0,
+          "inner_fraction": 0.15,
+          "inner_seed": 42
+        },
+        "selected_epoch": 4,
+        "selection_epochs_completed": 10,
+        "refit_epochs_completed": 4,
+        "inner_history": [
+          {
+            "epoch": 1,
+            "inner_auc": 0.9518265502369523
+          },
+          {
+            "epoch": 2,
+            "inner_auc": 0.9518653453560837
+          },
+          {
+            "epoch": 3,
+            "inner_auc": 0.9518341401173385
+          },
+          {
+            "epoch": 4,
+            "inner_auc": 0.9519010639631538
+          },
+          {
+            "epoch": 5,
+            "inner_auc": 0.9510531461719745
+          },
+          {
+            "epoch": 6,
+            "inner_auc": 0.9514025870264788
+          },
+          {
+            "epoch": 7,
+            "inner_auc": 0.950312759596886
+          },
+          {
+            "epoch": 8,
+            "inner_auc": 0.948387104680174
+          },
+          {
+            "epoch": 9,
+            "inner_auc": 0.9467236695593387
+          },
+          {
+            "epoch": 10,
+            "inner_auc": 0.9433968036325522
+          }
+        ],
+        "inner_training_rows": 475972,
+        "inner_validation_rows": 83996,
+        "refit_rows": 559968,
+        "inner_glm_iterations_used": 10,
+        "inner_glm_converged": true,
+        "glm": {
+          "feature_set": "bpe_digits",
+          "logistic_c": 0.3,
+          "target_smoothing": 50.0,
+          "glm_inner_folds": 5,
+          "glm_frequency": true,
+          "glm_pooled_tokens": true,
+          "glm_spline_knots": 0
+        },
+        "glm_iterations_used": 10,
+        "glm_converged": true,
+        "optimizer": "AdamW",
+        "loss": "unweighted mean BCEWithLogits",
+        "prediction": "sigmoid(frozen GLM decision_function + neural residual)",
+        "training_encoding": "same cross-fitted matrix for GLM and residual; no full-map training retransform",
+        "epoch_selection": "inner 15% AUC; fresh GLM, preprocessing, network and AdamW for full outer refit",
+        "outer_validation_usage": "inference only; no labels accepted",
+        "seed": 43,
+        "threads": 4,
+        "device": "cpu",
+        "pooled_tokens_sha256": "84b485f1c34503fc56a275d586eaefd9099c446c074548b8fda6506ef39755ff",
+        "recovery_metadata": {
+          "origin": "reused complete checkpoint; no retraining",
+          "payload_facts": [
+            "architecture",
+            "config",
+            "epoch_metadata"
+          ],
+          "outer_glm_facts": "Saved fitted parameters and iterations; convergence also implied by pinned abort-on-warning code, not a recovered warning log",
+          "execution_fields": "Seed matches the saved pooled encoder; device/threads and optimizer/protocol derive from original config and pinned source, not separate runtime telemetry",
+          "not_persisted": [
+            "original per-fold elapsed time",
+            "original package-version snapshot",
+            "warning messages/list",
+            "original OOF/test arrays",
+            "inner models and optimizer states"
+          ]
+        }
+      },
+      {
+        "architecture": {
+          "name": "GLM_logit_plus_neural_residual",
+          "input_features": 207,
+          "hidden_dims": [
+            256,
+            256
+          ],
+          "activation": "SiLU",
+          "dropout": 0.1,
+          "zero_initialized_head": true,
+          "glm_margin_dtype": "float32",
+          "parameters": 119297
+        },
+        "config": {
+          "hidden_width": 256,
+          "dropout": 0.1,
+          "learning_rate": 0.001,
+          "weight_decay": 0.0001,
+          "batch_size": 4096,
+          "epochs": 40,
+          "patience": 6,
+          "gradient_clip": 1.0,
+          "inner_fraction": 0.15,
+          "inner_seed": 42
+        },
+        "selected_epoch": 4,
+        "selection_epochs_completed": 10,
+        "refit_epochs_completed": 4,
+        "inner_history": [
+          {
+            "epoch": 1,
+            "inner_auc": 0.9495451159016157
+          },
+          {
+            "epoch": 2,
+            "inner_auc": 0.9498270892349615
+          },
+          {
+            "epoch": 3,
+            "inner_auc": 0.9498457252175584
+          },
+          {
+            "epoch": 4,
+            "inner_auc": 0.9500905171982676
+          },
+          {
+            "epoch": 5,
+            "inner_auc": 0.9493259457001747
+          },
+          {
+            "epoch": 6,
+            "inner_auc": 0.9482789607506011
+          },
+          {
+            "epoch": 7,
+            "inner_auc": 0.9461864794863225
+          },
+          {
+            "epoch": 8,
+            "inner_auc": 0.9454883960307937
+          },
+          {
+            "epoch": 9,
+            "inner_auc": 0.9406748326185426
+          },
+          {
+            "epoch": 10,
+            "inner_auc": 0.9396334656475155
+          }
+        ],
+        "inner_training_rows": 475972,
+        "inner_validation_rows": 83996,
+        "refit_rows": 559968,
+        "inner_glm_iterations_used": 10,
+        "inner_glm_converged": true,
+        "glm": {
+          "feature_set": "bpe_digits",
+          "logistic_c": 0.3,
+          "target_smoothing": 50.0,
+          "glm_inner_folds": 5,
+          "glm_frequency": true,
+          "glm_pooled_tokens": true,
+          "glm_spline_knots": 0
+        },
+        "glm_iterations_used": 10,
+        "glm_converged": true,
+        "optimizer": "AdamW",
+        "loss": "unweighted mean BCEWithLogits",
+        "prediction": "sigmoid(frozen GLM decision_function + neural residual)",
+        "training_encoding": "same cross-fitted matrix for GLM and residual; no full-map training retransform",
+        "epoch_selection": "inner 15% AUC; fresh GLM, preprocessing, network and AdamW for full outer refit",
+        "outer_validation_usage": "inference only; no labels accepted",
+        "seed": 44,
+        "threads": 4,
+        "device": "cpu",
+        "pooled_tokens_sha256": "3a1792e2ad5e3d89ad067dfbca4f142f97f413ce733c38cf277bbb6c1e420a86",
+        "recovery_metadata": {
+          "origin": "reused complete checkpoint; no retraining",
+          "payload_facts": [
+            "architecture",
+            "config",
+            "epoch_metadata"
+          ],
+          "outer_glm_facts": "Saved fitted parameters and iterations; convergence also implied by pinned abort-on-warning code, not a recovered warning log",
+          "execution_fields": "Seed matches the saved pooled encoder; device/threads and optimizer/protocol derive from original config and pinned source, not separate runtime telemetry",
+          "not_persisted": [
+            "original per-fold elapsed time",
+            "original package-version snapshot",
+            "warning messages/list",
+            "original OOF/test arrays",
+            "inner models and optimizer states"
+          ]
+        }
+      },
+      {
+        "architecture": {
+          "name": "GLM_logit_plus_neural_residual",
+          "input_features": 207,
+          "hidden_dims": [
+            256,
+            256
+          ],
+          "activation": "SiLU",
+          "dropout": 0.1,
+          "zero_initialized_head": true,
+          "glm_margin_dtype": "float32",
+          "parameters": 119297
+        },
+        "config": {
+          "hidden_width": 256,
+          "dropout": 0.1,
+          "learning_rate": 0.001,
+          "weight_decay": 0.0001,
+          "batch_size": 4096,
+          "epochs": 40,
+          "patience": 6,
+          "gradient_clip": 1.0,
+          "inner_fraction": 0.15,
+          "inner_seed": 42
+        },
+        "selected_epoch": 1,
+        "selection_epochs_completed": 7,
+        "refit_epochs_completed": 1,
+        "inner_history": [
+          {
+            "epoch": 1,
+            "inner_auc": 0.949941256742146
+          },
+          {
+            "epoch": 2,
+            "inner_auc": 0.9498420705110847
+          },
+          {
+            "epoch": 3,
+            "inner_auc": 0.9498517444802863
+          },
+          {
+            "epoch": 4,
+            "inner_auc": 0.949831904645144
+          },
+          {
+            "epoch": 5,
+            "inner_auc": 0.9495694820497346
+          },
+          {
+            "epoch": 6,
+            "inner_auc": 0.948934581435874
+          },
+          {
+            "epoch": 7,
+            "inner_auc": 0.9478225366702331
+          }
+        ],
+        "inner_training_rows": 475972,
+        "inner_validation_rows": 83996,
+        "refit_rows": 559968,
+        "inner_glm_iterations_used": 10,
+        "inner_glm_converged": true,
+        "glm": {
+          "feature_set": "bpe_digits",
+          "logistic_c": 0.3,
+          "target_smoothing": 50.0,
+          "glm_inner_folds": 5,
+          "glm_frequency": true,
+          "glm_pooled_tokens": true,
+          "glm_spline_knots": 0
+        },
+        "glm_iterations_used": 10,
+        "glm_converged": true,
+        "optimizer": "AdamW",
+        "loss": "unweighted mean BCEWithLogits",
+        "prediction": "sigmoid(frozen GLM decision_function + neural residual)",
+        "training_encoding": "same cross-fitted matrix for GLM and residual; no full-map training retransform",
+        "epoch_selection": "inner 15% AUC; fresh GLM, preprocessing, network and AdamW for full outer refit",
+        "outer_validation_usage": "inference only; no labels accepted",
+        "seed": 45,
+        "threads": 4,
+        "device": "cpu",
+        "pooled_tokens_sha256": "c79c4b48660037ba538ea9c905728373d27e35f95c88aafca46c91319d07e3f6"
+      },
+      {
+        "architecture": {
+          "name": "GLM_logit_plus_neural_residual",
+          "input_features": 207,
+          "hidden_dims": [
+            256,
+            256
+          ],
+          "activation": "SiLU",
+          "dropout": 0.1,
+          "zero_initialized_head": true,
+          "glm_margin_dtype": "float32",
+          "parameters": 119297
+        },
+        "config": {
+          "hidden_width": 256,
+          "dropout": 0.1,
+          "learning_rate": 0.001,
+          "weight_decay": 0.0001,
+          "batch_size": 4096,
+          "epochs": 40,
+          "patience": 6,
+          "gradient_clip": 1.0,
+          "inner_fraction": 0.15,
+          "inner_seed": 42
+        },
+        "selected_epoch": 4,
+        "selection_epochs_completed": 10,
+        "refit_epochs_completed": 4,
+        "inner_history": [
+          {
+            "epoch": 1,
+            "inner_auc": 0.9506268313498978
+          },
+          {
+            "epoch": 2,
+            "inner_auc": 0.9507376634520007
+          },
+          {
+            "epoch": 3,
+            "inner_auc": 0.9508395766895451
+          },
+          {
+            "epoch": 4,
+            "inner_auc": 0.9511439615287042
+          },
+          {
+            "epoch": 5,
+            "inner_auc": 0.9511206784163884
+          },
+          {
+            "epoch": 6,
+            "inner_auc": 0.9504129814000294
+          },
+          {
+            "epoch": 7,
+            "inner_auc": 0.9492260518281908
+          },
+          {
+            "epoch": 8,
+            "inner_auc": 0.9479708651114808
+          },
+          {
+            "epoch": 9,
+            "inner_auc": 0.9458224241208073
+          },
+          {
+            "epoch": 10,
+            "inner_auc": 0.9449115608065619
+          }
+        ],
+        "inner_training_rows": 475972,
+        "inner_validation_rows": 83996,
+        "refit_rows": 559968,
+        "inner_glm_iterations_used": 10,
+        "inner_glm_converged": true,
+        "glm": {
+          "feature_set": "bpe_digits",
+          "logistic_c": 0.3,
+          "target_smoothing": 50.0,
+          "glm_inner_folds": 5,
+          "glm_frequency": true,
+          "glm_pooled_tokens": true,
+          "glm_spline_knots": 0
+        },
+        "glm_iterations_used": 10,
+        "glm_converged": true,
+        "optimizer": "AdamW",
+        "loss": "unweighted mean BCEWithLogits",
+        "prediction": "sigmoid(frozen GLM decision_function + neural residual)",
+        "training_encoding": "same cross-fitted matrix for GLM and residual; no full-map training retransform",
+        "epoch_selection": "inner 15% AUC; fresh GLM, preprocessing, network and AdamW for full outer refit",
+        "outer_validation_usage": "inference only; no labels accepted",
+        "seed": 46,
+        "threads": 4,
+        "device": "cpu",
+        "pooled_tokens_sha256": "c829cc3630c0c3347cb5e41c2a9752c6d053dae8012b4a3907e1ebafd5f896cf"
+      }
+    ]
+  },
+  "recovery": {
+    "original_run": ".\\artifacts\\runs\\round17-neural-pooled-offset",
+    "source_revision": "f436de035a0c0cdfcffa2ff22cdb3af5d54860a8",
+    "entrypoint_sha256": "4bb48df2f5266626601016803581a0b0fa8354032a98b588d33039ccdeb60000",
+    "plan_sha256": "81360a7b1ed609d5ef46266ef8a8c70169f5463df81380bd8cd40a96fd912032",
+    "original_input_sha256": {
+      ".\\artifacts\\runs\\round17-neural-pooled-offset\\config.json": "45a7f9b178fde8a897777c07cbd561e64d212652d911bc4b54131752394912b1",
+      ".\\artifacts\\runs\\round17-neural-pooled-offset\\status.json": "ba9134e2d7e5bddbec5f1b7a3717eb6914442b2275cc2fcade88cd5b8e01a539",
+      ".\\.local\\research\\round17\\invocation.json": "7263d101553968dfdb75f0104cc8353eecd04540144acd56ed4cc72578925f5b",
+      ".\\.local\\research\\round17\\training.log": "f1ccc86c5f0ca154e145c853586d093215f7726f2164787b128e860eaef0f41e",
+      ".\\evidence\\round17-plan.json": "b304d71b297aec0f206849408544991b52e3a69541dd194a33c315e6434e5bbc",
+      ".\\evidence\\round17b-plan.json": "81360a7b1ed609d5ef46266ef8a8c70169f5463df81380bd8cd40a96fd912032",
+      ".\\artifacts\\runs\\round17-neural-pooled-offset\\fold-0.pt": "a8102311471eb1d99ba960453504c5133148e45faa1c01038e13c00f646024ab",
+      ".\\artifacts\\runs\\round17-neural-pooled-offset\\fold-0.glm.joblib": "571d870da57643ec13b5774b7d450959b21d54f995d5ac991fa33e486917aa87",
+      ".\\artifacts\\runs\\round17-neural-pooled-offset\\fold-1.pt": "cb47db90ebc174f8b7ef29e0c6ed27194f5275d4be17a9c86f58cce574cf15d8",
+      ".\\artifacts\\runs\\round17-neural-pooled-offset\\fold-1.glm.joblib": "4c49312f1c3d1c0b7bd3b30f00c4179a9a59e650fa92c2aa5c309a21fa3188fc",
+      ".\\artifacts\\runs\\round17-neural-pooled-offset\\fold-2.pt": "d102b64b6804a92f02fcef0155e78f8c758d04e36e63e367f119d5a1ba40a0b6",
+      ".\\artifacts\\runs\\round17-neural-pooled-offset\\fold-2.glm.joblib": "bb18a925e395d8a731679367aa8e56ddadd5a0490ac828ca23930c52a6d3036f",
+      ".\\data\\raw\\train.csv": "87eaa10b8d17a7e4f657b8da1c66242431338bdd8b6ad45861521ac0c0e9fbd5",
+      ".\\data\\raw\\test.csv": "10f516959020357b565abaaa4fd25baae97fc2f536d0805695bb7cc15c1660f0",
+      ".\\data\\raw\\sample_submission.csv": "13fc6ed8b73de5329884ec490f2a0b750cf29a7cda772b78cfa0cf486f6f35fa",
+      ".\\scripts\\resume_neural_cv.py": "4bb48df2f5266626601016803581a0b0fa8354032a98b588d33039ccdeb60000"
+    },
+    "reuse_folds": [
+      0,
+      1,
+      2
+    ],
+    "fit_folds": [
+      3,
+      4
+    ],
+    "original_elapsed_seconds": null,
+    "original_versions": null,
+    "old_run_preserved": true,
+    "predictions_reconstructed_from_weights": true,
+    "comparison_to_original_prediction_arrays": "unavailable; they were not persisted",
+    "data_binding": "Current official CSV hashes match frozen baseline; original failed process did not persist a standalone pre-fit data-hash receipt",
+    "resume_elapsed_seconds": 408.072,
+    "versions_at_resume": {
+      "python": "3.10.11",
+      "fraudlab": "0.1.0",
+      "numpy": "2.2.6",
+      "pandas": "2.3.3",
+      "scikit-learn": "1.7.2",
+      "catboost": "1.2.10",
+      "lightgbm": "4.7.0",
+      "torch": "2.11.0+cu128",
+      "tiktoken": "0.14.0",
+      "regex": "2026.9.29"
+    },
+    "checkpoint_sha256": {
+      "fold-0.glm.joblib": "571d870da57643ec13b5774b7d450959b21d54f995d5ac991fa33e486917aa87",
+      "fold-0.pt": "a8102311471eb1d99ba960453504c5133148e45faa1c01038e13c00f646024ab",
+      "fold-1.glm.joblib": "4c49312f1c3d1c0b7bd3b30f00c4179a9a59e650fa92c2aa5c309a21fa3188fc",
+      "fold-1.pt": "cb47db90ebc174f8b7ef29e0c6ed27194f5275d4be17a9c86f58cce574cf15d8",
+      "fold-2.glm.joblib": "bb18a925e395d8a731679367aa8e56ddadd5a0490ac828ca23930c52a6d3036f",
+      "fold-2.pt": "d102b64b6804a92f02fcef0155e78f8c758d04e36e63e367f119d5a1ba40a0b6",
+      "fold-3.glm.joblib": "7b6eacf4ae14721509b84e52c256b30921351bbc0d1ab361c342db22202ef8fc",
+      "fold-3.pt": "1a47b904d319b48c329121eb4d2641cdbba1fbfa1a6d2e1e3b68ec8ff6c0fe89",
+      "fold-4.glm.joblib": "8df156862ee9a719af676ac38f3815408d9e493fc4ca4883eaa23f2eaef36a5a",
+      "fold-4.pt": "76306034753acb2f1dca5766b7e1beaccac01a3effbf71411d10398b179ae132"
+    }
+  },
+  "additional_training_data": null,
+  "new_fits_by_this_evaluation": 0,
+  "new_kaggle_submissions": 0,
+  "private_full_report_sha256": "fd3678acc2e7f0e2840c91eb9297318faa938b972c3207e756f15595090c192a",
+  "publication_note": "Aggregate metrics, hashes and provenance only; repeated pooled manifests replaced by canonical JSON SHA256. No input rows, probability arrays or model binaries."
+}

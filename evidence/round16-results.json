@@ -1,0 +1,459 @@
+{
+  "recorded_at": "2026-11-17T20:14:53.004143+00:00",
+  "plan": "evidence/round16-plan.json",
+  "plan_sha256": "6073ccddf12643e3648dc0da338e396f91e97b17bd8e7ea976d3426f0e6a2c1c",
+  "source_commit": "f436de035a0c0cdfcffa2ff22cdb3af5d54860a8",
+  "source_was_dirty": false,
+  "validation": "Exploratory StratifiedKFold5/42 over only699960 competition rows. For fold k, fit on competition_training_without_k plus all20000 pinned original rows:579968 training rows. Validate on139992 competition rows only. Target encoding, pooled statistics, frequency and scaling fit only this expanded training set, using internal crossfit5 where supervised. All original IDs and competition IDs are excluded from predictors. No independent holdout, generator claim, test labels or outer-validation early stopping.",
+  "baseline_run": "round10-offset-bpe-frequency-public25",
+  "baseline_oof_auc": 0.9514921382152453,
+  "candidate": "round16-original-token-pooled-offset",
+  "own_oof_auc": 0.9504541572711206,
+  "own_fold_scores": [
+    0.9498217957810876,
+    0.9503956921385927,
+    0.9554103541214026,
+    0.9513540526343913,
+    0.9454480986738512
+  ],
+  "comparisons": [
+    {
+      "run": "round16-pooled-share025-public25",
+      "share": 0.25,
+      "weights": [
+        0.140625,
+        0.421875,
+        0.1875,
+        0.25
+      ],
+      "oof_auc": 0.9515293198900883,
+      "fold_scores": [
+        0.9505683957122314,
+        0.9519387527745113,
+        0.9565490150525928,
+        0.9518694532999469,
+        0.9468195310186411
+      ],
+      "delta_vs_r10": 3.718167484301205e-05,
+      "fold_deltas": [
+        7.897426461966894e-05,
+        9.26561597769382e-06,
+        1.75866487035492e-05,
+        7.427407254556595e-05,
+        9.368152975586241e-06
+      ],
+      "improved_folds": 5,
+      "eligible_to_submit": false,
+      "submission_sha256": "85bee497fea8db804deaf27d582a8876860ed97d47bd374528fd12fb554cfbed"
+    },
+    {
+      "run": "round16-pooled-share050-public25",
+      "share": 0.5,
+      "weights": [
+        0.28125,
+        0.28125,
+        0.1875,
+        0.25
+      ],
+      "oof_auc": 0.9515291462461704,
+      "fold_scores": [
+        0.9506078983869848,
+        0.9519132707769817,
+        0.9565370990105825,
+        0.9519030326131163,
+        0.9467900687212902
+      ],
+      "delta_vs_r10": 3.7008030925100854e-05,
+      "fold_deltas": [
+        0.00011847693937305781,
+        -1.6216381551914516e-05,
+        5.670606693208846e-06,
+        0.00010785338571495107,
+        -2.0094144375315537e-05
+      ],
+      "improved_folds": 3,
+      "eligible_to_submit": false,
+      "submission_sha256": "33483af73be57e8cb723f149589aa760fbecec59cdf8c8aeb056086576a3aaff"
+    },
+    {
+      "run": "round16-pooled-share100-public25",
+      "share": 1.0,
+      "weights": [
+        0.5625,
+        0.0,
+        0.1875,
+        0.25
+      ],
+      "oof_auc": 0.9514142474204997,
+      "fold_scores": [
+        0.9505564249221405,
+        0.951746722728014,
+        0.9564303579959338,
+        0.9518433001511594,
+        0.9466134192244542
+      ],
+      "delta_vs_r10": -7.789079474551652e-05,
+      "fold_deltas": [
+        6.700347452881505e-05,
+        -0.0001827644305196774,
+        -0.00010107040795548361,
+        4.812092375805488e-05,
+        -0.000196743641211361
+      ],
+      "improved_folds": 2,
+      "eligible_to_submit": false,
+      "submission_sha256": "e21711d6f7a1d601429c4c7744eb59110c36fc2703e270ff0aac31253ece0400"
+    }
+  ],
+  "selected": null,
+  "decision": "do_not_submit",
+  "input_oof_sha256": {
+    "round16-original-token-pooled-offset": "34bfd22bc463abdba6362abb95e41f886e2ac56fe5073aeb67b211230a8e963e",
+    "round10-offset-bpe-frequency": "f16b28c7d3bb09a4360f8dbaef59e9dd78a63537bd7f7b01a9a3de43a483f3b4",
+    "explore5-lgbm": "2a188175419c819bf5d5098125423afa8e95cd79cd965d2108b834cc4016a234",
+    "explore5-public-gpt2-v2": "4c37722b34d520a6de7d94565140cd0681baad6fb6c012d0b7a86a25b82a4dcb"
+  },
+  "checkpoint_reload": {
+    "validation_rows_per_fold": 1024,
+    "fold_errors": [
+      9.93129189996722e-17,
+      1.1102230246251565e-16,
+      9.963817965141786e-17,
+      9.974659986866641e-17,
+      1.1102230246251565e-16
+    ],
+    "test_rows": 1024,
+    "test_mean_error": 2.220446049250313e-16,
+    "passed": true
+  },
+  "training_elapsed_seconds": 712.409,
+  "versions": {
+    "python": "3.10.11",
+    "fraudlab": "0.1.0",
+    "numpy": "2.2.6",
+    "pandas": "2.3.3",
+    "scikit-learn": "1.7.2",
+    "catboost": "1.2.10",
+    "lightgbm": "4.7.0",
+    "torch": "2.11.0+cu128",
+    "tiktoken": "0.14.0",
+    "regex": "2026.9.29"
+  },
+  "feature_encoding": {
+    "algorithm": "complete_numeric_token_and_integer_prefix_keys",
+    "tiktoken": "0.14.0",
+    "encoding": "gpt2",
+    "vocabulary_size": 50257,
+    "encoding_files": [
+      {
+        "url": "https://openaipublic.blob.core.windows.net/gpt-2/encodings/main/vocab.bpe",
+        "sha256": "1ce1664773c50f3e0cc8842619a93edc4624525b728b188a9e0be33b7726adc5"
+      },
+      {
+        "url": "https://openaipublic.blob.core.windows.net/gpt-2/encodings/main/encoder.json",
+        "sha256": "196139668be63f3b5d6574427317ae82f612a97c5d1cdaf36ed2256dbf636783"
+      }
+    ],
+    "input_columns": [
+      "amount_usd",
+      "hours_since_last_txn",
+      "distance_from_home_km",
+      "account_balance_usd",
+      "velocity_score",
+      "merchant_risk_score"
+    ],
+    "output_suffixes": [
+      "__fulltoken_first_key",
+      "__fulltoken_second_key",
+      "__fulltoken_last_key",
+      "__fulltoken_length_key",
+      "__integer_tens_key",
+      "__integer_length_first_key",
+      "__integer_length_two_key"
+    ],
+    "output_count": 42,
+    "base_feature_set": "value_digits",
+    "canonical_text": "float64 -> Decimal(str(float(value))) -> fixed decimal notation, at least .0; one leading ASCII space",
+    "zero": "-0.0 normalized to 0.0",
+    "fractional_cents": "retained; no cent rounding or decimal padding",
+    "csv_lexemes": "not preserved; trailing zeros and exponent spelling may differ",
+    "second_token_missing": "-1",
+    "integer_keys": "floor(x/10), integer-digit-length:first-digit, integer-digit-length:first-two-digits; floor(0) has length1",
+    "numeric_range": "finite, nonnegative, at most (2**53-1)/100 to support inherited exact-cent views",
+    "category_semantics": "all seven keys are categorical labels, not ordered token magnitudes",
+    "label_usage": "none; only the six declared input columns are read",
+    "inspiration": [
+      "https://www.kaggle.com/code/megayak/s6e11-per-value-digit-te-shallow-tree-stack",
+      "https://www.kaggle.com/code/goodpjw2008/s6e11-part-12-wide-stack-2nd-lm-lb-0-95298"
+    ]
+  },
+  "new_kaggle_submissions": 0,
+  "additional_training_data": {
+    "source": ".\\.local\\research\\win-20261117\\original\\credit_card_fraud_2026.csv",
+    "sha256": "4e32b1ad4880cae452d1f2e5aa53224d38eb913c185455c00a3759df5eb3da61",
+    "source_url": "https://www.kaggle.com/datasets/uditjain13/credit-card-fraud-detection-2026/versions/5",
+    "version": 5,
+    "license": "CC0-1.0",
+    "provenance": "audited public original",
+    "rows": 20000,
+    "positives": 339,
+    "usage": "outer-training only",
+    "excluded_columns": [
+      "transaction_id"
+    ],
+    "competition_validation_rows_added": 0,
+    "competition_oof_rows_added": 0,
+    "feature_overlap": "zero exact feature rows against competition train and test",
+    "component_run": ".\\artifacts\\runs\\round16-original-token-pooled-offset",
+    "component_model": "offset",
+    "component_scope": "this fitted component only; other blend sources are not retrained",
+    "fold_training_rows": [
+      579968,
+      579968,
+      579968,
+      579968,
+      579968
+    ]
+  },
+  "model_details": {
+    "algorithm": "glm_logit_offset_with_lightgbm_residual",
+    "prediction": "sigmoid(GLM decision_function + LightGBM raw_score)",
+    "fixed_training": true,
+    "early_stopping_patience": null,
+    "best_iteration": 1000,
+    "encoded_features": 279,
+    "glm": {
+      "C": 0.3,
+      "solver": "newton-cholesky",
+      "iterations_used": 10,
+      "spline_knots": 0
+    },
+    "target_encoder": {
+      "internal_folds": 5,
+      "smooth": 50.0,
+      "unknown": "training prior",
+      "log_odds": true
+    },
+    "residual_parameters": {
+      "n_estimators": 1000,
+      "num_leaves": 4,
+      "learning_rate": 0.03,
+      "reg_lambda": 5.0,
+      "min_child_samples": 100,
+      "objective": "binary",
+      "verbosity": -1,
+      "random_state": 42,
+      "n_jobs": 4,
+      "deterministic": true,
+      "force_col_wise": true
+    },
+    "preprocessing": "Fold-local GLM preprocessing, including internally cross-fitted target logits, is fitted once. The identical encoded training matrix fits the GLM, supplies its init_score and fits residual trees. Training rows are never re-encoded with the full target map. Validation and test use training-only mappings. Both fitted models are saved together.",
+    "pooled_tokens_sha256": "747cba503a751b59973425cec3c45aba7614c5a1b69977be6ee16b97134bcb4f",
+    "training_rows": 579968,
+    "competition_training_rows": 559968,
+    "additional_training_rows": 20000,
+    "feature_set": "token_digits",
+    "folds": [
+      {
+        "algorithm": "glm_logit_offset_with_lightgbm_residual",
+        "prediction": "sigmoid(GLM decision_function + LightGBM raw_score)",
+        "fixed_training": true,
+        "early_stopping_patience": null,
+        "best_iteration": 1000,
+        "encoded_features": 279,
+        "glm": {
+          "C": 0.3,
+          "solver": "newton-cholesky",
+          "iterations_used": 10,
+          "spline_knots": 0
+        },
+        "target_encoder": {
+          "internal_folds": 5,
+          "smooth": 50.0,
+          "unknown": "training prior",
+          "log_odds": true
+        },
+        "residual_parameters": {
+          "n_estimators": 1000,
+          "num_leaves": 4,
+          "learning_rate": 0.03,
+          "reg_lambda": 5.0,
+          "min_child_samples": 100,
+          "objective": "binary",
+          "verbosity": -1,
+          "random_state": 42,
+          "n_jobs": 4,
+          "deterministic": true,
+          "force_col_wise": true
+        },
+        "preprocessing": "Fold-local GLM preprocessing, including internally cross-fitted target logits, is fitted once. The identical encoded training matrix fits the GLM, supplies its init_score and fits residual trees. Training rows are never re-encoded with the full target map. Validation and test use training-only mappings. Both fitted models are saved together.",
+        "pooled_tokens_sha256": "747cba503a751b59973425cec3c45aba7614c5a1b69977be6ee16b97134bcb4f",
+        "training_rows": 579968,
+        "competition_training_rows": 559968,
+        "additional_training_rows": 20000
+      },
+      {
+        "algorithm": "glm_logit_offset_with_lightgbm_residual",
+        "prediction": "sigmoid(GLM decision_function + LightGBM raw_score)",
+        "fixed_training": true,
+        "early_stopping_patience": null,
+        "best_iteration": 1000,
+        "encoded_features": 279,
+        "glm": {
+          "C": 0.3,
+          "solver": "newton-cholesky",
+          "iterations_used": 10,
+          "spline_knots": 0
+        },
+        "target_encoder": {
+          "internal_folds": 5,
+          "smooth": 50.0,
+          "unknown": "training prior",
+          "log_odds": true
+        },
+        "residual_parameters": {
+          "n_estimators": 1000,
+          "num_leaves": 4,
+          "learning_rate": 0.03,
+          "reg_lambda": 5.0,
+          "min_child_samples": 100,
+          "objective": "binary",
+          "verbosity": -1,
+          "random_state": 43,
+          "n_jobs": 4,
+          "deterministic": true,
+          "force_col_wise": true
+        },
+        "preprocessing": "Fold-local GLM preprocessing, including internally cross-fitted target logits, is fitted once. The identical encoded training matrix fits the GLM, supplies its init_score and fits residual trees. Training rows are never re-encoded with the full target map. Validation and test use training-only mappings. Both fitted models are saved together.",
+        "pooled_tokens_sha256": "84b485f1c34503fc56a275d586eaefd9099c446c074548b8fda6506ef39755ff",
+        "training_rows": 579968,
+        "competition_training_rows": 559968,
+        "additional_training_rows": 20000
+      },
+      {
+        "algorithm": "glm_logit_offset_with_lightgbm_residual",
+        "prediction": "sigmoid(GLM decision_function + LightGBM raw_score)",
+        "fixed_training": true,
+        "early_stopping_patience": null,
+        "best_iteration": 1000,
+        "encoded_features": 279,
+        "glm": {
+          "C": 0.3,
+          "solver": "newton-cholesky",
+          "iterations_used": 10,
+          "spline_knots": 0
+        },
+        "target_encoder": {
+          "internal_folds": 5,
+          "smooth": 50.0,
+          "unknown": "training prior",
+          "log_odds": true
+        },
+        "residual_parameters": {
+          "n_estimators": 1000,
+          "num_leaves": 4,
+          "learning_rate": 0.03,
+          "reg_lambda": 5.0,
+          "min_child_samples": 100,
+          "objective": "binary",
+          "verbosity": -1,
+          "random_state": 44,
+          "n_jobs": 4,
+          "deterministic": true,
+          "force_col_wise": true
+        },
+        "preprocessing": "Fold-local GLM preprocessing, including internally cross-fitted target logits, is fitted once. The identical encoded training matrix fits the GLM, supplies its init_score and fits residual trees. Training rows are never re-encoded with the full target map. Validation and test use training-only mappings. Both fitted models are saved together.",
+        "pooled_tokens_sha256": "3a1792e2ad5e3d89ad067dfbca4f142f97f413ce733c38cf277bbb6c1e420a86",
+        "training_rows": 579968,
+        "competition_training_rows": 559968,
+        "additional_training_rows": 20000
+      },
+      {
+        "algorithm": "glm_logit_offset_with_lightgbm_residual",
+        "prediction": "sigmoid(GLM decision_function + LightGBM raw_score)",
+        "fixed_training": true,
+        "early_stopping_patience": null,
+        "best_iteration": 1000,
+        "encoded_features": 279,
+        "glm": {
+          "C": 0.3,
+          "solver": "newton-cholesky",
+          "iterations_used": 10,
+          "spline_knots": 0
+        },
+        "target_encoder": {
+          "internal_folds": 5,
+          "smooth": 50.0,
+          "unknown": "training prior",
+          "log_odds": true
+        },
+        "residual_parameters": {
+          "n_estimators": 1000,
+          "num_leaves": 4,
+          "learning_rate": 0.03,
+          "reg_lambda": 5.0,
+          "min_child_samples": 100,
+          "objective": "binary",
+          "verbosity": -1,
+          "random_state": 45,
+          "n_jobs": 4,
+          "deterministic": true,
+          "force_col_wise": true
+        },
+        "preprocessing": "Fold-local GLM preprocessing, including internally cross-fitted target logits, is fitted once. The identical encoded training matrix fits the GLM, supplies its init_score and fits residual trees. Training rows are never re-encoded with the full target map. Validation and test use training-only mappings. Both fitted models are saved together.",
+        "pooled_tokens_sha256": "c79c4b48660037ba538ea9c905728373d27e35f95c88aafca46c91319d07e3f6",
+        "training_rows": 579968,
+        "competition_training_rows": 559968,
+        "additional_training_rows": 20000
+      },
+      {
+        "algorithm": "glm_logit_offset_with_lightgbm_residual",
+        "prediction": "sigmoid(GLM decision_function + LightGBM raw_score)",
+        "fixed_training": true,
+        "early_stopping_patience": null,
+        "best_iteration": 1000,
+        "encoded_features": 279,
+        "glm": {
+          "C": 0.3,
+          "solver": "newton-cholesky",
+          "iterations_used": 10,
+          "spline_knots": 0
+        },
+        "target_encoder": {
+          "internal_folds": 5,
+          "smooth": 50.0,
+          "unknown": "training prior",
+          "log_odds": true
+        },
+        "residual_parameters": {
+          "n_estimators": 1000,
+          "num_leaves": 4,
+          "learning_rate": 0.03,
+          "reg_lambda": 5.0,
+          "min_child_samples": 100,
+          "objective": "binary",
+          "verbosity": -1,
+          "random_state": 46,
+          "n_jobs": 4,
+          "deterministic": true,
+          "force_col_wise": true
+        },
+        "preprocessing": "Fold-local GLM preprocessing, including internally cross-fitted target logits, is fitted once. The identical encoded training matrix fits the GLM, supplies its init_score and fits residual trees. Training rows are never re-encoded with the full target map. Validation and test use training-only mappings. Both fitted models are saved together.",
+        "pooled_tokens_sha256": "c829cc3630c0c3347cb5e41c2a9752c6d053dae8012b4a3907e1ebafd5f896cf",
+        "training_rows": 579968,
+        "competition_training_rows": 559968,
+        "additional_training_rows": 20000
+      }
+    ]
+  },
+  "checkpoint_tolerance": 1e-12,
+  "checkpoint_sha256": {
+    "fold-0.joblib": "c4fbc87624709f52720af3bff97e509489ca732230a5ed47f0c4e57c21dbcbcb",
+    "fold-1.joblib": "98ce37cc8c04eb3a426f3b04036fe780c9d28d3e2f39f9b5eb20e00cc27ace80",
+    "fold-2.joblib": "2bd63c3a61e699530051f2ad88289eb5fed18585d645b7ac5da7735ee53ce7e9",
+    "fold-3.joblib": "c1e345c13f66918e85dd6ccd77c3b7b606c15fbe0bc3ae79aff230218616ee74",
+    "fold-4.joblib": "c9b178caffa9497bfa714d77ba7e6ed60311846e57644441b4a686a9ab921383"
+  },
+  "private_full_report_sha256": "78023a0f2145aa6ab8822bc77ccf226ac859908ab71e3a7ff4456dd780e5ea96",
+  "publication_note": "Aggregate metrics and file fingerprints only. Repeated pooled manifests replaced by canonical JSON SHA256; no data rows, prediction arrays or model binaries."
+}

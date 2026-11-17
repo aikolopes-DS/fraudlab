@@ -8,27 +8,27 @@ O projeto exige regras conferidas, treinamento neural próprio real, comparaçã
 
 A apresentação cobre problema, proposta, construção, matemática, arquiteturas, experimentos, códigos e ranking. Cada slide complexo deve ser seguido imediatamente por explicação simples com exemplo cotidiano. Narração e legendas são em português, com duração determinada pela cobertura.
 
-## Protocolo operacional atual: R10
+## Protocolo operacional atual: R18
 
-O [plano R10](../evidence/round10-plan.json) fixa CV estratificada com cinco folds, shuffle e seed 42 sobre as 699.960 linhas. Cada treino próprio usa quatro folds; a OOF é calculada somente no fold excluído. No teste, cada família própria usa a média das probabilidades dos cinco modelos. O pré-processamento aprendido fica dentro de cada treino; target encoding usa cinco partições internas. A fonte do treino é o commit [169f3ee](https://github.com/aikolopes-DS/fraudlab/tree/169f3ee5cdfbb2afe16c942a7af0efb8b12a403f).
+O [plano R18](../evidence/round18-plan.json) fixa CV estratificada com cinco folds, shuffle e seed 42 sobre as 699.960 linhas. Cada treino próprio usa quatro folds; a OOF é calculada somente no fold excluído. No teste, cada família própria usa a média das probabilidades dos cinco modelos. Target encoding e pooling têm cinco partições internas; mapas, frequência e escalas são ajustados no treino externo. Fonte: commit [8a1c7fd](https://github.com/aikolopes-DS/fraudlab/tree/8a1c7fd141b43e41b0d43e3a07b0c5ad0bf41ae5).
 
 | Componente | Implementação e parâmetros usados | Peso efetivo |
 | --- | --- | --- |
-| Offset próprio | GLM Newton-Cholesky, C=0,3, target encoding 5/50, one-hot e escala; `bpe_digits` e frequência por fold. Resíduo: 1.000 árvores, 4 folhas, taxa 0,03, L2=5, mínimo de 100 exemplos por folha | 56,25% |
+| Offset próprio | GLM Newton-Cholesky, C=0,3, target encoding 5/50, one-hot e escala; `joint_bpe`, frequência por fold e 16 taxas hierárquicas. Resíduo: 1.000 árvores, 4 folhas, taxa 0,03, L2=5, mínimo de 100 exemplos por folha | 56,25% |
 | LightGBM próprio | `value_digits`, 1.438 árvores fixas, 4 folhas, taxa 0,04, L2=5, mínimo de 100 exemplos por folha, suavização 20; sem early stopping | 18,75% |
 | GPT-2 target-first público | Previsões da versão 2, importadas e convertidas de logits para probabilidades; treinamento do autor externo | 25% |
 
-`bpe_digits` estende `value_digits` — entradas originais, logs, ciclos, razão e chaves de valores/dígitos — com seis chaves do tokenizer GPT-2 para valor e saldo. A frequência usa contagens aprendidas somente no treino de cada fold. Essas representações não treinam um GPT-2 próprio e são hipóteses sobre os dados sintéticos, não regras causais de fraude bancária. ID e alvo são excluídos das entradas.
+`bpe_digits` estende `value_digits` — entradas originais, logs, ciclos, razão e chaves de valores/dígitos — com seis chaves do tokenizer GPT-2 para valor e saldo. `joint_bpe` acrescenta oito interações fixas. O pooling compartilha taxas entre campos relacionados com suavizações 50/2.000/200; cada linha recebe estatísticas de outros subconjuntos internos. São 92 atributos antes do pré-processamento e 223 entradas codificadas. Testamos padrões sintéticos, sem afirmar regras causais bancárias. ID e alvo ficam excluídos.
 
-A composição é `0.5625 × offset + 0.1875 × LGB + 0.25 × GPT2`, em probabilidades. Dentro do offset, a previsão é `sigmoid(margem GLM + margem das árvores residuais)`. O GLM e o resíduo usam a mesma matriz de treino com target encoding internamente cruzado; os dois termos ficam no checkpoint. A R10 não usa early stopping externo nem refit único com 100% dos rótulos.
+A composição é `0.5625 × offset + 0.1875 × LGB + 0.25 × GPT2`, em probabilidades. Dentro do offset: `sigmoid(margem GLM + margem residual)`. Os dois termos usam a mesma matriz de treino com codificação supervisionada internamente cruzada e são salvos juntos. A seleção R18 não usa early stopping externo nem refit único com 100% dos rótulos.
 
-A [OOF R10](../evidence/round10-results.json) é **0,9514921382152453**, com melhora nos cinco folds sobre a baseline `explore5-public25` (0,9512586315) e acima da R9. Os parâmetros e pesos foram declarados antes do treino e do envio. Essa OOF participou da seleção e não é avaliação independente. A [submissão 58470267](../evidence/round10-public.json) obteve score público **0,95134**; a posição **712/2.089** foi observada em **17/11/2026 às 13h34min51s UTC** e permanece um snapshot provisório.
+A [OOF R18](../evidence/round18-results.json) é **0,9516524825255244**, ganho de 0,0001603443 sobre R10 e melhora nos cinco folds. Planos, pesos e critério precederam o treino; a [auditoria independente](../evidence/round18-verification.json) recalculou OOF, misturas e checkpoints. A CV participou da seleção e não é avaliação independente. A [submissão 58481744](../evidence/round18-public.json) obteve score público **0,95141**, posição **714/2.125**, observada em **17/11/2026 às 20h53min43s UTC**. A R10 anterior havia obtido 0,95134.
 
 ```mermaid
 flowchart LR
     A[CSVs oficiais] --> B[Contratos e hashes]
     B --> C[CV própria 5/42 e transformações por fold]
-    C --> D[GLM com BPE e frequência, resíduo e LGB fixos]
+    C --> D[GLM com BPE, pooling e interações; resíduo e LGB fixos]
     D --> E[OOF e médias de teste próprias]
     F[GPT-2 público v2] --> G[Manifesto, arrays, ordem e folds]
     B --> G
@@ -59,7 +59,7 @@ Em seguida, os refits únicos `final-glm` e `final-lgbm` utilizaram todos os 699
 
 A híbrida v0.1, submissão 58438450, usava `explore5-glm` e `explore5-lgbm` mais GPT-2 v2, com OOF 0,95125863. Sua [receita](../notebooks/hybrid-recipe.json) permanece como baseline histórica. A R10 substitui seu GLM pelo offset com BPE e frequência, mantendo o LightGBM, o componente externo e os pesos efetivos. Ambas usam médias de cinco modelos próprios, sem os refits únicos anteriores.
 
-Todos os rótulos, inclusive a antiga reserva, participam da CV atual: `phase=exploratory_full_data_cv`, `holdout_fraction=0` e `independent_holdout=false`. O holdout anterior não é reavaliado nem atribuído à R10. Seu relatório, ledger e artefatos foram preservados.
+Todos os rótulos, inclusive a antiga reserva, participam da CV atual: `phase=exploratory_full_data_cv`, `holdout_fraction=0` e `independent_holdout=false`. O holdout anterior não é reavaliado nem atribuído às rodadas atuais. R12–R17 e R19 falharam em seus critérios de promoção. Após falta de memória, a recuperação R17 preservou três checkpoints completos e treinou apenas os dois folds restantes, sem mudar o modelo; o tempo original completo permanece indisponível.
 
 ## Estrutura e rastreabilidade
 
@@ -78,7 +78,7 @@ O núcleo é uma CLI Python sobre arquivos locais. Não há banco de dados ou se
 
 Os planos e resultados das ablações ficam em `evidence/`. Splines, pares, one-hot esparso e TabM não foram promovidos. Frequência e BPE foram integrados à R10 com o offset após a comparação prospectiva. A R9 teve [envio exploratório em exceção declarada](../evidence/public-evaluation-results.json): melhorou apenas três folds e não passou no critério original. A R10 passou no seu critério sem essa exceção. A [R11](../evidence/round11-results.json), com 2.000 árvores residuais, ficou abaixo da R10 na OOF e não foi submetida.
 
-O [notebook V5](https://www.kaggle.com/code/aikoog/fraudlab-reproducible-neural-fraud-detection) mantém as células executáveis da baseline v0.1, exportadas do SHA `30dc7eb723e4cf31291bb075ed6c0d943557264c`, e acrescenta Markdown sobre a solução atual. Foi salvo **sem execução na nuvem**; as 22 células remotas conferem com as locais, sem contagens de execução ou outputs. Ele não executa a R10. A fonte da R10 está no [GitHub](https://github.com/aikolopes-DS/fraudlab) e a apresentação atual é a [v0.2, com 134 slides e 51min23s](https://github.com/aikolopes-DS/fraudlab/releases/tag/v0.2.0). A [verificação](../evidence/verification.json) separa publicação do notebook, treino local e avaliação dos CSVs pelo Kaggle.
+O [notebook V5](https://www.kaggle.com/code/aikoog/fraudlab-reproducible-neural-fraud-detection) mantém células executáveis da baseline v0.1, fonte `30dc7eb723e4cf31291bb075ed6c0d943557264c`, e Markdown sobre R10. Foi salvo sem execução na nuvem; 22 células remotas conferem com as locais, sem contagens de execução ou outputs. Ele não executou R18 na nuvem. A fonte atual está no [GitHub](https://github.com/aikolopes-DS/fraudlab). A [mídia v0.3, 139 slides e 54min51s](https://github.com/aikolopes-DS/fraudlab/releases/tag/v0.3.0), documenta o marco R10. A revisão v0.4 está em montagem, ainda não publicada.
 
 ## Critérios de verificação
 

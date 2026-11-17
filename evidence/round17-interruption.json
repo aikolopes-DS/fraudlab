@@ -1,0 +1,28 @@
+{
+  "status": "failed_partial_cv; recovered separately",
+  "original_run": "round17-neural-pooled-offset",
+  "source_revision": "f436de035a0c0cdfcffa2ff22cdb3af5d54860a8",
+  "completed_folds": [
+    0,
+    1,
+    2
+  ],
+  "complete_oof_available": false,
+  "failure": "Unable to allocate 218. MiB for an array with shape (475972, 60) and data type float64",
+  "failure_context": "Two heavy CPU jobs overlapped; original experiment exhausted memory. Further CPU fits were serialized.",
+  "status_sha256": "ba9134e2d7e5bddbec5f1b7a3717eb6914442b2275cc2fcade88cd5b8e01a539",
+  "config_sha256": "45a7f9b178fde8a897777c07cbd561e64d212652d911bc4b54131752394912b1",
+  "original_log_sha256": "f1ccc86c5f0ca154e145c853586d093215f7726f2164787b128e860eaef0f41e",
+  "checkpoint_sha256": {
+    "fold-0.glm.joblib": "571d870da57643ec13b5774b7d450959b21d54f995d5ac991fa33e486917aa87",
+    "fold-0.pt": "a8102311471eb1d99ba960453504c5133148e45faa1c01038e13c00f646024ab",
+    "fold-1.glm.joblib": "4c49312f1c3d1c0b7bd3b30f00c4179a9a59e650fa92c2aa5c309a21fa3188fc",
+    "fold-1.pt": "cb47db90ebc174f8b7ef29e0c6ed27194f5275d4be17a9c86f58cce574cf15d8",
+    "fold-2.glm.joblib": "bb18a925e395d8a731679367aa8e56ddadd5a0490ac828ca23930c52a6d3036f",
+    "fold-2.pt": "d102b64b6804a92f02fcef0155e78f8c758d04e36e63e367f119d5a1ba40a0b6"
+  },
+  "recovery_plan": "evidence/round17b-plan.json",
+  "recovery_run": "round17-neural-pooled-offset-resumed",
+  "recovery_completed": true,
+  "new_kaggle_submissions_from_failed_run": 0
+}

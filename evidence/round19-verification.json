@@ -1,0 +1,443 @@
+{
+  "status": "passed",
+  "round": 19,
+  "recorded_at": "2026-11-17T21:24:46.585198+00:00",
+  "auditor_sha256": "82b3cd983578264224f3e73abb8807c42aa8ea75935e102d3c8e18252ee6628b",
+  "source_import": ".\\.local\\worktrees\\joints-counts\\src\\fraudlab\\__init__.py",
+  "transductive_count_audit": {
+    "method": "Independent per-column value_counts over <=50000-row deterministic feature batches; no target columns selected",
+    "rows": 999944,
+    "columns": 60,
+    "labels_used": false,
+    "counts_sha256": "75328337790120e365879b94d6637d3a34cfd5490c3e09b0e932ce16cba2a554"
+  },
+  "checkpoint_reload": {
+    "method": "Trusted local joblib -> saved model.predict_proba; no fitting",
+    "checkpoints": [
+      {
+        "fold": 0,
+        "sha256": "077c8ebb9ce27ffd12dd49f568619bc58586f3ee0827cd240910d995e9cbb1d7",
+        "seed": 42,
+        "validation_rows": 1024,
+        "validation_max_abs_error": 9.974659986866641e-17,
+        "glm_iterations_used": 10,
+        "trees": 1000,
+        "test_rows": 1024,
+        "test_predictions_sha256": "8807a55e55922057987de92a7fd3205b41882701eca89c7759a42d8c05399c6e",
+        "validation_ids_sha256": "16986d733b1f68208b7ea4b9156a33b4514b5825bf415fb4612f3d2f5f1e3ccd",
+        "pooled_manifest_sha256": "747cba503a751b59973425cec3c45aba7614c5a1b69977be6ee16b97134bcb4f"
+      },
+      {
+        "fold": 1,
+        "sha256": "1df6326491491bba2d0643bdf808c1565fd0c8e92adb360492ab9fda0562357e",
+        "seed": 43,
+        "validation_rows": 1024,
+        "validation_max_abs_error": 1.1102230246251565e-16,
+        "glm_iterations_used": 10,
+        "trees": 1000,
+        "test_rows": 1024,
+        "test_predictions_sha256": "892131b74b6d2b22dab0b7fe786f754cb2f0799439ec74fb14f82b93cba4ac2b",
+        "validation_ids_sha256": "268bb15d0044e9c274bb3556d8e6d670988b1517947b223d24cf417b68770b34",
+        "pooled_manifest_sha256": "84b485f1c34503fc56a275d586eaefd9099c446c074548b8fda6506ef39755ff"
+      },
+      {
+        "fold": 2,
+        "sha256": "d8f4fe0d7be6b402971df55fada507585f53b825e328c375420c03906b797b11",
+        "seed": 44,
+        "validation_rows": 1024,
+        "validation_max_abs_error": 9.974659986866641e-17,
+        "glm_iterations_used": 10,
+        "trees": 1000,
+        "test_rows": 1024,
+        "test_predictions_sha256": "c43960f4f579696deeaf5b5e36f3d5ffc708c6599330361cd4825b2338fc5e87",
+        "validation_ids_sha256": "aec48df7fc332351557760351cfa76d1d6cf846b49e400485e4898b76b68c829",
+        "pooled_manifest_sha256": "3a1792e2ad5e3d89ad067dfbca4f142f97f413ce733c38cf277bbb6c1e420a86"
+      },
+      {
+        "fold": 3,
+        "sha256": "5e8786c445d37820feed6a7ac91bd53db1c3deec3c88580b8ba2ff9d22e6e277",
+        "seed": 45,
+        "validation_rows": 1024,
+        "validation_max_abs_error": 1.1102230246251565e-16,
+        "glm_iterations_used": 10,
+        "trees": 1000,
+        "test_rows": 1024,
+        "test_predictions_sha256": "69530bcdc54f958da99af5b202e5318a462121a2ef9656550dfebe95bcd49f3f",
+        "validation_ids_sha256": "51bc701cdfa8b4eab1fba6d6f3a154968afa0f675c7c8202750aba4ad7a60648",
+        "pooled_manifest_sha256": "c79c4b48660037ba538ea9c905728373d27e35f95c88aafca46c91319d07e3f6"
+      },
+      {
+        "fold": 4,
+        "sha256": "77578dff86cbd7981e22a3ce8beaca56cd5c27b4be5e78df9eebfd2a8b121d19",
+        "seed": 46,
+        "validation_rows": 1024,
+        "validation_max_abs_error": 1.1102230246251565e-16,
+        "glm_iterations_used": 10,
+        "trees": 1000,
+        "test_rows": 1024,
+        "test_predictions_sha256": "ed69d7e8a355b2413b12c2338fd40b8e02e4d147833847c8504d609454d75642",
+        "validation_ids_sha256": "4ebef535746a2b315460bc185bca2c7f84dfc0e3d60995079c4631a1e34f876b",
+        "pooled_manifest_sha256": "c829cc3630c0c3347cb5e41c2a9752c6d053dae8012b4a3907e1ebafd5f896cf"
+      }
+    ],
+    "test_rows": 1024,
+    "test_mean_max_abs_error": 9.990923019453923e-17,
+    "test_ids_sha256": "24eca7fc14998830eb6672211e3a485824d9a0f2f138cb94abc0cb707bd57779"
+  },
+  "source_revision": "8a1c7fd141b43e41b0d43e3a07b0c5ad0bf41ae5",
+  "worktree": ".\\.local\\worktrees\\joints-counts",
+  "source_clean_at_start_and_finish": true,
+  "source_hashes": {
+    "__init__.py": "14479eff95a0233e8bf2d9f359843c36f53f36b92cc95c3e452f75bfb2982dcc",
+    "__main__.py": "b8fc5d9e4cf77f7319f9e2f7956f490bb71da6ce3c6842e279f46194672a7fae",
+    "bpe.py": "fb71799ca075c657a8344f85d6a7e91653d1f319e24b5e287c17565cea456d4e",
+    "data.py": "f22355cc51fa6e6162b24e639923f40a11a23af00afcb65553090176271c8326",
+    "experiment.py": "85a0995157f4b4453206d88a41ee1196765f7bb5cd6cf9dd55d5dd89ba87bb7a",
+    "external.py": "05ec4ec64e4a2c5cf1137c949646bed14fe83fb04506b8f2f973c2c7633c5e08",
+    "features.py": "184fe327468194f34563b25aee2268348ca854d59e4916f8e3eacdd1b6420424",
+    "frequency.py": "de06b4f581f6864066d94b140d67e4ed16f7cef054a30ef20bc408a972279ce6",
+    "holdout.py": "e3702891766326710c3b56dd7a7fe69f2f778acea3316665f130aa6955e2f4e3",
+    "joints.py": "620851854c56aceceba02d5855fe22525e748973e80ffe0f83040f5e75a271e8",
+    "models.py": "e00d858bac42b79362ef408cbb7f359bca44a4828931b0e4943d660a3eb095b5",
+    "neural_offset.py": "042eec5ea088477bb37b045ace2f537c6e6e39ff49b3e810dc5e501b4ea8e487",
+    "offset.py": "a4ea551e4ddf89aedc87f313eb07425aebc60f7d967986524a873a73565fdc4f",
+    "original.py": "4db9d8d54929ba9d9a36fd55b8f8655611a800d22fade59af079e0497ce7b934",
+    "pooled.py": "6f15acb31c8a878efc262410a0ddf3f6b733b1a636a7bfa917758d568164601a",
+    "refit.py": "981074be27e2ed24aa45dbaabeda32677f83ae59aa74f12dd6a56de152fde4e9",
+    "scores.py": "8bae07482b56eb488a388c54ecd7ec0cf87a8644d9e98e53d7c1fcc75d2e58a1",
+    "splits.py": "41215280332984010f5b616bbf6a675c623b7af3e3f00604eb3238e79c709af9",
+    "strings.py": "f3248a9c0e7bbda655e29ecac02886dfa4cd4f34f35007ad90cf99a17efccbb0",
+    "tabm.py": "df22ff1a120c8a6fde59052ea7a1b509ff1b7e7acc83d774f670a1daf4a4e667",
+    "tokens.py": "8e3abfcbe2e437eee859d120f2a89b0a45bd84dfe389a06c11b622ee5ac9cbb4",
+    "transductive.py": "b2848df445f94d1135df27b99e7586048c279860b244dcf9544c30687263ca3b"
+  },
+  "plan_sha256": "018955c0aa18c791dbe8647f30ce25b2218f612e54e389dd0e53ff5b0d6a85df",
+  "config_sha256": "feb7b74ea877d855112b1dff31b3e254a3a3c3884381cf13dcf7f01f18629110",
+  "competition_data_hashes": {
+    "train.csv": "87eaa10b8d17a7e4f657b8da1c66242431338bdd8b6ad45861521ac0c0e9fbd5",
+    "test.csv": "10f516959020357b565abaaa4fd25baae97fc2f536d0805695bb7cc15c1660f0",
+    "sample_submission.csv": "13fc6ed8b73de5329884ec490f2a0b750cf29a7cda772b78cfa0cf486f6f35fa"
+  },
+  "baseline_run": "round10-offset-bpe-frequency-public25",
+  "baseline_recomputed": {
+    "roc_auc": 0.9514921382152453,
+    "fold_scores": [
+      0.9504894214476117,
+      0.9519294871585336,
+      0.9565314284038893,
+      0.9517951792274013,
+      0.9468101628656655
+    ]
+  },
+  "own_recomputed": {
+    "roc_auc": 0.9509404835447566,
+    "fold_scores": [
+      0.95012319484814,
+      0.951025648380898,
+      0.9559669653385051,
+      0.951189620576195,
+      0.9465041396423161
+    ]
+  },
+  "feature_manifest": {
+    "tiktoken": "0.14.0",
+    "encoding": "gpt2",
+    "vocabulary_size": 50257,
+    "encoding_files": [
+      {
+        "url": "https://openaipublic.blob.core.windows.net/gpt-2/encodings/main/vocab.bpe",
+        "sha256": "1ce1664773c50f3e0cc8842619a93edc4624525b728b188a9e0be33b7726adc5"
+      },
+      {
+        "url": "https://openaipublic.blob.core.windows.net/gpt-2/encodings/main/encoder.json",
+        "sha256": "196139668be63f3b5d6574427317ae82f612a97c5d1cdaf36ed2256dbf636783"
+      }
+    ],
+    "input_columns": [
+      "amount_usd",
+      "account_balance_usd"
+    ],
+    "output_suffixes": [
+      "__gpt2_first_key",
+      "__gpt2_second_key",
+      "__gpt2_second_cents_key"
+    ],
+    "representation": "cents=np.rint(float64_USD*100); ' ' + str(cents // 100)",
+    "rounding": "NumPy rint; nearest representable cent, halfway ties to even",
+    "second_token_missing": "-1",
+    "third_key": "second_token_id + ':' + str(cents % 100)",
+    "more_than_two_tokens": "retain first two; discard later integer tokens",
+    "label_usage": "none in extraction; fold-local cross-fitted TE downstream"
+  },
+  "training_log_sha256": "c9d0da017a68d4eb46009ff1da58ac02b2234edc02ee1cba67308b122847ffa3",
+  "comparisons": [
+    {
+      "run": "round19-pooled-share025-public25",
+      "share": 0.25,
+      "weights": [
+        0.140625,
+        0.421875,
+        0.1875,
+        0.25
+      ],
+      "oof_auc": 0.9515222874978575,
+      "fold_scores": [
+        0.9505379294142098,
+        0.951935530627037,
+        0.9565658590848581,
+        0.951792945163723,
+        0.9468762122281199
+      ],
+      "delta_vs_r10": 3.0149282612246253e-05,
+      "fold_deltas": [
+        4.8507966598054786e-05,
+        6.04346850330284e-06,
+        3.443068096886659e-05,
+        -2.2340636782747225e-06,
+        6.604936245435677e-05
+      ],
+      "improved_folds": 4,
+      "eligible_to_submit": false,
+      "manual_oof_rows": 699960,
+      "manual_test_rows": 299984,
+      "manual_oof_max_abs_error": 1.1102230246251565e-16,
+      "manual_test_max_abs_error": 1.1102230246251565e-16,
+      "submission_sha256": "a0b341a01763c959bf64f914f4548a5c008dd3e7da915868c082095e404d0163"
+    },
+    {
+      "run": "round19-pooled-share050-public25",
+      "share": 0.5,
+      "weights": [
+        0.28125,
+        0.28125,
+        0.1875,
+        0.25
+      ],
+      "oof_auc": 0.9515440516561278,
+      "fold_scores": [
+        0.9505747059443491,
+        0.9519322432287456,
+        0.9565944016564112,
+        0.9517811471946195,
+        0.9469346552096506
+      ],
+      "delta_vs_r10": 5.191344088251171e-05,
+      "fold_deltas": [
+        8.528449673739225e-05,
+        2.7560702119400204e-06,
+        6.297325252191399e-05,
+        -1.4032032781829962e-05,
+        0.00012449234398503872
+      ],
+      "improved_folds": 4,
+      "eligible_to_submit": false,
+      "manual_oof_rows": 699960,
+      "manual_test_rows": 299984,
+      "manual_oof_max_abs_error": 1.1102230246251565e-16,
+      "manual_test_max_abs_error": 1.1102230246251565e-16,
+      "submission_sha256": "e1828f0a51b7eeab85235a875c63b90110c4ea59c938f0bc77cba6e0031cc8cf"
+    },
+    {
+      "run": "round19-pooled-share100-public25",
+      "share": 1.0,
+      "weights": [
+        0.5625,
+        0.0,
+        0.1875,
+        0.25
+      ],
+      "oof_auc": 0.9515634725537384,
+      "fold_scores": [
+        0.9506182931732909,
+        0.9518952273725609,
+        0.9566324211323011,
+        0.9517362049177912,
+        0.9470290544983894
+      ],
+      "delta_vs_r10": 7.13343384931564e-05,
+      "fold_deltas": [
+        0.0001288717256792138,
+        -3.425978597271229e-05,
+        0.0001009927284117973,
+        -5.897430961010475e-05,
+        0.00021889163272381662
+      ],
+      "improved_folds": 3,
+      "eligible_to_submit": false,
+      "manual_oof_rows": 699960,
+      "manual_test_rows": 299984,
+      "manual_oof_max_abs_error": 1.1102230246251565e-16,
+      "manual_test_max_abs_error": 1.1102230246251565e-16,
+      "submission_sha256": "20565e373e90a3868dd676418cd5f782ed17e7a2e9c5a15d4bad7178912c96e4"
+    }
+  ],
+  "selected_within_round": null,
+  "cross_round": {
+    "status": "checked_previous_rounds",
+    "previous_rounds": [
+      {
+        "round": 13,
+        "selected": null,
+        "results_sha256": "33919949c39871472a1e33fdef18dbee3e6a70390e47351d61e16107004de6d6",
+        "audit_sha256": "5343faa5130ea6ba4e4849577127d0a53498ac26423085182e7de244878f5037"
+      },
+      {
+        "round": 14,
+        "selected": null,
+        "results_sha256": "c0b78b640e294a5549753070faa2c651977c443603d14f3c5275c56bfb61efa8",
+        "audit_sha256": "47608fb01290ea583fda5fc083dcafc08bef1961d505b14b0220134979c70644"
+      },
+      {
+        "round": 15,
+        "selected": null,
+        "results_sha256": "2e5becf472b542c8205b8111fa423713e1e686955a41771faff5dc46f7a42bdb"
+      },
+      {
+        "round": 16,
+        "selected": null,
+        "results_sha256": "78023a0f2145aa6ab8822bc77ccf226ac859908ab71e3a7ff4456dd780e5ea96",
+        "audit_sha256": "9adca1fe1f083773232ee1b62a4e454625f1376a384e9010d32a280c784733e5"
+      },
+      {
+        "round": 18,
+        "audit_sha256": "cb2455f9b98fa08249204d09fd54cf85fe8c62142db9d99ea84228fcb6461130",
+        "selected": {
+          "run": "round18-pooled-share100-public25",
+          "share": 1.0,
+          "weights": [
+            0.5625,
+            0.0,
+            0.1875,
+            0.25
+          ],
+          "oof_auc": 0.9516524825255244,
+          "fold_scores": [
+            0.9506790019581457,
+            0.9520317507242809,
+            0.9566745172306466,
+            0.9518625895354618,
+            0.9470964306274507
+          ],
+          "delta_vs_r10": 0.00016034431027911467,
+          "fold_deltas": [
+            0.00018958051053397096,
+            0.00010226356574727369,
+            0.00014308882675728718,
+            6.7410308060456e-05,
+            0.0002862677617851972
+          ],
+          "improved_folds": 5,
+          "eligible_to_submit": true,
+          "manual_oof_rows": 699960,
+          "manual_test_rows": 299984,
+          "manual_oof_max_abs_error": 1.1102230246251565e-16,
+          "manual_test_max_abs_error": 1.1102230246251565e-16,
+          "submission_sha256": "18c92eab3d28dcefed12c5a1eebdd9380f45e13972875bf5b31cd4a0e6151e53"
+        }
+      },
+      {
+        "round": 17,
+        "audit_sha256": "20b0a21682ed2a149a47038cf80b964b4ed725ded23dfc545764348e65c9c3bb",
+        "selected": null
+      }
+    ],
+    "preferred": "round18-pooled-share100-public25"
+  },
+  "promotion_status": "do_not_submit_this_round",
+  "limitations": [
+    "These are exploratory selection OOF results using all competition labels, not independent holdout estimates.",
+    "Checkpoint predictions were reloaded on 1024 validation rows per fold and 1024 test rows; mixtures checked on every saved row.",
+    "No fitting, data augmentation, Kaggle submission or public-score tuning performed by this auditor.",
+    "Historical external import has no config_sha256 field; its fixed import-manifest SHA is checked and current config bytes are hashed, without claiming a historical config hash."
+  ],
+  "inputs_sha256": {
+    ".\\.local\\research\\round19\\results.json": "f8fe044aa7f601d9f32bf05c642b901c1eb67a6255bcad8b8a5d494dbdbb994f",
+    ".\\.local\\research\\round19\\invocation.json": "b18c500416225fedebab8a5208a27068761817115e31418797ebf6764dfa3fe0",
+    ".\\.local\\worktrees\\joints-counts\\evidence\\round19-plan.json": "018955c0aa18c791dbe8647f30ce25b2218f612e54e389dd0e53ff5b0d6a85df",
+    ".\\.local\\research\\win-20261117\\run_joints_counts.py": "d521ded73450b26b67f46e19c0b813c1566a7ccb9a43ae49f5076b3493cf09de",
+    ".\\artifacts\\runs\\round19-transductive-pooled-offset\\config.json": "feb7b74ea877d855112b1dff31b3e254a3a3c3884381cf13dcf7f01f18629110",
+    ".\\artifacts\\runs\\round19-transductive-pooled-offset\\metrics.json": "a1da35745f06f244c54286eeb796f250e7636324d31266ffec3547c1f79e2250",
+    ".\\.local\\research\\round19\\training.log": "c9d0da017a68d4eb46009ff1da58ac02b2234edc02ee1cba67308b122847ffa3",
+    ".\\artifacts\\runs\\round19-transductive-pooled-offset\\status.json": "970587076af8c4ebf6e94dc3999b017a4c3792faf7660c408eb91572fd86128b",
+    ".\\.local\\worktrees\\joints-counts\\src\\fraudlab\\__init__.py": "14479eff95a0233e8bf2d9f359843c36f53f36b92cc95c3e452f75bfb2982dcc",
+    ".\\.local\\worktrees\\joints-counts\\src\\fraudlab\\__main__.py": "b8fc5d9e4cf77f7319f9e2f7956f490bb71da6ce3c6842e279f46194672a7fae",
+    ".\\.local\\worktrees\\joints-counts\\src\\fraudlab\\bpe.py": "fb71799ca075c657a8344f85d6a7e91653d1f319e24b5e287c17565cea456d4e",
+    ".\\.local\\worktrees\\joints-counts\\src\\fraudlab\\data.py": "f22355cc51fa6e6162b24e639923f40a11a23af00afcb65553090176271c8326",
+    ".\\.local\\worktrees\\joints-counts\\src\\fraudlab\\experiment.py": "85a0995157f4b4453206d88a41ee1196765f7bb5cd6cf9dd55d5dd89ba87bb7a",
+    ".\\.local\\worktrees\\joints-counts\\src\\fraudlab\\external.py": "05ec4ec64e4a2c5cf1137c949646bed14fe83fb04506b8f2f973c2c7633c5e08",
+    ".\\.local\\worktrees\\joints-counts\\src\\fraudlab\\features.py": "184fe327468194f34563b25aee2268348ca854d59e4916f8e3eacdd1b6420424",
+    ".\\.local\\worktrees\\joints-counts\\src\\fraudlab\\frequency.py": "de06b4f581f6864066d94b140d67e4ed16f7cef054a30ef20bc408a972279ce6",
+    ".\\.local\\worktrees\\joints-counts\\src\\fraudlab\\holdout.py": "e3702891766326710c3b56dd7a7fe69f2f778acea3316665f130aa6955e2f4e3",
+    ".\\.local\\worktrees\\joints-counts\\src\\fraudlab\\joints.py": "620851854c56aceceba02d5855fe22525e748973e80ffe0f83040f5e75a271e8",
+    ".\\.local\\worktrees\\joints-counts\\src\\fraudlab\\models.py": "e00d858bac42b79362ef408cbb7f359bca44a4828931b0e4943d660a3eb095b5",
+    ".\\.local\\worktrees\\joints-counts\\src\\fraudlab\\neural_offset.py": "042eec5ea088477bb37b045ace2f537c6e6e39ff49b3e810dc5e501b4ea8e487",
+    ".\\.local\\worktrees\\joints-counts\\src\\fraudlab\\offset.py": "a4ea551e4ddf89aedc87f313eb07425aebc60f7d967986524a873a73565fdc4f",
+    ".\\.local\\worktrees\\joints-counts\\src\\fraudlab\\original.py": "4db9d8d54929ba9d9a36fd55b8f8655611a800d22fade59af079e0497ce7b934",
+    ".\\.local\\worktrees\\joints-counts\\src\\fraudlab\\pooled.py": "6f15acb31c8a878efc262410a0ddf3f6b733b1a636a7bfa917758d568164601a",
+    ".\\.local\\worktrees\\joints-counts\\src\\fraudlab\\refit.py": "981074be27e2ed24aa45dbaabeda32677f83ae59aa74f12dd6a56de152fde4e9",
+    ".\\.local\\worktrees\\joints-counts\\src\\fraudlab\\scores.py": "8bae07482b56eb488a388c54ecd7ec0cf87a8644d9e98e53d7c1fcc75d2e58a1",
+    ".\\.local\\worktrees\\joints-counts\\src\\fraudlab\\splits.py": "41215280332984010f5b616bbf6a675c623b7af3e3f00604eb3238e79c709af9",
+    ".\\.local\\worktrees\\joints-counts\\src\\fraudlab\\strings.py": "f3248a9c0e7bbda655e29ecac02886dfa4cd4f34f35007ad90cf99a17efccbb0",
+    ".\\.local\\worktrees\\joints-counts\\src\\fraudlab\\tabm.py": "df22ff1a120c8a6fde59052ea7a1b509ff1b7e7acc83d774f670a1daf4a4e667",
+    ".\\.local\\worktrees\\joints-counts\\src\\fraudlab\\tokens.py": "8e3abfcbe2e437eee859d120f2a89b0a45bd84dfe389a06c11b622ee5ac9cbb4",
+    ".\\.local\\worktrees\\joints-counts\\src\\fraudlab\\transductive.py": "b2848df445f94d1135df27b99e7586048c279860b244dcf9544c30687263ca3b",
+    ".\\data\\raw\\train.csv": "87eaa10b8d17a7e4f657b8da1c66242431338bdd8b6ad45861521ac0c0e9fbd5",
+    ".\\data\\raw\\test.csv": "10f516959020357b565abaaa4fd25baae97fc2f536d0805695bb7cc15c1660f0",
+    ".\\data\\raw\\sample_submission.csv": "13fc6ed8b73de5329884ec490f2a0b750cf29a7cda772b78cfa0cf486f6f35fa",
+    ".\\artifacts\\runs\\round10-offset-bpe-frequency-public25\\metrics.json": "66150258799c3ac2e5066ce29383afc02962c2dd35766126e7a995d9fcf57d57",
+    ".\\artifacts\\runs\\round10-offset-bpe-frequency-public25\\oof.csv": "038bc4bd9c03f777e97fa73738f261bd9881d0267e33502525697526fd577fea",
+    ".\\artifacts\\runs\\round10-offset-bpe-frequency-public25\\predictions.csv": "274cbe4ea90d9dc4893140cad55682f3627ced02163fff48655df4b095e428e7",
+    ".\\artifacts\\runs\\round10-offset-bpe-frequency-public25\\submission.csv": "274cbe4ea90d9dc4893140cad55682f3627ced02163fff48655df4b095e428e7",
+    ".\\artifacts\\runs\\round10-offset-bpe-frequency-public25\\config.json": "3777c2c58519005942badff767be6d5878bbd3f730a38141bd7d7173c54a3875",
+    ".\\artifacts\\runs\\round19-transductive-pooled-offset\\oof.csv": "eeba919f7f8926a7f054e75e8615a897976fc5c5e12ac9dc9432e41edf10bae9",
+    ".\\artifacts\\runs\\round19-transductive-pooled-offset\\predictions.csv": "d8e1b23bcc7edb8a65482f8ae0565a2e28e2f5347600db3be1ac7bec5f8a42f3",
+    ".\\artifacts\\runs\\round19-transductive-pooled-offset\\submission.csv": "d8e1b23bcc7edb8a65482f8ae0565a2e28e2f5347600db3be1ac7bec5f8a42f3",
+    ".\\artifacts\\runs\\round10-offset-bpe-frequency\\metrics.json": "9a3b92009ebcbff083c8ad39af9767a01da602992a8930eff6a4c5b548338ddd",
+    ".\\artifacts\\runs\\round10-offset-bpe-frequency\\oof.csv": "f16b28c7d3bb09a4360f8dbaef59e9dd78a63537bd7f7b01a9a3de43a483f3b4",
+    ".\\artifacts\\runs\\round10-offset-bpe-frequency\\predictions.csv": "8d98b87d5da1f8bc3411e2ed0dbc24aa7c0ccb8fd150762ee3f09a4025c5ccad",
+    ".\\artifacts\\runs\\round10-offset-bpe-frequency\\submission.csv": "8d98b87d5da1f8bc3411e2ed0dbc24aa7c0ccb8fd150762ee3f09a4025c5ccad",
+    ".\\artifacts\\runs\\round10-offset-bpe-frequency\\config.json": "d237d78f604f2a0ef570f46cc36ac5d0aa7fa5e149686353bb847ce15dc734e9",
+    ".\\artifacts\\runs\\explore5-lgbm\\metrics.json": "cbbec3ffbcc1461e2f34835955808e3de7ef9306336ea93bf21f3453a0950e4d",
+    ".\\artifacts\\runs\\explore5-lgbm\\oof.csv": "2a188175419c819bf5d5098125423afa8e95cd79cd965d2108b834cc4016a234",
+    ".\\artifacts\\runs\\explore5-lgbm\\predictions.csv": "54c9fc1229d1b8aa253520b79c4493b0ae97902ee1f76b73baa9b09d48ccd142",
+    ".\\artifacts\\runs\\explore5-lgbm\\submission.csv": "54c9fc1229d1b8aa253520b79c4493b0ae97902ee1f76b73baa9b09d48ccd142",
+    ".\\artifacts\\runs\\explore5-lgbm\\config.json": "50968cd9ae1c1734ae439657839a24658480341e5dbd7aeb9a78a8e4dbb7230a",
+    ".\\artifacts\\runs\\explore5-public-gpt2-v2\\metrics.json": "14f9e508e5f78c926cd5a4341259623f490872da3e73d5b96f1ae8903fe29bc7",
+    ".\\artifacts\\runs\\explore5-public-gpt2-v2\\oof.csv": "4c37722b34d520a6de7d94565140cd0681baad6fb6c012d0b7a86a25b82a4dcb",
+    ".\\artifacts\\runs\\explore5-public-gpt2-v2\\predictions.csv": "78ada898faa132accf86daa3311ba114e44a472d31f0648357d10000ab243d58",
+    ".\\artifacts\\runs\\explore5-public-gpt2-v2\\submission.csv": "78ada898faa132accf86daa3311ba114e44a472d31f0648357d10000ab243d58",
+    ".\\artifacts\\runs\\explore5-public-gpt2-v2\\config.json": "843e20a6839bc22dc5522a4f12c7d46f64472f20782bad6a606c295dfe741d31",
+    ".\\artifacts\\runs\\round19-transductive-pooled-offset\\fold-0.joblib": "077c8ebb9ce27ffd12dd49f568619bc58586f3ee0827cd240910d995e9cbb1d7",
+    ".\\artifacts\\runs\\round19-transductive-pooled-offset\\fold-1.joblib": "1df6326491491bba2d0643bdf808c1565fd0c8e92adb360492ab9fda0562357e",
+    ".\\artifacts\\runs\\round19-transductive-pooled-offset\\fold-2.joblib": "d8f4fe0d7be6b402971df55fada507585f53b825e328c375420c03906b797b11",
+    ".\\artifacts\\runs\\round19-transductive-pooled-offset\\fold-3.joblib": "5e8786c445d37820feed6a7ac91bd53db1c3deec3c88580b8ba2ff9d22e6e277",
+    ".\\artifacts\\runs\\round19-transductive-pooled-offset\\fold-4.joblib": "77578dff86cbd7981e22a3ce8beaca56cd5c27b4be5e78df9eebfd2a8b121d19",
+    ".\\artifacts\\runs\\round19-pooled-share025-public25\\metrics.json": "72ed4c77dcbf62f8f45a152c62c36d90e2a2022a0264f08c19b9fa0dd2eee2c7",
+    ".\\artifacts\\runs\\round19-pooled-share025-public25\\oof.csv": "1cd99b886116a427e31a385cc09ce62ef8461514d77f21cb65b73e5c3cbde0dd",
+    ".\\artifacts\\runs\\round19-pooled-share025-public25\\predictions.csv": "a0b341a01763c959bf64f914f4548a5c008dd3e7da915868c082095e404d0163",
+    ".\\artifacts\\runs\\round19-pooled-share025-public25\\submission.csv": "a0b341a01763c959bf64f914f4548a5c008dd3e7da915868c082095e404d0163",
+    ".\\artifacts\\runs\\round19-pooled-share025-public25\\config.json": "6944b7c31885852962bc93bccc3b1ed387c8a594a0285c96aa88b6ce46017a10",
+    ".\\artifacts\\runs\\round19-pooled-share050-public25\\metrics.json": "c1b3fb675fee12817a74521e786ee08d807dd89e35be2b9c9899f6da60517a8f",
+    ".\\artifacts\\runs\\round19-pooled-share050-public25\\oof.csv": "70e8f96940237cfc145d04d8ef71d143b7d8a7d897e3a18982a4135d8ee11257",
+    ".\\artifacts\\runs\\round19-pooled-share050-public25\\predictions.csv": "e1828f0a51b7eeab85235a875c63b90110c4ea59c938f0bc77cba6e0031cc8cf",
+    ".\\artifacts\\runs\\round19-pooled-share050-public25\\submission.csv": "e1828f0a51b7eeab85235a875c63b90110c4ea59c938f0bc77cba6e0031cc8cf",
+    ".\\artifacts\\runs\\round19-pooled-share050-public25\\config.json": "8e8a0c299772888e159836e7db242cfb6f99823977d23216841a25b12bf3ab08",
+    ".\\artifacts\\runs\\round19-pooled-share100-public25\\metrics.json": "f500cafdc293358b75cba8759812671c3daa5fcc555f9f461cf8f171995a3b92",
+    ".\\artifacts\\runs\\round19-pooled-share100-public25\\oof.csv": "6590e21bd792e99d4d0010b120c3f674f9c724ec36c5edb4f3cfa00fce9aa5e7",
+    ".\\artifacts\\runs\\round19-pooled-share100-public25\\predictions.csv": "20565e373e90a3868dd676418cd5f782ed17e7a2e9c5a15d4bad7178912c96e4",
+    ".\\artifacts\\runs\\round19-pooled-share100-public25\\submission.csv": "20565e373e90a3868dd676418cd5f782ed17e7a2e9c5a15d4bad7178912c96e4",
+    ".\\artifacts\\runs\\round19-pooled-share100-public25\\config.json": "5e0e8b895def150f9263b43c1cec971f0a4cce3be38bc76e8b28d1eb4cb6742e",
+    ".\\.local\\research\\round13\\results.json": "33919949c39871472a1e33fdef18dbee3e6a70390e47351d61e16107004de6d6",
+    ".\\.local\\research\\round13\\independent-audit.json": "5343faa5130ea6ba4e4849577127d0a53498ac26423085182e7de244878f5037",
+    ".\\.local\\research\\round14\\results.json": "c0b78b640e294a5549753070faa2c651977c443603d14f3c5275c56bfb61efa8",
+    ".\\.local\\research\\round14\\independent-audit.json": "47608fb01290ea583fda5fc083dcafc08bef1961d505b14b0220134979c70644",
+    ".\\.local\\research\\round15\\results.json": "2e5becf472b542c8205b8111fa423713e1e686955a41771faff5dc46f7a42bdb",
+    ".\\.local\\research\\round16\\results.json": "78023a0f2145aa6ab8822bc77ccf226ac859908ab71e3a7ff4456dd780e5ea96",
+    ".\\.local\\research\\round16\\independent-audit.json": "9adca1fe1f083773232ee1b62a4e454625f1376a384e9010d32a280c784733e5",
+    ".\\.local\\research\\round18\\independent-audit.json": "cb2455f9b98fa08249204d09fd54cf85fe8c62142db9d99ea84228fcb6461130",
+    ".\\.local\\research\\round17\\independent-audit.json": "20b0a21682ed2a149a47038cf80b964b4ed725ded23dfc545764348e65c9c3bb"
+  },
+  "completed_at": "2026-11-17T21:25:13.746764+00:00",
+  "private_full_report_sha256": "c6d67325bcfe18747fa4048fd6f33dda1525e6a330a6320c688a258ee58dbf97",
+  "publication_note": "Aggregate metrics, hashes and provenance only; repeated pooled manifests replaced by canonical JSON SHA256. No input rows, probability arrays or model binaries."
+}

@@ -1,0 +1,299 @@
+{
+  "status": "passed",
+  "round": 14,
+  "recorded_at": "2026-11-17T19:58:15.072645+00:00",
+  "auditor_sha256": "73a4eb2f352030f81981d09ef978ffd59a97d6bdc6f39bf6e71aee2f3267823d",
+  "source_import": ".\\.local\\worktrees\\pooled-r13\\src\\fraudlab\\__init__.py",
+  "checkpoint_reload": {
+    "method": "Trusted local joblib -> saved model.predict_proba; no fitting",
+    "checkpoints": [
+      {
+        "fold": 0,
+        "sha256": "60b8ca6987550c2910575cfa174ce52763f9b9ac2d5f29ffb4f1a2e14f0ede6b",
+        "seed": 42,
+        "validation_rows": 1024,
+        "validation_max_abs_error": 1.1102230246251565e-16,
+        "validation_ids_sha256": "16986d733b1f68208b7ea4b9156a33b4514b5825bf415fb4612f3d2f5f1e3ccd",
+        "pooled_manifest_sha256": "747cba503a751b59973425cec3c45aba7614c5a1b69977be6ee16b97134bcb4f"
+      },
+      {
+        "fold": 1,
+        "sha256": "5715ae418c6e240295a81afc40522b95be3827509590956a8948e7e5b596d44f",
+        "seed": 43,
+        "validation_rows": 1024,
+        "validation_max_abs_error": 1.1102230246251565e-16,
+        "validation_ids_sha256": "268bb15d0044e9c274bb3556d8e6d670988b1517947b223d24cf417b68770b34",
+        "pooled_manifest_sha256": "84b485f1c34503fc56a275d586eaefd9099c446c074548b8fda6506ef39755ff"
+      },
+      {
+        "fold": 2,
+        "sha256": "6cc2e7aa988002ad503d965968eecf3b671a7ca865d43bee2e83e59936ff8fec",
+        "seed": 44,
+        "validation_rows": 1024,
+        "validation_max_abs_error": 1.1102230246251565e-16,
+        "validation_ids_sha256": "aec48df7fc332351557760351cfa76d1d6cf846b49e400485e4898b76b68c829",
+        "pooled_manifest_sha256": "3a1792e2ad5e3d89ad067dfbca4f142f97f413ce733c38cf277bbb6c1e420a86"
+      },
+      {
+        "fold": 3,
+        "sha256": "faafcbfd43932cff9e66f59f8dde8d4c2890e9a1be64f29a09067c3658333ae4",
+        "seed": 45,
+        "validation_rows": 1024,
+        "validation_max_abs_error": 9.952975943416931e-17,
+        "validation_ids_sha256": "51bc701cdfa8b4eab1fba6d6f3a154968afa0f675c7c8202750aba4ad7a60648",
+        "pooled_manifest_sha256": "c79c4b48660037ba538ea9c905728373d27e35f95c88aafca46c91319d07e3f6"
+      },
+      {
+        "fold": 4,
+        "sha256": "73cd5093a141d305c351d26c39dbbd86a7503996d05f841eb46eaf181a99a24e",
+        "seed": 46,
+        "validation_rows": 1024,
+        "validation_max_abs_error": 1.1102230246251565e-16,
+        "validation_ids_sha256": "4ebef535746a2b315460bc185bca2c7f84dfc0e3d60995079c4631a1e34f876b",
+        "pooled_manifest_sha256": "c829cc3630c0c3347cb5e41c2a9752c6d053dae8012b4a3907e1ebafd5f896cf"
+      }
+    ],
+    "test_rows": 1024,
+    "test_mean_max_abs_error": 1.1102230246251565e-16,
+    "test_ids_sha256": "24eca7fc14998830eb6672211e3a485824d9a0f2f138cb94abc0cb707bd57779"
+  },
+  "source_revision": "671ed3071168b4e67f7f9b245d92d1851d4776b5",
+  "worktree": ".\\.local\\worktrees\\pooled-r13",
+  "source_clean_at_start_and_finish": true,
+  "source_hashes": {
+    "__init__.py": "14479eff95a0233e8bf2d9f359843c36f53f36b92cc95c3e452f75bfb2982dcc",
+    "__main__.py": "138cbdc7cc82a5cc2935062dc6ba77478391f5081b9557e813f4734d80b4cf8c",
+    "bpe.py": "7adce2ce879679de655a040dffdf70ff2f3bfd65bb9458bfdf64eb21dcc08724",
+    "data.py": "f22355cc51fa6e6162b24e639923f40a11a23af00afcb65553090176271c8326",
+    "experiment.py": "00ff51b131cfeed8efba86027a860805a2168eeb527ff014fad6d533550094d6",
+    "external.py": "05ec4ec64e4a2c5cf1137c949646bed14fe83fb04506b8f2f973c2c7633c5e08",
+    "features.py": "19267a6999009df5147f90700f541c175d79b27d6ff405e81c92d2f58b9b165e",
+    "frequency.py": "6831c52335d82b7d6570ea2ba4cfd70ac5b6196406bc1a702f2740fe6cc257ff",
+    "holdout.py": "e3702891766326710c3b56dd7a7fe69f2f778acea3316665f130aa6955e2f4e3",
+    "models.py": "e706ac879313e86a239e6d18261179ef9f2ec4b945587f1082c9aa8887dfa817",
+    "offset.py": "a4ea551e4ddf89aedc87f313eb07425aebc60f7d967986524a873a73565fdc4f",
+    "pooled.py": "6f15acb31c8a878efc262410a0ddf3f6b733b1a636a7bfa917758d568164601a",
+    "refit.py": "b50d1ca94ca4379a8a78a82e5a085adfb8c54860854572dfae08e9514a58420e",
+    "splits.py": "41215280332984010f5b616bbf6a675c623b7af3e3f00604eb3238e79c709af9",
+    "tabm.py": "df22ff1a120c8a6fde59052ea7a1b509ff1b7e7acc83d774f670a1daf4a4e667",
+    "tokens.py": "8e3abfcbe2e437eee859d120f2a89b0a45bd84dfe389a06c11b622ee5ac9cbb4"
+  },
+  "plan_sha256": "ee2ea6249c144042d4dbbca46ab72052cd16ecc60f486f96595cbb583bab9dff",
+  "config_sha256": "e677172bbeea43b24fd51bfefde3c2a4142384f6ed6e4dae463fbaac9730d417",
+  "competition_data_hashes": {
+    "train.csv": "87eaa10b8d17a7e4f657b8da1c66242431338bdd8b6ad45861521ac0c0e9fbd5",
+    "test.csv": "10f516959020357b565abaaa4fd25baae97fc2f536d0805695bb7cc15c1660f0",
+    "sample_submission.csv": "13fc6ed8b73de5329884ec490f2a0b750cf29a7cda772b78cfa0cf486f6f35fa"
+  },
+  "baseline_run": "round10-offset-bpe-frequency-public25",
+  "baseline_recomputed": {
+    "roc_auc": 0.9514921382152453,
+    "fold_scores": [
+      0.9504894214476117,
+      0.9519294871585336,
+      0.9565314284038893,
+      0.9517951792274013,
+      0.9468101628656655
+    ]
+  },
+  "own_recomputed": {
+    "roc_auc": 0.9508982066576837,
+    "fold_scores": [
+      0.9498585101414522,
+      0.951036386801025,
+      0.9559896850514592,
+      0.9512168550242313,
+      0.9465034778126032
+    ]
+  },
+  "comparisons": [
+    {
+      "run": "round14-pooled-share025-public25",
+      "share": 0.25,
+      "weights": [
+        0.140625,
+        0.421875,
+        0.1875,
+        0.25
+      ],
+      "oof_auc": 0.9515401792848892,
+      "fold_scores": [
+        0.9505235371113999,
+        0.9519420805661652,
+        0.9565838962749152,
+        0.9517999052508426,
+        0.9469470186858328
+      ],
+      "delta_vs_r10": 4.8041069643955936e-05,
+      "fold_deltas": [
+        3.411566378819231e-05,
+        1.2593407631600329e-05,
+        5.2467871025974055e-05,
+        4.726023441259386e-06,
+        0.0001368558201672032
+      ],
+      "improved_folds": 5,
+      "eligible_to_submit": false,
+      "manual_oof_rows": 699960,
+      "manual_test_rows": 299984,
+      "manual_oof_max_abs_error": 1.1102230246251565e-16,
+      "manual_test_max_abs_error": 1.1102230246251565e-16,
+      "submission_sha256": "d72ff6ebc31fbc880efb130953e54ecb6a033c01ecc85b038a9fa0200625b0d5"
+    },
+    {
+      "run": "round14-pooled-share050-public25",
+      "share": 0.5,
+      "weights": [
+        0.28125,
+        0.28125,
+        0.1875,
+        0.25
+      ],
+      "oof_auc": 0.9515653777892247,
+      "fold_scores": [
+        0.9505401923940037,
+        0.9519455916815425,
+        0.9566250353612819,
+        0.9517921621539221,
+        0.9470228587779804
+      ],
+      "delta_vs_r10": 7.323957397942227e-05,
+      "fold_deltas": [
+        5.077094639194257e-05,
+        1.6104523008819704e-05,
+        9.360695739257796e-05,
+        -3.0170734791612475e-06,
+        0.00021269591231487528
+      ],
+      "improved_folds": 4,
+      "eligible_to_submit": false,
+      "manual_oof_rows": 699960,
+      "manual_test_rows": 299984,
+      "manual_oof_max_abs_error": 1.1102230246251565e-16,
+      "manual_test_max_abs_error": 1.1102230246251565e-16,
+      "submission_sha256": "03fd70b5207a002548d8a997cd224dd930f4b41b9a00b2a914b30d7f879d7567"
+    },
+    {
+      "run": "round14-pooled-share100-public25",
+      "share": 1.0,
+      "weights": [
+        0.5625,
+        0.0,
+        0.1875,
+        0.25
+      ],
+      "oof_auc": 0.9515730151384698,
+      "fold_scores": [
+        0.9505326916107034,
+        0.9519089766518035,
+        0.9566745172306466,
+        0.9517313856788973,
+        0.9471160493730184
+      ],
+      "delta_vs_r10": 8.087692322455986e-05,
+      "fold_deltas": [
+        4.327016309169096e-05,
+        -2.051050673013144e-05,
+        0.00014308882675728718,
+        -6.379354850405416e-05,
+        0.0003058865073528594
+      ],
+      "improved_folds": 3,
+      "eligible_to_submit": false,
+      "manual_oof_rows": 699960,
+      "manual_test_rows": 299984,
+      "manual_oof_max_abs_error": 1.1102230246251565e-16,
+      "manual_test_max_abs_error": 1.1102230246251565e-16,
+      "submission_sha256": "fdf6dc92bf9bdb19414f3142430a428d3c03c1e3cc3dffebd494a7cf5a55e88e"
+    }
+  ],
+  "selected_within_round": null,
+  "cross_round": {
+    "status": "compared_eligible_candidates",
+    "r13_audit_sha256": "5343faa5130ea6ba4e4849577127d0a53498ac26423085182e7de244878f5037",
+    "preferred": null,
+    "rule": "Higher pooled OOF among predeclared eligible R13/R14 candidates; no public-score selection"
+  },
+  "promotion_status": "do_not_submit_this_round",
+  "limitations": [
+    "These are exploratory selection OOF results using all competition labels, not independent holdout estimates.",
+    "Checkpoint predictions were reloaded on 1024 validation rows per fold and 1024 test rows; mixtures checked on every saved row.",
+    "No fitting, data augmentation, Kaggle submission or public-score tuning performed by this auditor.",
+    "Historical external import has no config_sha256 field; its fixed import-manifest SHA is checked and current config bytes are hashed, without claiming a historical config hash."
+  ],
+  "inputs_sha256": {
+    ".\\.local\\research\\round14\\results.json": "c0b78b640e294a5549753070faa2c651977c443603d14f3c5275c56bfb61efa8",
+    ".\\.local\\research\\round14\\invocation.json": "320d4cff30d1d8ef2ec4ea817849b539d8d9a18c0988e24a8b3261d7639de4e6",
+    ".\\.local\\worktrees\\pooled-r13\\evidence\\round14-plan.json": "ee2ea6249c144042d4dbbca46ab72052cd16ecc60f486f96595cbb583bab9dff",
+    ".\\.local\\research\\win-20261117\\run_pooled.py": "56b35003932b7243f42ed5aa2e187bfe135b173475a028887c471a9dc2ff5808",
+    ".\\artifacts\\runs\\round14-full-token-pooled-offset\\config.json": "e677172bbeea43b24fd51bfefde3c2a4142384f6ed6e4dae463fbaac9730d417",
+    ".\\artifacts\\runs\\round14-full-token-pooled-offset\\metrics.json": "8422a9c899da7a122426f1db3e4329afd29d04ae81997c4e7918823ee14c62c5",
+    ".\\artifacts\\runs\\round14-full-token-pooled-offset\\status.json": "970587076af8c4ebf6e94dc3999b017a4c3792faf7660c408eb91572fd86128b",
+    ".\\.local\\worktrees\\pooled-r13\\src\\fraudlab\\__init__.py": "14479eff95a0233e8bf2d9f359843c36f53f36b92cc95c3e452f75bfb2982dcc",
+    ".\\.local\\worktrees\\pooled-r13\\src\\fraudlab\\__main__.py": "138cbdc7cc82a5cc2935062dc6ba77478391f5081b9557e813f4734d80b4cf8c",
+    ".\\.local\\worktrees\\pooled-r13\\src\\fraudlab\\bpe.py": "7adce2ce879679de655a040dffdf70ff2f3bfd65bb9458bfdf64eb21dcc08724",
+    ".\\.local\\worktrees\\pooled-r13\\src\\fraudlab\\data.py": "f22355cc51fa6e6162b24e639923f40a11a23af00afcb65553090176271c8326",
+    ".\\.local\\worktrees\\pooled-r13\\src\\fraudlab\\experiment.py": "00ff51b131cfeed8efba86027a860805a2168eeb527ff014fad6d533550094d6",
+    ".\\.local\\worktrees\\pooled-r13\\src\\fraudlab\\external.py": "05ec4ec64e4a2c5cf1137c949646bed14fe83fb04506b8f2f973c2c7633c5e08",
+    ".\\.local\\worktrees\\pooled-r13\\src\\fraudlab\\features.py": "19267a6999009df5147f90700f541c175d79b27d6ff405e81c92d2f58b9b165e",
+    ".\\.local\\worktrees\\pooled-r13\\src\\fraudlab\\frequency.py": "6831c52335d82b7d6570ea2ba4cfd70ac5b6196406bc1a702f2740fe6cc257ff",
+    ".\\.local\\worktrees\\pooled-r13\\src\\fraudlab\\holdout.py": "e3702891766326710c3b56dd7a7fe69f2f778acea3316665f130aa6955e2f4e3",
+    ".\\.local\\worktrees\\pooled-r13\\src\\fraudlab\\models.py": "e706ac879313e86a239e6d18261179ef9f2ec4b945587f1082c9aa8887dfa817",
+    ".\\.local\\worktrees\\pooled-r13\\src\\fraudlab\\offset.py": "a4ea551e4ddf89aedc87f313eb07425aebc60f7d967986524a873a73565fdc4f",
+    ".\\.local\\worktrees\\pooled-r13\\src\\fraudlab\\pooled.py": "6f15acb31c8a878efc262410a0ddf3f6b733b1a636a7bfa917758d568164601a",
+    ".\\.local\\worktrees\\pooled-r13\\src\\fraudlab\\refit.py": "b50d1ca94ca4379a8a78a82e5a085adfb8c54860854572dfae08e9514a58420e",
+    ".\\.local\\worktrees\\pooled-r13\\src\\fraudlab\\splits.py": "41215280332984010f5b616bbf6a675c623b7af3e3f00604eb3238e79c709af9",
+    ".\\.local\\worktrees\\pooled-r13\\src\\fraudlab\\tabm.py": "df22ff1a120c8a6fde59052ea7a1b509ff1b7e7acc83d774f670a1daf4a4e667",
+    ".\\.local\\worktrees\\pooled-r13\\src\\fraudlab\\tokens.py": "8e3abfcbe2e437eee859d120f2a89b0a45bd84dfe389a06c11b622ee5ac9cbb4",
+    ".\\data\\raw\\train.csv": "87eaa10b8d17a7e4f657b8da1c66242431338bdd8b6ad45861521ac0c0e9fbd5",
+    ".\\data\\raw\\test.csv": "10f516959020357b565abaaa4fd25baae97fc2f536d0805695bb7cc15c1660f0",
+    ".\\data\\raw\\sample_submission.csv": "13fc6ed8b73de5329884ec490f2a0b750cf29a7cda772b78cfa0cf486f6f35fa",
+    ".\\artifacts\\runs\\round10-offset-bpe-frequency-public25\\metrics.json": "66150258799c3ac2e5066ce29383afc02962c2dd35766126e7a995d9fcf57d57",
+    ".\\artifacts\\runs\\round10-offset-bpe-frequency-public25\\oof.csv": "038bc4bd9c03f777e97fa73738f261bd9881d0267e33502525697526fd577fea",
+    ".\\artifacts\\runs\\round10-offset-bpe-frequency-public25\\predictions.csv": "274cbe4ea90d9dc4893140cad55682f3627ced02163fff48655df4b095e428e7",
+    ".\\artifacts\\runs\\round10-offset-bpe-frequency-public25\\submission.csv": "274cbe4ea90d9dc4893140cad55682f3627ced02163fff48655df4b095e428e7",
+    ".\\artifacts\\runs\\round10-offset-bpe-frequency-public25\\config.json": "3777c2c58519005942badff767be6d5878bbd3f730a38141bd7d7173c54a3875",
+    ".\\artifacts\\runs\\round14-full-token-pooled-offset\\oof.csv": "e886d2bc127a10b1926b50d71c7b6f35c4c94f0438276cd2b6a350adaec5e3c6",
+    ".\\artifacts\\runs\\round14-full-token-pooled-offset\\predictions.csv": "44eda30daf691c4a07e73374cb1e61b1d22b531f9b06f82672b27e9ffe004265",
+    ".\\artifacts\\runs\\round14-full-token-pooled-offset\\submission.csv": "44eda30daf691c4a07e73374cb1e61b1d22b531f9b06f82672b27e9ffe004265",
+    ".\\artifacts\\runs\\round10-offset-bpe-frequency\\metrics.json": "9a3b92009ebcbff083c8ad39af9767a01da602992a8930eff6a4c5b548338ddd",
+    ".\\artifacts\\runs\\round10-offset-bpe-frequency\\oof.csv": "f16b28c7d3bb09a4360f8dbaef59e9dd78a63537bd7f7b01a9a3de43a483f3b4",
+    ".\\artifacts\\runs\\round10-offset-bpe-frequency\\predictions.csv": "8d98b87d5da1f8bc3411e2ed0dbc24aa7c0ccb8fd150762ee3f09a4025c5ccad",
+    ".\\artifacts\\runs\\round10-offset-bpe-frequency\\submission.csv": "8d98b87d5da1f8bc3411e2ed0dbc24aa7c0ccb8fd150762ee3f09a4025c5ccad",
+    ".\\artifacts\\runs\\round10-offset-bpe-frequency\\config.json": "d237d78f604f2a0ef570f46cc36ac5d0aa7fa5e149686353bb847ce15dc734e9",
+    ".\\artifacts\\runs\\explore5-lgbm\\metrics.json": "cbbec3ffbcc1461e2f34835955808e3de7ef9306336ea93bf21f3453a0950e4d",
+    ".\\artifacts\\runs\\explore5-lgbm\\oof.csv": "2a188175419c819bf5d5098125423afa8e95cd79cd965d2108b834cc4016a234",
+    ".\\artifacts\\runs\\explore5-lgbm\\predictions.csv": "54c9fc1229d1b8aa253520b79c4493b0ae97902ee1f76b73baa9b09d48ccd142",
+    ".\\artifacts\\runs\\explore5-lgbm\\submission.csv": "54c9fc1229d1b8aa253520b79c4493b0ae97902ee1f76b73baa9b09d48ccd142",
+    ".\\artifacts\\runs\\explore5-lgbm\\config.json": "50968cd9ae1c1734ae439657839a24658480341e5dbd7aeb9a78a8e4dbb7230a",
+    ".\\artifacts\\runs\\explore5-public-gpt2-v2\\metrics.json": "14f9e508e5f78c926cd5a4341259623f490872da3e73d5b96f1ae8903fe29bc7",
+    ".\\artifacts\\runs\\explore5-public-gpt2-v2\\oof.csv": "4c37722b34d520a6de7d94565140cd0681baad6fb6c012d0b7a86a25b82a4dcb",
+    ".\\artifacts\\runs\\explore5-public-gpt2-v2\\predictions.csv": "78ada898faa132accf86daa3311ba114e44a472d31f0648357d10000ab243d58",
+    ".\\artifacts\\runs\\explore5-public-gpt2-v2\\submission.csv": "78ada898faa132accf86daa3311ba114e44a472d31f0648357d10000ab243d58",
+    ".\\artifacts\\runs\\explore5-public-gpt2-v2\\config.json": "843e20a6839bc22dc5522a4f12c7d46f64472f20782bad6a606c295dfe741d31",
+    ".\\artifacts\\runs\\round14-full-token-pooled-offset\\fold-0.joblib": "60b8ca6987550c2910575cfa174ce52763f9b9ac2d5f29ffb4f1a2e14f0ede6b",
+    ".\\artifacts\\runs\\round14-full-token-pooled-offset\\fold-1.joblib": "5715ae418c6e240295a81afc40522b95be3827509590956a8948e7e5b596d44f",
+    ".\\artifacts\\runs\\round14-full-token-pooled-offset\\fold-2.joblib": "6cc2e7aa988002ad503d965968eecf3b671a7ca865d43bee2e83e59936ff8fec",
+    ".\\artifacts\\runs\\round14-full-token-pooled-offset\\fold-3.joblib": "faafcbfd43932cff9e66f59f8dde8d4c2890e9a1be64f29a09067c3658333ae4",
+    ".\\artifacts\\runs\\round14-full-token-pooled-offset\\fold-4.joblib": "73cd5093a141d305c351d26c39dbbd86a7503996d05f841eb46eaf181a99a24e",
+    ".\\artifacts\\runs\\round14-pooled-share025-public25\\metrics.json": "8f907b65a027c9ef0f1416f09789dbf54c566058f0326b770eefd5ab6361dee3",
+    ".\\artifacts\\runs\\round14-pooled-share025-public25\\oof.csv": "8c9f97fd551d853cb0bdd1537dee4e52eaf987775646bad24056f2bd8d4a302a",
+    ".\\artifacts\\runs\\round14-pooled-share025-public25\\predictions.csv": "d72ff6ebc31fbc880efb130953e54ecb6a033c01ecc85b038a9fa0200625b0d5",
+    ".\\artifacts\\runs\\round14-pooled-share025-public25\\submission.csv": "d72ff6ebc31fbc880efb130953e54ecb6a033c01ecc85b038a9fa0200625b0d5",
+    ".\\artifacts\\runs\\round14-pooled-share025-public25\\config.json": "96df53bd97c0d08d47e5b6678f51ffc72e329e221e3c0a8becfe5fe855becbb0",
+    ".\\artifacts\\runs\\round14-pooled-share050-public25\\metrics.json": "488bd764d2feb865860113d2eab1611df96df76fe2625c5531cbc43a11f443ef",
+    ".\\artifacts\\runs\\round14-pooled-share050-public25\\oof.csv": "cc3344e3b72b13120adc21fd6d42b7fa97bc95ca1e183ded632cf48680428b31",
+    ".\\artifacts\\runs\\round14-pooled-share050-public25\\predictions.csv": "03fd70b5207a002548d8a997cd224dd930f4b41b9a00b2a914b30d7f879d7567",
+    ".\\artifacts\\runs\\round14-pooled-share050-public25\\submission.csv": "03fd70b5207a002548d8a997cd224dd930f4b41b9a00b2a914b30d7f879d7567",
+    ".\\artifacts\\runs\\round14-pooled-share050-public25\\config.json": "0428abab61725bfd8a617691962ceff43da664935e75f836c8dbf304d5b9e013",
+    ".\\artifacts\\runs\\round14-pooled-share100-public25\\metrics.json": "c8a69e21602e801afa8737e492d683c4f82511923b446a232c5e9866203525bc",
+    ".\\artifacts\\runs\\round14-pooled-share100-public25\\oof.csv": "6eaf915075f641f1d293052fbda7fc18e95b67496fb5450060f427b2906012ee",
+    ".\\artifacts\\runs\\round14-pooled-share100-public25\\predictions.csv": "fdf6dc92bf9bdb19414f3142430a428d3c03c1e3cc3dffebd494a7cf5a55e88e",
+    ".\\artifacts\\runs\\round14-pooled-share100-public25\\submission.csv": "fdf6dc92bf9bdb19414f3142430a428d3c03c1e3cc3dffebd494a7cf5a55e88e",
+    ".\\artifacts\\runs\\round14-pooled-share100-public25\\config.json": "e91e8d53f31df5ffe10d8e96c144475a17ce3a6714844895dfbadd29a387f0e0",
+    ".\\.local\\research\\round13\\independent-audit.json": "5343faa5130ea6ba4e4849577127d0a53498ac26423085182e7de244878f5037"
+  },
+  "completed_at": "2026-11-17T19:58:26.344131+00:00",
+  "private_full_report_sha256": "47608fb01290ea583fda5fc083dcafc08bef1961d505b14b0220134979c70644",
+  "publication_note": "Aggregate metrics and file fingerprints only. Repeated pooled manifests replaced by canonical JSON SHA256; no data rows, prediction arrays or model binaries."
+}

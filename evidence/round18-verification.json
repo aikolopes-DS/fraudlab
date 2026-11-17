@@ -1,0 +1,502 @@
+{
+  "status": "passed",
+  "round": 18,
+  "recorded_at": "2026-11-17T20:49:27.483009+00:00",
+  "auditor_sha256": "4b4974430951c7f3d02f189b6689772dd4acf602070364bf1a87098f9381544b",
+  "source_import": ".\\.local\\worktrees\\joints-counts\\src\\fraudlab\\__init__.py",
+  "checkpoint_reload": {
+    "method": "Trusted local joblib -> saved model.predict_proba; no fitting",
+    "checkpoints": [
+      {
+        "fold": 0,
+        "sha256": "bca790c60cb088cf174b9a0858e99899789a571437a9e2885b5f2e49fd55903e",
+        "seed": 42,
+        "validation_rows": 1024,
+        "validation_max_abs_error": 1.1102230246251565e-16,
+        "glm_iterations_used": 10,
+        "trees": 1000,
+        "test_rows": 1024,
+        "test_predictions_sha256": "b7f12914518951fcac4c5f19f086958884ad1f2eaf0be2665f004d740f88459c",
+        "validation_ids_sha256": "16986d733b1f68208b7ea4b9156a33b4514b5825bf415fb4612f3d2f5f1e3ccd",
+        "pooled_manifest_sha256": "747cba503a751b59973425cec3c45aba7614c5a1b69977be6ee16b97134bcb4f"
+      },
+      {
+        "fold": 1,
+        "sha256": "bac7493cc7f9f246d3af1053e701fd8fefd137d8e1617072ca27b5835f01390e",
+        "seed": 43,
+        "validation_rows": 1024,
+        "validation_max_abs_error": 1.1102230246251565e-16,
+        "glm_iterations_used": 10,
+        "trees": 1000,
+        "test_rows": 1024,
+        "test_predictions_sha256": "8a65c2570a07596464b8f837dd22ff545905fb957d0b6312416e3c5b66417d3e",
+        "validation_ids_sha256": "268bb15d0044e9c274bb3556d8e6d670988b1517947b223d24cf417b68770b34",
+        "pooled_manifest_sha256": "84b485f1c34503fc56a275d586eaefd9099c446c074548b8fda6506ef39755ff"
+      },
+      {
+        "fold": 2,
+        "sha256": "6329dc964cece07a19f878d0e9ec794796c2170c6e50c610fcac1165b1572e37",
+        "seed": 44,
+        "validation_rows": 1024,
+        "validation_max_abs_error": 1.1102230246251565e-16,
+        "glm_iterations_used": 10,
+        "trees": 1000,
+        "test_rows": 1024,
+        "test_predictions_sha256": "7dc2337f612f6597d1a7009353bd10d8cf264acd11d8a20ba4e5444ff0e38fe4",
+        "validation_ids_sha256": "aec48df7fc332351557760351cfa76d1d6cf846b49e400485e4898b76b68c829",
+        "pooled_manifest_sha256": "3a1792e2ad5e3d89ad067dfbca4f142f97f413ce733c38cf277bbb6c1e420a86"
+      },
+      {
+        "fold": 3,
+        "sha256": "90c35c979c9721867fbb5aa2629b27f9dd56e7554e567a6ac671fff7b5d85da5",
+        "seed": 45,
+        "validation_rows": 1024,
+        "validation_max_abs_error": 9.93129189996722e-17,
+        "glm_iterations_used": 10,
+        "trees": 1000,
+        "test_rows": 1024,
+        "test_predictions_sha256": "ee93338f34988d7f678d30ad26ec82a756cbd1564eb591eef595e803b332dd3b",
+        "validation_ids_sha256": "51bc701cdfa8b4eab1fba6d6f3a154968afa0f675c7c8202750aba4ad7a60648",
+        "pooled_manifest_sha256": "c79c4b48660037ba538ea9c905728373d27e35f95c88aafca46c91319d07e3f6"
+      },
+      {
+        "fold": 4,
+        "sha256": "2ae14333c16fb0074417ef746341c336dbef9f919c1fe1a11d82d0c7a4332192",
+        "seed": 46,
+        "validation_rows": 1024,
+        "validation_max_abs_error": 1.1102230246251565e-16,
+        "glm_iterations_used": 10,
+        "trees": 1000,
+        "test_rows": 1024,
+        "test_predictions_sha256": "4bc1f0c56fe87d7b191a7323a34a7a669885f507a0e69b91629ab5241a94c027",
+        "validation_ids_sha256": "4ebef535746a2b315460bc185bca2c7f84dfc0e3d60995079c4631a1e34f876b",
+        "pooled_manifest_sha256": "c829cc3630c0c3347cb5e41c2a9752c6d053dae8012b4a3907e1ebafd5f896cf"
+      }
+    ],
+    "test_rows": 1024,
+    "test_mean_max_abs_error": 9.985502008591496e-17,
+    "test_ids_sha256": "24eca7fc14998830eb6672211e3a485824d9a0f2f138cb94abc0cb707bd57779"
+  },
+  "source_revision": "8a1c7fd141b43e41b0d43e3a07b0c5ad0bf41ae5",
+  "worktree": ".\\.local\\worktrees\\joints-counts",
+  "source_clean_at_start_and_finish": true,
+  "source_hashes": {
+    "__init__.py": "14479eff95a0233e8bf2d9f359843c36f53f36b92cc95c3e452f75bfb2982dcc",
+    "__main__.py": "b8fc5d9e4cf77f7319f9e2f7956f490bb71da6ce3c6842e279f46194672a7fae",
+    "bpe.py": "fb71799ca075c657a8344f85d6a7e91653d1f319e24b5e287c17565cea456d4e",
+    "data.py": "f22355cc51fa6e6162b24e639923f40a11a23af00afcb65553090176271c8326",
+    "experiment.py": "85a0995157f4b4453206d88a41ee1196765f7bb5cd6cf9dd55d5dd89ba87bb7a",
+    "external.py": "05ec4ec64e4a2c5cf1137c949646bed14fe83fb04506b8f2f973c2c7633c5e08",
+    "features.py": "184fe327468194f34563b25aee2268348ca854d59e4916f8e3eacdd1b6420424",
+    "frequency.py": "de06b4f581f6864066d94b140d67e4ed16f7cef054a30ef20bc408a972279ce6",
+    "holdout.py": "e3702891766326710c3b56dd7a7fe69f2f778acea3316665f130aa6955e2f4e3",
+    "joints.py": "620851854c56aceceba02d5855fe22525e748973e80ffe0f83040f5e75a271e8",
+    "models.py": "e00d858bac42b79362ef408cbb7f359bca44a4828931b0e4943d660a3eb095b5",
+    "neural_offset.py": "042eec5ea088477bb37b045ace2f537c6e6e39ff49b3e810dc5e501b4ea8e487",
+    "offset.py": "a4ea551e4ddf89aedc87f313eb07425aebc60f7d967986524a873a73565fdc4f",
+    "original.py": "4db9d8d54929ba9d9a36fd55b8f8655611a800d22fade59af079e0497ce7b934",
+    "pooled.py": "6f15acb31c8a878efc262410a0ddf3f6b733b1a636a7bfa917758d568164601a",
+    "refit.py": "981074be27e2ed24aa45dbaabeda32677f83ae59aa74f12dd6a56de152fde4e9",
+    "scores.py": "8bae07482b56eb488a388c54ecd7ec0cf87a8644d9e98e53d7c1fcc75d2e58a1",
+    "splits.py": "41215280332984010f5b616bbf6a675c623b7af3e3f00604eb3238e79c709af9",
+    "strings.py": "f3248a9c0e7bbda655e29ecac02886dfa4cd4f34f35007ad90cf99a17efccbb0",
+    "tabm.py": "df22ff1a120c8a6fde59052ea7a1b509ff1b7e7acc83d774f670a1daf4a4e667",
+    "tokens.py": "8e3abfcbe2e437eee859d120f2a89b0a45bd84dfe389a06c11b622ee5ac9cbb4",
+    "transductive.py": "b2848df445f94d1135df27b99e7586048c279860b244dcf9544c30687263ca3b"
+  },
+  "plan_sha256": "a4aa3c50fff0239705681275aa1a158353f8394dd51a8bdad4a21ec23a3b0029",
+  "config_sha256": "0780db71a21e97d5fbd8cbc338403ae7cf31506f962e525f807df6a4a79565e6",
+  "competition_data_hashes": {
+    "train.csv": "87eaa10b8d17a7e4f657b8da1c66242431338bdd8b6ad45861521ac0c0e9fbd5",
+    "test.csv": "10f516959020357b565abaaa4fd25baae97fc2f536d0805695bb7cc15c1660f0",
+    "sample_submission.csv": "13fc6ed8b73de5329884ec490f2a0b750cf29a7cda772b78cfa0cf486f6f35fa"
+  },
+  "baseline_run": "round10-offset-bpe-frequency-public25",
+  "baseline_recomputed": {
+    "roc_auc": 0.9514921382152453,
+    "fold_scores": [
+      0.9504894214476117,
+      0.9519294871585336,
+      0.9565314284038893,
+      0.9517951792274013,
+      0.9468101628656655
+    ]
+  },
+  "own_recomputed": {
+    "roc_auc": 0.9511314157843096,
+    "fold_scores": [
+      0.9502490979670842,
+      0.9513398341707044,
+      0.9561278552095068,
+      0.9514117498923018,
+      0.9466119370987595
+    ]
+  },
+  "feature_manifest": {
+    "algorithm": "bpe_digits_plus_eight_fixed_joint_categories",
+    "base_feature_set": "bpe_digits",
+    "bpe": {
+      "tiktoken": "0.14.0",
+      "encoding": "gpt2",
+      "vocabulary_size": 50257,
+      "encoding_files": [
+        {
+          "url": "https://openaipublic.blob.core.windows.net/gpt-2/encodings/main/vocab.bpe",
+          "sha256": "1ce1664773c50f3e0cc8842619a93edc4624525b728b188a9e0be33b7726adc5"
+        },
+        {
+          "url": "https://openaipublic.blob.core.windows.net/gpt-2/encodings/main/encoder.json",
+          "sha256": "196139668be63f3b5d6574427317ae82f612a97c5d1cdaf36ed2256dbf636783"
+        }
+      ],
+      "input_columns": [
+        "amount_usd",
+        "account_balance_usd"
+      ],
+      "output_suffixes": [
+        "__gpt2_first_key",
+        "__gpt2_second_key",
+        "__gpt2_second_cents_key"
+      ],
+      "representation": "cents=np.rint(float64_USD*100); ' ' + str(cents // 100)",
+      "rounding": "NumPy rint; nearest representable cent, halfway ties to even",
+      "second_token_missing": "-1",
+      "third_key": "second_token_id + ':' + str(cents % 100)",
+      "more_than_two_tokens": "retain first two; discard later integer tokens",
+      "label_usage": "none in extraction; fold-local cross-fitted TE downstream"
+    },
+    "joint_encoding": {
+      "output_count": 8,
+      "pairs": [
+        {
+          "output": "foreign_ip__joint_key",
+          "left": "is_foreign_transaction",
+          "left_view": "unchanged string; numeric value normalized to float64",
+          "right": "ip_country_mismatch",
+          "right_view": "unchanged string; numeric value normalized to float64"
+        },
+        {
+          "output": "category_risk10__joint_key",
+          "left": "merchant_category",
+          "left_view": "unchanged string; numeric value normalized to float64",
+          "right": "merchant_risk_score",
+          "right_view": "floor(float64(x)/10)"
+        },
+        {
+          "output": "category_amount_log2__joint_key",
+          "left": "merchant_category",
+          "left_view": "unchanged string; numeric value normalized to float64",
+          "right": "amount_usd",
+          "right_view": "floor(log2(1+x)); interval k starts at exact boundary 2**k-1"
+        },
+        {
+          "output": "scam_velocity5__joint_key",
+          "left": "is_ai_generated_scam_attempt",
+          "left_view": "unchanged string; numeric value normalized to float64",
+          "right": "velocity_score",
+          "right_view": "floor(float64(x)/5)"
+        },
+        {
+          "output": "newmerchant_weekday__joint_key",
+          "left": "is_new_merchant",
+          "left_view": "unchanged string; numeric value normalized to float64",
+          "right": "day_of_week",
+          "right_view": "unchanged string; numeric value normalized to float64"
+        },
+        {
+          "output": "hour_weekday__joint_key",
+          "left": "time_of_day_hour",
+          "left_view": "unchanged string; numeric value normalized to float64",
+          "right": "day_of_week",
+          "right_view": "unchanged string; numeric value normalized to float64"
+        },
+        {
+          "output": "age_cardyears__joint_key",
+          "left": "customer_age",
+          "left_view": "floor(float64(x)/10)",
+          "right": "card_age_months",
+          "right_view": "floor(float64(x)/12)"
+        },
+        {
+          "output": "auth_channel__joint_key",
+          "left": "auth_method",
+          "left_view": "unchanged string; numeric value normalized to float64",
+          "right": "channel",
+          "right_view": "unchanged string; numeric value normalized to float64"
+        }
+      ],
+      "category_representation": "repr((left, right)); strings escaped, numbers canonicalized as above; categorical labels, not ordinal magnitudes",
+      "numeric_domain": "finite nonnegative float64 at most 2**53-1; negative zero normalized; bins use no cent rounding",
+      "log2_boundaries": "2**k-1 for integer k=0..53, left-inclusive via searchsorted(side='right')-1",
+      "excluded_fields": "Exclude the entire pair if either input is excluded",
+      "selection": "Eight hypotheses fixed before fitting; public-source-informed exploratory selection; no G scan, label ranking or quantile fitting",
+      "label_usage": "none in extraction; downstream TE/frequency/scaling remain fitted inside outer training only",
+      "concept_source": {
+        "url": "https://www.kaggle.com/code/goodpjw2008/s6e11-part-12-wide-stack-2nd-lm-lb-0-95298",
+        "version": 16,
+        "source_cell_zero_based": 74,
+        "source_body_sha256": "835772526d7efcc70f771aa446690cb1956676a457f40b08d48760bbf3336baf",
+        "credit": "megayak's joint-key ideas; independent extraction, no source code copied or executed"
+      }
+    }
+  },
+  "training_log_sha256": "bac14119e5fb8b46876a4b0e2545d44f8e6f084fb531792958f7bf9cb51937ac",
+  "comparisons": [
+    {
+      "run": "round18-pooled-share025-public25",
+      "share": 0.25,
+      "weights": [
+        0.140625,
+        0.421875,
+        0.1875,
+        0.25
+      ],
+      "oof_auc": 0.9515579569666118,
+      "fold_scores": [
+        0.9505645038843443,
+        0.951984869566041,
+        0.9565937926487883,
+        0.9518342675738128,
+        0.9469037760374219
+      ],
+      "delta_vs_r10": 6.581875136657533e-05,
+      "fold_deltas": [
+        7.508243673259862e-05,
+        5.5382407507353903e-05,
+        6.236424489902692e-05,
+        3.908834641153103e-05,
+        9.361317175637929e-05
+      ],
+      "improved_folds": 5,
+      "eligible_to_submit": false,
+      "manual_oof_rows": 699960,
+      "manual_test_rows": 299984,
+      "manual_oof_max_abs_error": 1.1102230246251565e-16,
+      "manual_test_max_abs_error": 1.1102230246251565e-16,
+      "submission_sha256": "3db6dc5421b09385ba9aef6babc0dc1a4a0e29b49f3bba619b0b415ec840ae0e"
+    },
+    {
+      "run": "round18-pooled-share050-public25",
+      "share": 0.5,
+      "weights": [
+        0.28125,
+        0.28125,
+        0.1875,
+        0.25
+      ],
+      "oof_auc": 0.9516058838066491,
+      "fold_scores": [
+        0.950618964606856,
+        0.9520190889586507,
+        0.9566364946475749,
+        0.9518578417617481,
+        0.9469822851986925
+      ],
+      "delta_vs_r10": 0.00011374559140386875,
+      "fold_deltas": [
+        0.00012954315924429416,
+        8.960180011707841e-05,
+        0.00010506624368566975,
+        6.266253434683566e-05,
+        0.00017212233302699165
+      ],
+      "improved_folds": 5,
+      "eligible_to_submit": true,
+      "manual_oof_rows": 699960,
+      "manual_test_rows": 299984,
+      "manual_oof_max_abs_error": 1.1102230246251565e-16,
+      "manual_test_max_abs_error": 1.1102230246251565e-16,
+      "submission_sha256": "2bccca8b7482179aa691b7d66969f7445a46764634715890b9f64980f50347db"
+    },
+    {
+      "run": "round18-pooled-share100-public25",
+      "share": 1.0,
+      "weights": [
+        0.5625,
+        0.0,
+        0.1875,
+        0.25
+      ],
+      "oof_auc": 0.9516524825255244,
+      "fold_scores": [
+        0.9506790019581457,
+        0.9520317507242809,
+        0.9566745172306466,
+        0.9518625895354618,
+        0.9470964306274507
+      ],
+      "delta_vs_r10": 0.00016034431027911467,
+      "fold_deltas": [
+        0.00018958051053397096,
+        0.00010226356574727369,
+        0.00014308882675728718,
+        6.7410308060456e-05,
+        0.0002862677617851972
+      ],
+      "improved_folds": 5,
+      "eligible_to_submit": true,
+      "manual_oof_rows": 699960,
+      "manual_test_rows": 299984,
+      "manual_oof_max_abs_error": 1.1102230246251565e-16,
+      "manual_test_max_abs_error": 1.1102230246251565e-16,
+      "submission_sha256": "18c92eab3d28dcefed12c5a1eebdd9380f45e13972875bf5b31cd4a0e6151e53"
+    }
+  ],
+  "selected_within_round": {
+    "run": "round18-pooled-share100-public25",
+    "share": 1.0,
+    "weights": [
+      0.5625,
+      0.0,
+      0.1875,
+      0.25
+    ],
+    "oof_auc": 0.9516524825255244,
+    "fold_scores": [
+      0.9506790019581457,
+      0.9520317507242809,
+      0.9566745172306466,
+      0.9518625895354618,
+      0.9470964306274507
+    ],
+    "delta_vs_r10": 0.00016034431027911467,
+    "fold_deltas": [
+      0.00018958051053397096,
+      0.00010226356574727369,
+      0.00014308882675728718,
+      6.7410308060456e-05,
+      0.0002862677617851972
+    ],
+    "improved_folds": 5,
+    "eligible_to_submit": true,
+    "manual_oof_rows": 699960,
+    "manual_test_rows": 299984,
+    "manual_oof_max_abs_error": 1.1102230246251565e-16,
+    "manual_test_max_abs_error": 1.1102230246251565e-16,
+    "submission_sha256": "18c92eab3d28dcefed12c5a1eebdd9380f45e13972875bf5b31cd4a0e6151e53"
+  },
+  "cross_round": {
+    "status": "checked_previous_rounds",
+    "previous_rounds": [
+      {
+        "round": 13,
+        "selected": null,
+        "results_sha256": "33919949c39871472a1e33fdef18dbee3e6a70390e47351d61e16107004de6d6",
+        "audit_sha256": "5343faa5130ea6ba4e4849577127d0a53498ac26423085182e7de244878f5037"
+      },
+      {
+        "round": 14,
+        "selected": null,
+        "results_sha256": "c0b78b640e294a5549753070faa2c651977c443603d14f3c5275c56bfb61efa8",
+        "audit_sha256": "47608fb01290ea583fda5fc083dcafc08bef1961d505b14b0220134979c70644"
+      },
+      {
+        "round": 15,
+        "selected": null,
+        "results_sha256": "2e5becf472b542c8205b8111fa423713e1e686955a41771faff5dc46f7a42bdb"
+      },
+      {
+        "round": 16,
+        "selected": null,
+        "results_sha256": "78023a0f2145aa6ab8822bc77ccf226ac859908ab71e3a7ff4456dd780e5ea96",
+        "audit_sha256": "9adca1fe1f083773232ee1b62a4e454625f1376a384e9010d32a280c784733e5"
+      }
+    ],
+    "preferred": "round18-pooled-share100-public25"
+  },
+  "promotion_status": "eligible_after_independent_review",
+  "limitations": [
+    "These are exploratory selection OOF results using all competition labels, not independent holdout estimates.",
+    "Checkpoint predictions were reloaded on 1024 validation rows per fold and 1024 test rows; mixtures checked on every saved row.",
+    "No fitting, data augmentation, Kaggle submission or public-score tuning performed by this auditor.",
+    "Historical external import has no config_sha256 field; its fixed import-manifest SHA is checked and current config bytes are hashed, without claiming a historical config hash."
+  ],
+  "inputs_sha256": {
+    ".\\.local\\research\\round18\\results.json": "96e9f1fb74a8821695793c3d9aa6879f3edbeb417a6facbbc4061dd9a2ded2c6",
+    ".\\.local\\research\\round18\\invocation.json": "c055c150cb22a1719fae8df2b0916a7b4cc990fed261c2df79e8f5cbd8d74f0d",
+    ".\\.local\\worktrees\\joints-counts\\evidence\\round18-plan.json": "a4aa3c50fff0239705681275aa1a158353f8394dd51a8bdad4a21ec23a3b0029",
+    ".\\.local\\research\\win-20261117\\run_joints_counts.py": "d521ded73450b26b67f46e19c0b813c1566a7ccb9a43ae49f5076b3493cf09de",
+    ".\\artifacts\\runs\\round18-joint-bpe-pooled-offset\\config.json": "0780db71a21e97d5fbd8cbc338403ae7cf31506f962e525f807df6a4a79565e6",
+    ".\\artifacts\\runs\\round18-joint-bpe-pooled-offset\\metrics.json": "4523e4220096af21367ca76f1de6157d7d1a5a6d3052f1319f7b13b0f49c9b55",
+    ".\\.local\\research\\round18\\training.log": "bac14119e5fb8b46876a4b0e2545d44f8e6f084fb531792958f7bf9cb51937ac",
+    ".\\artifacts\\runs\\round18-joint-bpe-pooled-offset\\status.json": "970587076af8c4ebf6e94dc3999b017a4c3792faf7660c408eb91572fd86128b",
+    ".\\.local\\worktrees\\joints-counts\\src\\fraudlab\\__init__.py": "14479eff95a0233e8bf2d9f359843c36f53f36b92cc95c3e452f75bfb2982dcc",
+    ".\\.local\\worktrees\\joints-counts\\src\\fraudlab\\__main__.py": "b8fc5d9e4cf77f7319f9e2f7956f490bb71da6ce3c6842e279f46194672a7fae",
+    ".\\.local\\worktrees\\joints-counts\\src\\fraudlab\\bpe.py": "fb71799ca075c657a8344f85d6a7e91653d1f319e24b5e287c17565cea456d4e",
+    ".\\.local\\worktrees\\joints-counts\\src\\fraudlab\\data.py": "f22355cc51fa6e6162b24e639923f40a11a23af00afcb65553090176271c8326",
+    ".\\.local\\worktrees\\joints-counts\\src\\fraudlab\\experiment.py": "85a0995157f4b4453206d88a41ee1196765f7bb5cd6cf9dd55d5dd89ba87bb7a",
+    ".\\.local\\worktrees\\joints-counts\\src\\fraudlab\\external.py": "05ec4ec64e4a2c5cf1137c949646bed14fe83fb04506b8f2f973c2c7633c5e08",
+    ".\\.local\\worktrees\\joints-counts\\src\\fraudlab\\features.py": "184fe327468194f34563b25aee2268348ca854d59e4916f8e3eacdd1b6420424",
+    ".\\.local\\worktrees\\joints-counts\\src\\fraudlab\\frequency.py": "de06b4f581f6864066d94b140d67e4ed16f7cef054a30ef20bc408a972279ce6",
+    ".\\.local\\worktrees\\joints-counts\\src\\fraudlab\\holdout.py": "e3702891766326710c3b56dd7a7fe69f2f778acea3316665f130aa6955e2f4e3",
+    ".\\.local\\worktrees\\joints-counts\\src\\fraudlab\\joints.py": "620851854c56aceceba02d5855fe22525e748973e80ffe0f83040f5e75a271e8",
+    ".\\.local\\worktrees\\joints-counts\\src\\fraudlab\\models.py": "e00d858bac42b79362ef408cbb7f359bca44a4828931b0e4943d660a3eb095b5",
+    ".\\.local\\worktrees\\joints-counts\\src\\fraudlab\\neural_offset.py": "042eec5ea088477bb37b045ace2f537c6e6e39ff49b3e810dc5e501b4ea8e487",
+    ".\\.local\\worktrees\\joints-counts\\src\\fraudlab\\offset.py": "a4ea551e4ddf89aedc87f313eb07425aebc60f7d967986524a873a73565fdc4f",
+    ".\\.local\\worktrees\\joints-counts\\src\\fraudlab\\original.py": "4db9d8d54929ba9d9a36fd55b8f8655611a800d22fade59af079e0497ce7b934",
+    ".\\.local\\worktrees\\joints-counts\\src\\fraudlab\\pooled.py": "6f15acb31c8a878efc262410a0ddf3f6b733b1a636a7bfa917758d568164601a",
+    ".\\.local\\worktrees\\joints-counts\\src\\fraudlab\\refit.py": "981074be27e2ed24aa45dbaabeda32677f83ae59aa74f12dd6a56de152fde4e9",
+    ".\\.local\\worktrees\\joints-counts\\src\\fraudlab\\scores.py": "8bae07482b56eb488a388c54ecd7ec0cf87a8644d9e98e53d7c1fcc75d2e58a1",
+    ".\\.local\\worktrees\\joints-counts\\src\\fraudlab\\splits.py": "41215280332984010f5b616bbf6a675c623b7af3e3f00604eb3238e79c709af9",
+    ".\\.local\\worktrees\\joints-counts\\src\\fraudlab\\strings.py": "f3248a9c0e7bbda655e29ecac02886dfa4cd4f34f35007ad90cf99a17efccbb0",
+    ".\\.local\\worktrees\\joints-counts\\src\\fraudlab\\tabm.py": "df22ff1a120c8a6fde59052ea7a1b509ff1b7e7acc83d774f670a1daf4a4e667",
+    ".\\.local\\worktrees\\joints-counts\\src\\fraudlab\\tokens.py": "8e3abfcbe2e437eee859d120f2a89b0a45bd84dfe389a06c11b622ee5ac9cbb4",
+    ".\\.local\\worktrees\\joints-counts\\src\\fraudlab\\transductive.py": "b2848df445f94d1135df27b99e7586048c279860b244dcf9544c30687263ca3b",
+    ".\\data\\raw\\train.csv": "87eaa10b8d17a7e4f657b8da1c66242431338bdd8b6ad45861521ac0c0e9fbd5",
+    ".\\data\\raw\\test.csv": "10f516959020357b565abaaa4fd25baae97fc2f536d0805695bb7cc15c1660f0",
+    ".\\data\\raw\\sample_submission.csv": "13fc6ed8b73de5329884ec490f2a0b750cf29a7cda772b78cfa0cf486f6f35fa",
+    ".\\artifacts\\runs\\round10-offset-bpe-frequency-public25\\metrics.json": "66150258799c3ac2e5066ce29383afc02962c2dd35766126e7a995d9fcf57d57",
+    ".\\artifacts\\runs\\round10-offset-bpe-frequency-public25\\oof.csv": "038bc4bd9c03f777e97fa73738f261bd9881d0267e33502525697526fd577fea",
+    ".\\artifacts\\runs\\round10-offset-bpe-frequency-public25\\predictions.csv": "274cbe4ea90d9dc4893140cad55682f3627ced02163fff48655df4b095e428e7",
+    ".\\artifacts\\runs\\round10-offset-bpe-frequency-public25\\submission.csv": "274cbe4ea90d9dc4893140cad55682f3627ced02163fff48655df4b095e428e7",
+    ".\\artifacts\\runs\\round10-offset-bpe-frequency-public25\\config.json": "3777c2c58519005942badff767be6d5878bbd3f730a38141bd7d7173c54a3875",
+    ".\\artifacts\\runs\\round18-joint-bpe-pooled-offset\\oof.csv": "4c268f8a229c644904e765660532669f9e3729ffb1d030783b3c8fefe3a5b767",
+    ".\\artifacts\\runs\\round18-joint-bpe-pooled-offset\\predictions.csv": "51b34e8ff57a9e41633de7f5ba93ef841666409048ea98b8b5fe3da49f3e0bde",
+    ".\\artifacts\\runs\\round18-joint-bpe-pooled-offset\\submission.csv": "51b34e8ff57a9e41633de7f5ba93ef841666409048ea98b8b5fe3da49f3e0bde",
+    ".\\artifacts\\runs\\round10-offset-bpe-frequency\\metrics.json": "9a3b92009ebcbff083c8ad39af9767a01da602992a8930eff6a4c5b548338ddd",
+    ".\\artifacts\\runs\\round10-offset-bpe-frequency\\oof.csv": "f16b28c7d3bb09a4360f8dbaef59e9dd78a63537bd7f7b01a9a3de43a483f3b4",
+    ".\\artifacts\\runs\\round10-offset-bpe-frequency\\predictions.csv": "8d98b87d5da1f8bc3411e2ed0dbc24aa7c0ccb8fd150762ee3f09a4025c5ccad",
+    ".\\artifacts\\runs\\round10-offset-bpe-frequency\\submission.csv": "8d98b87d5da1f8bc3411e2ed0dbc24aa7c0ccb8fd150762ee3f09a4025c5ccad",
+    ".\\artifacts\\runs\\round10-offset-bpe-frequency\\config.json": "d237d78f604f2a0ef570f46cc36ac5d0aa7fa5e149686353bb847ce15dc734e9",
+    ".\\artifacts\\runs\\explore5-lgbm\\metrics.json": "cbbec3ffbcc1461e2f34835955808e3de7ef9306336ea93bf21f3453a0950e4d",
+    ".\\artifacts\\runs\\explore5-lgbm\\oof.csv": "2a188175419c819bf5d5098125423afa8e95cd79cd965d2108b834cc4016a234",
+    ".\\artifacts\\runs\\explore5-lgbm\\predictions.csv": "54c9fc1229d1b8aa253520b79c4493b0ae97902ee1f76b73baa9b09d48ccd142",
+    ".\\artifacts\\runs\\explore5-lgbm\\submission.csv": "54c9fc1229d1b8aa253520b79c4493b0ae97902ee1f76b73baa9b09d48ccd142",
+    ".\\artifacts\\runs\\explore5-lgbm\\config.json": "50968cd9ae1c1734ae439657839a24658480341e5dbd7aeb9a78a8e4dbb7230a",
+    ".\\artifacts\\runs\\explore5-public-gpt2-v2\\metrics.json": "14f9e508e5f78c926cd5a4341259623f490872da3e73d5b96f1ae8903fe29bc7",
+    ".\\artifacts\\runs\\explore5-public-gpt2-v2\\oof.csv": "4c37722b34d520a6de7d94565140cd0681baad6fb6c012d0b7a86a25b82a4dcb",
+    ".\\artifacts\\runs\\explore5-public-gpt2-v2\\predictions.csv": "78ada898faa132accf86daa3311ba114e44a472d31f0648357d10000ab243d58",
+    ".\\artifacts\\runs\\explore5-public-gpt2-v2\\submission.csv": "78ada898faa132accf86daa3311ba114e44a472d31f0648357d10000ab243d58",
+    ".\\artifacts\\runs\\explore5-public-gpt2-v2\\config.json": "843e20a6839bc22dc5522a4f12c7d46f64472f20782bad6a606c295dfe741d31",
+    ".\\artifacts\\runs\\round18-joint-bpe-pooled-offset\\fold-0.joblib": "bca790c60cb088cf174b9a0858e99899789a571437a9e2885b5f2e49fd55903e",
+    ".\\artifacts\\runs\\round18-joint-bpe-pooled-offset\\fold-1.joblib": "bac7493cc7f9f246d3af1053e701fd8fefd137d8e1617072ca27b5835f01390e",
+    ".\\artifacts\\runs\\round18-joint-bpe-pooled-offset\\fold-2.joblib": "6329dc964cece07a19f878d0e9ec794796c2170c6e50c610fcac1165b1572e37",
+    ".\\artifacts\\runs\\round18-joint-bpe-pooled-offset\\fold-3.joblib": "90c35c979c9721867fbb5aa2629b27f9dd56e7554e567a6ac671fff7b5d85da5",
+    ".\\artifacts\\runs\\round18-joint-bpe-pooled-offset\\fold-4.joblib": "2ae14333c16fb0074417ef746341c336dbef9f919c1fe1a11d82d0c7a4332192",
+    ".\\artifacts\\runs\\round18-pooled-share025-public25\\metrics.json": "607a54fb2d875fc3628e76e5309005cec3fd76935b0468f19d0e2f7aa0857ca8",
+    ".\\artifacts\\runs\\round18-pooled-share025-public25\\oof.csv": "ac5531e5e6f1da018145a91360ca433f70bb58ef655063721fbe55dd03c921c7",
+    ".\\artifacts\\runs\\round18-pooled-share025-public25\\predictions.csv": "3db6dc5421b09385ba9aef6babc0dc1a4a0e29b49f3bba619b0b415ec840ae0e",
+    ".\\artifacts\\runs\\round18-pooled-share025-public25\\submission.csv": "3db6dc5421b09385ba9aef6babc0dc1a4a0e29b49f3bba619b0b415ec840ae0e",
+    ".\\artifacts\\runs\\round18-pooled-share025-public25\\config.json": "efbf96f99ba8225d50f8a1db29f45d38564438199828213655457417fcc60054",
+    ".\\artifacts\\runs\\round18-pooled-share050-public25\\metrics.json": "d36e98e1daee0bb173dc27992b7bcc45a503075abf47a39ebb270819deb74199",
+    ".\\artifacts\\runs\\round18-pooled-share050-public25\\oof.csv": "e567f348101b4bedaa6795bb5b3ba4a2664e86e1962fcd8043972c7c2374a0cd",
+    ".\\artifacts\\runs\\round18-pooled-share050-public25\\predictions.csv": "2bccca8b7482179aa691b7d66969f7445a46764634715890b9f64980f50347db",
+    ".\\artifacts\\runs\\round18-pooled-share050-public25\\submission.csv": "2bccca8b7482179aa691b7d66969f7445a46764634715890b9f64980f50347db",
+    ".\\artifacts\\runs\\round18-pooled-share050-public25\\config.json": "fe791dfefe851686f2411ed19de6de4d7dd31cf5eff502ff7b62b17a1ed94c29",
+    ".\\artifacts\\runs\\round18-pooled-share100-public25\\metrics.json": "a027c62b262accdf9bf23f0d2bf29baf1465ddade0f1202472f1163f25799563",
+    ".\\artifacts\\runs\\round18-pooled-share100-public25\\oof.csv": "0eda1f90dcfa9f829d4d042da64d1fbe8d3e1c95fd583bc942e0b166133e11b8",
+    ".\\artifacts\\runs\\round18-pooled-share100-public25\\predictions.csv": "18c92eab3d28dcefed12c5a1eebdd9380f45e13972875bf5b31cd4a0e6151e53",
+    ".\\artifacts\\runs\\round18-pooled-share100-public25\\submission.csv": "18c92eab3d28dcefed12c5a1eebdd9380f45e13972875bf5b31cd4a0e6151e53",
+    ".\\artifacts\\runs\\round18-pooled-share100-public25\\config.json": "929e7de4e6b6c76fe397672cea0d6187df4db6e9a88b3770af93a3f3bd59a90e",
+    ".\\.local\\research\\round13\\results.json": "33919949c39871472a1e33fdef18dbee3e6a70390e47351d61e16107004de6d6",
+    ".\\.local\\research\\round13\\independent-audit.json": "5343faa5130ea6ba4e4849577127d0a53498ac26423085182e7de244878f5037",
+    ".\\.local\\research\\round14\\results.json": "c0b78b640e294a5549753070faa2c651977c443603d14f3c5275c56bfb61efa8",
+    ".\\.local\\research\\round14\\independent-audit.json": "47608fb01290ea583fda5fc083dcafc08bef1961d505b14b0220134979c70644",
+    ".\\.local\\research\\round15\\results.json": "2e5becf472b542c8205b8111fa423713e1e686955a41771faff5dc46f7a42bdb",
+    ".\\.local\\research\\round16\\results.json": "78023a0f2145aa6ab8822bc77ccf226ac859908ab71e3a7ff4456dd780e5ea96",
+    ".\\.local\\research\\round16\\independent-audit.json": "9adca1fe1f083773232ee1b62a4e454625f1376a384e9010d32a280c784733e5"
+  },
+  "completed_at": "2026-11-17T20:49:44.178085+00:00",
+  "private_full_report_sha256": "cb2455f9b98fa08249204d09fd54cf85fe8c62142db9d99ea84228fcb6461130",
+  "publication_note": "Aggregate metrics and file fingerprints only. Repeated pooled manifests replaced by canonical JSON SHA256; no data rows, prediction arrays or model binaries."
+}

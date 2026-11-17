@@ -1,0 +1,281 @@
+{
+  "recorded_at": "2026-11-17T20:38:45.399461+00:00",
+  "plan": "evidence/round18-plan.json",
+  "plan_sha256": "a4aa3c50fff0239705681275aa1a158353f8394dd51a8bdad4a21ec23a3b0029",
+  "source_commit": "8a1c7fd141b43e41b0d43e3a07b0c5ad0bf41ae5",
+  "source_was_dirty": false,
+  "validation": "Exploratory full-data StratifiedKFold5/42, same699960 OOF IDs/labels/folds as R10. Inner-crossfit5 target and pooled estimates, outer-training-only scaling/frequency. No original augmentation, transductive counts, global G scan, independent holdout or outer-validation early stopping.",
+  "baseline_run": "round10-offset-bpe-frequency-public25",
+  "baseline_oof_auc": 0.9514921382152453,
+  "candidate": "round18-joint-bpe-pooled-offset",
+  "own_oof_auc": 0.9511314157843096,
+  "own_fold_scores": [
+    0.9502490979670842,
+    0.9513398341707044,
+    0.9561278552095068,
+    0.9514117498923018,
+    0.9466119370987595
+  ],
+  "comparisons": [
+    {
+      "run": "round18-pooled-share025-public25",
+      "share": 0.25,
+      "weights": [
+        0.140625,
+        0.421875,
+        0.1875,
+        0.25
+      ],
+      "oof_auc": 0.9515579569666118,
+      "fold_scores": [
+        0.9505645038843443,
+        0.951984869566041,
+        0.9565937926487883,
+        0.9518342675738128,
+        0.9469037760374219
+      ],
+      "delta_vs_r10": 6.581875136657533e-05,
+      "fold_deltas": [
+        7.508243673259862e-05,
+        5.5382407507353903e-05,
+        6.236424489902692e-05,
+        3.908834641153103e-05,
+        9.361317175637929e-05
+      ],
+      "improved_folds": 5,
+      "eligible_to_submit": false,
+      "submission_sha256": "3db6dc5421b09385ba9aef6babc0dc1a4a0e29b49f3bba619b0b415ec840ae0e"
+    },
+    {
+      "run": "round18-pooled-share050-public25",
+      "share": 0.5,
+      "weights": [
+        0.28125,
+        0.28125,
+        0.1875,
+        0.25
+      ],
+      "oof_auc": 0.9516058838066491,
+      "fold_scores": [
+        0.950618964606856,
+        0.9520190889586507,
+        0.9566364946475749,
+        0.9518578417617481,
+        0.9469822851986925
+      ],
+      "delta_vs_r10": 0.00011374559140386875,
+      "fold_deltas": [
+        0.00012954315924429416,
+        8.960180011707841e-05,
+        0.00010506624368566975,
+        6.266253434683566e-05,
+        0.00017212233302699165
+      ],
+      "improved_folds": 5,
+      "eligible_to_submit": true,
+      "submission_sha256": "2bccca8b7482179aa691b7d66969f7445a46764634715890b9f64980f50347db"
+    },
+    {
+      "run": "round18-pooled-share100-public25",
+      "share": 1.0,
+      "weights": [
+        0.5625,
+        0.0,
+        0.1875,
+        0.25
+      ],
+      "oof_auc": 0.9516524825255244,
+      "fold_scores": [
+        0.9506790019581457,
+        0.9520317507242809,
+        0.9566745172306466,
+        0.9518625895354618,
+        0.9470964306274507
+      ],
+      "delta_vs_r10": 0.00016034431027911467,
+      "fold_deltas": [
+        0.00018958051053397096,
+        0.00010226356574727369,
+        0.00014308882675728718,
+        6.7410308060456e-05,
+        0.0002862677617851972
+      ],
+      "improved_folds": 5,
+      "eligible_to_submit": true,
+      "submission_sha256": "18c92eab3d28dcefed12c5a1eebdd9380f45e13972875bf5b31cd4a0e6151e53"
+    }
+  ],
+  "selected": {
+    "run": "round18-pooled-share100-public25",
+    "share": 1.0,
+    "weights": [
+      0.5625,
+      0.0,
+      0.1875,
+      0.25
+    ],
+    "oof_auc": 0.9516524825255244,
+    "fold_scores": [
+      0.9506790019581457,
+      0.9520317507242809,
+      0.9566745172306466,
+      0.9518625895354618,
+      0.9470964306274507
+    ],
+    "delta_vs_r10": 0.00016034431027911467,
+    "fold_deltas": [
+      0.00018958051053397096,
+      0.00010226356574727369,
+      0.00014308882675728718,
+      6.7410308060456e-05,
+      0.0002862677617851972
+    ],
+    "improved_folds": 5,
+    "eligible_to_submit": true,
+    "submission_sha256": "18c92eab3d28dcefed12c5a1eebdd9380f45e13972875bf5b31cd4a0e6151e53"
+  },
+  "decision": "eligible_for_independent_review",
+  "input_oof_sha256": {
+    "round18-joint-bpe-pooled-offset": "4c268f8a229c644904e765660532669f9e3729ffb1d030783b3c8fefe3a5b767",
+    "round10-offset-bpe-frequency": "f16b28c7d3bb09a4360f8dbaef59e9dd78a63537bd7f7b01a9a3de43a483f3b4",
+    "explore5-lgbm": "2a188175419c819bf5d5098125423afa8e95cd79cd965d2108b834cc4016a234",
+    "explore5-public-gpt2-v2": "4c37722b34d520a6de7d94565140cd0681baad6fb6c012d0b7a86a25b82a4dcb"
+  },
+  "checkpoint_reload": {
+    "validation_rows_per_fold": 1024,
+    "fold_errors": [
+      1.1102230246251565e-16,
+      1.1102230246251565e-16,
+      1.1102230246251565e-16,
+      9.93129189996722e-17,
+      1.1102230246251565e-16
+    ],
+    "test_rows": 1024,
+    "test_mean_error": 2.220446049250313e-16,
+    "passed": true
+  },
+  "training_elapsed_seconds": 530.758,
+  "versions": {
+    "python": "3.10.11",
+    "fraudlab": "0.1.0",
+    "numpy": "2.2.6",
+    "pandas": "2.3.3",
+    "scikit-learn": "1.7.2",
+    "catboost": "1.2.10",
+    "lightgbm": "4.7.0",
+    "torch": "2.11.0+cu128",
+    "tiktoken": "0.14.0",
+    "regex": "2026.9.29"
+  },
+  "feature_encoding": {
+    "algorithm": "bpe_digits_plus_eight_fixed_joint_categories",
+    "base_feature_set": "bpe_digits",
+    "bpe": {
+      "tiktoken": "0.14.0",
+      "encoding": "gpt2",
+      "vocabulary_size": 50257,
+      "encoding_files": [
+        {
+          "url": "https://openaipublic.blob.core.windows.net/gpt-2/encodings/main/vocab.bpe",
+          "sha256": "1ce1664773c50f3e0cc8842619a93edc4624525b728b188a9e0be33b7726adc5"
+        },
+        {
+          "url": "https://openaipublic.blob.core.windows.net/gpt-2/encodings/main/encoder.json",
+          "sha256": "196139668be63f3b5d6574427317ae82f612a97c5d1cdaf36ed2256dbf636783"
+        }
+      ],
+      "input_columns": [
+        "amount_usd",
+        "account_balance_usd"
+      ],
+      "output_suffixes": [
+        "__gpt2_first_key",
+        "__gpt2_second_key",
+        "__gpt2_second_cents_key"
+      ],
+      "representation": "cents=np.rint(float64_USD*100); ' ' + str(cents // 100)",
+      "rounding": "NumPy rint; nearest representable cent, halfway ties to even",
+      "second_token_missing": "-1",
+      "third_key": "second_token_id + ':' + str(cents % 100)",
+      "more_than_two_tokens": "retain first two; discard later integer tokens",
+      "label_usage": "none in extraction; fold-local cross-fitted TE downstream"
+    },
+    "joint_encoding": {
+      "output_count": 8,
+      "pairs": [
+        {
+          "output": "foreign_ip__joint_key",
+          "left": "is_foreign_transaction",
+          "left_view": "unchanged string; numeric value normalized to float64",
+          "right": "ip_country_mismatch",
+          "right_view": "unchanged string; numeric value normalized to float64"
+        },
+        {
+          "output": "category_risk10__joint_key",
+          "left": "merchant_category",
+          "left_view": "unchanged string; numeric value normalized to float64",
+          "right": "merchant_risk_score",
+          "right_view": "floor(float64(x)/10)"
+        },
+        {
+          "output": "category_amount_log2__joint_key",
+          "left": "merchant_category",
+          "left_view": "unchanged string; numeric value normalized to float64",
+          "right": "amount_usd",
+          "right_view": "floor(log2(1+x)); interval k starts at exact boundary 2**k-1"
+        },
+        {
+          "output": "scam_velocity5__joint_key",
+          "left": "is_ai_generated_scam_attempt",
+          "left_view": "unchanged string; numeric value normalized to float64",
+          "right": "velocity_score",
+          "right_view": "floor(float64(x)/5)"
+        },
+        {
+          "output": "newmerchant_weekday__joint_key",
+          "left": "is_new_merchant",
+          "left_view": "unchanged string; numeric value normalized to float64",
+          "right": "day_of_week",
+          "right_view": "unchanged string; numeric value normalized to float64"
+        },
+        {
+          "output": "hour_weekday__joint_key",
+          "left": "time_of_day_hour",
+          "left_view": "unchanged string; numeric value normalized to float64",
+          "right": "day_of_week",
+          "right_view": "unchanged string; numeric value normalized to float64"
+        },
+        {
+          "output": "age_cardyears__joint_key",
+          "left": "customer_age",
+          "left_view": "floor(float64(x)/10)",
+          "right": "card_age_months",
+          "right_view": "floor(float64(x)/12)"
+        },
+        {
+          "output": "auth_channel__joint_key",
+          "left": "auth_method",
+          "left_view": "unchanged string; numeric value normalized to float64",
+          "right": "channel",
+          "right_view": "unchanged string; numeric value normalized to float64"
+        }
+      ],
+      "category_representation": "repr((left, right)); strings escaped, numbers canonicalized as above; categorical labels, not ordinal magnitudes",
+      "numeric_domain": "finite nonnegative float64 at most 2**53-1; negative zero normalized; bins use no cent rounding",
+      "log2_boundaries": "2**k-1 for integer k=0..53, left-inclusive via searchsorted(side='right')-1",
+      "excluded_fields": "Exclude the entire pair if either input is excluded",
+      "selection": "Eight hypotheses fixed before fitting; public-source-informed exploratory selection; no G scan, label ranking or quantile fitting",
+      "label_usage": "none in extraction; downstream TE/frequency/scaling remain fitted inside outer training only",
+      "concept_source": {
+        "url": "https://www.kaggle.com/code/goodpjw2008/s6e11-part-12-wide-stack-2nd-lm-lb-0-95298",
+        "version": 16,
+        "source_cell_zero_based": 74,
+        "source_body_sha256": "835772526d7efcc70f771aa446690cb1956676a457f40b08d48760bbf3336baf",
+        "credit": "megayak's joint-key ideas; independent extraction, no source code copied or executed"
+      }
+    }
+  },
+  "new_kaggle_submissions": 0,
+  "private_full_report_sha256": "96e9f1fb74a8821695793c3d9aa6879f3edbeb417a6facbbc4061dd9a2ded2c6",
+  "publication_note": "Aggregate metrics and file fingerprints only. Repeated pooled manifests replaced by canonical JSON SHA256; no data rows, prediction arrays or model binaries."
+}
