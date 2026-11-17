@@ -1,7 +1,32 @@
 {
-  "protocol_id": "hybrid5fold-public25",
+  "protocol_id": "r18-cv-and-r20-full-refit-public25",
   "phase": "exploratory_full_data_cv",
-  "source_revision": "30dc7eb723e4cf31291bb075ed6c0d943557264c",
+  "output_phase": "full_data_refit",
+  "source_revision": "8a1c7fd141b43e41b0d43e3a07b0c5ad0bf41ae5",
+  "source_sha256": {
+    "fraudlab/__init__.py": "14479eff95a0233e8bf2d9f359843c36f53f36b92cc95c3e452f75bfb2982dcc",
+    "fraudlab/__main__.py": "b8fc5d9e4cf77f7319f9e2f7956f490bb71da6ce3c6842e279f46194672a7fae",
+    "fraudlab/bpe.py": "fb71799ca075c657a8344f85d6a7e91653d1f319e24b5e287c17565cea456d4e",
+    "fraudlab/data.py": "f22355cc51fa6e6162b24e639923f40a11a23af00afcb65553090176271c8326",
+    "fraudlab/experiment.py": "85a0995157f4b4453206d88a41ee1196765f7bb5cd6cf9dd55d5dd89ba87bb7a",
+    "fraudlab/external.py": "05ec4ec64e4a2c5cf1137c949646bed14fe83fb04506b8f2f973c2c7633c5e08",
+    "fraudlab/features.py": "184fe327468194f34563b25aee2268348ca854d59e4916f8e3eacdd1b6420424",
+    "fraudlab/frequency.py": "de06b4f581f6864066d94b140d67e4ed16f7cef054a30ef20bc408a972279ce6",
+    "fraudlab/holdout.py": "e3702891766326710c3b56dd7a7fe69f2f778acea3316665f130aa6955e2f4e3",
+    "fraudlab/joints.py": "620851854c56aceceba02d5855fe22525e748973e80ffe0f83040f5e75a271e8",
+    "fraudlab/models.py": "e00d858bac42b79362ef408cbb7f359bca44a4828931b0e4943d660a3eb095b5",
+    "fraudlab/neural_offset.py": "042eec5ea088477bb37b045ace2f537c6e6e39ff49b3e810dc5e501b4ea8e487",
+    "fraudlab/offset.py": "a4ea551e4ddf89aedc87f313eb07425aebc60f7d967986524a873a73565fdc4f",
+    "fraudlab/original.py": "4db9d8d54929ba9d9a36fd55b8f8655611a800d22fade59af079e0497ce7b934",
+    "fraudlab/pooled.py": "6f15acb31c8a878efc262410a0ddf3f6b733b1a636a7bfa917758d568164601a",
+    "fraudlab/refit.py": "981074be27e2ed24aa45dbaabeda32677f83ae59aa74f12dd6a56de152fde4e9",
+    "fraudlab/scores.py": "8bae07482b56eb488a388c54ecd7ec0cf87a8644d9e98e53d7c1fcc75d2e58a1",
+    "fraudlab/splits.py": "41215280332984010f5b616bbf6a675c623b7af3e3f00604eb3238e79c709af9",
+    "fraudlab/strings.py": "f3248a9c0e7bbda655e29ecac02886dfa4cd4f34f35007ad90cf99a17efccbb0",
+    "fraudlab/tabm.py": "df22ff1a120c8a6fde59052ea7a1b509ff1b7e7acc83d774f670a1daf4a4e667",
+    "fraudlab/tokens.py": "8e3abfcbe2e437eee859d120f2a89b0a45bd84dfe389a06c11b622ee5ac9cbb4",
+    "fraudlab/transductive.py": "b2848df445f94d1135df27b99e7586048c279860b244dcf9544c30687263ca3b"
+  },
   "competition": "playground-series-s6e11",
   "rows": {
     "train": 699960,
@@ -14,7 +39,6 @@
   },
   "common": {
     "phase": "exploratory_full_data_cv",
-    "feature_set": "value_digits",
     "id_column": "id",
     "target": "is_fraud",
     "split": "stratified",
@@ -22,16 +46,26 @@
     "seed": 42,
     "holdout_fraction": 0.0,
     "fixed_training": true,
-    "validation_note": "Exploratory full-data five-fold CV aligned with approved public GPT-2 release2. All labels, including the historical holdout, participate in fold training. No independent holdout remains for this stage. Own model settings are frozen; no new hyperparameter selection."
+    "validation_note": "Exploratory full-data StratifiedKFold5/42, same699960 OOF IDs/labels/folds as R10. Inner-crossfit5 target and pooled estimates, outer-training-only scaling/frequency. No original augmentation, transductive counts, global G scan, independent holdout or outer-validation early stopping."
   },
   "models": {
-    "glm": {
-      "name": "explore5-glm",
-      "model": "glm",
-      "threads": 4,
-      "device": "auto",
+    "offset": {
+      "name": "round18-joint-bpe-pooled-offset",
+      "model": "offset",
+      "feature_set": "joint_bpe",
+      "glm_pooled_tokens": true,
+      "glm_frequency": true,
+      "glm_inner_folds": 5,
+      "target_smoothing": 50,
       "logistic_c": 0.3,
-      "target_smoothing": 50.0
+      "glm_spline_knots": 0,
+      "iterations": 1000,
+      "num_leaves": 4,
+      "learning_rate": 0.03,
+      "l2_leaf_reg": 5,
+      "min_child_samples": 100,
+      "device": "cpu",
+      "threads": 4
     },
     "lightgbm": {
       "name": "explore5-lgbm",
@@ -44,11 +78,13 @@
       "num_leaves": 4,
       "min_child_samples": 100,
       "target_smoothing": 20.0,
-      "patience": 150
+      "patience": 150,
+      "feature_set": "value_digits"
     }
   },
+  "cv_hybrid_name": "round18-pooled-share100-public25",
   "own_weights": {
-    "glm": 0.75,
+    "offset": 0.75,
     "lightgbm": 0.25
   },
   "hybrid_weights": {
@@ -56,9 +92,25 @@
     "external_gpt2": 0.25
   },
   "effective_weights": {
-    "glm": 0.5625,
+    "offset": 0.5625,
     "lightgbm": 0.1875,
     "external_gpt2": 0.25
+  },
+  "tokenizer": {
+    "tiktoken": "0.14.0",
+    "regex": "2026.9.29",
+    "encoding": "gpt2",
+    "offline_assets_embedded": true,
+    "encoding_files": [
+      {
+        "url": "https://openaipublic.blob.core.windows.net/gpt-2/encodings/main/vocab.bpe",
+        "sha256": "1ce1664773c50f3e0cc8842619a93edc4624525b728b188a9e0be33b7726adc5"
+      },
+      {
+        "url": "https://openaipublic.blob.core.windows.net/gpt-2/encodings/main/encoder.json",
+        "sha256": "196139668be63f3b5d6574427317ae82f612a97c5d1cdaf36ed2256dbf636783"
+      }
+    ]
   },
   "public_component": {
     "name": "GPT-2 target-first",
@@ -107,12 +159,33 @@
       "oof.npy": "3468aaaeb7851739ec0de1e06b780da6d2777fcaeef638a6852c56e68e67a206",
       "test.npy": "6c27aff7be744f7a0cc17809e0cd04fcdea0664234af88e3040a25235fb67906",
       "fold_ids.npy": "1d459900f6c3a001ff971c09d9c607b383bdc732105c54701587189e52eeab45"
-    }
+    },
+    "run": "explore5-public-gpt2-v2"
+  },
+  "refit": {
+    "operation": "portable_selected_cv_refit",
+    "seed": 42,
+    "names": {
+      "offset": "round20-refit-joint-offset",
+      "lightgbm": "round20-refit-lgbm"
+    },
+    "hybrid_name": "round20-refit-joint-public25",
+    "roc_auc": null,
+    "fold_scores": [],
+    "oof_rows": 0,
+    "provenance": "New hashes of this notebook execution; not byte-identity to local audited script outputs",
+    "validation_labels": null
   },
   "observed_local_results": {
-    "own_oof_auc": 0.9506227499782469,
-    "hybrid_oof_auc": 0.9512586315198723,
-    "scope": "Recorded local exploratory OOF; not outputs of a saved, unexecuted Kaggle notebook."
+    "own_offset_oof_auc": 0.9511314157843096,
+    "hybrid_oof_auc": 0.9516524825255244,
+    "refit_oof_auc": null,
+    "refit_public_submission": "58483010",
+    "refit_public_auc": 0.95162,
+    "ranking": 657,
+    "total_teams": 2126,
+    "observed_at": "2026-11-17T21:59:16.262839+00:00",
+    "scope": "Recorded local R18 CV and separately processed R20 refit submission; no cloud execution or new refit OOF claimed"
   },
   "historical_protocol": {
     "source_revision": "1fe34b540f3ea28276da652c3dd1de02726897f4",
@@ -120,5 +193,7 @@
     "regenerate_argument": "--protocol artifacts/holdout/evaluation.json",
     "note": "The earlier 3-fold/15-percent holdout protocol is historical only; no independent holdout remains for the hybrid."
   },
-  "output": "submission.csv"
+  "output": "submission.csv",
+  "cv_output": "submission-cv.csv",
+  "execution_manifest": "notebook-execution-manifest.json"
 }
