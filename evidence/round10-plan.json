@@ -1,0 +1,43 @@
+{
+  "date": "2026-11-17",
+  "status": "prospective; no combined offset fit performed",
+  "reason": "R9 combined token/frequency features improved pooled GLM OOF. Test the existing shallow residual-tree model on that representation. The residual mechanism and its hyperparameters were already fixed in R2; no new implementation, pair search, weight search or neural architecture.",
+  "previous_results": ["evidence/round2-results.json", "evidence/round9-results.json"],
+  "baseline_run": "explore5-public25",
+  "baseline_oof_auc": 0.9512586315198723,
+  "current_exploratory_run": "round9-bpe-frequency-public25",
+  "current_exploratory_oof_auc": 0.9514070520739548,
+  "validation": "Exploratory full-data StratifiedKFold(5, shuffle=True, random_state=42), with all labels used. No independent holdout or outer-validation early stopping. Fit the GLM and residual on the same internally cross-fitted training matrix; inference uses only outer-training maps.",
+  "candidate": {
+    "name": "round10-offset-bpe-frequency",
+    "model": "offset",
+    "phase": "exploratory_full_data_cv",
+    "feature_set": "bpe_digits",
+    "folds": 5,
+    "seed": 42,
+    "holdout_fraction": 0,
+    "fixed_training": true,
+    "logistic_c": 0.3,
+    "target_smoothing": 50,
+    "glm_inner_folds": 5,
+    "glm_frequency": true,
+    "glm_spline_knots": 0,
+    "iterations": 1000,
+    "num_leaves": 4,
+    "learning_rate": 0.03,
+    "l2_leaf_reg": 5,
+    "min_child_samples": 100,
+    "threads": 4,
+    "device": "cpu"
+  },
+  "fixed_blend": {
+    "space": "probability",
+    "candidate_offset": 0.5625,
+    "explore5-lgbm": 0.1875,
+    "explore5-public-gpt2-v2": 0.25
+  },
+  "promotion_rule": "Require pooled hybrid OOF delta over the original reference strictly greater than 0.0001, at least four improved folds over that reference, and pooled OOF at least as large as the current exploratory R9. This tests consistency over the original reference without sacrificing the current pooled score. If any requirement fails, do not submit this configuration; no exception is preauthorized for this round.",
+  "selection_limit": "R9 remains an explicitly declared public-evaluation deviation. This prospective rule does not reclassify its failed original consistency gate. Public scores are not used to change model parameters or mixture weights in this round.",
+  "cost": "One CPU configuration and five fits using existing GLM and offset code. No GPU work, new seed bag or new dependency.",
+  "training_gate": "Root publishes this plan with the tested clean source before starting the fit."
+}

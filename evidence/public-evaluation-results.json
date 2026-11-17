@@ -1,0 +1,35 @@
+{
+  "observed_at": "2026-11-17T13:18:51.968825+00:00",
+  "plan": "evidence/public-evaluation-plan.json",
+  "plan_commit_before_submission": "6fda338",
+  "trials": [
+    {
+      "ref": 58469733,
+      "run": "final-refit-public25",
+      "submission_sha256": "cd10c4c11bd76f6eae3a8cc6101db7ba71a1f56341ea54c9805d5364fba6b517",
+      "downloaded_submission_sha256": "cd10c4c11bd76f6eae3a8cc6101db7ba71a1f56341ea54c9805d5364fba6b517",
+      "submission_file_verified": true,
+      "public_auc": 0.95107,
+      "submitted_at_utc": "2026-11-17T13:15:08.940000",
+      "observed_at": "2026-11-17T13:18:48.914322+00:00"
+    },
+    {
+      "ref": 58469746,
+      "run": "round9-bpe-frequency-public25",
+      "submission_sha256": "e870c10ec773c10d16a4f53bea41776f0b69d95e07e0157884d5371dc13ae0c9",
+      "downloaded_submission_sha256": "e870c10ec773c10d16a4f53bea41776f0b69d95e07e0157884d5371dc13ae0c9",
+      "submission_file_verified": true,
+      "public_auc": 0.95108,
+      "ranking": 804,
+      "total_teams": 2088,
+      "observed_at": "2026-11-17T13:17:10.844695+00:00",
+      "source": "https://www.kaggle.com/competitions/playground-series-s6e11/leaderboard"
+    }
+  ],
+  "best_submission": 58469746,
+  "previous_best_public_auc": 0.95097,
+  "best_public_auc": 0.95108,
+  "public_auc_gain": 0.00011,
+  "r9_consistency_gate_passed": false,
+  "selection_scope": "Best observed public score among the two frozen evaluations; R9 remains an explicitly declared exploratory protocol deviation. No independent holdout or victory claim."
+}
