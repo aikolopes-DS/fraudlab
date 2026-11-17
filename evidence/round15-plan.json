@@ -1,0 +1,21 @@
+{
+  "date": "2026-11-17",
+  "status": "prospective; no new competition OOF fusion score calculated",
+  "hypothesis": "A fixed ensemble can improve ranking through the score-combination rule without training another model. Compare three fixed rules to the current weighted probability mean, retaining the same atomic models and weights.",
+  "baseline_run": "round10-offset-bpe-frequency-public25",
+  "baseline_oof_auc": 0.9514921382152453,
+  "sources": ["round10-offset-bpe-frequency", "explore5-lgbm", "explore5-public-gpt2-v2"],
+  "weights": [0.5625, 0.1875, 0.25],
+  "spaces": ["logit", "rank", "rank_logit"],
+  "definitions": {
+    "logit": "Clip each source probability to[1e-6,1-1e-6], take log(p/(1-p)), weighted mean, stable sigmoid.",
+    "rank": "For each source separately, average-tie rank/(n+1); weighted mean of normalized ranks. Rank the full OOF vector and the full test vector separately; no labels enter this transform.",
+    "rank_logit": "Average-tie ranks/(n+1), clipped at1e-6 as above, then weighted mean of logits and stable sigmoid.",
+    "unchanged_default": "The probability mode must preserve the existing arithmetic and predictions exactly. Existing blend calls default to probability."
+  },
+  "validation": "Reuse the frozen699960 out-of-fold predictions, known labels and exact StratifiedKFold5/42 assignments. This is exploratory model selection on previously used OOF labels, not fresh nested CV or an independent holdout. Rank-based transforms also use the unlabeled score distribution of the evaluated vector. No new training or public-score tuning.",
+  "selection": "Report all three spaces. Among candidates exceeding R10 pooled OOF by strictly more than0.0001 and improving at least4/5 matching folds, select the highest pooled OOF. Do not add spaces, change weights, clip thresholds or evaluate extra rank calibrations after seeing the result.",
+  "submission_rule": "At most one R15 submission, after independent source/data/ID/fold/label/formula and output checks. Also require its pooled OOF to exceed any already-selected R13/R14 candidate, avoiding submission of a locally dominated composition. If no candidate passes, record the negative result and retain the better validated model. No exception preauthorized.",
+  "provenance": "Retain direct source coefficients in the declared score space. A coefficient on logits or ranks is not a percentage contribution to a probability. Do not flatten nested nonlinear mixtures into misleading effective probability weights.",
+  "training_gate": "Publish this plan and tested blend-space implementation before calculating these competition AUCs. Run from a clean pinned worktree. Only existing licensed/provenance-approved sources; no additional prediction dataset or paid compute."
+}
