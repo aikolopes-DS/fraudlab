@@ -1,0 +1,53 @@
+{
+  "date": "2026-11-17",
+  "status": "prospective; implementation and review before competition-data fitting",
+  "hypothesis": "Numeric token and decimal patterns may transfer between related columns. Add16 hierarchical, internally cross-fitted target logits to the current R10 representation. This tests a pattern hypothesis, not a claim that the competition generator has been recovered.",
+  "inspiration": {
+    "url": "https://www.kaggle.com/code/goodpjw2008/s6e11-part-12-wide-stack-2nd-lm-lb-0-95298",
+    "upstream": "https://www.kaggle.com/code/megayak/s6e11-per-value-digit-te-shallow-tree-stack",
+    "inspected_embedded_gboost_py_sha256": "835772526d7efcc70f771aa446690cb1956676a457f40b08d48760bbf3336baf",
+    "scope": "Own implementation of the hierarchical estimation idea. Do not execute the external script, select joint keys globally, use outer-validation early stopping, import its predictions or inherit its reported validation claims."
+  },
+  "baseline_run": "round10-offset-bpe-frequency-public25",
+  "baseline_oof_auc": 0.9514921382152453,
+  "validation": "Exploratory full-data StratifiedKFold5/42, all known labels and same ordered IDs/folds as R10. Hierarchical statistics are cross-fitted5 times within outer training, with the prior computed only from the corresponding inner training subset. Inference uses only outer-training statistics. No independent holdout or outer-validation early stopping.",
+  "candidate": {
+    "name": "round13-pooled-offset",
+    "model": "offset",
+    "feature_set": "bpe_digits",
+    "glm_pooled_tokens": true,
+    "glm_frequency": true,
+    "glm_inner_folds": 5,
+    "target_smoothing": 50,
+    "logistic_c": 0.3,
+    "glm_spline_knots": 0,
+    "iterations": 1000,
+    "num_leaves": 4,
+    "learning_rate": 0.03,
+    "l2_leaf_reg": 5,
+    "min_child_samples": 100,
+    "folds": 5,
+    "seed": 42,
+    "holdout_fraction": 0,
+    "phase": "exploratory_full_data_cv",
+    "fixed_training": true,
+    "device": "cpu",
+    "threads": 4
+  },
+  "hierarchy": {
+    "two_decimal_fields": ["amount_usd", "hours_since_last_txn", "distance_from_home_km", "account_balance_usd"],
+    "one_decimal_fields": ["velocity_score", "merchant_risk_score"],
+    "groups": "Full fractional text and first fractional digit across the four fields; full fractional text and last integer GPT2 token across the two fields; four per-field pairs of last integer token and full fraction.",
+    "smooth": {"group_to_prior": 50, "field_to_group": 2000, "pair_to_field_fraction": 200},
+    "canonical_text": "Decimal(str(float64(x))) in fixed notation, at least one fractional digit, no additional quantization. Equivalent numeric spellings are merged; lexical CSV spelling is not preserved.",
+    "unknown": "Group token backs off to inner/outer training prior; field token backs off to its group; unseen pair backs off to its field/fraction. No validation or test labels."
+  },
+  "fixed_comparisons": {
+    "space": "probability",
+    "candidate_share_of_own_offset": [0.25, 0.5, 1.0],
+    "formula": "0.5625*(share*candidate+(1-share)*R10_own_offset)+0.1875*explore5_lgbm+0.25*approved_Masaya_GPT2_v2",
+    "selection": "Report every fixed share; choose the highest pooled OOF among eligible shares. This finite selection remains exploratory. No added weights after seeing the outcome."
+  },
+  "promotion_rule": "Exceed R10 hybrid pooled OOF by strictly more than0.0001 and improve at least4/5 matching folds. Otherwise record the negative result and retain R10. At most one submission after independent source/data/ID/fold/label/formula/checkpoint audits; no exception preauthorized.",
+  "training_gate": "Publish this plan and tested implementation, review crossfit boundaries and absent-flag compatibility, then fit in an isolated clean pinned worktree. No paid compute."
+}
