@@ -1,0 +1,171 @@
+{
+  "created_at_utc": "2026-11-17T12:46:24.944486+00:00",
+  "decision": "reject_integration_pending_producer_provenance",
+  "summary_pt": "Números, licença e representação são consistentes com o README; a cadeia de produção dos arrays não está publicada. Não integrar nem medir blends até comprovar identidade dos dados, atribuição de folds e vínculo do exportador com estes bytes. Isso não constitui acusação de vazamento.",
+  "scope": "Own audit only; no fit, blend, submission, external model import or external script execution. NPY files loaded with allow_pickle=False.",
+  "dataset": {
+    "ref": "goodpjw2008/s6e11-target-first-gpt2-seed-2026/2",
+    "version": 2,
+    "license": "CC0-1.0",
+    "url": "https://www.kaggle.com/datasets/goodpjw2008/s6e11-target-first-gpt2-seed-2026/versions/2"
+  },
+  "official_metadata": {
+    "id": 13281029,
+    "title": "S6E11 Target-First GPT-2 Seed 2026",
+    "last_updated_at_from_official_list": "2026-11-14T18:23:23.293",
+    "current_version_number_verified": 2,
+    "latest_and_pinned_v2_member_bytes_equal": true,
+    "evidence": [
+      "metadata/dataset-metadata.json",
+      "metadata/current-version.json",
+      "metadata/version2-files.csv"
+    ]
+  },
+  "files": {
+    "README.md": {
+      "sha256": "69b47b088c300ab2a2305a0cf66b473a90ae8a8f7ac862e60c52abbbd3b94582",
+      "bytes": 1559
+    },
+    "gpt2_s2026_oof_5fold.npy": {
+      "sha256": "4a902ecd3d725d21123f5b6239ac2190a9fd94f3de37e3157be391fcf3fe996a",
+      "bytes": 5599808
+    },
+    "gpt2_s2026_test_5fold.npy": {
+      "sha256": "cea5f578ddf9118d7ea47ea38e2591ea66102ab2ce9aff37f5586c81adfbaa0e",
+      "bytes": 2400000
+    },
+    "gpt2_s2026_test_f0.npy": {
+      "sha256": "40e08058ed7632ee328c2fe7d97040b856b36d2636f32cc6d2781ec9db080695",
+      "bytes": 2400000
+    }
+  },
+  "positive_evidence": [
+    "Official Kaggle CLI authenticated download pinned to dataset version 2; CC0-1.0 metadata and README agree.",
+    "All three arrays have expected row counts, finite float64 values and scores outside [0,1], compatible with the declared log-odds representation.",
+    "Conditional pooled AUC and all five fold AUCs reproduce the README rounding exactly under the declared train row order and 5/42 split.",
+    "Conditional rank correlations reproduce the README rounding: OOF versus Masaya 0.9894867, test5 versus test0 0.9977258, test5 versus Masaya 0.9932500.",
+    "The current same-author consumer notebook pins the test5 SHA256 and the distributed version2 file matches that pin.",
+    "The referenced MIT source has an explicit fit/held-out split, uses only fit rows for fold fine-tuning and prior, verifies OOF row membership, and aggregates test log-odds across fold models. Those code properties do not bind this release to a producing run."
+  ],
+  "blocking_gaps": [
+    "No producer-side raw train/test CSV hashes, ordered IDs or row fingerprints are distributed. Our exact CSV hashes match the expected local competition files, but there is no source value to compare.",
+    "No seed2026 fold_ids.npy, validation-index files or per-fold score artifacts are distributed. Its 5/42 equivalence to Masaya is asserted in README only. The local Masaya fold assignment does match local canonical 5/42, which cannot prove seed2026 producing folds.",
+    "No release manifest binds the array SHA256s to a source commit, training/scoring commands, input fingerprints, fold/checkpoint hashes, or execution logs. README names the public code without an immutable producing revision.",
+    "The referenced exporter is available in the base repository, but its seed2026 run manifest/score chunks and output rename linkage are absent. The same-author notebook consumes arrays and is not their exporter.",
+    "The claimed arithmetic average of five test fold-model log-odds cannot be reconstructed from the provided mean plus fold0 alone; fold1..fold4 individual predictions and checkpoint provenance are absent. No full-data refit is claimed in this release.",
+    "Outer-validation exclusion is correct in the referenced recipe, but exclusion by the models that produced these exact seed2026 arrays is not independently verified from distributed evidence."
+  ],
+  "representation": {
+    "oof": "README: per-row held-out log-odds, logsumexp over 10 orders per class, True minus False, plus training-fold prior log-odds. Observed logits, not probabilities.",
+    "test5": "README: arithmetic mean of the five fold models log-odds, 10 orders per fold. Use this file if the provenance gaps are resolved. This is not mean(sigmoid(logit)).",
+    "test_f0": "README: fold0 model log-odds only, retained for compatibility. Not equivalent to test5 and not the five-fold prediction.",
+    "refit": "No 100%-data refit or rank-mean combination is stated for these arrays."
+  },
+  "numeric_evidence": {
+    "file": "array-audit.json",
+    "conditional_auc": 0.9501396990738895,
+    "conditional_fold_auc": [
+      0.9491910554418083,
+      0.9503700982825201,
+      0.955235724292704,
+      0.9502096527385091,
+      0.94585844863163
+    ],
+    "row_and_fold_provenance_verified": false,
+    "limit": "AUC/shape/correlation agreement supports numerical consistency with the author report, not row identity or training exclusion."
+  },
+  "local_csv_identity_only": {
+    "train_csv_sha256": "87eaa10b8d17a7e4f657b8da1c66242431338bdd8b6ad45861521ac0c0e9fbd5",
+    "test_csv_sha256": "10f516959020357b565abaaa4fd25baae97fc2f536d0805695bb7cc15c1660f0",
+    "train_rows": 699960,
+    "test_rows": 299984,
+    "train_ids_unique": true,
+    "test_ids_unique": true,
+    "train_id_first_last": [
+      0,
+      699959
+    ],
+    "test_id_first_last": [
+      699960,
+      999943
+    ],
+    "source_side_csv_hash_or_ids_present": false,
+    "limit": "These are hashes and IDs of our local CSVs only. The release does not publish corresponding values to compare."
+  },
+  "folds": {
+    "source_claim": "StratifiedKFold(5, shuffle=True, random_state=42), identical to Masaya fold_ids.npy",
+    "source_assignment_distributed": false,
+    "local_canonical_equal_existing_audited_masaya_folds": true,
+    "existing_masaya_fold_file_sha256": "1d459900f6c3a001ff971c09d9c607b383bdc732105c54701587189e52eeab45",
+    "local_canonical_counts": [
+      139992,
+      139992,
+      139992,
+      139992,
+      139992
+    ],
+    "limit": "Matching local canonical folds to Masaya confirms only our local reference, not the seed2026 producing assignment."
+  },
+  "licenses_and_credits": {
+    "distributed_predictions": {
+      "license": "CC0-1.0",
+      "evidence": "Official Kaggle metadata, version2 CLI download and README"
+    },
+    "referenced_recipe_code": {
+      "repository": "https://github.com/Matapanino/s6e11-gpt2-target-first",
+      "current_commit_confirmed_by_official_github_api": "8446fb73c11583df4f7006aa08fa34472249b318",
+      "producing_seed2026_commit_known": false,
+      "license": "MIT",
+      "copyright": "Copyright (c) 2026 Masaya Kawamata",
+      "license_url": "https://github.com/Matapanino/s6e11-gpt2-target-first/blob/8446fb73c11583df4f7006aa08fa34472249b318/LICENSE",
+      "requirement_for_source_reuse": "Preserve copyright and MIT permission notice in copies or substantial portions.",
+      "local_static_file_hashes": {
+        "common.py": "9c2415424cfb606b8610820866ff1e8e57345a60ee440785adca770a1e2003cb",
+        "LICENSE": "4e2ce28dc2aa577e5bbf40eab9292369a54e6eddb880cb474f005a29c4767276",
+        "make_folds.py": "e615e84381758808b3c501d82a6d9ddafb3040146a41ef7a2bd51a31afa47cd1",
+        "make_predictions.py": "e4e9e1ed75599069b19073300ffc614dbd6a9974979543b727c615defa1d4e5a",
+        "score_rows.py": "48058dc651b91a984355334c9f01f9e537b3babb75109a3ab4ce68c676f436ca",
+        "tabtext.py": "30bb0785aa003046abf982fc2b6613f527f05f33085ed4a7d2ffd68de8765a1a",
+        "train_classifier.py": "b255b45e6c554c6d443c48bfb04c798e408b5762d34b90bd4072a42660d037c5",
+        "train_replica.py": "938cd5a68caf37b1ab4b51caefadc5a943d52959c55543e39d8de9c7cc6ac5c8"
+      }
+    },
+    "base_pretrained_model": {
+      "model": "GPT-2",
+      "license": "MIT",
+      "source": "https://huggingface.co/openai-community/gpt2",
+      "evidence": "metadata/gpt2-model-card.md",
+      "producing_model_revision_known": false,
+      "limit": "License confirmed for the declared GPT-2 base; actual pretrained revision and replica/original-data fingerprints are not published for the seed2026 run."
+    },
+    "credit": [
+      "goodpjw2008 (second-seed training and predictions)",
+      "Masaya Kawamata / masayakawamata / Matapanino (public code and first seed)",
+      "Chris Deotte (target-first S6E10 recipe)",
+      "OpenAI (GPT-2)"
+    ]
+  },
+  "consumer_notebook": {
+    "url": "https://www.kaggle.com/code/goodpjw2008/s6e11-lm-ladder-ladder-meets-stack-lb-0-95432",
+    "notebook_sha256": "ffd16e02174a8d738bd402c7be73320e1bd5a874d562ae4322fdab7add2fec6b",
+    "metadata_sha256": "1de173506e09f7fa269f36c6dfb84800085b8c883ab0de9c6e2e7397755d1fe8",
+    "test5_hash_pinned_in_source": "cea5f578ddf9118d7ea47ea38e2591ea66102ab2ce9aff37f5586c81adfbaa0e",
+    "actual_test5_matches_pin": true,
+    "produces_seed2026_arrays": false,
+    "limit": "The inspected source consumes public arrays and freezes their hashes. It supplies no producing run or linkage to source CSVs, fold assignments or checkpoints."
+  },
+  "minimum_to_reconsider": [
+    "An immutable producer manifest with our exact train/test hashes or ordered IDs, producing code revision, commands/settings, base/replica/checkpoint identities and these output SHA256s.",
+    "Seed2026 producing fold assignment and exporter evidence demonstrating that each OOF index was excluded from its own model training.",
+    "A reconstructible test aggregation or bound run logs/artifacts identifying all five fold outputs, preserving log-odds semantics."
+  ],
+  "status": {
+    "done": "Private static/source and numerical consistency audit, with versioned bytes and hashes.",
+    "missing": "Producer provenance listed above; therefore not validated or accepted for integration.",
+    "blocked": "No access issue for the dataset. Public release lacks the producer evidence required by the established import contract.",
+    "public_files_changed": false,
+    "training_performed": false,
+    "blend_measured": false,
+    "submission_performed": false
+  }
+}

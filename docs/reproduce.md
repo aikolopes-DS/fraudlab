@@ -96,6 +96,19 @@ A primeira etapa usou três folds nos 85% de desenvolvimento e reservou 15% com 
 
 A híbrida **58438450** usa as médias de teste das novas CVs `explore5-glm`/`explore5-lgbm` e GPT-2 v2. Ela não usa os refits únicos anteriores. Como a nova etapa e o componente externo incluem os antigos rótulos reservados, aquele holdout é apenas histórico para a híbrida.
 
+Uma variante fixa reaproveita os refits completos já auditados:
+
+```powershell
+python scripts/compose_refit_hybrid.py --plan evidence/refit-hybrid-plan.json
+```
+
+O comando exige os artefatos locais cujos hashes estão no plano, incluindo os
+checkpoints originais. Combina 75% de `final-blend` e 25% do GPT-2 aprovado.
+Gera apenas inferência: AUC nula, nenhuma OOF e nenhuma submissão automática.
+Sua referência CV pertence à receita anterior. Os hashes protegem os inputs
+históricos; recriar numericamente os modelos em outro ambiente pode produzir
+outros bytes e exige registrar um novo plano, sem herdar o score anterior.
+
 O gerador aceita `--protocol artifacts/holdout/evaluation.json` para reconstruir o notebook próprio anterior, desde que o relatório e os configs de origem estejam disponíveis localmente. Ele regrava o mesmo notebook; o comando híbrido acima restaura a versão canônica. Esses artefatos locais não são incluídos no clone público.
 
 A MLP-TE própria permanece uma comparação histórica real, fora da composição final. Para reproduzir suas métricas de desenvolvimento necessárias à apresentação:
@@ -137,7 +150,7 @@ O site estático é montado em `site/dist/`, com evidência pública e arquivos 
 O mirror da hospedagem Sites limita cada arquivo a 32 MiB; o MP4 desta versão tem cerca de 49 MiB. Para usar o vídeo publicado na release GitHub e manter slides/legendas no site:
 
 ```powershell
-python site/build.py --run-dir artifacts/runs/explore5-public25 --presentation-dir artifacts/presentation --video-url https://github.com/aikolopes-og/fraudlab/releases/download/v0.1.0/video.mp4
+python site/build.py --run-dir artifacts/runs/explore5-public25 --presentation-dir artifacts/presentation --video-url https://github.com/aikolopes-DS/fraudlab/releases/download/v0.1.0/video.mp4
 ```
 
 O build ainda confere o hash do MP4 local, registra o hash e a URL externa no manifesto público e exclui o binário de `site/dist/`. A igualdade dos bytes publicados e a reprodução anônima precisam ser verificadas após o upload.

@@ -1,0 +1,131 @@
+{
+  "declared_at_utc": "2026-11-17T12:43:18.134255+00:00",
+  "status": "prospective; implementation and toy tests only; real composition awaits root review",
+  "name": "final-refit-public25",
+  "scope": "One fixed inference-only output of the already selected architecture and weights. No model fitting, AUC measurement, OOF promotion, alternative weighting or automatic submission.",
+  "data": "data/raw",
+  "id_column": "id",
+  "target": "is_fraud",
+  "rows": {
+    "train": 699960,
+    "test": 299984
+  },
+  "data_hashes": {
+    "train.csv": "87eaa10b8d17a7e4f657b8da1c66242431338bdd8b6ad45861521ac0c0e9fbd5",
+    "test.csv": "10f516959020357b565abaaa4fd25baae97fc2f536d0805695bb7cc15c1660f0",
+    "sample_submission.csv": "13fc6ed8b73de5329884ec490f2a0b750cf29a7cda772b78cfa0cf486f6f35fa"
+  },
+  "weights": [
+    0.75,
+    0.25
+  ],
+  "effective_weights": {
+    "glm": 0.5625,
+    "lightgbm": 0.1875,
+    "external_gpt2": 0.25
+  },
+  "development_roc_auc": 0.9512586315198723,
+  "development_roc_auc_scope": "Historical exploratory full-data CV of explore5-public25; this score is not measured for the refit output.",
+  "external_release": {
+    "kind": "gpt2_target_first",
+    "source_type": "external_predictions",
+    "trained_by": "Masaya Kawamata",
+    "training_code_url": "https://github.com/Matapanino/s6e11-gpt2-target-first",
+    "training_code_commit": "8446fb73c11583df4f7006aa08fa34472249b318",
+    "code_license": "MIT",
+    "predictions_source_url": "https://www.kaggle.com/datasets/masayakawamata/s6e11-gpt2-target-first-oof",
+    "predictions_source_version": 2,
+    "predictions_download_ref": "masayakawamata/s6e11-gpt2-target-first-oof/2",
+    "predictions_license": "CC BY 4.0",
+    "trained_by_us": false,
+    "training_executed_locally": false
+  },
+  "source_audit": {
+    "path": ".local/research/refit-hybrid/audit.json",
+    "sha256": "d6306288b8e325d0119efa6351bda8f6333684d90d3261591a0ba06661abd5f5",
+    "observed_at_utc": "2026-11-17T12:19:22.523968+00:00",
+    "passed": true,
+    "source_snapshots": {
+      "refit": {
+        "commit_containing_exact_bytes": "1fe34b540f3ea28276da652c3dd1de02726897f4",
+        "models_py_sha256": "1c728763b7c103d711213a5edb2db3065d468ddd5b7943fe7d28b544404fd867"
+      },
+      "cv": {
+        "commit_containing_exact_bytes": "30dc7eb723e4cf31291bb075ed6c0d943557264c",
+        "models_py_sha256": "0e41e75c415c7f831802cd9049e09e68c60a0685532510b32f6cb8819018730f"
+      }
+    },
+    "historical_git_dirty_preserved": true
+  },
+  "inputs": {
+    "refit": {
+      "path": "artifacts/runs/final-blend",
+      "sha256": {
+        "config.json": "e68ae5eef753f5a7f42d849557d2ed0e1101aef88b3e73e18a47a33ad83cf150",
+        "metrics.json": "70d9b2a91f094ffadaab7d2e0e74f165e3ecb1789ed0672d4db2118fac5afcf9",
+        "status.json": "970587076af8c4ebf6e94dc3999b017a4c3792faf7660c408eb91572fd86128b",
+        "predictions.csv": "0560d11162fb58dd85d54bfdc0ec1420066503b3e01bbc3946ea90457f6e530f",
+        "submission.csv": "0560d11162fb58dd85d54bfdc0ec1420066503b3e01bbc3946ea90457f6e530f"
+      }
+    },
+    "glm": {
+      "path": "artifacts/runs/final-glm",
+      "sha256": {
+        "config.json": "135c1ff63411d5dd2c840874b2b15a55f04a2e797a5414af2f5661abc7eb5f42",
+        "metrics.json": "1c0908452c67eb2c14ce290bef893575893c0e97a4fdb65c2cf59b263e2fb8e3",
+        "status.json": "970587076af8c4ebf6e94dc3999b017a4c3792faf7660c408eb91572fd86128b",
+        "predictions.csv": "7266b354bff546c8bf3f5821649f675fb435314059ec8e666a4438b5c5b11604",
+        "submission.csv": "7266b354bff546c8bf3f5821649f675fb435314059ec8e666a4438b5c5b11604",
+        "model.joblib": "58ff745b148b52c0e59f575d8dc08b04935c3ff55214c031b820f376c7e52170"
+      }
+    },
+    "lightgbm": {
+      "path": "artifacts/runs/final-lgbm",
+      "sha256": {
+        "config.json": "f23684bcd236b3ff7934ac7dceb4018cb7ce734722eb568ba54933159d62265c",
+        "metrics.json": "9fb43e276e180d6a74f9d8aec259b0bb7bc5a4d0b6a51fde4fc1cd9018099f4a",
+        "status.json": "970587076af8c4ebf6e94dc3999b017a4c3792faf7660c408eb91572fd86128b",
+        "predictions.csv": "5b31b6061c48d5e875acb48dccef7d6c07e2cc0545c9373202c49be676e2ca35",
+        "submission.csv": "5b31b6061c48d5e875acb48dccef7d6c07e2cc0545c9373202c49be676e2ca35",
+        "model.joblib": "93566d24f2e38273f02cdf5f29b55820f3f9137500601339e81392436138f315"
+      }
+    },
+    "external": {
+      "path": "artifacts/runs/explore5-public-gpt2-v2",
+      "sha256": {
+        "config.json": "843e20a6839bc22dc5522a4f12c7d46f64472f20782bad6a606c295dfe741d31",
+        "metrics.json": "14f9e508e5f78c926cd5a4341259623f490872da3e73d5b96f1ae8903fe29bc7",
+        "status.json": "970587076af8c4ebf6e94dc3999b017a4c3792faf7660c408eb91572fd86128b",
+        "predictions.csv": "78ada898faa132accf86daa3311ba114e44a472d31f0648357d10000ab243d58",
+        "submission.csv": "78ada898faa132accf86daa3311ba114e44a472d31f0648357d10000ab243d58"
+      }
+    },
+    "selection": {
+      "path": "artifacts/runs/explore5-public25",
+      "sha256": {
+        "config.json": "58e950e0eb96fe17f42b56545089060e8fce29a19e24295a719800876b4f3096",
+        "metrics.json": "d23ab3f37b6dadd9a1d8c0cf8c253d9cf609f406f7ed3038051167a9c9c47e76",
+        "status.json": "970587076af8c4ebf6e94dc3999b017a4c3792faf7660c408eb91572fd86128b"
+      }
+    },
+    "selected_own": {
+      "path": "artifacts/runs/explore5-own",
+      "sha256": {
+        "config.json": "b762763e9491fa57af30e1257241e9e2f2d5c6000ce1d08c256667ab8a9ffb69",
+        "metrics.json": "fe5679a40dc8544899bed1224ce6296e941515dc018d81ec1a8a2f435f3ca53c",
+        "status.json": "970587076af8c4ebf6e94dc3999b017a4c3792faf7660c408eb91572fd86128b"
+      }
+    }
+  },
+  "output_contract": {
+    "phase": "full_data_refit",
+    "roc_auc": null,
+    "fold_scores": [],
+    "rows_oof": 0,
+    "oof_csv_created": false,
+    "models_fitted": false
+  },
+  "inference_change": "Existing own models trained on100percent, seed42, replace the five-fold averages trained on80percent, seeds42..46. The approved external GPT2v2 test probabilities are unchanged.",
+  "decision": "Materialization requires root review; any Kaggle submission waits for R8 results and a separate root decision. This operation provides no measured performance gain and does not relax any failed experiment gate.",
+  "historical_holdout": "Preserved only as refit provenance; it is not an independent assessment of this hybrid."
+}

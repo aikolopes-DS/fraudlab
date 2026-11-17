@@ -1,0 +1,39 @@
+{
+  "date": "2026-11-17",
+  "status": "prospective; combined feature hypothesis not trained",
+  "reason": "Frequency without pairs and numeric BPE each improved standalone GLM and the fixed hybrid slightly in R5/R6. Test their joint representation once. Frequency now also describes support of the six token keys; no new feature extraction code or parameter grid.",
+  "previous_results": ["evidence/round5-results.json", "evidence/round6-results.json"],
+  "baseline_run": "explore5-public25",
+  "baseline_oof_auc": 0.9512586315198723,
+  "validation": "Exploratory full-data StratifiedKFold(5, shuffle=True, random_state=42); all labels used. No independent holdout, outer early stopping or new submission feedback for model selection.",
+  "candidate": {
+    "name": "round9-glm-bpe-frequency",
+    "model": "glm",
+    "phase": "exploratory_full_data_cv",
+    "feature_set": "bpe_digits",
+    "split": "stratified",
+    "folds": 5,
+    "seed": 42,
+    "holdout_fraction": 0,
+    "fixed_training": true,
+    "logistic_c": 0.3,
+    "target_smoothing": 50,
+    "glm_inner_folds": 5,
+    "glm_frequency": true,
+    "glm_spline_knots": 0,
+    "glm_value_one_hot": false,
+    "threads": 4,
+    "device": "cpu"
+  },
+  "learned_features": "Target encoding of 60 categorical keys uses inner cross-fitting. Log1p frequency counts and their scaler fit only the outer training data. Frequency covers all 60 keys, including six deterministic BPE keys. No pairs, splines or sparse per-value coefficients.",
+  "tokenizer_contract": "Same pinned tiktoken==0.14.0 and regex==2026.9.29, official vocabulary hashes and rounding/tail policy as R6. No new tokenizer, key selection or numeric normalization.",
+  "fixed_blend": {
+    "space": "probability",
+    "candidate_glm": 0.5625,
+    "explore5-lgbm": 0.1875,
+    "explore5-public-gpt2-v2": 0.25
+  },
+  "submission_rule": "Promote only if pooled OOF delta over the reference exceeds 0.0001 and at least four of five folds improve. No new weights or hyperparameter search. If it fails, record the result and do not submit this candidate. Root waits for this OOF and chooses before obtaining any new submission score. The separate full-refit inference variant is not an OOF candidate and does not relax this rule.",
+  "cost": "One CPU GLM configuration, five fits, four threads; no new architecture, seed bag or source dependency.",
+  "training_gate": "Root tests, reviews and publishes the clean source and this prospective plan before authorizing the fit."
+}

@@ -1,0 +1,168 @@
+{
+  "status": "verified_gate_failed_no_submission",
+  "source_head": "568d62d637f53d33ca45f108dcee7286ecccb413",
+  "plan_sha256": "bc4aa1e71f157802ef6060b8b80ce29650994d77cffaa66fec377bf3cd7fbdf9",
+  "plan_equal_frozen_commit_content": true,
+  "training_log_sha256": "61b5285678bca10a43783bc9212c80ea417d6a735a4beef116e02d29169caa40",
+  "finished_at_utc": "2026-11-17T12:47:48.138837+00:00",
+  "eligible": false,
+  "candidate": {
+    "run": "round8-tabm",
+    "oof_auc": 0.9484577909830259,
+    "fold_scores": [
+      0.9485840981497855,
+      0.9502817082832855,
+      0.9545447600903335,
+      0.9493417329819003,
+      0.9440455991723363
+    ],
+    "selected_epochs": [
+      5,
+      13,
+      8,
+      8,
+      5
+    ],
+    "selection_epochs_completed": [
+      11,
+      19,
+      14,
+      14,
+      11
+    ],
+    "reported_elapsed_seconds": 667.401
+  },
+  "fixed_blend": {
+    "run": "round8-tabm10",
+    "weights": [
+      0.9,
+      0.1
+    ],
+    "oof_auc": 0.9512254984704378,
+    "fold_scores": [
+      0.9502777426907113,
+      0.9519100548438708,
+      0.9563472874918547,
+      0.9515036572212773,
+      0.946330789972498
+    ],
+    "delta_vs_baseline": -3.313304943453055e-05,
+    "fold_deltas_vs_baseline": [
+      -2.506374461264116e-05,
+      3.720539427132241e-05,
+      -1.2161509368557866e-05,
+      -2.6811871318699332e-05,
+      -3.061816896199332e-05
+    ],
+    "strictly_improved_folds": 1
+  },
+  "checkpoint_reload": [
+    {
+      "fold": 0,
+      "real_validation_rows": 1024,
+      "selection": "First 1024 actual validation rows of this fold, in original order",
+      "device": "cuda",
+      "atol": 1e-06,
+      "rtol": 0,
+      "tolerance_reason": "Float32 CUDA inference and CSV round-trip; tolerance declared before observing reload errors",
+      "max_abs_error_vs_oof": 9.999054535747565e-17,
+      "selected_epoch": 5,
+      "checkpoint_sha256": "bf5cf8967df5fc733c6065b3574a08cd3f73e8d3f5aacbb7ffa152e128b1b4e8",
+      "preprocessing_sha256": "596a9a05ed0a55a094a134ae6d57554427c6d65793196e982a9fb34deba820f9"
+    },
+    {
+      "fold": 1,
+      "real_validation_rows": 1024,
+      "selection": "First 1024 actual validation rows of this fold, in original order",
+      "device": "cuda",
+      "atol": 1e-06,
+      "rtol": 0,
+      "tolerance_reason": "Float32 CUDA inference and CSV round-trip; tolerance declared before observing reload errors",
+      "max_abs_error_vs_oof": 1.1102230246251565e-16,
+      "selected_epoch": 13,
+      "checkpoint_sha256": "67a0aca0301cf9397683f6f60a17a8027087163d54f235017d03d6074c856e41",
+      "preprocessing_sha256": "985715adf1c5c804430c9e05ec0af2680c2fc8110671fdfae85688b9b983e724"
+    },
+    {
+      "fold": 2,
+      "real_validation_rows": 1024,
+      "selection": "First 1024 actual validation rows of this fold, in original order",
+      "device": "cuda",
+      "atol": 1e-06,
+      "rtol": 0,
+      "tolerance_reason": "Float32 CUDA inference and CSV round-trip; tolerance declared before observing reload errors",
+      "max_abs_error_vs_oof": 1.1102230246251565e-16,
+      "selected_epoch": 8,
+      "checkpoint_sha256": "e8ba1c45be3e13a15f8966fbe4cd4f59cf78a12d5885bbf539c8bb2150d26d76",
+      "preprocessing_sha256": "4b0ccbcb8088955abbc73eef71df8ca0e01c85e6b1e3374089519ce996d2fc29"
+    },
+    {
+      "fold": 3,
+      "real_validation_rows": 1024,
+      "selection": "First 1024 actual validation rows of this fold, in original order",
+      "device": "cuda",
+      "atol": 1e-06,
+      "rtol": 0,
+      "tolerance_reason": "Float32 CUDA inference and CSV round-trip; tolerance declared before observing reload errors",
+      "max_abs_error_vs_oof": 1.1102230246251565e-16,
+      "selected_epoch": 8,
+      "checkpoint_sha256": "8548d56d41265da01f314279ce06e8286c4216f616b485e2dc8c6d7aa7539cf2",
+      "preprocessing_sha256": "417655ab0f532f5fb9e860de89a9248ff10ff4623e4cd4515214ae224a5326c9"
+    },
+    {
+      "fold": 4,
+      "real_validation_rows": 1024,
+      "selection": "First 1024 actual validation rows of this fold, in original order",
+      "device": "cuda",
+      "atol": 1e-06,
+      "rtol": 0,
+      "tolerance_reason": "Float32 CUDA inference and CSV round-trip; tolerance declared before observing reload errors",
+      "max_abs_error_vs_oof": 9.974659986866641e-17,
+      "selected_epoch": 5,
+      "checkpoint_sha256": "7c914146a52a09caa3ad74dd6f7c9618b8b4ebf61b8d362ff04fd90e9dfb347a",
+      "preprocessing_sha256": "0ae1c4a14fec8b5bdb14418f352cb0d9d506fbfce99170708db8964f905d5e85"
+    }
+  ],
+  "checks": {
+    "source_commit_and_clean_tree_preserved": true,
+    "effective_config_matches_plan": true,
+    "same_ids_order_folds_labels_as_baseline_and_raw": true,
+    "five_nested_fits_and_fixed_epoch_refits": true,
+    "data_hashes_rechecked": true,
+    "canonical_fixed_blend_verified": true,
+    "pooled_and_fold_auc_recomputed": true,
+    "test_csv_schema_order_and_probabilities_validated": true,
+    "five_checkpoints_reloaded_on_1024_real_validation_rows_each": true
+  },
+  "artifacts": {
+    "artifacts/runs/round8-tabm/config.json": "c9a8e28e2116882772d043f72291f172ee72d3cb62f6273386d9320ceabcd488",
+    "artifacts/runs/round8-tabm/fold-0.preprocessing.joblib": "596a9a05ed0a55a094a134ae6d57554427c6d65793196e982a9fb34deba820f9",
+    "artifacts/runs/round8-tabm/fold-0.pt": "bf5cf8967df5fc733c6065b3574a08cd3f73e8d3f5aacbb7ffa152e128b1b4e8",
+    "artifacts/runs/round8-tabm/fold-1.preprocessing.joblib": "985715adf1c5c804430c9e05ec0af2680c2fc8110671fdfae85688b9b983e724",
+    "artifacts/runs/round8-tabm/fold-1.pt": "67a0aca0301cf9397683f6f60a17a8027087163d54f235017d03d6074c856e41",
+    "artifacts/runs/round8-tabm/fold-2.preprocessing.joblib": "4b0ccbcb8088955abbc73eef71df8ca0e01c85e6b1e3374089519ce996d2fc29",
+    "artifacts/runs/round8-tabm/fold-2.pt": "e8ba1c45be3e13a15f8966fbe4cd4f59cf78a12d5885bbf539c8bb2150d26d76",
+    "artifacts/runs/round8-tabm/fold-3.preprocessing.joblib": "417655ab0f532f5fb9e860de89a9248ff10ff4623e4cd4515214ae224a5326c9",
+    "artifacts/runs/round8-tabm/fold-3.pt": "8548d56d41265da01f314279ce06e8286c4216f616b485e2dc8c6d7aa7539cf2",
+    "artifacts/runs/round8-tabm/fold-4.preprocessing.joblib": "0ae1c4a14fec8b5bdb14418f352cb0d9d506fbfce99170708db8964f905d5e85",
+    "artifacts/runs/round8-tabm/fold-4.pt": "7c914146a52a09caa3ad74dd6f7c9618b8b4ebf61b8d362ff04fd90e9dfb347a",
+    "artifacts/runs/round8-tabm/metrics.json": "5af1beb604f3c0fc5fdcf05a45e47838a5235c574f922c74f7f24710f9378fd1",
+    "artifacts/runs/round8-tabm/oof.csv": "ccc99423dd8eabe35cdf80302cd411cd902a15449f7726f05975b3ffd01efc95",
+    "artifacts/runs/round8-tabm/predictions.csv": "a4c3bf520453562d09aa8069075e724c8ef92c10ded1c341163adc2383b4f45c",
+    "artifacts/runs/round8-tabm/status.json": "970587076af8c4ebf6e94dc3999b017a4c3792faf7660c408eb91572fd86128b",
+    "artifacts/runs/round8-tabm/submission.csv": "a4c3bf520453562d09aa8069075e724c8ef92c10ded1c341163adc2383b4f45c",
+    "artifacts/runs/round8-tabm10/config.json": "47ffad0d2cd8a81c869022229620513cd464c6bcb5cdddd15377338b1737c6fa",
+    "artifacts/runs/round8-tabm10/metrics.json": "c7ab8493195b02eb871f3900ad59c7fbb2ccf94595226892dc6fd1f999e95bdf",
+    "artifacts/runs/round8-tabm10/oof.csv": "5f7d0b6e98924a2e3a3fe91491bab413fe7e392c6b3439ec493803627887803c",
+    "artifacts/runs/round8-tabm10/predictions.csv": "5f5b3d564bc1cbb434a78643fed49d656049977925894f1fe1bff44244eee031",
+    "artifacts/runs/round8-tabm10/status.json": "970587076af8c4ebf6e94dc3999b017a4c3792faf7660c408eb91572fd86128b",
+    "artifacts/runs/round8-tabm10/submission.csv": "5f5b3d564bc1cbb434a78643fed49d656049977925894f1fe1bff44244eee031"
+  },
+  "limitations": [
+    "OOF was reused for selection; no independent holdout remains.",
+    "No Kaggle submission or leaderboard feedback was obtained.",
+    "No process RAM or GPU peak was sampled during this competitive run; toy benchmark is separate."
+  ],
+  "plan": "evidence/round8-plan.json",
+  "new_kaggle_submissions": 0
+}

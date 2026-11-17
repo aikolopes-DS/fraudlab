@@ -5,7 +5,7 @@
     "deadline_utc": "2026-11-30T23:59:00Z"
   },
   "stage": "submitted",
-  "updated_at": "2026-11-17T05:19:02.006857+00:00",
+  "updated_at": "2026-11-17T12:36:19.783495+00:00",
   "results": {
     "local_auc": 0.9512586315198723,
     "fold_scores": [
@@ -16,10 +16,10 @@
       0.94636140814146
     ],
     "public_auc": 0.95097,
-    "ranking": 828,
-    "total_teams": 2046,
+    "ranking": 840,
+    "total_teams": 2084,
     "submission_id": "58438450",
-    "observed_at": "2026-11-17T05:19:02.006857+00:00",
+    "observed_at": "2026-11-17T12:36:19.783495+00:00",
     "local_auc_scope": "development_oof",
     "local_auc_run": "explore5-public25",
     "holdout_auc": null,
