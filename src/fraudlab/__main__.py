@@ -95,6 +95,11 @@ def parser() -> argparse.ArgumentParser:
         help="Inner target-encoding partitions for GLM/offset; outer CV is unchanged.",
     )
     training.add_argument(
+        "--glm-value-one-hot",
+        action="store_true",
+        help="One-hot encode every categorical GLM input with fold-local rare pooling and sparse L-BFGS.",
+    )
+    training.add_argument(
         "--glm-frequency",
         action="store_true",
         help="Add training-fold log category counts to GLM/offset inputs.",
@@ -195,6 +200,8 @@ def validate_training_config(config: dict) -> None:
         inner_folds != 5 and config["model"] not in ("glm", "offset")
     ):
         raise ValueError("glm_inner_folds must be 5 or 10; 10 requires GLM/offset.")
+    if config.get("glm_value_one_hot") and config["model"] != "glm":
+        raise ValueError("glm_value_one_hot is supported only for GLM.")
     if config.get("glm_frequency") and config["model"] not in ("glm", "offset"):
         raise ValueError("glm_frequency is supported only for GLM/offset.")
     knots = config.get("glm_spline_knots", 0)

@@ -25,6 +25,11 @@ oficiais e verifica seus hashes. Para executar depois sem internet, preserve o
 diretório configurado por `TIKTOKEN_CACHE_DIR`. O manifesto registra a versão,
 os hashes, o arredondamento e o descarte dos tokens após o segundo.
 
+`--model glm --glm-value-one-hot` acrescenta efeitos por valor com one-hot
+esparso e agrupamento de contagens menores que cinco, ajustados dentro de cada
+treino. Essa opção usa L-BFGS com limite de 500 iterações e recusa ajustes sem
+convergência. O manifesto do modelo registra solver, limite e iterações reais.
+
 ## Dados oficiais e componente público
 
 Confira inscrição e [regras da S6E11](https://www.kaggle.com/competitions/playground-series-s6e11/rules). Configure a autenticação pelo mecanismo oficial da CLI; credenciais, dados e artefatos locais ficam fora do Git. A CLI 2.2.5 utilizada tem um ambiente Python 3.11 separado:

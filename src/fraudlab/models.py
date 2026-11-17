@@ -2,12 +2,14 @@
 
 from __future__ import annotations
 
+import warnings
 from pathlib import Path
 
 import joblib
 import numpy as np
 import pandas as pd
 from sklearn.compose import ColumnTransformer
+from sklearn.exceptions import ConvergenceWarning
 from sklearn.impute import SimpleImputer
 from sklearn.linear_model import LogisticRegression
 from sklearn.metrics import roc_auc_score
@@ -682,6 +684,8 @@ def make_glm_pipeline(
     """Construct fold-local preprocessing and a regularized logistic model."""
     numeric, categorical = feature_types(training)
     nominal = [name for name in categorical if "__" not in name]
+    value_one_hot = config.get("glm_value_one_hot", False)
+    one_hot_columns = categorical if value_one_hot else nominal
     encoding = Pipeline(
         [
             (
@@ -717,11 +721,15 @@ def make_glm_pipeline(
             (
                 "one_hot",
                 OneHotEncoder(
-                    handle_unknown="ignore", sparse_output=False, dtype=np.float32
+                    handle_unknown="ignore",
+                    sparse_output=value_one_hot,
+                    min_frequency=5 if value_one_hot else None,
+                    dtype=np.float32,
                 ),
-                nominal,
+                one_hot_columns,
             ),
-        ]
+        ],
+        sparse_threshold=1.0 if value_one_hot else 0.3,
     )
     knots = config.get("glm_spline_knots", 0)
     if config.get("glm_frequency"):
@@ -764,8 +772,8 @@ def make_glm_pipeline(
         )
     classifier = LogisticRegression(
         C=config["logistic_c"],
-        solver="newton-cholesky",
-        max_iter=100,
+        solver="lbfgs" if value_one_hot else "newton-cholesky",
+        max_iter=500 if value_one_hot else 100,
         tol=1e-7,
         random_state=seed,
     )
@@ -782,14 +790,45 @@ def fit_glm(
     path: Path,
 ) -> tuple[np.ndarray, np.ndarray, dict]:
     model = make_glm_pipeline(training, config, seed)
-    with threadpool_limits(limits=config["threads"]):
-        model.fit(training, y)
+    with warnings.catch_warnings(record=True) as captured:
+        warnings.simplefilter("always", ConvergenceWarning)
+        with threadpool_limits(limits=config["threads"]):
+            model.fit(training, y)
+    for warning in captured:
+        warnings.warn(warning.message, warning.category, stacklevel=2)
+    classifier = model.named_steps["classifier"]
+    iterations_used = int(classifier.n_iter_[0])
+    converged = (
+        not any(
+            issubclass(warning.category, ConvergenceWarning) for warning in captured
+        )
+        and iterations_used < classifier.max_iter
+    )
+    if config.get("glm_value_one_hot") and not converged:
+        raise RuntimeError(
+            "GLM value one-hot did not converge; "
+            f"iterations_used={iterations_used}, max_iter={classifier.max_iter}. "
+            "The candidate is invalid under the fixed protocol."
+        )
     joblib.dump(model, path.with_suffix(".joblib"))
     details = {
         "algorithm": "logistic_regression_with_cross_fitted_target_logits",
         "C": config["logistic_c"],
-        "solver": "newton-cholesky",
-        "iterations_used": int(model.named_steps["classifier"].n_iter_[0]),
+        "solver": classifier.solver,
+        "max_iter": classifier.max_iter,
+        "tol": classifier.tol,
+        "iterations_used": iterations_used,
+        "converged": converged,
+        "value_one_hot": (
+            {
+                "features": feature_types(training)[1],
+                "min_frequency": 5,
+                "handle_unknown": "ignore",
+                "sparse_output": True,
+            }
+            if config.get("glm_value_one_hot")
+            else None
+        ),
         "category_frequency": (
             "log1p counts fitted on outer training rows only"
             if config.get("glm_frequency")
@@ -812,7 +851,12 @@ def fit_glm(
             "unknown": "training prior",
             "log_odds": True,
         },
-        "preprocessing": "Fold-local numeric imputation and scaling, cross-fitted target-encoding logits with scaling, plus one-hot encoding of original categorical features.",
+        "preprocessing": "Fold-local numeric imputation and scaling, cross-fitted target-encoding logits with scaling, plus "
+        + (
+            "sparse one-hot encoding of all categorical features; counts below 5 pooled per training fold; unknown categories ignored."
+            if config.get("glm_value_one_hot")
+            else "one-hot encoding of original categorical features."
+        ),
     }
     return (
         model.predict_proba(validation)[:, 1],

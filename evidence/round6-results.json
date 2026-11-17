@@ -1,0 +1,87 @@
+{
+  "recorded_at": "2026-11-17T12:04:05.264109+00:00",
+  "plan": "evidence/round6-plan.json",
+  "validation": "Exploratory full-data StratifiedKFold(5, shuffle=True, random_state=42). No independent holdout remains. Learned target maps are cross-fitted only within each outer training fold. No outer-validation early stopping is used by this GLM.",
+  "baseline_run": "explore5-public25",
+  "baseline_oof_auc": 0.9512586315198723,
+  "candidate": "round6-glm-bpe",
+  "run": "round6-bpe-public25",
+  "own_oof_auc": 0.9505240498803333,
+  "own_fold_scores": [
+    0.949500228839169,
+    0.9508678967634637,
+    0.9556691543965199,
+    0.9511370346322624,
+    0.9456061112945522
+  ],
+  "oof_auc": 0.9513340683046876,
+  "fold_scores": [
+    0.9502879447507162,
+    0.9517771575732527,
+    0.956427514924633,
+    0.9517314260722601,
+    0.9465776928486955
+  ],
+  "delta_vs_published_oof": 7.543678481525262e-05,
+  "fold_deltas": [
+    -1.4861684607736514e-05,
+    -9.569187634683729e-05,
+    6.806592340968809e-05,
+    0.0002009569796641575,
+    0.00021628470723555893
+  ],
+  "improved_folds": 3,
+  "eligible_to_submit": false,
+  "source_commit": "bfe55b415789cef962c0efb3905facb37ff94d54",
+  "source_was_dirty": false,
+  "feature_encoding": {
+    "tiktoken": "0.14.0",
+    "encoding": "gpt2",
+    "vocabulary_size": 50257,
+    "encoding_files": [
+      {
+        "url": "https://openaipublic.blob.core.windows.net/gpt-2/encodings/main/vocab.bpe",
+        "sha256": "1ce1664773c50f3e0cc8842619a93edc4624525b728b188a9e0be33b7726adc5"
+      },
+      {
+        "url": "https://openaipublic.blob.core.windows.net/gpt-2/encodings/main/encoder.json",
+        "sha256": "196139668be63f3b5d6574427317ae82f612a97c5d1cdaf36ed2256dbf636783"
+      }
+    ],
+    "input_columns": [
+      "amount_usd",
+      "account_balance_usd"
+    ],
+    "output_suffixes": [
+      "__gpt2_first_key",
+      "__gpt2_second_key",
+      "__gpt2_second_cents_key"
+    ],
+    "representation": "cents=np.rint(float64_USD*100); ' ' + str(cents // 100)",
+    "rounding": "NumPy rint; nearest representable cent, halfway ties to even",
+    "second_token_missing": "-1",
+    "third_key": "second_token_id + ':' + str(cents % 100)",
+    "more_than_two_tokens": "retain first two; discard later integer tokens",
+    "label_usage": "none in extraction; fold-local cross-fitted TE downstream"
+  },
+  "weights": [
+    0.5625,
+    0.1875,
+    0.25
+  ],
+  "input_oof_sha256": {
+    "round6-glm-bpe": "0660abe3cf4b72e776ea6653243e404b584306ad39bfc2c2555180dd112bd957",
+    "explore5-lgbm": "2a188175419c819bf5d5098125423afa8e95cd79cd965d2108b834cc4016a234",
+    "explore5-public-gpt2-v2": "4c37722b34d520a6de7d94565140cd0681baad6fb6c012d0b7a86a25b82a4dcb"
+  },
+  "submission_sha256": "44490a0eb26760802ec1de0432274b5ca58597eb39e235e9a27f2da5911fda8f",
+  "checkpoint_reload": {
+    "rows": 1024,
+    "fold_models": 5,
+    "max_absolute_error": 1.1102230246251565e-16,
+    "passed": true
+  },
+  "training_elapsed_seconds": 133.716,
+  "decision": "do_not_submit",
+  "new_kaggle_submissions": 0
+}

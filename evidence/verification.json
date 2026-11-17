@@ -86,12 +86,12 @@
   },
   "ci_remote": {
     "status": "passed",
-    "source_commit": "ee82f3cf845962912f2912839eadf7ea4b2bb70e",
-    "source": "https://github.com/aikolopes-DS/fraudlab/actions/runs/44076334701",
+    "source_commit": "bfe55b415789cef962c0efb3905facb37ff94d54",
+    "source": "https://github.com/aikolopes-DS/fraudlab/actions/runs/44079298500",
     "check_run_ids": [
-      134015192436
+      134025380200
     ],
-    "passed": 101,
+    "passed": 115,
     "subtests_passed": 52,
     "evidence": "evidence/automation.json",
     "verified_on": "2026-11-17"

@@ -153,3 +153,17 @@ e foi investigada no Shallow-Tree Stack v31. A implementação própria usa o
 sem copiar tabelas ou previsões desses notebooks. Os IDs são categorias, com
 target encoding ajustado somente no treino de cada fold. O eventual ganho é
 uma hipótese sobre estes dados sintéticos; não comprova como foram gerados.
+
+O [resultado dos tokens](../evidence/round6-results.json) foi OOF 0,95052405 no
+GLM e 0,95133407 na mistura fixa. O ganho de 0,00007544, com três folds melhores,
+não atendeu ao critério. As previsões não foram submetidas.
+
+O [plano da rodada 7](../evidence/round7-plan.json) testa coeficientes por valor
+com one-hot esparso em todas as categorias do GLM, mantendo seus logits de
+target encoding. Categorias com menos de cinco ocorrências no treino são
+agrupadas; desconhecidas recebem zero no bloco one-hot e a média de treino no
+target encoder. Essa hipótese veio da seção *The joint GLM* do notebook
+[100% Self-Trained Stack](https://www.kaggle.com/code/sidhaarthshree/s6e11-100-self-trained-stack-lb-0-95154),
+sem copiar sua implementação. O solver L-BFGS evita armazenar a Hessiana densa
+dos cerca de 51 mil coeficientes. Um ajuste que não converge é recusado antes
+de salvar o checkpoint; a regularização e a regra de seleção permanecem fixas.
