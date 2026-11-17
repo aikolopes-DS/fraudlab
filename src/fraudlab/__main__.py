@@ -43,7 +43,14 @@ def parser() -> argparse.ArgumentParser:
     )
     training.add_argument(
         "--feature-set",
-        choices=("raw", "behavior", "digits", "value_digits", "paired_digits"),
+        choices=(
+            "raw",
+            "behavior",
+            "digits",
+            "value_digits",
+            "paired_digits",
+            "bpe_digits",
+        ),
         default="raw",
     )
     training.add_argument("--id-column", default="id")

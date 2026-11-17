@@ -18,6 +18,13 @@ python -m pip install -e ".[dev,presentation]"
 
 Sem ativação, substitua `python` por `.\.venv\Scripts\python.exe`. No Linux, use `python3.11 -m venv .venv` e `source .venv/bin/activate`. A receita híbrida roda em CPU e não treina o GPT-2. Para treinar a MLP própria em CUDA, instale PyTorch pelo [seletor oficial](https://pytorch.org/get-started/locally/) e confirme `torch.cuda.is_available()`.
 
+Para experimentar `--feature-set bpe_digits`, instale `python -m pip install -e ".[bpe]"`.
+Essa opção usa `tiktoken==0.14.0` e seis chaves numéricas; não chama uma API paga
+nem carrega pesos de uma rede. A primeira inicialização baixa os vocabulários
+oficiais e verifica seus hashes. Para executar depois sem internet, preserve o
+diretório configurado por `TIKTOKEN_CACHE_DIR`. O manifesto registra a versão,
+os hashes, o arredondamento e o descarte dos tokens após o segundo.
+
 ## Dados oficiais e componente público
 
 Confira inscrição e [regras da S6E11](https://www.kaggle.com/competitions/playground-series-s6e11/rules). Configure a autenticação pelo mecanismo oficial da CLI; credenciais, dados e artefatos locais ficam fora do Git. A CLI 2.2.5 utilizada tem um ambiente Python 3.11 separado:

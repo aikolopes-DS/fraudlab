@@ -1,0 +1,77 @@
+{
+  "date": "2026-11-17",
+  "status": "prospective; no competition model trained for this round",
+  "reason": "Test six deterministic numeric BPE keys in the existing GLM before spending GPU time on another neural architecture. The tokenizer supplies categories, not pretrained GPT-2 predictions.",
+  "idea_sources": [
+    "https://www.kaggle.com/code/azizdzhon/how-great-tokenizes-numbers-bpe-token-target",
+    "Shallow-Tree Stack v31, locally inspected source lines 2402-2473"
+  ],
+  "implementation_source": "Independent implementation using the official OpenAI tiktoken API. No third-party code, merge tables, arrays or fitted models copied for this round.",
+  "hypothesis_limit": "GPT-2-style generator artifacts are a hypothesis. This experiment neither proves the generator mechanism nor assumes third-party AUC gains will reproduce.",
+  "baseline_run": "explore5-public25",
+  "baseline_oof_auc": 0.9512586315198723,
+  "validation": "Exploratory full-data StratifiedKFold(5, shuffle=True, random_state=42). No independent holdout remains. Learned target maps are cross-fitted only within each outer training fold. No outer-validation early stopping is used by this GLM.",
+  "candidate": {
+    "name": "round6-glm-bpe",
+    "model": "glm",
+    "phase": "exploratory_full_data_cv",
+    "feature_set": "bpe_digits",
+    "base_feature_set": "value_digits",
+    "split": "stratified",
+    "folds": 5,
+    "seed": 42,
+    "holdout_fraction": 0,
+    "fixed_training": true,
+    "logistic_c": 0.3,
+    "target_smoothing": 50,
+    "glm_inner_folds": 5,
+    "glm_frequency": false,
+    "glm_spline_knots": 0,
+    "threads": 4
+  },
+  "features": {
+    "columns": ["amount_usd", "account_balance_usd"],
+    "suffixes": ["__gpt2_first_key", "__gpt2_second_key", "__gpt2_second_cents_key"],
+    "count_added": 6,
+    "canonicalization": "cents=np.rint(float64_USD*100); integer=cents//100; tokenize one ASCII space followed by str(integer). NumPy halfway ties round to even. This matches value_digits rounding and handles integer carry.",
+    "values": "First and second token IDs as categorical strings; -1 if the second is absent; third key is second_id:cents_mod_100.",
+    "tail_policy": "The fixed six-key hypothesis discards third and later integer tokens. In the audited training data this affects 6 amount rows and 12363 balance rows.",
+    "invalid_inputs": "Reject negative, nonnumeric, boolean, non-finite and float64 cent-range overflow values.",
+    "unknown_categories": "The existing fold-local TargetEncoder uses the outer-training prior for unseen keys. Token IDs do not imply numeric ordering."
+  },
+  "input_audit_before_training": {
+    "label_access": false,
+    "train_rows": 699960,
+    "test_rows": 299984,
+    "fractional_cent_training_rows": 0,
+    "fractional_cent_test_rows": 1,
+    "rounding_example": {"kind": "synthetic, not a dataset row", "value": 10.123, "canonical_usd": 10.12}
+  },
+  "tokenizer": {
+    "package": "tiktoken==0.14.0",
+    "regex_pin": "regex==2026.9.29",
+    "license": "MIT",
+    "encoding": "gpt2",
+    "vocabulary_size": 50257,
+    "assets": [
+      {
+        "url": "https://openaipublic.blob.core.windows.net/gpt-2/encodings/main/vocab.bpe",
+        "sha256": "1ce1664773c50f3e0cc8842619a93edc4624525b728b188a9e0be33b7726adc5"
+      },
+      {
+        "url": "https://openaipublic.blob.core.windows.net/gpt-2/encodings/main/encoder.json",
+        "sha256": "196139668be63f3b5d6574427317ae82f612a97c5d1cdaf36ed2256dbf636783"
+      }
+    ],
+    "offline_use": "Initialize the hash-verified tokenizer cache once; reuse TIKTOKEN_CACHE_DIR offline. No paid API or neural model weights are used."
+  },
+  "fixed_blend": {
+    "space": "probability",
+    "candidate_glm": 0.5625,
+    "explore5-lgbm": 0.1875,
+    "explore5-public-gpt2-v2": 0.25
+  },
+  "cost": "One sequential CPU GLM run, four threads, five outer fits. Six extra target-encoded columns; no GPU training, model grid, new seed, pair features or weight sweep.",
+  "training_gate": "Independent review must pass; root must test and freeze source before explicitly authorizing competition training.",
+  "submission_rule": "Evaluate only this predefined probability mixture. Eligible only if pooled OOF gain over baseline exceeds 0.0001 and at least four of five folds improve. No leaderboard-driven changes. If it fails, record the null and do not submit. At most one submission, by root."
+}

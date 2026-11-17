@@ -16,6 +16,7 @@ FIELDS = (
     "fold_std",
     "rows",
     "features",
+    "feature_encoding",
     "target",
     "seed",
     "validation",

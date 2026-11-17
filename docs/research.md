@@ -135,3 +135,21 @@ vínculos que associam a execução aos vetores finais. Além disso, o OOF é de
 como log-odds e o teste como uma combinação de ranks. Isso impede tratar os dois
 como probabilidades equivalentes. A [auditoria](../evidence/external-megayak-audit.json)
 registra evidências positivas, lacunas e hashes; não afirma vazamento pelo autor.
+
+## Ablações e tokens numéricos
+
+A [rodada 5](../evidence/round5-results.json) isolou frequência sem os pares e
+dez partições internas de target encoding. A primeira mistura chegou a
+0,95132941, com três folds melhores; a segunda a 0,95127072, com quatro.
+Nenhuma superou simultaneamente o ganho mínimo de 0,0001 e a consistência em
+quatro folds. Não houve submissão dessas variantes.
+
+O [plano da rodada 6](../evidence/round6-plan.json) acrescenta seis chaves ao
+GLM: os dois primeiros tokens do inteiro do valor e do saldo, além da combinação
+do segundo token com os centavos. A ideia vem de
+[azizdzhon](https://www.kaggle.com/code/azizdzhon/how-great-tokenizes-numbers-bpe-token-target)
+e foi investigada no Shallow-Tree Stack v31. A implementação própria usa o
+[tiktoken oficial da OpenAI](https://github.com/openai/tiktoken), sob MIT,
+sem copiar tabelas ou previsões desses notebooks. Os IDs são categorias, com
+target encoding ajustado somente no treino de cada fold. O eventual ganho é
+uma hipótese sobre estes dados sintéticos; não comprova como foram gerados.

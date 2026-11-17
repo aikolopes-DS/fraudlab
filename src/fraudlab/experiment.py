@@ -38,6 +38,8 @@ def versions() -> dict:
         "catboost",
         "lightgbm",
         "torch",
+        "tiktoken",
+        "regex",
     ):
         try:
             result[package] = importlib.metadata.version(package)
@@ -53,11 +55,11 @@ def git_revision() -> str | None:
     return result.stdout.strip() if result.returncode == 0 else None
 
 
-def source_provenance() -> dict:
+def source_provenance(feature_set: str | None = None) -> dict:
     status = subprocess.run(
         ["git", "status", "--porcelain"], capture_output=True, text=True, check=False
     )
-    return {
+    result = {
         "source_hashes": {
             file.name: fingerprint(file)
             for file in sorted(Path(__file__).parent.glob("*.py"))
@@ -66,6 +68,11 @@ def source_provenance() -> dict:
         "git_dirty": bool(status.stdout.strip()) if status.returncode == 0 else None,
         "source_hashes_timing": "captured before reading data or fitting models",
     }
+    if feature_set == "bpe_digits":
+        from .bpe import manifest
+
+        result["feature_encoding"] = manifest()
+    return result
 
 
 def create_run(output: Path, name: str) -> Path:
@@ -83,7 +90,7 @@ def create_run(output: Path, name: str) -> Path:
 
 def train(config: dict) -> dict:
     started = time.perf_counter()
-    provenance = source_provenance()
+    provenance = source_provenance(config.get("feature_set"))
     data_dir = Path(config["data"])
     frame, test, sample = load_data(data_dir, config["id_column"], config["target"])
     target, id_column = config["target"], config["id_column"]

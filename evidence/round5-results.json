@@ -1,0 +1,110 @@
+{
+  "recorded_at": "2026-11-17T11:47:26.488975+00:00",
+  "plan": "evidence/round5-plan.json",
+  "validation": "Exploratory full-data stratified CV5/42; no independent holdout.",
+  "baseline_run": "explore5-public25",
+  "baseline_oof_auc": 0.9512586315198723,
+  "results": [
+    {
+      "candidate": "round5-glm-frequency",
+      "run": "round5-frequency-public25",
+      "own_oof_auc": 0.9505026393490831,
+      "own_fold_scores": [
+        0.9494658489538389,
+        0.951124624548354,
+        0.9556989646982268,
+        0.9507678703685764,
+        0.945621846062933
+      ],
+      "oof_auc": 0.9513294065186152,
+      "fold_scores": [
+        0.9502802854344904,
+        0.9519272934882184,
+        0.9564810143799998,
+        0.9515194261686574,
+        0.9465642480732647
+      ],
+      "delta_vs_published_oof": 7.077499874286186e-05,
+      "fold_deltas": [
+        -2.2521000833553018e-05,
+        5.44440386188727e-05,
+        0.00012156537877650031,
+        -1.104292393860895e-05,
+        0.00020283993180469917
+      ],
+      "improved_folds": 3,
+      "eligible_to_submit": false,
+      "weights": [
+        0.5625,
+        0.1875,
+        0.25
+      ],
+      "source_commit": "ee82f3cf845962912f2912839eadf7ea4b2bb70e",
+      "input_oof_sha256": {
+        "round5-glm-frequency": "933294b0705b9310544bff739e8167ff279a74fda274197038d768929f2a76f3",
+        "explore5-lgbm": "2a188175419c819bf5d5098125423afa8e95cd79cd965d2108b834cc4016a234",
+        "explore5-public-gpt2-v2": "4c37722b34d520a6de7d94565140cd0681baad6fb6c012d0b7a86a25b82a4dcb"
+      },
+      "submission_sha256": "88d9aff71f767a5ac4f781287b1923e00df34f69a4c0bedb77b8650d63f29e68",
+      "checkpoint_reload": {
+        "real_test_rows": 1024,
+        "fold_models": 5,
+        "max_absolute_error": 1.6653345369377348e-16,
+        "passed": true
+      },
+      "training_elapsed_seconds": 147.564
+    },
+    {
+      "candidate": "round5-glm-inner10",
+      "run": "round5-inner10-public25",
+      "own_oof_auc": 0.9503504517039325,
+      "own_fold_scores": [
+        0.9495302164299264,
+        0.9510056785237924,
+        0.9554421623409747,
+        0.9507470429293079,
+        0.9451837551864922
+      ],
+      "oof_auc": 0.9512707184789778,
+      "fold_scores": [
+        0.9503105869826096,
+        0.9518893827636897,
+        0.9563449664270876,
+        0.9515561064492131,
+        0.946384339142773
+      ],
+      "delta_vs_published_oof": 1.2086959105483963e-05,
+      "fold_deltas": [
+        7.780547285674011e-06,
+        1.653331409023906e-05,
+        -1.4482574135721293e-05,
+        2.563735661709199e-05,
+        2.293100131300907e-05
+      ],
+      "improved_folds": 4,
+      "eligible_to_submit": false,
+      "weights": [
+        0.5625,
+        0.1875,
+        0.25
+      ],
+      "source_commit": "ee82f3cf845962912f2912839eadf7ea4b2bb70e",
+      "input_oof_sha256": {
+        "round5-glm-inner10": "96b060b544597817a969cca60687e3fdc5146b5295b6d296ba2f2030ccb16b86",
+        "explore5-lgbm": "2a188175419c819bf5d5098125423afa8e95cd79cd965d2108b834cc4016a234",
+        "explore5-public-gpt2-v2": "4c37722b34d520a6de7d94565140cd0681baad6fb6c012d0b7a86a25b82a4dcb"
+      },
+      "submission_sha256": "e4f5ce1197116d283273ce10ff597898356f40dda98166dde076dd31ff2688b3",
+      "checkpoint_reload": {
+        "real_test_rows": 1024,
+        "fold_models": 5,
+        "max_absolute_error": 2.220446049250313e-16,
+        "passed": true
+      },
+      "training_elapsed_seconds": 120.937
+    }
+  ],
+  "decision": "do_not_submit",
+  "selected_eligible_run": null,
+  "new_kaggle_submissions": 0
+}

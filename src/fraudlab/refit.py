@@ -18,8 +18,8 @@ from .models import feature_types, fit_predict
 
 def refit(source: Path, holdout_report: Path, output: Path, name: str) -> dict:
     started = time.perf_counter()
-    provenance = source_provenance()
     config = json.loads((source / "config.json").read_text(encoding="utf-8"))
+    provenance = source_provenance(config.get("feature_set"))
     selected = json.loads((source / "metrics.json").read_text(encoding="utf-8"))
     holdout = json.loads(holdout_report.read_text(encoding="utf-8"))
     if (
