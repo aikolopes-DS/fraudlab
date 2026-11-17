@@ -18,6 +18,7 @@ dependencies = [
 [project.optional-dependencies]
 neural = ["torch>=2.2,<3"]
 tabm = ["torch>=2.2,<3", "tabm==0.0.3", "rtdl_num_embeddings==0.0.12"]
+realmlp = ["torch>=2.2,<3", "scikit-learn>=1.7,<2", "pytabkit==1.8.0", "pytorch-lightning==2.6.6", "torchmetrics==1.9.0", "lightning-utilities==0.15.3", "cloudpickle==3.1.2"]
 bpe = ["tiktoken==0.14.0", "regex==2026.9.29"]
 dev = ["pytest>=8,<10"]
 presentation = ["Pillow>=10,<13", "matplotlib>=3.8,<4", "edge-tts>=7.3,<8"]

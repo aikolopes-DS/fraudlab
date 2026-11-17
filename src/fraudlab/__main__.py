@@ -55,6 +55,7 @@ def parser() -> argparse.ArgumentParser:
             "offset",
             "tabm",
             "neural_offset",
+            "realmlp",
         ),
         required=True,
     )
@@ -145,21 +146,24 @@ def parser() -> argparse.ArgumentParser:
     training.add_argument("--l2-leaf-reg", type=float, default=3.0)
     training.add_argument("--num-leaves", type=int, default=4)
     training.add_argument("--min-child-samples", type=int, default=100)
-    training.add_argument("--target-smoothing", type=float, default=20.0)
+    training.add_argument(
+        "--target-smoothing",
+        type=lambda value: "auto" if value == "auto" else float(value),
+        default=20.0,
+    )
     training.add_argument("--epochs", type=int, default=30)
     training.add_argument(
         "--hidden-dims",
         type=int,
         nargs="+",
-        help="Defaults: MLP 128 64; TabM/neural_offset require the fixed architecture 256 256.",
+        help="Defaults: MLP 128 64; TabM/neural_offset 256 256; RealMLP 512 256 128.",
     )
     training.add_argument("--dropout", type=float, default=0.1)
     training.add_argument("--neural-learning-rate", type=float, default=0.001)
     training.add_argument("--weight-decay", type=float, default=0.0001)
     training.add_argument(
         "--neural-numeric-transform",
-        choices=("standard", "quantile"),
-        default="standard",
+        choices=("standard", "quantile", "realmlp"),
     )
     training.add_argument("--batch-size", type=int, default=4096)
     training.add_argument(
@@ -170,7 +174,7 @@ def parser() -> argparse.ArgumentParser:
     training.add_argument(
         "--patience",
         type=int,
-        help="Defaults: CatBoost 100 iterations; MLP 5 epochs; TabM/neural_offset 6 inner epochs.",
+        help="Defaults: CatBoost 100 iterations; MLP 5 epochs; TabM/neural_offset 6; RealMLP cap3.",
     )
 
     blending = commands.add_parser(
@@ -247,7 +251,17 @@ def validate_training_config(config: dict) -> None:
         validate_config(config)
     if config.get("hidden_dims") is None:
         config["hidden_dims"] = (
-            [256, 256] if config["model"] in ("tabm", "neural_offset") else [128, 64]
+            [512, 256, 128]
+            if config["model"] == "realmlp"
+            else (
+                [256, 256]
+                if config["model"] in ("tabm", "neural_offset")
+                else [128, 64]
+            )
+        )
+    if config.get("neural_numeric_transform") is None:
+        config["neural_numeric_transform"] = (
+            "realmlp" if config["model"] == "realmlp" else "standard"
         )
     if config.get("neural_categorical_transform") is None:
         config["neural_categorical_transform"] = (
@@ -273,6 +287,23 @@ def validate_training_config(config: dict) -> None:
         if config.get("patience") is None:
             config["patience"] = 6
         NeuralOffsetConfig.from_training_config(config)
+    if config["model"] == "realmlp":
+        try:
+            from .realmlp import RealMLPConfig
+        except ImportError as error:
+            raise RuntimeError(
+                "RealMLP requires the optional fraudlab[realmlp] dependencies."
+            ) from error
+        if config.get("patience") is None:
+            config["patience"] = 3
+        RealMLPConfig.from_training_config(config)
+    elif (
+        config["neural_numeric_transform"] == "realmlp"
+        or config["target_smoothing"] == "auto"
+    ):
+        raise ValueError(
+            "RealMLP preprocessing/automatic target smoothing requires --model realmlp."
+        )
     glm_models = ("glm", "offset", "neural_offset")
     inner_folds = config.get("glm_inner_folds", 5)
     if inner_folds not in (5, 10) or (
@@ -353,8 +384,13 @@ def validate_training_config(config: dict) -> None:
         or not math.isfinite(config["weight_decay"])
         or config["l2_leaf_reg"] < 0
         or config["weight_decay"] < 0
-        or not math.isfinite(config["target_smoothing"])
-        or config["target_smoothing"] < 0
+        or (
+            config["target_smoothing"] != "auto"
+            and (
+                not math.isfinite(config["target_smoothing"])
+                or config["target_smoothing"] < 0
+            )
+        )
     ):
         raise ValueError("Regularization values must be nonnegative.")
     if config["split"] != "group" and config["group_column"]:
@@ -394,9 +430,12 @@ def main() -> None:
             config = vars(arguments).copy()
             config.pop("command")
             if config["patience"] is None:
-                config["patience"] = {"mlp": 5, "tabm": 6, "neural_offset": 6}.get(
-                    config["model"], 100
-                )
+                config["patience"] = {
+                    "mlp": 5,
+                    "tabm": 6,
+                    "neural_offset": 6,
+                    "realmlp": 3,
+                }.get(config["model"], 100)
             validate_training_config(config)
             metrics = train(config)
             print(

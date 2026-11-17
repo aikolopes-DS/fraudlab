@@ -40,6 +40,11 @@ def versions() -> dict:
         "torch",
         "tabm",
         "rtdl_num_embeddings",
+        "pytabkit",
+        "pytorch-lightning",
+        "torchmetrics",
+        "lightning-utilities",
+        "cloudpickle",
         "tiktoken",
         "regex",
     ):
@@ -320,7 +325,7 @@ def train(config: dict) -> dict:
                             "fresh_outer_refit": True,
                         }
                     }
-                    if config["model"] in ("tabm", "neural_offset")
+                    if config["model"] in ("tabm", "neural_offset", "realmlp")
                     else {}
                 ),
             },

@@ -23,6 +23,8 @@ def refit(source: Path, holdout_report: Path, output: Path, name: str) -> dict:
         raise ValueError("Original-data augmentation has no full-data refit contract.")
     if config.get("glm_transductive_frequency"):
         raise ValueError("Transductive frequency has no full-data refit contract.")
+    if config["model"] == "realmlp":
+        raise ValueError("RealMLP has no full-data refit contract.")
     if config["model"] == "neural_offset":
         raise ValueError(
             "Neural offset uses the CV checkpoint ensemble; a full-data refit protocol is not defined."

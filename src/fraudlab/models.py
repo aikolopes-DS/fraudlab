@@ -569,6 +569,14 @@ def fit_predict(
 
             result[2]["pooled_tokens"] = manifest(random_state=seed)
         return result
+    if name == "realmlp":
+        try:
+            from .realmlp import fit_realmlp
+        except ImportError as error:
+            raise RuntimeError(
+                "RealMLP requires the optional fraudlab[realmlp] dependencies."
+            ) from error
+        return fit_realmlp(training, y, validation, test, config, seed, path)
     if name == "lightgbm":
         return fit_lightgbm(
             training, y, validation, validation_y, test, config, seed, path
@@ -598,6 +606,10 @@ def predict_saved(
         from .neural_offset import predict_saved_neural_offset
 
         return predict_saved_neural_offset(path, frame, device)
+    if name == "realmlp":
+        from .realmlp import predict_saved_realmlp
+
+        return predict_saved_realmlp(path, frame, device)
     if name != "mlp":
         raise ValueError(f"Unknown saved model: {name}")
     import torch
