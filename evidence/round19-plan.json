@@ -1,0 +1,36 @@
+{
+  "date": "2026-11-17",
+  "status": "prospective; no transductive-frequency competition fit performed",
+  "hypothesis": "For this Kaggle batch, all unlabeled test features are already available. Category counts from the complete known feature universe may reduce count noise and train/inference mismatch on rare values. Change only the count reference of R13; supervised maps and numeric scalers remain training-local.",
+  "baseline_run": "round10-offset-bpe-frequency-public25",
+  "baseline_oof_auc": 0.9514921382152453,
+  "causal_reference": "round13-pooled-offset, own OOF0.9509327242594462; report own pooled and fold deltas",
+  "candidate": {
+    "name": "round19-transductive-pooled-offset", "model": "offset",
+    "feature_set": "bpe_digits", "glm_pooled_tokens": true,
+    "glm_frequency": true, "glm_transductive_frequency": true,
+    "glm_inner_folds": 5, "target_smoothing": 50, "logistic_c": 0.3,
+    "glm_spline_knots": 0, "iterations": 1000, "num_leaves": 4,
+    "learning_rate": 0.03, "l2_leaf_reg": 5, "min_child_samples": 100,
+    "folds": 5, "seed": 42, "holdout_fraction": 0,
+    "phase": "exploratory_full_data_cv", "fixed_training": true,
+    "device": "cpu", "threads": 4
+  },
+  "frequency_reference": {
+    "rows": 999944, "competition_train_features": 699960,
+    "competition_test_features": 299984,
+    "formula": "log1p(count_train_features(value)+count_test_features(value))",
+    "categories": "Exactly the current BPE categorical model inputs, normalized identically to clean_features; no ID or target columns.",
+    "label_usage": "None for reference counts. A target permutation must leave every count unchanged. All label-dependent TE/pooling remains internally cross-fitted from outer-training labels only.",
+    "persistence": "Persist count maps inside each trusted local model; record corpus file hashes, reference row count and canonical count-map hash. Build one column at a time, without a million-row feature-matrix copy."
+  },
+  "validation": "Exploratory transductive StratifiedKFold5/42: validation and test FEATURES participate in the declared label-free count reference. Their labels do not. This estimates the known Kaggle batch condition, not inductive prediction on a new unseen population. Same OOF IDs/labels/folds as R10; no original augmentation, global target-based pair selection, independent holdout or outer-validation early stopping. This is a separate explicit ablation of the counts excluded in R13/R14.",
+  "fixed_comparisons": {
+    "space": "probability", "candidate_share_of_own_offset": [0.25, 0.5, 1.0],
+    "formula": "0.5625*(share*candidate+(1-share)*R10_own_offset)+0.1875*explore5_lgbm+0.25*approved_Masaya_GPT2_v2",
+    "selection": "Report every fixed share, choose highest pooled OOF among eligible shares. Do not tune the reference population, count normalization, smoothing, model parameters or weights after seeing outcomes."
+  },
+  "promotion_rule": "Exceed frozen R10 hybrid OOF by strictly more than0.0001 and improve at least4/5 folds. Before submitting also exceed any already-selected qualifying new-round candidate. At most one submission after independent source/data/config/count-map/fold/ID/label/formula/checkpoint audits. Otherwise record the result and do not submit; no exception.",
+  "compatibility": "Default glm_frequency remains outer-training-only and numerically unchanged. The new flag is opt-in, restricted to GLM/offset exploratory CV5/42 with frequency enabled; original augmentation, independent holdout and final-refit modes are excluded from this new protocol.",
+  "training_gate": "Publish this plan and reviewed passing implementation before any competition AUC. Clean isolated pinned source, one CPU configuration/five fits and no paid compute. Raw competition data and count-map artifacts remain outside Git."
+}

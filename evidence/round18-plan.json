@@ -1,0 +1,39 @@
+{
+  "date": "2026-11-17",
+  "status": "prospective; no joint-BPE competition fit performed",
+  "hypothesis": "Eight fixed interactions may capture conditional risk that additive logits and shallow residual trees estimate poorly. Add them to the R13 representation without reusing the four pairs already tested in R3 or selecting pairs globally from target labels.",
+  "baseline_run": "round10-offset-bpe-frequency-public25",
+  "baseline_oof_auc": 0.9514921382152453,
+  "causal_reference": "round13-pooled-offset, own OOF0.9509327242594462; compare every fold and pooled own score",
+  "candidate": {
+    "name": "round18-joint-bpe-pooled-offset", "model": "offset",
+    "feature_set": "joint_bpe", "glm_pooled_tokens": true,
+    "glm_frequency": true, "glm_inner_folds": 5, "target_smoothing": 50,
+    "logistic_c": 0.3, "glm_spline_knots": 0,
+    "iterations": 1000, "num_leaves": 4, "learning_rate": 0.03,
+    "l2_leaf_reg": 5, "min_child_samples": 100,
+    "folds": 5, "seed": 42, "holdout_fraction": 0,
+    "phase": "exploratory_full_data_cv", "fixed_training": true,
+    "device": "cpu", "threads": 4
+  },
+  "pairs": [
+    ["is_foreign_transaction", "ip_country_mismatch"],
+    ["merchant_category", "floor(merchant_risk_score/10)"],
+    ["merchant_category", "floor(log2(1+amount_usd))"],
+    ["is_ai_generated_scam_attempt", "floor(velocity_score/5)"],
+    ["is_new_merchant", "day_of_week"],
+    ["time_of_day_hour", "day_of_week"],
+    ["floor(customer_age/10)", "floor(card_age_months/12)"],
+    ["auth_method", "channel"]
+  ],
+  "extraction": "Own deterministic categorical tuple keys, with no fitted bins, target access or pair search. Magnitude boundaries2^k-1 implement the stated log2 bucket including adjacent-float edge cases. Protected ID/target input columns produce no keys. Existing bpe_digits and pooled encoders remain unchanged; downstream TE/frequency is fold-local.",
+  "inspiration": "The public Part12v16 source pinned in R13 describes13 candidate interactions. This shortlist is informed by that public research and domain reasoning, so the resulting validation remains exploratory. Its exported notebook has no observable numeric G/df/kept table; we did not recompute a global supervised selection or assume which pairs the author retained.",
+  "validation": "Exploratory full-data StratifiedKFold5/42, same699960 OOF IDs/labels/folds as R10. Inner-crossfit5 target and pooled estimates, outer-training-only scaling/frequency. No original augmentation, transductive counts, global G scan, independent holdout or outer-validation early stopping.",
+  "fixed_comparisons": {
+    "space": "probability", "candidate_share_of_own_offset": [0.25, 0.5, 1.0],
+    "formula": "0.5625*(share*candidate+(1-share)*R10_own_offset)+0.1875*explore5_lgbm+0.25*approved_Masaya_GPT2_v2",
+    "selection": "Report all fixed shares and choose highest pooled OOF among eligible shares; no additional pairs, bins, weights or smoothing sweep."
+  },
+  "promotion_rule": "Exceed frozen R10 hybrid OOF by strictly more than0.0001 and improve at least4/5 corresponding folds. Before submitting also exceed any already-selected qualifying new-round candidate. At most one submission after independent source/data/config/ID/fold/label/formula/checkpoint audits. Otherwise record the result and do not submit; no exception.",
+  "training_gate": "Publish this plan and reviewed tested implementation, then fit from a clean pinned isolated worktree. One CPU configuration and five fits, no paid compute."
+}
