@@ -10,7 +10,8 @@ from __future__ import annotations
 def components_from(runs: list[dict]) -> list[dict]:
     unique = {}
     for run in runs:
-        for component in run.get("model_details", {}).get("external_components", []):
+        for component in (run.get("external_components", []) +
+                          run.get("model_details", {}).get("external_components", [])):
             key = (component.get("training_code_url"), component.get("training_code_commit"))
             unique.setdefault(key, component)
     return list(unique.values())

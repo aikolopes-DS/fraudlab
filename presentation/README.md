@@ -13,6 +13,18 @@ submissão **58470267**, score **0,95134**, posição **723/2.112** em
 decodificação e ASR integrais e inspeção dos 139 quadros, sem declarar escuta
 humana ou reprodução contínua integral. As versões v0.1 e v0.2 permanecem históricas.
 
+As fontes em edição para **v0.4** cobrem a R18, seu refit R20 e as comparações posteriores.
+Isso ainda não representa um novo vídeo publicado. A receita usa 56,25% de offset
+próprio com BPE, frequência, pooling e oito interações; 18,75% de LightGBM
+próprio e 25% de GPT-2 externo de Masaya Kawamata. As 92 colunas após engenharia
+produzem 223 entradas codificadas no offset; a R10 anterior tinha 191.
+OOF híbrida R18: **0,9516524825**, com melhora em cinco folds contra a R10.
+O refit R20 reaprendeu os dois componentes próprios nos 699.960 rótulos,
+sem nova OOF. Sua submissão **58483010** recebeu **0,95162** e posição
+**657/2.126** no snapshot de **17/11/2026 às 21h59min16s UTC**.
+O resultado ainda não alcançou as primeiras posições. A OOF R18 permanece
+uma referência histórica de seleção, sem atribuição ao arquivo do refit.
+
 ## Gerar
 
 Na raiz do repositório, com as dependências de apresentação instaladas:
@@ -22,12 +34,22 @@ python -m presentation.build --help
 ```
 
 Uma versão final exige uma execução MLP real, mesmo quando outro modelo tiver
-produzido a submissão selecionada. Para gerar o conteúdo atual, com as execuções
-locais completas já disponíveis:
+produzido a submissão selecionada. Este exemplo prepara um preview marcado,
+sem voz ou vídeo, com métricas completas disponíveis localmente:
 
 ```powershell
 $fraudComparisons = @(
-  "round10-offset-bpe-frequency", "round9-glm-bpe-frequency", "round9-bpe-frequency-public25",
+  "round20-refit-joint-offset", "round20-refit-lgbm",
+  "round18-pooled-share100-public25", "round18-joint-bpe-pooled-offset",
+  "round10-offset-bpe-frequency-public25", "round10-offset-bpe-frequency",
+  "round12-catboost-bpe", "round12-catboost-bpe-w10",
+  "round13-pooled-offset", "round13-pooled-share100-public25",
+  "round14-full-token-pooled-offset", "round14-pooled-share100-public25",
+  "round15-logit-fixed", "round15-rank-fixed", "round15-rank_logit-fixed",
+  "round16-original-token-pooled-offset", "round16-pooled-share025-public25",
+  "round17-neural-pooled-offset-resumed", "round17-pooled-share050-public25",
+  "round19-transductive-pooled-offset", "round19-pooled-share100-public25",
+  "round9-glm-bpe-frequency", "round9-bpe-frequency-public25",
   "explore5-glm", "explore5-lgbm", "explore5-public-gpt2-v2", "explore5-public25",
   "round8-tabm", "round8-tabm10", "dev-mlp-te-values", "dev-logistic-raw",
   "dev-mlp-standard-raw", "dev-mlp-quantile-raw", "dev-lgbm-leaf4-raw", "dev-lgbm-leaf4-digits"
@@ -37,9 +59,9 @@ foreach ($fraudRun in $fraudComparisons) {
   $fraudPresentationArgs += @("--comparison", "artifacts/runs/$fraudRun/metrics.json")
 }
 python -m presentation.build --evidence evidence/public.json `
-  --metrics artifacts/runs/round10-offset-bpe-frequency-public25/metrics.json `
+  --metrics artifacts/runs/round20-refit-joint-public25/metrics.json `
   @fraudPresentationArgs --historical-holdout artifacts/holdout/evaluation.json `
-  --output artifacts/presentation-v03 --video
+  --output artifacts/presentation-v04-preview --draft
 ```
 
 `--comparison` pode ser repetido para incluir outras execuções. O build exige
@@ -47,26 +69,44 @@ execuções com `status: complete`, hashes de dados compatíveis, métricas vál
 arquitetura MLP registrada e evidência de dados, treino, submissão e posição.
 Ele verifica os registros fornecidos; não autentica uma submissão no Kaggle.
 
-A R10 usa `bpe_digits`, frequência por fold, target encoding interno 5/50 e
-GLM C=0,3; 1.000 árvores residuais de 4 folhas, taxa 0,03 e L2=5. Sua CV é
-5/42, sem holdout independente. A OOF híbrida registrada é 0,9514921382152453;
-fonte, parâmetros e resultados estão no [plano](../evidence/round10-plan.json) e
-no [resultado R10](../evidence/round10-results.json). A R9 permanece uma exceção
-de avaliação pública declarada; a R11 foi rejeitada e não integra este vídeo.
+A R18 mantém GLM C=0,3, TE interno 5/50 e 1.000 árvores residuais de quatro
+folhas, taxa 0,03 e L2=5. `joint_bpe` preserva a base BPE e soma oito tuplas
+fixas; o pooling gera 16 logits com suavizações 50/2.000/200. A CV é 5/42,
+sem holdout independente. Fonte e critérios estão no
+[plano R18](../evidence/round18-plan.json). A R9 permanece uma exceção pública
+histórica declarada; resultados negativos não são reclassificados como ganhos.
+
+As métricas da R19 rejeitada e do refit R20 estão incluídas no exemplo.
+Inclua o stacking R21 somente depois de sua execução completa, com o snapshot
+final correspondente. R19 usa contagens sem alvo;
+R21 usa um meta-treino interno separado e mantém o GPT-2 fora dele. Esses
+conceitos são condicionados à evidência fornecida; um plano não vira treino
+executado. Para o vídeo final, congele todos os JSONs, forneça o snapshot em
+`--evidence`, selecione as métricas do CSV realmente enviado e remova `--draft`.
+Só então use `--video --output artifacts/presentation-v04`. As mídias anteriores
+devem permanecer nos seus próprios diretórios e releases.
 
 Para regenerar com o mesmo snapshot de evidências publicado, extraia `evidence-snapshot.json`
 do ZIP v0.3 e use esse arquivo em `--evidence`. O arquivo `evidence/public.json`
 pode registrar consultas posteriores. Omitir `--historical-holdout` é permitido
 quando o relatório antigo não estiver disponível; ele não é exigido como uma
-reserva independente da R10. Artefatos e checkpoints locais não vêm no clone.
+reserva independente da R18. Artefatos e checkpoints locais não vêm no clone.
 
 Para uma submissão produzida por refit, forneça suas métricas em `--metrics` e as
 métricas do desenvolvimento correspondente em `--comparison`. O refit usa todos
 os rótulos com configuração já escolhida e não possui nova AUC OOF. A apresentação
 mantém separados desenvolvimento, reserva, refit e pontuação pública.
-Inclua o relatório em `--holdout artifacts/holdout/evaluation.json`; seu hash deve
-coincidir com o registrado nas métricas do modelo selecionado. O score da reserva
-avalia os checkpoints do protocolo de desenvolvimento, não o refit posterior.
+O `--holdout` é reservado ao protocolo próprio que registra o hash daquela
+avaliação. Para a extensão com GPT-2 e para o refit derivado da R18, a reserva
+inicial só pode aparecer em `--historical-holdout`: ela não avalia a nova receita.
+Um refit sem OOF não recebe a AUC histórica como se fosse nova medição.
+
+`presentation_context` do snapshot fornece o probe de strings, a suíte de
+testes observada e eventuais estados ainda sem resultado. O probe registra
+buffer e objetos de strings distintos, com `process_rss_measured: false`;
+não é pico de RAM nem benchmark de treinamento. Estados são fatos datados do
+snapshot, sem uma segunda lista de acompanhamento. O snapshot final deve
+substituí-los pelos resultados efetivamente fechados.
 Quando uma extensão externa tiver usado as linhas da antiga reserva em seu
 treinamento, use `--historical-holdout` no lugar de `--holdout`. O relatório será
 mostrado como histórico, sem atribuir independência à nova composição.

@@ -10,7 +10,7 @@ def leaf(path):
 
 
 def selected_runs(runs):
-    """Follow explicit blend sources; comparison-only methods are not selected."""
+    """Follow blend fractions or explicit stack inputs, never meta-coefficients."""
     if not runs:
         return []
     by_name = {name(run): run for run in runs}
@@ -22,15 +22,20 @@ def selected_runs(runs):
             continue
         found[key] = run
         details = run.get("model_details", {})
-        sources = details.get("sources", [])
-        weights = details.get("weights", [1] * len(sources))
+        if run.get("model") == "nested_stack":
+            sources = details.get("base_runs", [])
+            weights = [1] * len(sources)  # Membership, not meta-coefficients or probability weights.
+        else:
+            sources = details.get("sources", [])
+            weights = details.get("weights", [1] * len(sources))
         pending.extend(by_name[source] for path, weight in zip(sources, weights)
                        if weight > 0 and (source := leaf(path)) in by_name)
     return [run for run in found.values() if run.get("status") == "complete"]
 
 
 def has_bpe(runs):
-    return any(run.get("model") != "blend" and run.get("feature_encoding", {}).get("encoding") == "gpt2"
+    return any(run.get("model") != "blend" and
+               run.get("feature_encoding", {}).get("bpe", run.get("feature_encoding", {})).get("encoding") == "gpt2"
                for run in selected_runs(runs))
 
 
@@ -44,18 +49,30 @@ def append_proposal(add, runs, external_components, number):
     selected = runs[0] if runs else {}
     by_name = {name(run): run for run in runs}
     labels = {"offset": "GLM com correções de árvores", "lightgbm": "LightGBM próprio",
-              "external_gpt2": "GPT-2 externo", "mlp": "MLP própria", "tabm": "TabM própria"}
+              "external_gpt2": "GPT-2 externo", "mlp": "MLP própria", "tabm": "TabM própria",
+              "neural_offset": "rede residual própria", "nested_stack": "stack próprio"}
     details = selected.get("model_details", {})
     composition = [f"{number(weight * 100, 2)}% {labels.get(by_name.get(leaf(path), {}).get('model'), leaf(path))}"
                    for path, weight in zip(details.get("sources", []), details.get("weights", [])) if weight > 0]
     points = (["Composição final em probabilidades: " + "; ".join(composition)] if composition else
               ["Modelo selecionado: " + labels.get(selected.get("model"), selected.get("model", "aguardando execução"))])
     if has_bpe(runs) and has_frequency(runs):
-        points.append("O GLM reúne pistas numéricas, chaves BPE e frequência"
-                      + ("; árvores pequenas corrigem sua margem" if any(run.get("model") == "offset"
-                         for run in selected_runs(runs)) else ""))
+        offset = next((run for run in selected_runs(runs) if run.get("model") == "offset"), {})
+        stack = next((run for run in selected_runs(runs) if run.get("model") == "nested_stack"), {})
+        encoded = offset.get("model_details", {}).get("encoded_features")
+        if stack:
+            points.append("O stack próprio aprende a combinar três logits de bases; os coeficientes internos não são percentuais")
+        elif encoded:
+            methods = ["BPE", "frequência"]
+            if offset.get("model_details", {}).get("pooled_tokens"):
+                methods.append("pooling")
+            if offset.get("feature_encoding", {}).get("joint_encoding"):
+                methods.append("oito interações")
+            points.append(f"Base offset própria: {offset.get('features', {}).get('count')} colunas → {encoded} entradas; " + ", ".join(methods))
+        else:
+            points.append("O GLM reúne pistas numéricas, chaves BPE e frequência")
     compared = sorted({labels[run["model"]] for run in runs
-                       if run.get("status") == "complete" and run.get("model") in {"mlp", "tabm"}
+                       if run.get("status") == "complete" and run.get("model") in {"mlp", "tabm", "neural_offset"}
                        and run not in selected_runs(runs)})
     if compared:
         points.append("Redes próprias treinadas e comparadas: " + "; ".join(compared))
@@ -156,7 +173,8 @@ def append_feature_pairs(pair, runs):
               "Mas o código novecentos não é automaticamente melhor ou pior que o código "
               "duzentos. Aqui acontece o mesmo: os pedaços recebem nomes numéricos, mas são "
               "tratados como rótulos. Só o experimento informa se essa representação ajuda.")
-    if has_frequency(runs):
+    if has_frequency(runs) and not any(run.get("model_details", {}).get("transductive_frequency")
+                                     for run in selected_runs(runs)):
         pair("04 / Representar os dados", "Frequência: quantas vezes uma chave apareceu no treino", [
             "Cada coluna tem sua própria tabela de contagens, ajustada no treino do fold",
             "A entrada adicional é log1p da contagem; depois ela é escalonada",
@@ -405,6 +423,13 @@ def continuation_sources(runs):
     if any(run.get("status") == "complete" and run.get("model") == "tabm" for run in runs):
         sources += [("TabM 0.0.3: arquitetura e implementação", "https://pypi.org/project/tabm/0.0.3/"),
                     ("Embeddings numéricos 0.0.12", "https://pypi.org/project/rtdl_num_embeddings/0.0.12/")]
+    if any(run.get("model_details", {}).get("pooled_tokens") for run in selected_runs(runs)):
+        sources.append(("Ideias de pooling e interações: crédito a megayak, Part 12 v16 de goodpjw2008",
+                        "https://www.kaggle.com/code/goodpjw2008/s6e11-part-12-wide-stack-2nd-lm-lb-0-95298"))
+    if any(run.get("status") == "complete" and run.get("model") == "neural_offset" for run in runs):
+        sources.append(("SiLU: implementação oficial PyTorch", "https://docs.pytorch.org/docs/2.11/generated/torch.nn.SiLU.html"))
+    if any("strings.py" in run.get("source_hashes", {}) for run in selected_runs(runs)):
+        sources.append(("Valores únicos e índices inversos: NumPy", "https://numpy.org/doc/2.2/reference/generated/numpy.unique.html"))
     return sources
 
 
@@ -425,6 +450,26 @@ def method_code_specs(runs):
             "Código: preservar a margem inicial na inferência", ["O GLM e as árvores são somados antes da sigmoid"],
             "Estas linhas somam explicitamente as duas margens. "
             "O resultado das árvores sozinho não contém a previsão inicial do GLM."))
+    if any(run.get("model_details", {}).get("pooled_tokens") for run in selected_runs(runs)):
+        specifications.append(("src/fraudlab/pooled.py", 'rate = (pooled["sum"]', 3,
+            "Código: suavizar a taxa compartilhada", ["Somas e contagens vêm somente do treino permitido pelo cross-fitting"],
+            "A taxa compartilhada combina positivos do grupo com o prior e a força de suavização. "
+            "Ela fornece a referência para a taxa de cada campo; o arquivo também contém o bloco condicional."))
+    if any(run.get("feature_encoding", {}).get("joint_encoding") for run in selected_runs(runs)):
+        specifications.append(("src/fraudlab/joints.py", "pairs = zip(", 4,
+            "Código: formar as oito tuplas fixas", ["As views já foram validadas; repr preserva os pares sem ambiguidade"],
+            "As duas representações são reunidas em uma tupla e convertidas em uma categoria textual. "
+            "Não há leitura de alvo, procura de pares ou estatística aprendida nessa extração."))
+    if any(run.get("status") == "complete" and run.get("model") == "neural_offset" for run in runs):
+        specifications.append(("src/fraudlab/neural_offset.py", "logits = offsets[selected]", 4,
+            "Código: a perda avalia GLM mais correção neural", ["A margem congelada é somada à saída da rede antes da perda"],
+            "Este trecho soma a margem do GLM à correção neural e calcula a perda binária com logits. "
+            "O GLM não é atualizado pelo AdamW; o otimizador recebe os parâmetros da rede residual."))
+    if any("strings.py" in run.get("source_hashes", {}) for run in selected_runs(runs)):
+        specifications.append(("src/fraudlab/strings.py", "unique, inverse = np.unique", 2,
+            "Código: compartilhar textos mantendo a sequência", ["Conversão dos valores distintos; índices inversos restauram as posições"],
+            "A conversão para string acontece nos valores distintos. Os índices inversos reconstroem o array "
+            "com dtype object e referências compartilhadas. Essa mudança de armazenamento preserva os valores."))
     return specifications
 
 
@@ -433,5 +478,9 @@ def method_code_analogy(relative):
         "src/fraudlab/bpe.py": ("No dia a dia: ler partes de uma etiqueta", "Consultar partes de uma etiqueta oferece outra maneira de agrupar os itens; não transforma o código em uma medida de risco."),
         "src/fraudlab/frequency.py": ("No dia a dia: consultar o caderno de exemplos", "Usamos a contagem guardada no caderno de treino. Não acrescentamos as páginas da prova antes de responder."),
         "src/fraudlab/offset.py": ("No dia a dia: somar orçamento e correções", "O total precisa conter o orçamento inicial e os ajustes. Guardar somente os ajustes perderia o ponto de partida."),
+        "src/fraudlab/pooled.py": ("No dia a dia: começar pela referência da rede", "Uma loja com pouca evidência pode começar pela avaliação compartilhada antes de confiar na sua própria média."),
+        "src/fraudlab/joints.py": ("No dia a dia: preencher rua e número", "Juntar dois campos preserva a combinação específica. O número da casa sozinho não informa o endereço completo."),
+        "src/fraudlab/neural_offset.py": ("No dia a dia: avaliar o orçamento corrigido", "A avaliação olha o orçamento inicial junto das correções. Medir apenas a correção perderia o total que será usado."),
+        "src/fraudlab/strings.py": ("No dia a dia: várias fichas para um verbete", "As fichas podem apontar para um mesmo verbete sem mudar sua ordem nem o significado. Economizar cópias não acrescenta informação."),
     }
     return labels.get(relative)

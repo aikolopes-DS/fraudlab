@@ -9,12 +9,16 @@ import unittest
 from matplotlib.mathtext import MathTextParser
 
 from .audio_cache import edge_paths
+from .external import components_from
 from .build import insert_code_slides, main
-from .content import Slide, create_slides, ensure_pairs, number
+from .content import Slide, create_slides, ensure_pairs, number, spoken_year_2026, development_source, validate_evidence
+from .competitive import (append_pooling_pairs, append_joint_pair, append_neural_offset_pair,
+                          append_transductive_pair, append_storage_pair, append_nested_stack_pair,
+                          append_later_results, append_context)
 from .continuation import (append_feature_pairs, append_offset_pair, append_tabm_pair,
                            append_tabm_embedding_pair, append_tabm_backbone_pair, append_proposal,
                            append_tabm_result, append_selection_note, has_frequency,
-                           missing_selection_context, append_historical_deviations)
+                           missing_selection_context, append_historical_deviations, selected_runs)
 
 
 def collector():
@@ -35,6 +39,139 @@ def own(model="glm"):
 
 
 class ContinuationTests(unittest.TestCase):
+    def advanced_run(self):
+        run = own("offset")
+        run["features"] = {"count": 92}
+        run["source_hashes"] = {"strings.py": "a" * 64}
+        run["feature_encoding"] = {"bpe": {"encoding": "gpt2"}, "joint_encoding": {"output_count": 8}}
+        run["model_details"].update(feature_set="joint_bpe", encoded_features=223, pooled_tokens={
+            "algorithm": "hierarchical_pooled_decimal_token_rates",
+            "smoothing": {"pooled_to_prior": 50, "field_to_pool": 2000, "markov_to_field_decimal": 200},
+            "crossfit": {"n_splits": 5}})
+        return run
+
+    def test_current_math_pairs_are_immediate_and_renderable_without_scores(self):
+        slides, _, pair = collector()
+        selected = self.advanced_run()
+        neural = {"status": "complete", "model": "neural_offset", "model_details": {"architecture": {
+            "input_features": 207, "hidden_dims": [256, 256], "dropout": 0.1}}}
+        transductive = {"status": "complete", "model_details": {"transductive_frequency": {"label_usage": "none"}}}
+        stack = {"status": "complete", "model_details": {"algorithm": "nested_owned_logit_holdout_stack",
+            "inner_fraction": 0.25, "inner_seed": 2026, "base_runs": ["a", "b", "c"],
+            "architecture": {"external_teacher_in_meta": False}}}
+        append_pooling_pairs(pair, [selected])
+        append_joint_pair(pair, [selected])
+        append_neural_offset_pair(pair, [neural])
+        append_transductive_pair(pair, [transductive])
+        append_storage_pair(pair, [selected], {})
+        append_nested_stack_pair(pair, [stack])
+        ensure_pairs(slides)
+        self.assertEqual(len(slides), 14)
+        parser = MathTextParser("path")
+        for slide in slides:
+            if slide.formula:
+                with self.subTest(title=slide.title):
+                    parser.parse("$" + slide.formula + "$")
+        self.assertIn(r"\beta q_G(v)", slides[0].formula)
+        self.assertIn(r"\gamma r_j(v)", slides[2].formula)
+        self.assertIn("não significa que treinamos uma cadeia temporal", slides[2].narration)
+        self.assertIn("BCEWithLogits", slides[6].formula)
+        self.assertIn("não precisam ser positivos nem somar um", slides[-2].narration)
+        self.assertIn("Ele não participou do meta-treino", slides[-2].narration)
+
+    def test_stack_inputs_are_not_filtered_by_learned_coefficient_sign(self):
+        stack = {"run_name": "stack", "model": "nested_stack", "status": "complete",
+                 "model_details": {"base_runs": ["runs/a", "runs/b", "runs/c"], "weights": [-2, 0, 3]}}
+        bases = [{"run_name": key, "model": "offset", "status": "complete"} for key in ("a", "b", "c")]
+        self.assertEqual({run['run_name'] for run in selected_runs([stack, *bases])}, {"stack", "a", "b", "c"})
+
+    def test_unexecuted_and_comparison_only_pooling_are_not_selected_facts(self):
+        slides, _, pair = collector()
+        candidate = self.advanced_run()
+        candidate["status"] = "running"
+        append_pooling_pairs(pair, [candidate])
+        append_joint_pair(pair, [candidate])
+        append_storage_pair(pair, [candidate], {})
+        self.assertFalse(slides)
+        selected = own()
+        candidate["status"] = "complete"
+        append_pooling_pairs(pair, [selected, candidate])
+        self.assertFalse(slides)
+
+    def test_storage_probe_is_scoped_to_buffers_and_never_claimed_as_rss(self):
+        slides, _, pair = collector()
+        probe = {"rows": 1000000, "unique_values": 100, "values_exact": True,
+                 "legacy_bytes": 65000000, "shared_bytes": 8005700, "process_rss_measured": False}
+        append_storage_pair(pair, [self.advanced_run()], {"presentation_context": {"string_storage_probe": probe}})
+        text = slides[0].narration
+        self.assertIn("8,0057", text)
+        self.assertIn("Não mede RSS", text)
+        self.assertIn("não é um novo atributo", text.lower())
+        slides.clear()
+        probe["process_rss_measured"] = True
+        append_storage_pair(pair, [self.advanced_run()], {"presentation_context": {"string_storage_probe": probe}})
+        self.assertNotIn("65 para", slides[0].narration)
+
+    def test_refit_resolves_explicit_hybrid_cv_instead_of_first_same_family(self):
+        from .test_presentation import fixture
+        evidence, neural = fixture()
+        historical = copy.deepcopy(neural)
+        historical.update(run_name="older-hybrid", model="blend", roc_auc=0.72)
+        reference = copy.deepcopy(historical)
+        reference.update(run_name="selected-hybrid", roc_auc=0.75,
+                         target={"positive_rate": 0.02}, validation={"method": "stratified", "n_splits": 5})
+        refit = copy.deepcopy(historical)
+        refit.update(run_name="refit", model="offset", phase="full_data_refit", roc_auc=None, target=None,
+                     validation={"independent_holdout": False}, selection={"reference_cv_run": "selected-hybrid",
+                     "development_roc_auc": 0.75})
+        runs = [refit, historical, reference, neural]
+        self.assertIs(development_source(refit, runs), reference)
+        self.assertEqual(validate_evidence(evidence, runs, False), [])
+        slides = create_slides(evidence, runs)
+        data = next(slide for slide in slides if slide.title == "O que foi observado nos arquivos")
+        self.assertIn("Taxa positiva no treino: 2,000%", data.points)
+        with self.assertRaisesRegex(ValueError, "development source"):
+            validate_evidence(evidence, [refit, historical, neural], False)
+
+    def test_refit_storage_uses_recorded_config_when_family_metadata_omits_features(self):
+        slides, _, pair = collector()
+        selected = self.advanced_run()
+        selected["model_details"].pop("feature_set")
+        selected["run_config"] = {"feature_set": "joint_bpe"}
+        append_storage_pair(pair, [selected], {})
+        self.assertEqual(len(slides), 2)
+
+    def test_refit_external_record_keeps_selected_weight_and_code_coverage(self):
+        component = {"training_code_url": "fixture", "training_code_commit": "fixed", "weight": 0.25}
+        refit = {"external_components": [component]}
+        comparison = {"model_details": {"external_components": [dict(component, weight=1)]}}
+        self.assertEqual(components_from([refit, comparison]), [component])
+        slides, add, _ = collector()
+        add("test", "Submissão e posição observadas", [], "fixture")
+        insert_code_slides(slides, Path(__file__).resolve().parents[1], True,
+                           bool(components_from([refit])), {}, [])
+        self.assertTrue(any(slide.code_reference.startswith("src/fraudlab/external.py:") for slide in slides))
+        self.assertTrue(any("prediction_result[target] = sum(" in slide.code for slide in slides))
+
+    def test_later_negative_results_do_not_promote_five_folds_with_small_delta(self):
+        slides, add, _ = collector()
+        baseline = {"run_name": "round10-offset-bpe-frequency-public25", "model": "blend", "status": "complete",
+                    "roc_auc": 0.8, "fold_scores": [0.8] * 5}
+        candidate = {"run_name": "round17-pooled-share050-public25", "model": "blend", "status": "complete",
+                     "roc_auc": 0.80005, "fold_scores": [0.80005] * 5}
+        append_later_results(add, [baseline, candidate], number)
+        self.assertIn("5/5 folds; não passou gate R10", slides[0].points[0])
+        self.assertNotIn("vinte mil", slides[0].narration)
+
+    def test_snapshot_status_and_test_count_do_not_create_submission_claims(self):
+        slides, add, _ = collector()
+        append_context(add, {"presentation_context": {"tests": {"passed": 315, "subtests": 53, "scope": "fixture only"},
+            "pending_rounds": [{"round": 20, "status": "planejada", "note_pt": "Sem novo score."}]}})
+        self.assertIn("R20: planejada", slides[0].points[0])
+        self.assertIn("não atribuímos score", slides[0].narration.lower())
+        self.assertIn("315", slides[1].points[0])
+        self.assertIn("53", slides[1].points[0])
+
     def test_new_complex_concepts_have_immediate_analogies_and_valid_formulas(self):
         slides, add, pair = collector()
         append_feature_pairs(pair, [own()])
@@ -162,6 +299,16 @@ class ContinuationTests(unittest.TestCase):
         self.assertIn("dois mil e vinte e seis", final.narration)
         self.assertNotIn("2026", final.narration)
         self.assertTrue(any("2026" in point for point in final.points))
+
+    def test_year_normalization_also_handles_dated_context_without_changing_points(self):
+        from .test_presentation import fixture
+        evidence, mlp = fixture()
+        evidence["limitations"] = ["Snapshot de 17/11/2026; relatório publicado em 2026."]
+        slide = next(item for item in create_slides(evidence, [mlp]) if item.title == "O que a evidência permite afirmar")
+        self.assertIn("17/11/2026", slide.points[0])
+        self.assertIn("17 de novembro de dois mil e vinte e seis", slide.narration)
+        self.assertNotIn("2026", slide.narration)
+        self.assertEqual(spoken_year_2026(slide.narration), slide.narration)
 
     def test_unexecuted_or_comparison_only_method_is_not_selected(self):
         slides, _, pair = collector()

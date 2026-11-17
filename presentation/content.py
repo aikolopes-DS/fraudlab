@@ -10,10 +10,14 @@ from typing import Any
 from zoneinfo import ZoneInfo
 
 from .external import components_from, gpt2_slides
+from .competitive import (append_pooling_pairs, append_joint_pair, append_neural_offset_pair,
+                          append_transductive_pair, append_storage_pair, append_nested_stack_pair,
+                          append_later_results, append_context, has_transductive, round_number, pooling_run)
 from .continuation import (append_feature_pairs, append_offset_pair, append_tabm_pair,
                            append_tabm_embedding_pair, append_tabm_backbone_pair,
                            append_proposal, append_one_hot_pair,
                            append_tabm_result, append_selection_note, continuation_sources,
+                           has_frequency,
                            missing_selection_context, append_submission_history,
                            append_historical_deviations)
 
@@ -58,12 +62,40 @@ def spoken_score(value: float) -> str:
                            for part in number(value, 5).split(","))
 
 
+def spoken_year_2026(text: str) -> str:
+    """Spell this snapshot's year in speech, leaving visible slide text intact."""
+    months = ("janeiro", "fevereiro", "março", "abril", "maio", "junho",
+              "julho", "agosto", "setembro", "outubro", "novembro", "dezembro")
+    def date_words(match):
+        day, month = int(match[1]), int(match[2])
+        try:
+            datetime(2026, month, day)
+        except ValueError:
+            return match[0]
+        return f"{day} de {months[month - 1]} de dois mil e vinte e seis"
+    text = re.sub(r"\b(\d{1,2})/(\d{1,2})/2026\b", date_words, text)
+    return re.sub(r"\b2026\b", "dois mil e vinte e seis", text)
+
+
 def is_refit(run: dict) -> bool:
     return run.get("phase") == "full_data_refit"
 
 
 def run_label(run: dict) -> str:
     return str(run.get("run_name", run.get("model", "modelo")))
+
+
+def development_source(run: dict, runs: list[dict]) -> dict | None:
+    """Resolve an explicit CV reference, including a hybrid referenced by refits."""
+    selection = run.get("selection") or {}
+    reference = selection.get("reference_cv_run") or selection.get("source_dev_run")
+    candidates = [other for other in runs if not is_refit(other)]
+    if reference:
+        reference = str(reference).replace("\\", "/").rstrip("/").split("/")[-1]
+        return next((other for other in candidates if run_label(other) == reference
+                     and other.get("roc_auc") == selection.get("development_roc_auc")), None)
+    return next((other for other in candidates if other.get("model") == run.get("model")
+                 and other.get("roc_auc") == selection.get("development_roc_auc")), None)
 
 
 def observation_time(value: str | None, spoken: bool = False) -> str:
@@ -130,11 +162,7 @@ def validate_evidence(evidence: dict, runs: list[dict], draft: bool, holdout: di
             missing.append("experiment.data_hashes")
         elif runs and run["data_hashes"] != runs[0].get("data_hashes"):
             missing.append("experiment compatible data_hashes")
-        if is_refit(run) and not any(
-            not is_refit(other) and other.get("model") == run.get("model") and
-            other.get("roc_auc") == run.get("selection", {}).get("development_roc_auc")
-            for other in runs
-        ):
+        if is_refit(run) and development_source(run, runs) is None:
             missing.append("refit development source metrics")
     selected_components = components_from(runs[:1])
     needs_holdout = (runs and is_refit(runs[0]) and not selected_components and
@@ -177,8 +205,7 @@ def create_slides(evidence: dict, runs: list[dict], draft: bool = False, holdout
     missing = validate_evidence(evidence, runs, draft, holdout, historical_holdout)
     selected = runs[0] if runs else {}
     development_runs = [run for run in runs if not is_refit(run)]
-    evaluation_run = next((run for run in development_runs if run.get("model") == selected.get("model")),
-                          development_runs[0] if development_runs else selected)
+    evaluation_run = (development_source(selected, runs) if is_refit(selected) else selected) or selected
     neural = next((run for run in runs if run.get("model") == "mlp"), {})
     details = neural.get("model_details", {})
     architecture = details.get("architecture", {})
@@ -191,6 +218,7 @@ def create_slides(evidence: dict, runs: list[dict], draft: bool = False, holdout
         results["holdout_observed_at"] = holdout.get("evaluated_at")
     rows = selected.get("rows", {})
     features = selected.get("features", {})
+    target = selected.get("target") or evaluation_run.get("target") or {}
     raw_run = next((run for run in runs if run.get("model_details", {}).get("feature_set") == "raw"), {})
     raw_count = raw_run.get("features", {}).get("count")
     validation = evaluation_run.get("validation", {})
@@ -250,15 +278,16 @@ def create_slides(evidence: dict, runs: list[dict], draft: bool = False, holdout
           "certeza, e uma fila bem ordenada não elimina a necessidade de verificação.")
     add("02 / Os dados", "O que foi observado nos arquivos", [
         f"Treino: {number(rows.get('train'))} registros; teste: {number(rows.get('test'))}",
-        (f"Colunas originais: {number(raw_count)}; entradas após representação: {number(features.get('count'))}"
-         if raw_count is not None else f"Entradas após representação: {number(features.get('count'))}"),
-        "Taxa positiva no treino: " + (number(selected.get("target", {}).get("positive_rate", 0) * 100, 3) + "%" if selected.get("target", {}).get("positive_rate") is not None else "não verificada"),
+        (f"Colunas originais: {number(raw_count)}; colunas após engenharia: {number(features.get('count'))}"
+         if raw_count is not None else f"Colunas após engenharia: {number(features.get('count'))}"),
+        "Taxa positiva no treino: " + (number(target["positive_rate"] * 100, 3) + "%" if target.get("positive_rate") is not None else "não verificada"),
         "Identificadores e alvo são tratados separadamente das entradas",
     ], "Antes de escolher uma arquitetura, é preciso conhecer os arquivos. "
        + (f"Neste experimento foram registrados {number(rows.get('train'))} exemplos de treino "
           f"e {number(rows.get('test'))} exemplos de teste. "
           + (f"O arquivo possui {number(raw_count)} colunas originais de entrada. " if raw_count is not None else "")
-          + f"Depois da representação selecionada, o modelo usa {number(features.get('count'))} entradas. " if selected else
+          + f"Depois da engenharia há {number(features.get('count'))} colunas. A codificação ainda pode expandi-las; "
+            "a dimensão da matriz é apresentada na construção do componente. " if selected else
           "Os arquivos ainda não foram verificados nesta versão. Nenhuma quantidade é apresentada como resultado. ")
        + "O perfil dos dados deve revelar valores ausentes, tipos de variáveis, duplicatas e "
        "desbalanceamento. Os hashes dos arquivos ligam cada experimento à versão dos dados utilizada.")
@@ -282,16 +311,20 @@ def create_slides(evidence: dict, runs: list[dict], draft: bool = False, holdout
                        "Os parâmetros dos modelos próprios permaneceram fixos."
                        if validation.get("independent_holdout") is False else
                        "A justificativa técnica da divisão permanece registrada nas métricas da execução.")
+    transductive_comparison = any(run.get("status") == "complete" and has_transductive(run) for run in runs)
     add("02 / Os dados", "A divisão precisa representar a pergunta", [
         f"Estratégia registrada: {method}",
         f"Divisões registradas: {number(validation.get('n_splits'))}",
         validation_note,
-        "Pré-processamento é ajustado somente no treino de cada divisão",
+        ("Contagens transdutivas são uma experiência separada; estatísticas com alvo ficam no treino"
+         if transductive_comparison else "Pré-processamento é ajustado somente no treino de cada divisão"),
     ], "Uma divisão aleatória não é automaticamente correta. Se houver transações ligadas "
        "à mesma pessoa, ou se o desafio for prever o futuro, a validação precisa considerar "
        "essa estrutura. O método registrado aqui é " + method + ". "
-       "Imputação, escalonamento e codificação são ajustados apenas nos dados de treino "
-       "da divisão. Aprender essas transformações usando a validação contaminaria a comparação.", kind="technical")
+       "Imputação, escalonamento e codificações que usam o alvo são ajustados no treino "
+       "da divisão. " + ("A experiência transdutiva de contagens sem alvo usa as entradas conhecidas "
+       "dos CSVs oficiais e será identificada separadamente. Ela não usa os rótulos externos."
+       if transductive_comparison else "Aprender essas transformações usando a validação contaminaria a comparação."), kind="technical")
     add("02 / Os dados", "No dia a dia: testar uma rota nova", [
         "Treinar no mesmo caminho que será avaliado pode dar uma impressão otimista",
         "Se a pergunta é sobre amanhã, o teste precisa respeitar o tempo",
@@ -455,6 +488,7 @@ def create_slides(evidence: dict, runs: list[dict], draft: bool = False, holdout
               "Os padrões numéricos de uma distribuição sintética "
               "exigem o mesmo cuidado.")
     append_feature_pairs(pair, runs)
+    append_transductive_pair(pair, runs)
     if target_runs:
         encoders = [run["model_details"]["target_encoder"] for run in target_runs]
         smooth_values = ", ".join(sorted({str(encoder.get("smooth")) for encoder in encoders}))
@@ -528,6 +562,9 @@ def create_slides(evidence: dict, runs: list[dict], draft: bool = False, holdout
                   "a relação é quatro para um. O logit coloca "
                   "essa razão em uma escala que pode ser somada "
                   "com outras pistas pelo modelo seguinte.")
+    append_pooling_pairs(pair, runs)
+    append_joint_pair(pair, runs)
+    append_storage_pair(pair, runs, evidence)
     if any(run.get("model") in ("logistic", "glm") for run in runs):
         pair("04 / Os modelos", "Referência: regressão logística", [
             "Combina as entradas por uma soma ponderada",
@@ -595,19 +632,32 @@ def create_slides(evidence: dict, runs: list[dict], draft: bool = False, holdout
               "uma forma mais simples de fazer essa triagem.")
     append_one_hot_pair(pair, runs)
     if any(run.get("model") == "glm" for run in runs):
+        blocks = [r"x_n", r"\widetilde{t}", r"\mathrm{OHE}(c)"]
+        extra_blocks = []
+        if has_frequency(runs):
+            blocks.append(r"\widetilde{f}")
+            extra_blocks.append("frequências transformadas")
+        if pooling_run(runs):
+            blocks.append(r"\widetilde{r}")
+            extra_blocks.append("logits das taxas pooled")
         pair("04 / Os modelos", "GLM: combinar logits e categorias originais", [
             "Uma regressão logística recebe múltiplas representações das entradas",
             "Logits codificados e one-hot têm pesos aprendidos distintos",
+            ("Blocos adicionais registrados: " + ", ".join(extra_blocks) if extra_blocks
+             else "O vetor reúne os blocos registrados daquela configuração"),
             "O total de pesos depende da codificação, não só do número de colunas brutas",
         ], "O experimento GLM usa regressão logística sobre entradas "
            "numéricas e representações das categorias. As categorias "
            "codificadas por alvo passam pela transformação logit e "
            "pelo escalonamento. As categorias originais também têm "
-           "uma representação one-hot. A combinação continua sendo "
+           "uma representação one-hot. "
+           + ("Nesta configuração também entram " + ", ".join(extra_blocks) + ". " if extra_blocks else "") +
+           "Na fórmula, fi é o vetor com todos esses blocos, e o til "
+           "identifica os blocos padronizados no treino. A combinação continua sendo "
            "uma soma ponderada antes da sigmoid. O total de pesos "
            "não é simplesmente o número de colunas do arquivo.",
-           r"z=b+w_x^{\top}x+w_t^{\top}\mathrm{logit}(\mathrm{TE}(c))+w_o^{\top}\mathrm{OHE}(c)",
-           "Logit final = viés mais contribuições das entradas numéricas, logits codificados e one-hot",
+           r"z=b+w^{\top}\phi(x),\quad\phi=[" + ",".join(blocks) + "]",
+           "Logit = viés mais soma ponderada do vetor completo de blocos; o til indica entradas padronizadas",
            "No dia a dia: uma ficha com mais de uma perspectiva", [
                "A mesma informação pode aparecer como medida, rótulo e histórico agregado",
                "A ficha aprende quanto cada perspectiva deve pesar",
@@ -972,9 +1022,11 @@ def create_slides(evidence: dict, runs: list[dict], draft: bool = False, holdout
            "Por isso não apresenta uma arquitetura hipotética como se tivesse sido "
            "executada. O roteiro matemático específico será incluído a partir "
            "dos mecanismos registrados no experimento real.")
+    append_neural_offset_pair(pair, runs)
     append_tabm_embedding_pair(pair, runs)
     append_tabm_backbone_pair(pair, runs)
     append_tabm_pair(pair, runs)
+    append_nested_stack_pair(pair, runs)
     for component in external_components:
         slides.extend(Slide(**specification) for specification in gpt2_slides(component))
     if selected.get("model") == "blend":
@@ -1030,6 +1082,8 @@ def create_slides(evidence: dict, runs: list[dict], draft: bool = False, holdout
                "resultado de avaliação independente final.")
     protocols = {}
     for run in development_runs:
+        if round_number(run) is not None:
+            continue
         contract = run.get("validation", {})
         key = (str(contract.get("method", "não verificado")).lower().replace("stratifiedkfold", "stratified"),
                contract.get("n_splits"), run.get("seed"), run.get("rows", {}).get("oof"), contract.get("holdout_fraction", 0))
@@ -1049,6 +1103,7 @@ def create_slides(evidence: dict, runs: list[dict], draft: bool = False, holdout
                 "com uma reserva separada e AUC de cinco folds sobre todos "
                 "os rótulos não são a mesma avaliação. A fonte externa foi "
                 "auditada e sua métrica reproduzida, sem executar seu treinamento.")
+    append_later_results(add, runs, number)
     append_tabm_result(add, runs, number)
     raw_logistic = next((run for run in development_runs if run.get("model") == "logistic" and
                          run.get("model_details", {}).get("feature_set", "raw") == "raw"), None)
@@ -1120,18 +1175,23 @@ def create_slides(evidence: dict, runs: list[dict], draft: bool = False, holdout
                              selected.get("model") == "blend" and
                              {run.get("model") for run in runs if is_refit(run)}.issuperset({"glm", "lightgbm"})
                              else "A configuração foi escolhida e congelada antes do refit")
+        if (components_from(runs[:1]) and
+                {run.get("model") for run in runs if is_refit(run)}.issuperset({"offset", "lightgbm"})):
+            final_composition = "Offset e LightGBM próprios refeitos; GPT-2 externo preservado"
         pair("07 / Os experimentos", "Refit final: aprender novamente com todos os rótulos", [
             f"Registros usados no refit: {number(rows.get('train'))}",
             final_composition,
-            "Os pesos são aprendidos novamente; os hiperparâmetros ficam definidos",
+            "Parâmetros dos modelos são reaprendidos; hiperparâmetros e pesos da mistura ficam fixos",
             "Este refit não produz uma nova AUC OOF ou independente",
         ], "Depois da seleção e da conferência registradas, o "
            "refit usa todos os rótulos disponíveis. A configuração "
            "é mantida e os parâmetros do modelo são aprendidos "
            "novamente. Quando existe um número de épocas ou "
            "árvores a fixar, ele vem da regra registrada no "
-           "desenvolvimento. A reserva avaliou médias dos checkpoints "
-           "de desenvolvimento. Este arquivo usa modelos aprendidos "
+           "desenvolvimento. A reserva antiga, quando fornecida, avalia "
+           "somente seu protocolo histórico; a composição exploratória "
+           "atual não recebe uma nova avaliação independente por herança. "
+           "Este arquivo usa modelos aprendidos "
            "novamente com todos os rótulos. Por isso nem a AUC OOF "
            "nem a AUC da reserva são apresentadas como uma nova "
            "medição deste arquivo. Sua avaliação externa vem do Kaggle.",
@@ -1210,6 +1270,7 @@ def create_slides(evidence: dict, runs: list[dict], draft: bool = False, holdout
               "A conferência anterior continua sendo evidência "
               "sobre o processo testado. Ela não se transforma "
               "automaticamente em uma avaliação daquela nova execução.")
+    append_context(add, evidence)
     add("08 / Da execução à competição", "Como o código produz a submissão", [
         "Inspecionar arquivos → definir validação → treinar e avaliar",
         "Salvar configurações, hashes, métricas e previsões por id",
@@ -1248,7 +1309,8 @@ def create_slides(evidence: dict, runs: list[dict], draft: bool = False, holdout
        "declaração de que a vitória foi alcançada.")
     limitations = [str(item) for item in evidence.get("limitations", [])]
     if draft:
-        limitations = ["Rascunho; falta evidência: " + ", ".join(missing)] + limitations
+        limitations = [("Rascunho; falta evidência: " + ", ".join(missing)) if missing else
+                       "Preview para revisão; esta renderização não é uma nova entrega audiovisual"] + limitations
     add("09 / A evidência final", "O que a evidência permite afirmar", (limitations or [
         "Os resultados apresentados correspondem às execuções identificadas",
         "O ranking é uma observação datada e pode mudar",
@@ -1292,5 +1354,7 @@ def create_slides(evidence: dict, runs: list[dict], draft: bool = False, holdout
         add("Referências", "Fontes e próximos pontos de inspeção", [name + ": " + url for name, url in group],
             "Este grupo reúne as referências de " + "; ".join(name for name, _ in group) +
             ". Os links completos estão no slide e no repositório.")
+    for slide in slides:
+        slide.narration = spoken_year_2026(slide.narration)
     ensure_pairs(slides)
     return slides
