@@ -1,0 +1,38 @@
+{
+  "declared_at_utc": "2026-11-17T13:12:56.298050+00:00",
+  "status": "prospective; neither planned file has been submitted",
+  "baseline_submission": "58438450",
+  "baseline_public_auc": 0.95097,
+  "trials": [
+    {
+      "run": "final-refit-public25",
+      "kind": "inference_refit_after_selection",
+      "submission_sha256": "cd10c4c11bd76f6eae3a8cc6101db7ba71a1f56341ea54c9805d5364fba6b517",
+      "source_commit": "6ca52c7029d32f9e2a860a752f6b139ebbc03654",
+      "local_auc": null,
+      "public_score_before_submission": null
+    },
+    {
+      "run": "round9-bpe-frequency-public25",
+      "kind": "exploratory_protocol_deviation",
+      "submission_sha256": "e870c10ec773c10d16a4f53bea41776f0b69d95e07e0157884d5371dc13ae0c9",
+      "source_commit": "6ca52c7029d32f9e2a860a752f6b139ebbc03654",
+      "local_auc": 0.9514070520739548,
+      "public_score_before_submission": null
+    }
+  ],
+  "r9_protocol_deviation": {
+    "original_plan": "evidence/round9-plan.json",
+    "original_rule_preserved_as_failed": true,
+    "observed_pooled_gain": 0.00014842055408248456,
+    "improved_folds": 3,
+    "required_by_original_rule": 4,
+    "decision": "Root explicitly permits one exploratory public evaluation; this is not an OOF promotion or a claim that the original rule passed.",
+    "reason": "The pooled gain is the largest measured feature improvement; three larger positive fold differences outweigh two smaller negative differences. The four-fold rule is a heuristic, not a statistical significance test. Public evaluation tests this uncertainty without changing the frozen model or weights.",
+    "limitation": "This is an outcome-informed deviation from the earlier no-submit rule. Its public score is exploratory model-selection feedback, not independent evidence of robustness. Failed consistency remains reported."
+  },
+  "decision_rule": "Submit exactly these two fixed files before changing any model or weight. Record every completed score against the original uploaded bytes. Keep the best verified public score as the displayed provisional result; do not attach another file's ranking or score to a worse attempt.",
+  "frozen_before_any_new_submission_score": true,
+  "final_validation": "No independent holdout remains. Competition private scores are unavailable until the event concludes. These evaluations do not establish victory or robust generalization.",
+  "external_component": "Both use the unchanged approved Masaya Kawamata GPT-2 v2 at25percent; CC BY4.0 attribution is preserved. No seed2026 or other unaudited prediction source is used."
+}
