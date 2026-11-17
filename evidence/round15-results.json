@@ -1,0 +1,162 @@
+{
+  "recorded_at": "2026-11-17T19:47:16.619331+00:00",
+  "plan": "evidence/round15-plan.json",
+  "source_commit": "783e79cb7aa6cdefe952085f3127f80898ea2b2a",
+  "source_was_dirty": false,
+  "plan_sha256": "375e8f6bf9a88c4fbabf727944255b3ceeb896912c7239eeab753e5fd7881d72",
+  "runner_sha256": "0b8f8a6ac5eb750de42093932f02612469949c5d2bf4b903acf9d8e2a2bca6d0",
+  "validation": "Reuse the frozen699960 out-of-fold predictions, known labels and exact StratifiedKFold5/42 assignments. This is exploratory model selection on previously used OOF labels, not fresh nested CV or an independent holdout. Rank-based transforms also use the unlabeled score distribution of the evaluated vector. No new training or public-score tuning.",
+  "baseline_run": "round10-offset-bpe-frequency-public25",
+  "baseline_oof_auc": 0.9514921382152453,
+  "sources": [
+    "round10-offset-bpe-frequency",
+    "explore5-lgbm",
+    "explore5-public-gpt2-v2"
+  ],
+  "weights": [
+    0.5625,
+    0.1875,
+    0.25
+  ],
+  "comparisons": [
+    {
+      "run": "round15-logit-fixed",
+      "space": "logit",
+      "oof_auc": 0.9515028337856481,
+      "fold_scores": [
+        0.9505171211906654,
+        0.9519510634286037,
+        0.9565174989081052,
+        0.951860924086044,
+        0.9467646892607584
+      ],
+      "delta_vs_r10": 1.0695570402896593e-05,
+      "fold_deltas": [
+        2.7699743053721804e-05,
+        2.1576270070045034e-05,
+        -1.3929495784048562e-05,
+        6.574485864263568e-05,
+        -4.547360490714247e-05
+      ],
+      "improved_folds": 3,
+      "eligible_to_submit": false,
+      "submission_sha256": "b3a9bf6b53d9086a72499e4d404453effb2cce864d96d02b17f38783fc59267c",
+      "oof_sha256": "0a5a9f14242e93aa3f1daf82393fb3ff699565a715f9a092a1dd247ce1aa41a3",
+      "manual_formula_max_error": {
+        "oof": 2.220446049250313e-16,
+        "test": 2.220446049250313e-16
+      },
+      "metric_auc_before_csv_roundtrip": 0.9515028337856481,
+      "csv_auc_drift": 0.0,
+      "csv_fold_auc_drifts": [
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0
+      ]
+    },
+    {
+      "run": "round15-rank-fixed",
+      "space": "rank",
+      "oof_auc": 0.9515026915890539,
+      "fold_scores": [
+        0.9504984189682345,
+        0.9519624900894884,
+        0.9565019117308576,
+        0.9518930414702002,
+        0.9467599228439543
+      ],
+      "delta_vs_r10": 1.0553373808619426e-05,
+      "fold_deltas": [
+        8.9975206227777e-06,
+        3.300293095476192e-05,
+        -2.951667303163763e-05,
+        9.78622427988407e-05,
+        -5.0240021711278615e-05
+      ],
+      "improved_folds": 3,
+      "eligible_to_submit": false,
+      "submission_sha256": "62eac5d308633925589c0ce35d4945a904aaf80b86a02f5ba0669213448e86d3",
+      "oof_sha256": "97521bb12017c38b715b77974ad77ddb2d5b86fb36e571d8b9f64f4dadf9291a",
+      "manual_formula_max_error": {
+        "oof": 1.1102230246251565e-16,
+        "test": 1.1102230246251565e-16
+      },
+      "metric_auc_before_csv_roundtrip": 0.9515026914026072,
+      "csv_auc_drift": 1.8644663590805521e-10,
+      "csv_fold_auc_drifts": [
+        1.1102230246251565e-16,
+        3.107181734129938e-09,
+        3.1071818451522404e-09,
+        1.1102230246251565e-16,
+        3.1071816231076355e-09
+      ]
+    },
+    {
+      "run": "round15-rank_logit-fixed",
+      "space": "rank_logit",
+      "oof_auc": 0.951513811760476,
+      "fold_scores": [
+        0.9505233537105648,
+        0.9519720089407787,
+        0.9565303098184595,
+        0.9518743036106584,
+        0.9467686229528534
+      ],
+      "delta_vs_r10": 2.167354523074927e-05,
+      "fold_deltas": [
+        3.393226295311802e-05,
+        4.252178224506409e-05,
+        -1.1185854297268705e-06,
+        7.912438325707871e-05,
+        -4.1539912812194046e-05
+      ],
+      "improved_folds": 3,
+      "eligible_to_submit": false,
+      "submission_sha256": "d4f30c440caa3a3eb79727316f384f9f9cde0336c3d40dc6c34b51715c4ec60c",
+      "oof_sha256": "c9df1adce3127495832c22f63f66d1177c4a676dc4d194da142512e9c0e9db0d",
+      "manual_formula_max_error": {
+        "oof": 3.3306690738754696e-16,
+        "test": 3.3306690738754696e-16
+      },
+      "metric_auc_before_csv_roundtrip": 0.951513811760476,
+      "csv_auc_drift": 0.0,
+      "csv_fold_auc_drifts": [
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0
+      ]
+    }
+  ],
+  "selected_if_not_dominated": null,
+  "other_round_check": "Must compare against selected R13/R14 after their audits before any submission.",
+  "input_hashes": {
+    "round10-offset-bpe-frequency": {
+      "oof.csv": "f16b28c7d3bb09a4360f8dbaef59e9dd78a63537bd7f7b01a9a3de43a483f3b4",
+      "predictions.csv": "8d98b87d5da1f8bc3411e2ed0dbc24aa7c0ccb8fd150762ee3f09a4025c5ccad",
+      "metrics.json": "9a3b92009ebcbff083c8ad39af9767a01da602992a8930eff6a4c5b548338ddd"
+    },
+    "explore5-lgbm": {
+      "oof.csv": "2a188175419c819bf5d5098125423afa8e95cd79cd965d2108b834cc4016a234",
+      "predictions.csv": "54c9fc1229d1b8aa253520b79c4493b0ae97902ee1f76b73baa9b09d48ccd142",
+      "metrics.json": "cbbec3ffbcc1461e2f34835955808e3de7ef9306336ea93bf21f3453a0950e4d"
+    },
+    "explore5-public-gpt2-v2": {
+      "oof.csv": "4c37722b34d520a6de7d94565140cd0681baad6fb6c012d0b7a86a25b82a4dcb",
+      "predictions.csv": "78ada898faa132accf86daa3311ba114e44a472d31f0648357d10000ab243d58",
+      "metrics.json": "14f9e508e5f78c926cd5a4341259623f490872da3e73d5b96f1ae8903fe29bc7"
+    }
+  },
+  "data_hashes_rechecked": {
+    "train.csv": "87eaa10b8d17a7e4f657b8da1c66242431338bdd8b6ad45861521ac0c0e9fbd5",
+    "test.csv": "10f516959020357b565abaaa4fd25baae97fc2f536d0805695bb7cc15c1660f0",
+    "sample_submission.csv": "13fc6ed8b73de5329884ec490f2a0b750cf29a7cda772b78cfa0cf486f6f35fa"
+  },
+  "new_kaggle_submissions": 0,
+  "audit_note": "Resumed completed logit/rank artifacts after the initial1e-12 AUC equality audit stopped on a1.864e-10 rank tie roundtrip difference. No source, weight, clip or fusion rule was changed. Formula error remains bounded1e-12; AUC serialization tolerance2e-8 is disclosed.",
+  "private_result_sha256": "2e5becf472b542c8205b8111fa423713e1e686955a41771faff5dc46f7a42bdb",
+  "publication_note": "Aggregate metrics and file fingerprints only; no data rows, predictions, credentials or checkpoint binaries."
+}

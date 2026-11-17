@@ -246,3 +246,23 @@ treino e teste. O gerador não foi verificado; não há mapeamento de IDs que
 justifique transferir rótulos. Nenhum modelo adicional foi treinado no original
 nesta auditoria. Essa fonte já faz parte da adaptação declarada pelo GPT-2 de
 Masaya usado na composição atual.
+
+A [R13 terminou](../evidence/round13-results.json) com OOF própria 0,95093272,
+acima dos 0,95077054 da R10. As misturas com 25%, 50% e 100% de substituição do
+offset chegaram a 0,95152100, 0,95154286 e 0,95156442. As duas primeiras melhoraram
+os cinco folds, mas não superaram o ganho mínimo; a última melhorou três folds.
+Nenhuma foi submetida. A [auditoria independente](../evidence/round13-verification.json)
+recalculou as métricas, fórmulas em todas as linhas, hashes e cinco recargas reais.
+
+A [R15](../evidence/round15-results.json) manteve os três modelos e pesos da R10.
+As médias por logits, ranks normalizados e logits desses ranks chegaram a
+0,95150283, 0,95150269 e 0,95151381; nenhuma passou no gate. Para ranks, o
+round-trip CSV alterou uma AUC em 1,864e-10 ao desfazer empates numéricos. Isso
+foi quantificado no relatório, sem mudar pesos, clipping ou regra de combinação.
+Coeficientes nessas escalas não são percentuais de contribuição em probabilidade.
+
+Os planos [R16](../evidence/round16-plan.json) e [R17](../evidence/round17-plan.json)
+separam duas hipóteses seguintes: mais rótulos públicos originais somente no
+treino de cada fold, e uma rede que aprende uma correção da margem do GLM.
+A segunda seleciona épocas em uma divisão interna, descarta todos os modelos
+dessa seleção e refaz o treino externo completo. Os planos não afirmam ganho.

@@ -1,0 +1,175 @@
+{
+  "recorded_at": "2026-11-17T19:40:12.005129+00:00",
+  "plan": "evidence/round13-plan.json",
+  "plan_sha256": "c2e84723961f54b33ce2be40d4dbd48154ff378d8126e2e0a83ac3b3f3946d98",
+  "source_commit": "671ed3071168b4e67f7f9b245d92d1851d4776b5",
+  "source_was_dirty": false,
+  "validation": "Exploratory full-data StratifiedKFold5/42, all known labels and same ordered IDs/folds as R10. Hierarchical statistics are cross-fitted5 times within outer training, with the prior computed only from the corresponding inner training subset. Inference uses only outer-training statistics. No independent holdout or outer-validation early stopping.",
+  "baseline_run": "round10-offset-bpe-frequency-public25",
+  "baseline_oof_auc": 0.9514921382152453,
+  "candidate": "round13-pooled-offset",
+  "own_oof_auc": 0.9509327242594462,
+  "own_fold_scores": [
+    0.9499981123702199,
+    0.9510657061680156,
+    0.9560120660816026,
+    0.9512614772613396,
+    0.9464403927015382
+  ],
+  "comparisons": [
+    {
+      "run": "round13-pooled-share025-public25",
+      "share": 0.25,
+      "weights": [
+        0.140625,
+        0.421875,
+        0.1875,
+        0.25
+      ],
+      "oof_auc": 0.9515210006435392,
+      "fold_scores": [
+        0.9505184174304653,
+        0.9519411359829133,
+        0.9565700631017655,
+        0.9518035841540344,
+        0.94686960635972
+      ],
+      "delta_vs_r10": 2.8862428293918718e-05,
+      "fold_deltas": [
+        2.8995982853552427e-05,
+        1.1648824379650868e-05,
+        3.863469787623863e-05,
+        8.40492663312098e-06,
+        5.944349405440086e-05
+      ],
+      "improved_folds": 5,
+      "eligible_to_submit": false,
+      "submission_sha256": "9ac2408a4368c654b0ede9344c2b1ab58b9ecc8a3294da4b7a22e51fe64060ff"
+    },
+    {
+      "run": "round13-pooled-share050-public25",
+      "share": 0.5,
+      "weights": [
+        0.28125,
+        0.28125,
+        0.1875,
+        0.25
+      ],
+      "oof_auc": 0.9515428644885826,
+      "fold_scores": [
+        0.9505374227305473,
+        0.9519434197614995,
+        0.9566015202097998,
+        0.9518053801050858,
+        0.9469239820403405
+      ],
+      "delta_vs_r10": 5.072627333735369e-05,
+      "fold_deltas": [
+        4.800128293558359e-05,
+        1.3932602965893714e-05,
+        7.009180591055486e-05,
+        1.020087768444089e-05,
+        0.00011381917467490066
+      ],
+      "improved_folds": 5,
+      "eligible_to_submit": false,
+      "submission_sha256": "b565ca552e246236d2523e2406817459fb816c7bb1d738e47ee79db60d55d1da"
+    },
+    {
+      "run": "round13-pooled-share100-public25",
+      "share": 1.0,
+      "weights": [
+        0.5625,
+        0.0,
+        0.1875,
+        0.25
+      ],
+      "oof_auc": 0.9515644211939545,
+      "fold_scores": [
+        0.9505499934589626,
+        0.9519176829750664,
+        0.9566514774779722,
+        0.9517866562278616,
+        0.9470111664530563
+      ],
+      "delta_vs_r10": 7.228297870920386e-05,
+      "fold_deltas": [
+        6.057201135090118e-05,
+        -1.1804183467245544e-05,
+        0.00012004907408291743,
+        -8.52299953968405e-06,
+        0.00020100358739072455
+      ],
+      "improved_folds": 3,
+      "eligible_to_submit": false,
+      "submission_sha256": "80438724a7d7cb79cedc410db6d3ab1a1d1811d75c48700d6597bee320de59af"
+    }
+  ],
+  "selected": null,
+  "decision": "do_not_submit",
+  "input_oof_sha256": {
+    "round13-pooled-offset": "fd34d3a6db93a7c02bdcf8cfde5a4e6a7d1ca8fe32e56b27944347ab9b69385e",
+    "round10-offset-bpe-frequency": "f16b28c7d3bb09a4360f8dbaef59e9dd78a63537bd7f7b01a9a3de43a483f3b4",
+    "explore5-lgbm": "2a188175419c819bf5d5098125423afa8e95cd79cd965d2108b834cc4016a234",
+    "explore5-public-gpt2-v2": "4c37722b34d520a6de7d94565140cd0681baad6fb6c012d0b7a86a25b82a4dcb"
+  },
+  "checkpoint_reload": {
+    "validation_rows_per_fold": 1024,
+    "fold_errors": [
+      1.1102230246251565e-16,
+      1.1102230246251565e-16,
+      1.1102230246251565e-16,
+      1.1102230246251565e-16,
+      1.1102230246251565e-16
+    ],
+    "test_rows": 1024,
+    "test_mean_error": 1.1102230246251565e-16,
+    "passed": true
+  },
+  "training_elapsed_seconds": 534.358,
+  "versions": {
+    "python": "3.10.11",
+    "fraudlab": "0.1.0",
+    "numpy": "2.2.6",
+    "pandas": "2.3.3",
+    "scikit-learn": "1.7.2",
+    "catboost": "1.2.10",
+    "lightgbm": "4.7.0",
+    "torch": "2.11.0+cu128",
+    "tiktoken": "0.14.0",
+    "regex": "2026.9.29"
+  },
+  "feature_encoding": {
+    "tiktoken": "0.14.0",
+    "encoding": "gpt2",
+    "vocabulary_size": 50257,
+    "encoding_files": [
+      {
+        "url": "https://openaipublic.blob.core.windows.net/gpt-2/encodings/main/vocab.bpe",
+        "sha256": "1ce1664773c50f3e0cc8842619a93edc4624525b728b188a9e0be33b7726adc5"
+      },
+      {
+        "url": "https://openaipublic.blob.core.windows.net/gpt-2/encodings/main/encoder.json",
+        "sha256": "196139668be63f3b5d6574427317ae82f612a97c5d1cdaf36ed2256dbf636783"
+      }
+    ],
+    "input_columns": [
+      "amount_usd",
+      "account_balance_usd"
+    ],
+    "output_suffixes": [
+      "__gpt2_first_key",
+      "__gpt2_second_key",
+      "__gpt2_second_cents_key"
+    ],
+    "representation": "cents=np.rint(float64_USD*100); ' ' + str(cents // 100)",
+    "rounding": "NumPy rint; nearest representable cent, halfway ties to even",
+    "second_token_missing": "-1",
+    "third_key": "second_token_id + ':' + str(cents % 100)",
+    "more_than_two_tokens": "retain first two; discard later integer tokens",
+    "label_usage": "none in extraction; fold-local cross-fitted TE downstream"
+  },
+  "new_kaggle_submissions": 0,
+  "private_result_sha256": "33919949c39871472a1e33fdef18dbee3e6a70390e47351d61e16107004de6d6",
+  "publication_note": "Aggregate metrics and file fingerprints only; no data rows, predictions, credentials or checkpoint binaries."
+}
