@@ -1,0 +1,37 @@
+{
+  "date": "2026-11-17",
+  "status": "prospective; synthetic tests only, no neural-offset competition fit performed",
+  "hypothesis": "A neural correction to a strong GLM may learn complementary interactions more efficiently than the previous standalone MLP or TabM. This is an independently trained residual network, not a retrained public prediction stream.",
+  "baseline_run": "round10-offset-bpe-frequency-public25",
+  "baseline_oof_auc": 0.9514921382152453,
+  "candidate": {
+    "name": "round17-neural-pooled-offset", "model": "neural_offset",
+    "feature_set": "bpe_digits", "glm_pooled_tokens": true,
+    "glm_frequency": true, "glm_inner_folds": 5, "target_smoothing": 50,
+    "logistic_c": 0.3, "glm_spline_knots": 0,
+    "hidden_dims": [256, 256], "dropout": 0.1,
+    "neural_learning_rate": 0.001, "weight_decay": 0.0001,
+    "batch_size": 4096, "epochs": 40, "patience": 6,
+    "neural_numeric_transform": "standard", "neural_categorical_transform": "target",
+    "folds": 5, "seed": 42, "holdout_fraction": 0,
+    "phase": "exploratory_full_data_cv", "device": "cpu", "threads": 4
+  },
+  "architecture": {
+    "input": "R13 GLM preprocessing: BPE+frequency+16 hierarchical pooled logits; approximately207 dimensions, actual width recorded per stage",
+    "network": "input -> Linear256 -> SiLU -> Dropout0.1 -> Linear256 -> SiLU -> Dropout0.1 -> Linear1",
+    "head": "Last-layer weight and bias zero initially; combined initial predictor equals GLM after float32 margin conversion",
+    "prediction": "sigmoid(frozen_GLM_margin_float32 + neural_residual)",
+    "objective": "Unweighted mean BCEWithLogits on the summed margin, AdamW0.001/weight_decay0.0001, gradient norm clip1.0",
+    "precision": "Encoded neural inputs, GLM margin and neural weights float32; no claim of bit identity to standalone float64 GLM. Saved prediction reload tolerance1e-6."
+  },
+  "validation": "Exploratory full-data StratifiedKFold5/42, same699960 OOF IDs/labels/folds as R10. Within each outer-training fold, reserve15% stratified at seed42. Fit inner preprocessing, target maps, frequency, scaling, pooled maps and GLM using inner-training rows only. Use exactly that cross-fitted matrix for the inner GLM and neural residual. Choose epoch E<=40 with inner AUC/patience6 and minimum increment1e-6. Discard preprocessing, GLM, network and optimizer; fit all of them anew on the complete outer-training fold for exactly E epochs. Outer validation labels are absent from the model API. No original augmentation, public-score selection or independent holdout.",
+  "convergence": "Require both GLMs to finish without ConvergenceWarning and before the solver cap. Abort and report failure instead of treating a numeric failure as a model score. Persist inner/outer convergence and epoch history separately.",
+  "fixed_comparisons": {
+    "space": "probability", "candidate_share_of_own_offset": [0.1, 0.25, 0.5, 1.0],
+    "formula": "0.5625*(share*neural_candidate+(1-share)*R10_own_offset)+0.1875*explore5_lgbm+0.25*approved_Masaya_GPT2_v2",
+    "selection": "Report all four shares; highest pooled OOF among eligible shares. No architecture, optimizer, dropout or weight sweep after observing outcomes."
+  },
+  "promotion_rule": "Exceed R10 pooled hybrid OOF by strictly more than0.0001 and improve at least4/5 folds. Before submitting also exceed any already-selected qualifying candidate from other new rounds. At most one submission after independent source/data/config/ID/fold/label/formula and five real checkpoint reload audits. If no share passes, record the result and do not submit; no exception.",
+  "cost": "Five inner selections plus five fresh outer neural fits and10 GLM/preprocessing fits. CPU fixed so the separate R12 GPU work can continue. A fabricated207-input/4-thread benchmark processed40960 rows in0.5165s; that is not a full-data runtime or quality claim. No paid compute.",
+  "training_gate": "Publish this plan, reviewed implementation and passing tests before any competition-data neural fit. Run a clean isolated pinned worktree, with source unchanged during training."
+}

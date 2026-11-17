@@ -1,0 +1,40 @@
+{
+  "date": "2026-11-17",
+  "status": "prospective; no original-augmented fit performed",
+  "hypothesis": "Additional licensed original labels may improve estimates for rare numeric values and interactions. Change R14 only by appending the20,000 original rows to each outer-training set. No original row participates in competition folds or OOF evaluation.",
+  "original": {
+    "reference": "uditjain13/credit-card-fraud-detection-2026/5",
+    "url": "https://www.kaggle.com/datasets/uditjain13/credit-card-fraud-detection-2026/versions/5",
+    "license": "CC0-1.0",
+    "file": "credit_card_fraud_2026.csv",
+    "sha256": "4e32b1ad4880cae452d1f2e5aa53224d38eb913c185455c00a3759df5eb3da61",
+    "rows": 20000,
+    "positives": 339,
+    "id_column": "transaction_id",
+    "evidence": "evidence/original-data-audit.json",
+    "overlap": "Zero exact24-feature matches among original, competition train and competition test under the pinned audit. Numeric ID equality does not establish row identity. No test labels are available or transferred."
+  },
+  "baseline_run": "round10-offset-bpe-frequency-public25",
+  "baseline_oof_auc": 0.9514921382152453,
+  "causal_reference": "round14-full-token-pooled-offset; compare own OOF and every fold to isolate the effect of additional original labels, irrespective of the promotion decision",
+  "validation": "Exploratory StratifiedKFold5/42 over only699960 competition rows. For fold k, fit on competition_training_without_k plus all20000 pinned original rows:579968 training rows. Validate on139992 competition rows only. Target encoding, pooled statistics, frequency and scaling fit only this expanded training set, using internal crossfit5 where supervised. All original IDs and competition IDs are excluded from predictors. No independent holdout, generator claim, test labels or outer-validation early stopping.",
+  "candidate": {
+    "name": "round16-original-token-pooled-offset",
+    "model": "offset", "feature_set": "token_digits",
+    "glm_pooled_tokens": true, "glm_frequency": true, "glm_inner_folds": 5,
+    "target_smoothing": 50, "logistic_c": 0.3, "glm_spline_knots": 0,
+    "iterations": 1000, "num_leaves": 4, "learning_rate": 0.03,
+    "l2_leaf_reg": 5, "min_child_samples": 100,
+    "folds": 5, "seed": 42, "holdout_fraction": 0,
+    "phase": "exploratory_full_data_cv", "fixed_training": true,
+    "device": "cpu", "threads": 4
+  },
+  "fixed_comparisons": {
+    "space": "probability", "candidate_share_of_own_offset": [0.25, 0.5, 1.0],
+    "formula": "0.5625*(share*candidate+(1-share)*R10_own_offset)+0.1875*explore5_lgbm+0.25*approved_Masaya_GPT2_v2",
+    "selection": "Report every fixed share; choose highest pooled OOF among eligible shares. No extra weight or label-source-weight search."
+  },
+  "promotion_rule": "Exceed R10 hybrid pooled OOF by strictly more than0.0001 and improve at least4/5 folds. Also exceed any already-selected qualifying R13/R14/R15 candidate before submitting. At most one submission after independent source/config/competition+original data hashes, no-overlap, fold/ID/label, mixture and checkpoint audits. Otherwise record the negative result; no exception.",
+  "provenance": "Record original metadata under additional_training_data, separately from unchanged competition data_hashes. Require the expected original SHA before reading/fitting and recheck it after fitting. All OOF IDs/labels/folds remain identical to R10. No original data is added to Git.",
+  "training_gate": "Publish this plan and tested opt-in implementation, then fit a clean pinned isolated worktree. No paid compute. Approved external GPT2 already used original data, so this additional source can be redundant; no gain is asserted beforehand."
+}
