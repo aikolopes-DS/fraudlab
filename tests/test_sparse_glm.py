@@ -126,10 +126,10 @@ def test_sparse_glm_reload_and_metadata(toy, config, tmp_path):
         predict_saved("glm", path, outside), test, rtol=0, atol=1e-14
     )
     assert details["solver"] == "lbfgs"
-    assert details["max_iter"] == 500
+    assert details["max_iter"] == 2000
     assert details["tol"] == 1e-7
     assert details["converged"] is True
-    assert 0 < details["iterations_used"] < 500
+    assert 0 < details["iterations_used"] < 2000
     assert details["target_encoder"]["internal_folds"] == 5
     assert details["target_encoder"]["smooth"] == 50
     assert details["value_one_hot"] == {

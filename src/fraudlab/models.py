@@ -773,7 +773,7 @@ def make_glm_pipeline(
     classifier = LogisticRegression(
         C=config["logistic_c"],
         solver="lbfgs" if value_one_hot else "newton-cholesky",
-        max_iter=500 if value_one_hot else 100,
+        max_iter=2000 if value_one_hot else 100,
         tol=1e-7,
         random_state=seed,
     )

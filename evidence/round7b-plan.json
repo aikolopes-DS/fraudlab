@@ -1,0 +1,133 @@
+{
+  "date": "2026-11-17",
+  "status": "prospective optimization repair; no round7b model trained",
+  "hypothesis": "Adding regularized value-specific coefficients for all 54 categorical value_digits inputs may improve the existing additive GLM beyond marginal target encodings and nominal one-hot coefficients.",
+  "idea_source": {
+    "local_file": ".local/research/selftrained/source.txt",
+    "section": "The joint GLM",
+    "use": "Concept only. No third-party source, predictions, fitted coefficients or vocabulary was copied. The existing FraudLab pipeline is extended independently.",
+    "difference": "Retain FraudLab value_digits, smoothing50, C0.3 and inner5; do not adopt the source notebook's train-plus-test vocabulary, splines, C0.01, stacking or other features."
+  },
+  "baseline": {
+    "run": "explore5-public25",
+    "pooled_oof_auc": 0.9512586315198723,
+    "fold_scores": [
+      0.9503028064353239,
+      0.9518728494495995,
+      0.9563594490012233,
+      0.951530469092596,
+      0.94636140814146
+    ]
+  },
+  "validation": {
+    "method": "StratifiedKFold(5, shuffle=True, random_state=42)",
+    "training_labels": 699960,
+    "independent_holdout": false,
+    "note": "Exploratory full-data CV uses all labels; OOF used for selection is not an independent final assessment. Historical holdout is not reopened.",
+    "fold_local": "Numeric imputation/scaling, one-hot categories and rare counts fit only outer training rows; supervised target logits are cross-fitted in 5 inner partitions of each outer training fold, then standardized using training-only statistics.",
+    "early_stopping": false,
+    "model_seeds": "42 + outer fold, matching the existing experiment runner",
+    "test_prediction": "Probability average of five outer-fold GLM checkpoints; no full-data refit in this round."
+  },
+  "candidate": {
+    "name": "round7b-glm-value-one-hot",
+    "model": "glm",
+    "phase": "exploratory_full_data_cv",
+    "feature_set": "value_digits",
+    "split": "stratified",
+    "folds": 5,
+    "seed": 42,
+    "holdout_fraction": 0,
+    "fixed_training": true,
+    "logistic_c": 0.3,
+    "target_smoothing": 50,
+    "glm_inner_folds": 5,
+    "glm_value_one_hot": true,
+    "glm_frequency": false,
+    "glm_spline_knots": 0,
+    "threads": 4,
+    "device": "cpu"
+  },
+  "encoding": {
+    "scope": "All 54 categorical value_digits inputs, replacing the nominal-only one-hot block. The original 24 numeric and 54 target-logit blocks remain.",
+    "encoder": "OneHotEncoder(sparse_output=True, min_frequency=5, handle_unknown='ignore', dtype=float32)",
+    "rare_values": "Values with count < 5 within an outer training fold share that feature's infrequent column. No global or test counts are used.",
+    "unknown_values": "All-zero OHE block for the unseen feature; target encoding falls back to the outer training prior.",
+    "column_transformer": "sparse_threshold=1.0; mixed numeric/TE/OHE design is CSR float64 for this audited nonconstant dataset.",
+    "solver": "lbfgs",
+    "tol": 1e-07,
+    "max_iter": 2000,
+    "solver_reason": "The new sparse design makes a dense matrix and a newton-cholesky Hessian impractical. This solver change is a computational requirement of the same predeclared hypothesis, not a solver sweep.",
+    "convergence": "Record actual solver, tol, max_iter, n_iter and converged for every successful fit. Reemit every captured ConvergenceWarning, then fail before checkpoint/predictions if a warning occurred or iterations_used reaches max_iter. No warning suppression or automatic retry/tuning."
+  },
+  "unlabelled_dimension_audit": {
+    "artifact": ".local/research/round7/dimensions.json",
+    "scope": "Existing audit read unlabelled training features and existing fold IDs only, without test features, target or predictions. This preparation did not rerun that audit.",
+    "global_categorical_values": 100236,
+    "outer_training_ohe_columns_range": [
+      51359,
+      51448
+    ],
+    "csr_gib_per_outer_train_upper": 0.83,
+    "dense_gib_per_outer_train_approximate": 214,
+    "newton_hessian_gib_approximate": 19.7,
+    "limits": "CSR figure bounds design storage only; pandas strings, temporary arrays and solver workspaces add RAM. Runtime, peak RSS and real convergence are not measured."
+  },
+  "fixed_blend": {
+    "space": "probability",
+    "candidate_glm": 0.5625,
+    "explore5-lgbm": 0.1875,
+    "explore5-public-gpt2-v2": 0.25
+  },
+  "gate": {
+    "preconditions": "Five converged candidate fits; finite valid probabilities; same data hashes, IDs, row order, labels and outer fold assignments as the baseline and fixed blend components.",
+    "pooled_oof_delta_strictly_greater_than": 0.0001,
+    "strictly_better_folds_at_least": 4,
+    "comparison": "The one fixed blend versus explore5-public25 on identical rows/folds. Candidate standalone AUC is descriptive only.",
+    "on_failure": "Record null/invalid result and do not submit. No seed search, C search, min_frequency search, alternative blends or leaderboard-driven selection.",
+    "on_success": "Eligible for at most one submission by root under the existing authorization; no submission is made by this preparation."
+  },
+  "scope_and_cost": "One sequential CPU run of five outer GLM fits, four threads. No pair features, frequency features, splines, BPE, GPU model, grid or platform expansion.",
+  "training_gate": "Root integrates and reviews this patch, freezes tested sources and the prospective plan, then explicitly authorizes the competition fit. Preparation permits toy fits only.",
+  "proposed_argv_after_freeze_only": [
+    "-m",
+    "fraudlab",
+    "train",
+    "--data",
+    "data/raw",
+    "--output",
+    "artifacts/runs",
+    "--name",
+    "round7b-glm-value-one-hot",
+    "--model",
+    "glm",
+    "--feature-set",
+    "value_digits",
+    "--phase",
+    "exploratory_full_data_cv",
+    "--split",
+    "stratified",
+    "--folds",
+    "5",
+    "--seed",
+    "42",
+    "--holdout-fraction",
+    "0",
+    "--fixed-training",
+    "--threads",
+    "4",
+    "--device",
+    "cpu",
+    "--logistic-c",
+    "0.3",
+    "--target-smoothing",
+    "50",
+    "--glm-inner-folds",
+    "5",
+    "--glm-value-one-hot",
+    "--validation-note",
+    "Prospective round7b optimization-budget repair: max_iter2000 only, same C0.3/tol1e-7/features/fixed CV5/42 and mixture gate; no independent holdout or public-feedback tuning."
+  ],
+  "previous_attempt": "evidence/round7-results.json",
+  "repair_reason": "The first convex fit exhausted 500 L-BFGS iterations before producing any checkpoint or predictions. Increase only the optimization budget to 2000. Keep the statistical model, C0.3, tolerance1e-7, features, splits, weights and promotion gate unchanged. No AUC or leaderboard feedback from the failed fit exists."
+}

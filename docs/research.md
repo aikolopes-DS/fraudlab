@@ -167,3 +167,10 @@ target encoder. Essa hipótese veio da seção *The joint GLM* do notebook
 sem copiar sua implementação. O solver L-BFGS evita armazenar a Hessiana densa
 dos cerca de 51 mil coeficientes. Um ajuste que não converge é recusado antes
 de salvar o checkpoint; a regularização e a regra de seleção permanecem fixas.
+
+O primeiro ajuste [atingiu 500 iterações sem convergir](../evidence/round7-results.json),
+antes de produzir checkpoint ou previsão. Não há AUC dessa execução. O
+[plano 7b](../evidence/round7b-plan.json) aumenta somente o orçamento do
+otimizador para 2.000 iterações. A função objetivo, `C`, tolerância, atributos,
+folds e regra de seleção são os mesmos; a falha numérica não é um resultado
+de desempenho competitivo.

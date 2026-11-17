@@ -1,0 +1,29 @@
+{
+  "status": "invalid_nonconvergence_first_fold_no_retry_no_submission",
+  "started_at": "2026-11-17T12:10:57.760439+00:00",
+  "frozen_commit": "9f9bf7349f8ec69d107b94376609b88daecfa4cb",
+  "public_plan_sha256": "aeeb1eaf608cfbb93a193df4385a266f42afa75c1d066df34b4ec8e7c66dd34e",
+  "training_elapsed_seconds_observed": 90.323,
+  "training_exit_code": 1,
+  "training_log_sha256": "d5b73211a18d33e688bfdd267ac328bd83cc9b2fc5778bcc7349687cdb02359b",
+  "run_status": {
+    "status": "failed",
+    "error": "GLM value one-hot did not converge; iterations_used=500, max_iter=500. The candidate is invalid under the fixed protocol."
+  },
+  "failure": {
+    "stage": "first outer training fold (fold0), before checkpoint or predictions",
+    "solver": "lbfgs",
+    "iterations_used": 500,
+    "max_iter": 500,
+    "tol": 1e-07,
+    "warning": "ConvergenceWarning: TOTAL NO. OF ITERATIONS REACHED LIMIT",
+    "decision": "Candidate invalid under the fixed prospective convergence gate; no hyperparameter/seed change and no retry."
+  },
+  "plan": "evidence/round7-plan.json",
+  "oof_auc": null,
+  "checkpoints": 0,
+  "predictions_generated": false,
+  "new_kaggle_submissions": 0,
+  "observed_worker_memory_gib": 5.322063446044922,
+  "worker_peak_memory_measured": false
+}

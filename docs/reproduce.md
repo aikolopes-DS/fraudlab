@@ -27,7 +27,7 @@ os hashes, o arredondamento e o descarte dos tokens após o segundo.
 
 `--model glm --glm-value-one-hot` acrescenta efeitos por valor com one-hot
 esparso e agrupamento de contagens menores que cinco, ajustados dentro de cada
-treino. Essa opção usa L-BFGS com limite de 500 iterações e recusa ajustes sem
+treino. Essa opção usa L-BFGS com limite de 2.000 iterações e recusa ajustes sem
 convergência. O manifesto do modelo registra solver, limite e iterações reais.
 
 ## Dados oficiais e componente público
