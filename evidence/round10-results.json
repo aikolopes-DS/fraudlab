@@ -1,0 +1,87 @@
+{
+  "recorded_at": "2026-11-17T13:29:24.273205+00:00",
+  "plan": "evidence/round10-plan.json",
+  "validation": "Exploratory full-data StratifiedKFold(5, shuffle=True, random_state=42), with all labels used. No independent holdout or outer-validation early stopping. Fit the GLM and residual on the same internally cross-fitted training matrix; inference uses only outer-training maps.",
+  "baseline_run": "explore5-public25",
+  "baseline_oof_auc": 0.9512586315198723,
+  "candidate": "round10-offset-bpe-frequency",
+  "run": "round10-offset-bpe-frequency-public25",
+  "own_oof_auc": 0.9507705388513052,
+  "own_fold_scores": [
+    0.9498048451920545,
+    0.9510880219473421,
+    0.9557789870570096,
+    0.9512063620714626,
+    0.946078120166973
+  ],
+  "oof_auc": 0.9514921382152453,
+  "fold_scores": [
+    0.9504894214476117,
+    0.9519294871585336,
+    0.9565314284038893,
+    0.9517951792274013,
+    0.9468101628656655
+  ],
+  "delta_vs_published_oof": 0.00023350669537292035,
+  "fold_deltas": [
+    0.000186615012287783,
+    5.663770893415965e-05,
+    0.00017197940266600042,
+    0.0002647101348053349,
+    0.00044875472420558005
+  ],
+  "improved_folds": 5,
+  "eligible_to_submit": true,
+  "source_commit": "169f3ee5cdfbb2afe16c942a7af0efb8b12a403f",
+  "source_was_dirty": false,
+  "feature_encoding": {
+    "tiktoken": "0.14.0",
+    "encoding": "gpt2",
+    "vocabulary_size": 50257,
+    "encoding_files": [
+      {
+        "url": "https://openaipublic.blob.core.windows.net/gpt-2/encodings/main/vocab.bpe",
+        "sha256": "1ce1664773c50f3e0cc8842619a93edc4624525b728b188a9e0be33b7726adc5"
+      },
+      {
+        "url": "https://openaipublic.blob.core.windows.net/gpt-2/encodings/main/encoder.json",
+        "sha256": "196139668be63f3b5d6574427317ae82f612a97c5d1cdaf36ed2256dbf636783"
+      }
+    ],
+    "input_columns": [
+      "amount_usd",
+      "account_balance_usd"
+    ],
+    "output_suffixes": [
+      "__gpt2_first_key",
+      "__gpt2_second_key",
+      "__gpt2_second_cents_key"
+    ],
+    "representation": "cents=np.rint(float64_USD*100); ' ' + str(cents // 100)",
+    "rounding": "NumPy rint; nearest representable cent, halfway ties to even",
+    "second_token_missing": "-1",
+    "third_key": "second_token_id + ':' + str(cents % 100)",
+    "more_than_two_tokens": "retain first two; discard later integer tokens",
+    "label_usage": "none in extraction; fold-local cross-fitted TE downstream"
+  },
+  "weights": [
+    0.5625,
+    0.1875,
+    0.25
+  ],
+  "input_oof_sha256": {
+    "round10-offset-bpe-frequency": "f16b28c7d3bb09a4360f8dbaef59e9dd78a63537bd7f7b01a9a3de43a483f3b4",
+    "explore5-lgbm": "2a188175419c819bf5d5098125423afa8e95cd79cd965d2108b834cc4016a234",
+    "explore5-public-gpt2-v2": "4c37722b34d520a6de7d94565140cd0681baad6fb6c012d0b7a86a25b82a4dcb"
+  },
+  "submission_sha256": "274cbe4ea90d9dc4893140cad55682f3627ced02163fff48655df4b095e428e7",
+  "checkpoint_reload": {
+    "rows": 1024,
+    "fold_models": 5,
+    "max_absolute_error": 2.220446049250313e-16,
+    "passed": true
+  },
+  "training_elapsed_seconds": 328.768,
+  "decision": "eligible_for_root_review",
+  "new_kaggle_submissions": 0
+}
