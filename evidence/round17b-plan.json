@@ -1,0 +1,25 @@
+{
+  "date": "2026-11-17",
+  "status": "prospective operational recovery; not a new hyperparameter candidate",
+  "original_plan": "evidence/round17-plan.json",
+  "original_run": "round17-neural-pooled-offset",
+  "continuation_run": "round17-neural-pooled-offset-resumed",
+  "failure": "The original CPU CV completed folds0,1,2 and saved six checkpoint files. It then failed during fold3 inner preprocessing with NumPy ArrayMemoryError while another CPU CV ran concurrently. No complete OOF, eligible result or Kaggle submission exists for that failed run.",
+  "root_action": "Serialize further heavy CPU training. Preserve the failed run, original status/error, log, invocation and configuration. Do not rerun already completed neural fits or overwrite their artifacts.",
+  "source": {
+    "revision": "f436de035a0c0cdfcffa2ff22cdb3af5d54860a8",
+    "worktree": ".local/worktrees/original-neural",
+    "rule": "Use exactly the same clean pinned core source and installed environment for all five folds. Do not switch the continuation to the newer string-storage implementation or change any statistical setting. Publish and hash the recovery entrypoint separately."
+  },
+  "recovery": {
+    "reuse": [0, 1, 2], "fit": [3, 4],
+    "config": "Copy the original config, changing only name to the continuation name. Same data bytes, row order, CV5/42, seeds42+fold, feature representation, inner epoch selection, architecture, optimizer, threads4 and CPU device.",
+    "checkpoints": "Require both .glm.joblib and .pt for each reused fold, validate payload settings/architecture/epoch/row metadata, copy into the new run and verify original/copied SHA256 before and after use. Do not infer missing telemetry as measured facts.",
+    "predictions": "Reconstruct reused validation and test predictions from saved models. Retrain neither their GLMs nor networks. Fit only remaining folds3/4 through the same frozen fit_predict API. Rebuild all699960 OOF predictions with exact fold IDs and299984 test predictions.",
+    "test_mean": "Preserve original arithmetic: float64 zero accumulator; in fold order0..4 add each float32 test probability array divided by5 before accumulation.",
+    "metadata": "Retain original OOM and partial-run hashes. Distinguish recovered payload facts, logical facts implied by the frozen abort-on-warning code, newly measured continuation facts and unavailable prior timing. Recovery elapsed time is not the original total training time."
+  },
+  "selection": "After all five folds are reconstructed/audited, apply exactly the four shares, formula, delta>0.0001 and at-least4/5-fold rule from R17. No new architecture, epoch policy, weights or public-feedback selection. The failed partial run cannot be submitted.",
+  "training_gate": "Review and test recovery code, publish it and this plan before resuming. Wait for the active R18 CPU job to finish. Run no other heavy CPU fit until continuation and prediction reconstruction finish; R12 GPU work can continue.",
+  "cost": "Two remaining neural selections/refits plus inference from three completed checkpoints; no paid compute. Original work and failure are preserved as evidence."
+}
