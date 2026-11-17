@@ -724,6 +724,18 @@ def make_glm_pipeline(
         ]
     )
     knots = config.get("glm_spline_knots", 0)
+    if config.get("glm_frequency"):
+        from .frequency import FrequencyEncoder
+
+        preprocessing.transformers.append(
+            (
+                "category_frequency",
+                Pipeline(
+                    [("frequency", FrequencyEncoder()), ("scale", StandardScaler())]
+                ),
+                categorical,
+            )
+        )
     continuous = [name for name in CONTINUOUS if name in numeric]
     if knots:
         if not continuous:
@@ -778,6 +790,11 @@ def fit_glm(
         "C": config["logistic_c"],
         "solver": "newton-cholesky",
         "iterations_used": int(model.named_steps["classifier"].n_iter_[0]),
+        "category_frequency": (
+            "log1p counts fitted on outer training rows only"
+            if config.get("glm_frequency")
+            else None
+        ),
         "numeric_splines": (
             {
                 "n_knots": config.get("glm_spline_knots", 0),

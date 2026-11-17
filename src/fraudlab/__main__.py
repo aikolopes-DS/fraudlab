@@ -43,7 +43,7 @@ def parser() -> argparse.ArgumentParser:
     )
     training.add_argument(
         "--feature-set",
-        choices=("raw", "behavior", "digits", "value_digits"),
+        choices=("raw", "behavior", "digits", "value_digits", "paired_digits"),
         default="raw",
     )
     training.add_argument("--id-column", default="id")
@@ -80,6 +80,11 @@ def parser() -> argparse.ArgumentParser:
         help="Auto uses CPU for CatBoost and CUDA when available for the MLP.",
     )
     training.add_argument("--logistic-c", type=float, default=1.0)
+    training.add_argument(
+        "--glm-frequency",
+        action="store_true",
+        help="Add training-fold log category counts to GLM/offset inputs.",
+    )
     training.add_argument(
         "--glm-spline-knots",
         type=int,
@@ -171,6 +176,8 @@ def parser() -> argparse.ArgumentParser:
 
 
 def validate_training_config(config: dict) -> None:
+    if config.get("glm_frequency") and config["model"] not in ("glm", "offset"):
+        raise ValueError("glm_frequency is supported only for GLM/offset.")
     knots = config.get("glm_spline_knots", 0)
     if knots < 0 or knots == 1 or (knots and config["model"] not in ("glm", "offset")):
         raise ValueError(

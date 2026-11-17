@@ -1,0 +1,112 @@
+{
+  "recorded_at": "2026-11-17T05:03:29.284452+00:00",
+  "plan": "evidence/round2-plan.json",
+  "validation": "Exploratory full-data stratified5/42 CV; used for selection; not independent",
+  "baseline_run": "explore5-public25",
+  "baseline_oof_auc": 0.9512586315198723,
+  "results": [
+    {
+      "run": "round2-offset1000",
+      "model": "offset",
+      "oof_auc": 0.9504964890977866,
+      "fold_scores": [
+        0.9499375248164256,
+        0.9509780774283095,
+        0.9554607619309287,
+        0.9509841737189024,
+        0.9452321961499706
+      ],
+      "delta_vs_published_oof": -0.0007621424220857209,
+      "fold_deltas_vs_published": [
+        -0.0003652816188983721,
+        -0.0008947720212899579,
+        -0.0008986870702946126,
+        -0.0005462953736935505,
+        -0.0011292119914894094
+      ],
+      "improved_folds": 0,
+      "eligible_to_submit": false,
+      "source_commit": "1f48b96e22896fdf5d36b59876f5ec98c8de3c11",
+      "source_was_dirty": false,
+      "submission_sha256": "c36dbd887d61672973345c7879d1eccd251135e8ab2f6daa347b27dd7b493963"
+    },
+    {
+      "run": "round2-glm-splines12",
+      "model": "glm",
+      "oof_auc": 0.9503558606436133,
+      "fold_scores": [
+        0.9494499334915524,
+        0.9511471050083135,
+        0.9555897099735424,
+        0.950770592259789,
+        0.9449958545845404
+      ],
+      "delta_vs_published_oof": -0.000902770876259007,
+      "fold_deltas_vs_published": [
+        -0.0008528729437715654,
+        -0.0007257444412860359,
+        -0.0007697390276808491,
+        -0.0007598768328069827,
+        -0.0013655535569195854
+      ],
+      "improved_folds": 0,
+      "eligible_to_submit": false,
+      "source_commit": "1f48b96e22896fdf5d36b59876f5ec98c8de3c11",
+      "source_was_dirty": false,
+      "submission_sha256": "06edfa51d8654248bd8559d2d3221e70ac87562687fd790958244d114582b2cd"
+    },
+    {
+      "run": "round2-offset-public25",
+      "model": "blend",
+      "oof_auc": 0.9512712433882587,
+      "fold_scores": [
+        0.950559844259741,
+        0.9516885749287495,
+        0.9563143979730337,
+        0.9514638076153371,
+        0.9464232379510982
+      ],
+      "delta_vs_published_oof": 1.2611868386414038e-05,
+      "fold_deltas_vs_published": [
+        0.00025703782441710565,
+        -0.00018427452085001406,
+        -4.5051028189524445e-05,
+        -6.666147725886695e-05,
+        6.182980963820306e-05
+      ],
+      "improved_folds": 2,
+      "eligible_to_submit": false,
+      "source_commit": "1f48b96e22896fdf5d36b59876f5ec98c8de3c11",
+      "source_was_dirty": false,
+      "submission_sha256": "ca4d65b6a68b5e826df65f87222fcc066af820c9a2edf577c70ab4cd264ae72b"
+    },
+    {
+      "run": "round2-spline-public25",
+      "model": "blend",
+      "oof_auc": 0.9512679458939857,
+      "fold_scores": [
+        0.9502837949182644,
+        0.9519317025791212,
+        0.9564170623652268,
+        0.9515532012342769,
+        0.9462853722968623
+      ],
+      "delta_vs_published_oof": 9.314374113333912e-06,
+      "fold_deltas_vs_published": [
+        -1.9011517059519534e-05,
+        5.885312952169652e-05,
+        5.761336400356143e-05,
+        2.273214168091453e-05,
+        -7.603584459769941e-05
+      ],
+      "improved_folds": 3,
+      "eligible_to_submit": false,
+      "source_commit": "1f48b96e22896fdf5d36b59876f5ec98c8de3c11",
+      "source_was_dirty": false,
+      "submission_sha256": "c36918ed64a7041b9054d126bc2b00de2dba076479b93b0f63d3f8ffc0912c54"
+    }
+  ],
+  "decision": "do_not_submit",
+  "new_kaggle_submissions": 0,
+  "reason": "Neither fixed comparison met the predeclared pooled gain and fold-consistency thresholds. Published selected solution remains unchanged."
+}

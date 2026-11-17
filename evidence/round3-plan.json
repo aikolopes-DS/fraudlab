@@ -1,0 +1,23 @@
+{
+  "date": "2026-11-17",
+  "reason": "Round2 fixed blends did not meet submission criteria. Training-value support is sparse for some continuous encodings; original-author EDA and OOF audit motivate four fixed pair views and label-free support counts.",
+  "previous_result": "evidence/round2-results.json",
+  "baseline_run": "explore5-public25",
+  "baseline_oof_auc": 0.9512586315198723,
+  "validation": "Exploratory full-data stratified five-fold CV, shuffle=true, seed42; no independent holdout, no early stopping. All preprocessing fitted within outer training only.",
+  "fixed_pairs": [
+    "cvv_retry_count x auth_method",
+    "floor(velocity_score/5) x floor(distance_from_home_km/5)",
+    "floor(velocity_score/5) x floor(txn_count_last_24h/3)",
+    "floor(velocity_score/5) x floor(hours_since_last_txn/2)"
+  ],
+  "pair_selection": "Predefined from original-author EDA and the documented OOF dependence audit; no G-statistic search or label-based pair ranking inside preprocessing.",
+  "common": {"model": "glm", "feature_set": "paired_digits", "logistic_c": 0.3, "target_smoothing": 50, "glm_spline_knots": 0, "threads": 4},
+  "candidates": [
+    {"name": "round3-glm-pairs", "glm_frequency": false},
+    {"name": "round3-glm-pairs-frequency", "glm_frequency": true}
+  ],
+  "frequency": "For each categorical value, log1p(count in outer training features); unknown=0; no target labels or validation/test rows used to estimate counts.",
+  "fixed_blends": "For each candidate replace the GLM in the existing 56.25% GLM / 18.75% LightGBM / 25% audited public GPT-2 v2 mixture, keeping those weights.",
+  "submission_rule": "Select highest local OOF before new public feedback. Only submit if pooled delta over baseline exceeds 0.0001 and at least four of five folds improve. At most one submission in this round. Do not reopen or reevaluate the historical holdout. Record negative results."
+}
