@@ -1,0 +1,218 @@
+{
+  "date": "2026-11-17",
+  "status": "prospective; no R21 fits or competition AUC calculated",
+  "hypothesis": "A regularized learned combination of three owned base-score logits may capture complementary residuals. Honest inner holdout predictions, not reused cross-fold OOF predictions, fit each outer-fold meta learner.",
+  "core_revision": "8a1c7fd141b43e41b0d43e3a07b0c5ad0bf41ae5",
+  "core_source_hashes": {
+    "__init__.py": "14479eff95a0233e8bf2d9f359843c36f53f36b92cc95c3e452f75bfb2982dcc",
+    "__main__.py": "b8fc5d9e4cf77f7319f9e2f7956f490bb71da6ce3c6842e279f46194672a7fae",
+    "bpe.py": "fb71799ca075c657a8344f85d6a7e91653d1f319e24b5e287c17565cea456d4e",
+    "data.py": "f22355cc51fa6e6162b24e639923f40a11a23af00afcb65553090176271c8326",
+    "experiment.py": "85a0995157f4b4453206d88a41ee1196765f7bb5cd6cf9dd55d5dd89ba87bb7a",
+    "external.py": "05ec4ec64e4a2c5cf1137c949646bed14fe83fb04506b8f2f973c2c7633c5e08",
+    "features.py": "184fe327468194f34563b25aee2268348ca854d59e4916f8e3eacdd1b6420424",
+    "frequency.py": "de06b4f581f6864066d94b140d67e4ed16f7cef054a30ef20bc408a972279ce6",
+    "holdout.py": "e3702891766326710c3b56dd7a7fe69f2f778acea3316665f130aa6955e2f4e3",
+    "joints.py": "620851854c56aceceba02d5855fe22525e748973e80ffe0f83040f5e75a271e8",
+    "models.py": "e00d858bac42b79362ef408cbb7f359bca44a4828931b0e4943d660a3eb095b5",
+    "neural_offset.py": "042eec5ea088477bb37b045ace2f537c6e6e39ff49b3e810dc5e501b4ea8e487",
+    "offset.py": "a4ea551e4ddf89aedc87f313eb07425aebc60f7d967986524a873a73565fdc4f",
+    "original.py": "4db9d8d54929ba9d9a36fd55b8f8655611a800d22fade59af079e0497ce7b934",
+    "pooled.py": "6f15acb31c8a878efc262410a0ddf3f6b733b1a636a7bfa917758d568164601a",
+    "refit.py": "981074be27e2ed24aa45dbaabeda32677f83ae59aa74f12dd6a56de152fde4e9",
+    "scores.py": "8bae07482b56eb488a388c54ecd7ec0cf87a8644d9e98e53d7c1fcc75d2e58a1",
+    "splits.py": "41215280332984010f5b616bbf6a675c623b7af3e3f00604eb3238e79c709af9",
+    "strings.py": "f3248a9c0e7bbda655e29ecac02886dfa4cd4f34f35007ad90cf99a17efccbb0",
+    "tabm.py": "df22ff1a120c8a6fde59052ea7a1b509ff1b7e7acc83d774f670a1daf4a4e667",
+    "tokens.py": "8e3abfcbe2e437eee859d120f2a89b0a45bd84dfe389a06c11b622ee5ac9cbb4",
+    "transductive.py": "b2848df445f94d1135df27b99e7586048c279860b244dcf9544c30687263ca3b"
+  },
+  "own_run": "round21-nested-owned-stack",
+  "hybrid_run": "round21-nested-public25",
+  "data_hashes": {
+    "train.csv": "87eaa10b8d17a7e4f657b8da1c66242431338bdd8b6ad45861521ac0c0e9fbd5",
+    "test.csv": "10f516959020357b565abaaa4fd25baae97fc2f536d0805695bb7cc15c1660f0",
+    "sample_submission.csv": "13fc6ed8b73de5329884ec490f2a0b750cf29a7cda772b78cfa0cf486f6f35fa"
+  },
+  "expected_rows": {
+    "train": 699960,
+    "test": 299984
+  },
+  "sources": [
+    {
+      "run": "round18-joint-bpe-pooled-offset",
+      "model": "offset",
+      "feature_set": "joint_bpe",
+      "config_sha256": "0780db71a21e97d5fbd8cbc338403ae7cf31506f962e525f807df6a4a79565e6",
+      "metrics_sha256": "4523e4220096af21367ca76f1de6157d7d1a5a6d3052f1319f7b13b0f49c9b55",
+      "oof_sha256": "4c268f8a229c644904e765660532669f9e3729ffb1d030783b3c8fefe3a5b767",
+      "predictions_sha256": "51b34e8ff57a9e41633de7f5ba93ef841666409048ea98b8b5fe3da49f3e0bde",
+      "outer_checkpoints_sha256": {
+        "0": "bca790c60cb088cf174b9a0858e99899789a571437a9e2885b5f2e49fd55903e",
+        "1": "bac7493cc7f9f246d3af1053e701fd8fefd137d8e1617072ca27b5835f01390e",
+        "2": "6329dc964cece07a19f878d0e9ec794796c2170c6e50c610fcac1165b1572e37",
+        "3": "90c35c979c9721867fbb5aa2629b27f9dd56e7554e567a6ac671fff7b5d85da5",
+        "4": "2ae14333c16fb0074417ef746341c336dbef9f919c1fe1a11d82d0c7a4332192"
+      },
+      "training_provenance": {
+        "git_revision": "8a1c7fd141b43e41b0d43e3a07b0c5ad0bf41ae5",
+        "git_dirty": false
+      }
+    },
+    {
+      "run": "round19-transductive-pooled-offset",
+      "model": "offset",
+      "feature_set": "bpe_digits",
+      "config_sha256": "feb7b74ea877d855112b1dff31b3e254a3a3c3884381cf13dcf7f01f18629110",
+      "metrics_sha256": "a1da35745f06f244c54286eeb796f250e7636324d31266ffec3547c1f79e2250",
+      "oof_sha256": "eeba919f7f8926a7f054e75e8615a897976fc5c5e12ac9dc9432e41edf10bae9",
+      "predictions_sha256": "d8e1b23bcc7edb8a65482f8ae0565a2e28e2f5347600db3be1ac7bec5f8a42f3",
+      "outer_checkpoints_sha256": {
+        "0": "077c8ebb9ce27ffd12dd49f568619bc58586f3ee0827cd240910d995e9cbb1d7",
+        "1": "1df6326491491bba2d0643bdf808c1565fd0c8e92adb360492ab9fda0562357e",
+        "2": "d8f4fe0d7be6b402971df55fada507585f53b825e328c375420c03906b797b11",
+        "3": "5e8786c445d37820feed6a7ac91bd53db1c3deec3c88580b8ba2ff9d22e6e277",
+        "4": "77578dff86cbd7981e22a3ce8beaca56cd5c27b4be5e78df9eebfd2a8b121d19"
+      },
+      "training_provenance": {
+        "git_revision": "8a1c7fd141b43e41b0d43e3a07b0c5ad0bf41ae5",
+        "git_dirty": false
+      }
+    },
+    {
+      "run": "explore5-lgbm",
+      "model": "lightgbm",
+      "feature_set": "value_digits",
+      "config_sha256": "50968cd9ae1c1734ae439657839a24658480341e5dbd7aeb9a78a8e4dbb7230a",
+      "metrics_sha256": "cbbec3ffbcc1461e2f34835955808e3de7ef9306336ea93bf21f3453a0950e4d",
+      "oof_sha256": "2a188175419c819bf5d5098125423afa8e95cd79cd965d2108b834cc4016a234",
+      "predictions_sha256": "54c9fc1229d1b8aa253520b79c4493b0ae97902ee1f76b73baa9b09d48ccd142",
+      "outer_checkpoints_sha256": {
+        "0": "3384d6490f2879ca4f5b1490a1697b4f56dd18df9d95a00ba7a8e496add58fbf",
+        "1": "b6c6c321cbb4366b889f0619434e0fad9e956b4fde3db8940c68618d6f2ecea2",
+        "2": "b12283a1ee1d1e423e85fe0804767989a0e58a4530424dc4e8237ffa3a383430",
+        "3": "e2f894fe6793b85a4575b88428f53c3b9ff00c50cab37a925406c878ccebda8a",
+        "4": "a380078e28d8f24fa441025d9c62c5c586bb208ba91dc798e1a78cb2a95e049d"
+      },
+      "training_provenance": {
+        "git_revision": "9f1b2c8b9f6e4f4c4d67754dfc0d9e013ec3f004",
+        "git_dirty": true
+      }
+    }
+  ],
+  "teacher": {
+    "run": "explore5-public-gpt2-v2",
+    "config_sha256": "843e20a6839bc22dc5522a4f12c7d46f64472f20782bad6a606c295dfe741d31",
+    "metrics_sha256": "14f9e508e5f78c926cd5a4341259623f490872da3e73d5b96f1ae8903fe29bc7",
+    "oof_sha256": "4c37722b34d520a6de7d94565140cd0681baad6fb6c012d0b7a86a25b82a4dcb",
+    "predictions_sha256": "78ada898faa132accf86daa3311ba114e44a472d31f0648357d10000ab243d58",
+    "submission_sha256": "78ada898faa132accf86daa3311ba114e44a472d31f0648357d10000ab243d58",
+    "prediction_version": 2,
+    "license": "CC BY 4.0",
+    "trained_by": "Masaya Kawamata",
+    "training_executed_locally": false,
+    "usage": "Only the final fixed probability blend; never a meta-training input"
+  },
+  "outer": {
+    "folds": 5,
+    "shuffle": true,
+    "seed": 42,
+    "phase": "exploratory_full_data_cv",
+    "independent_holdout": false
+  },
+  "inner": {
+    "base_fraction": 0.75,
+    "meta_fraction": 0.25,
+    "seed": 2026,
+    "stratified": true,
+    "base_rows_per_fold": 419976,
+    "meta_rows_per_fold": 139992,
+    "outer_training_rows": 559968,
+    "order": "Sort inner/base and meta memberships back to official competition row order"
+  },
+  "base_training": {
+    "new_fits": 15,
+    "models_per_outer_fold": 3,
+    "parameters": "Each pinned source configuration unchanged; fixed_training required, seed argument 42+outer_fold. Offset members use 4 CPU threads, historical LGB uses 6. No GPU.",
+    "validation_labels": "None passed to member fit API; fixed training does not select on meta labels.",
+    "dummy_test_rows": 1,
+    "R19_reference": "All official train/test features, no labels, same pinned count hash. TE, pooling and scalers fit only on inner base training.",
+    "source_checkpoints": "Existing member checkpoint fold i supplies scores only for that outer validation and test; never another fold or an averaged inner predictor"
+  },
+  "meta": {
+    "C": 0.01,
+    "solver": "newton-cholesky",
+    "tol": 1e-07,
+    "max_iter": 200,
+    "fit_intercept": true,
+    "class_weight": null,
+    "clip": 1e-06,
+    "inputs": "Exactly three probability logits; no raw features, IDs, outer labels or external teacher",
+    "coefficient_semantics": "Learned coefficients on base logits; not probability percentages",
+    "convergence": "Any ConvergenceWarning or iteration cap invalidates run, no automatic retry"
+  },
+  "inference": {
+    "own_oof": "Meta_i(existing_outer_member_i predictions on its own validation)",
+    "own_test": "Mean probability across five outer meta learners",
+    "hybrid": "0.75*own_stack_probability +0.25*approved_Masaya_probability",
+    "teacher_weight": 0.25
+  },
+  "persistence": [
+    "15 new inner base models",
+    "5 meta logistic checkpoints",
+    "5 meta-training prediction matrices without labels",
+    "Hashes of reused 15 outer checkpoints, new models, meta coefficients and selected row IDs",
+    "own and hybrid OOF/test/submission artifacts with source provenance"
+  ],
+  "gate": {
+    "r18_run": "round18-pooled-share100-public25",
+    "r18_oof_auc": 0.9516524825255244,
+    "r18_metrics_sha256": "a027c62b262accdf9bf23f0d2bf29baf1465ddade0f1202472f1163f25799563",
+    "r10_run": "round10-offset-bpe-frequency-public25",
+    "r10_oof_auc": 0.9514921382152453,
+    "r10_metrics_sha256": "66150258799c3ac2e5066ce29383afc02962c2dd35766126e7a995d9fcf57d57",
+    "hybrid_must_exceed_r18": true,
+    "minimum_delta_vs_r10_strict": 0.0001,
+    "minimum_improved_folds_vs_r18": 4,
+    "selection": "One predeclared stack and one hybrid; no coefficient/C/seed/member sweep or public-score tuning",
+    "submission": "At most one upload by root after independent audit; no automatic upload"
+  },
+  "limitations": [
+    "Exploratory selection on previously reused labels, not a new independent holdout.",
+    "Meta-training base models see 60% of all competition rows; inference member checkpoints see 80%. This distribution difference is acknowledged, with no post-result calibration.",
+    "R19 uses declared transductive feature counts; no validation/test labels enter those counts.",
+    "The external GPT2 was trained by its author and only enters the final fixed 25% blend."
+  ],
+  "execution_gate": "Publish reviewed script, contract tests and this prospective plan; root must release memory and explicitly authorize execution. No fits or competition AUC from this task before that gate.",
+  "baseline_run": "round18-pooled-share100-public25",
+  "baseline_oof_auc": 0.9516524825255244,
+  "candidate": {
+    "name": "round21-nested-owned-stack",
+    "model": "nested_stack",
+    "algorithm": "nested_owned_logit_holdout_stack",
+    "meta_input_count": 3,
+    "inner_fraction": 0.25,
+    "inner_seed": 2026
+  },
+  "fixed_comparisons": {
+    "own_stack": "round21-nested-owned-stack",
+    "hybrid": "round21-nested-public25",
+    "weights": [
+      0.75,
+      0.25
+    ],
+    "space": "probability",
+    "teacher_only_after_meta": true
+  },
+  "argv": [
+    ".venv/Scripts/python.exe",
+    "scripts/train_nested_stack.py",
+    "--plan",
+    "evidence/round21-plan.json",
+    "--source-tree",
+    ".local/worktrees/joints-counts",
+    "--output",
+    "artifacts/runs"
+  ],
+  "implementation_sha256": "30edbf3556db99c153e4a2e44006a5060ced6b7f94f96cc2ab0c09b4d3adb796"
+}
