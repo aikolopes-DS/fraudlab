@@ -28,6 +28,14 @@ def parser() -> argparse.ArgumentParser:
         help="Fit cross-validation folds and write OOF, models and test predictions.",
     )
     training.add_argument("--data", default="data/raw")
+    training.add_argument(
+        "--original-data",
+        help="Pinned original CSV, appended only to outer-training rows.",
+    )
+    training.add_argument(
+        "--original-sha256", help="Required SHA-256 pin when --original-data is used."
+    )
+    training.add_argument("--original-id-column", default="transaction_id")
     training.add_argument("--output", default="artifacts/runs")
     training.add_argument("--name", required=True)
     training.add_argument(
@@ -38,7 +46,16 @@ def parser() -> argparse.ArgumentParser:
     )
     training.add_argument(
         "--model",
-        choices=("logistic", "glm", "catboost", "lightgbm", "mlp", "offset", "tabm"),
+        choices=(
+            "logistic",
+            "glm",
+            "catboost",
+            "lightgbm",
+            "mlp",
+            "offset",
+            "tabm",
+            "neural_offset",
+        ),
         required=True,
     )
     training.add_argument(
@@ -128,7 +145,7 @@ def parser() -> argparse.ArgumentParser:
         "--hidden-dims",
         type=int,
         nargs="+",
-        help="Defaults: MLP 128 64; TabM requires the fixed architecture 256 256.",
+        help="Defaults: MLP 128 64; TabM/neural_offset require the fixed architecture 256 256.",
     )
     training.add_argument("--dropout", type=float, default=0.1)
     training.add_argument("--neural-learning-rate", type=float, default=0.001)
@@ -142,12 +159,12 @@ def parser() -> argparse.ArgumentParser:
     training.add_argument(
         "--neural-categorical-transform",
         choices=("embedding", "target"),
-        help="Defaults: MLP embedding; TabM requires target.",
+        help="Defaults: MLP embedding; TabM/neural_offset require target.",
     )
     training.add_argument(
         "--patience",
         type=int,
-        help="Defaults: CatBoost 100 iterations; MLP 5 epochs; TabM 6 inner epochs.",
+        help="Defaults: CatBoost 100 iterations; MLP 5 epochs; TabM/neural_offset 6 inner epochs.",
     )
 
     blending = commands.add_parser(
@@ -214,11 +231,21 @@ def parser() -> argparse.ArgumentParser:
 
 
 def validate_training_config(config: dict) -> None:
+    if (
+        config.get("original_data")
+        or config.get("original_sha256")
+        or config.get("original_id_column", "transaction_id") != "transaction_id"
+    ):
+        from .original import validate_config
+
+        validate_config(config)
     if config.get("hidden_dims") is None:
-        config["hidden_dims"] = [256, 256] if config["model"] == "tabm" else [128, 64]
+        config["hidden_dims"] = (
+            [256, 256] if config["model"] in ("tabm", "neural_offset") else [128, 64]
+        )
     if config.get("neural_categorical_transform") is None:
         config["neural_categorical_transform"] = (
-            "target" if config["model"] == "tabm" else "embedding"
+            "target" if config["model"] in ("tabm", "neural_offset") else "embedding"
         )
     if config["model"] == "tabm":
         if config.get("fixed_training") or config.get("refit"):
@@ -229,27 +256,43 @@ def validate_training_config(config: dict) -> None:
             raise ValueError("TabM requires --hidden-dims 256 256.")
         if config["neural_categorical_transform"] != "target":
             raise ValueError("TabM requires --neural-categorical-transform target.")
+    if config["model"] == "neural_offset":
+        try:
+            from .neural_offset import NeuralOffsetConfig
+        except ImportError as error:
+            raise RuntimeError(
+                "Neural offset requires the optional fraudlab[neural] dependencies."
+            ) from error
+
+        if config.get("patience") is None:
+            config["patience"] = 6
+        NeuralOffsetConfig.from_training_config(config)
+    glm_models = ("glm", "offset", "neural_offset")
     inner_folds = config.get("glm_inner_folds", 5)
     if inner_folds not in (5, 10) or (
-        inner_folds != 5 and config["model"] not in ("glm", "offset")
+        inner_folds != 5 and config["model"] not in glm_models
     ):
-        raise ValueError("glm_inner_folds must be 5 or 10; 10 requires GLM/offset.")
+        raise ValueError(
+            "glm_inner_folds must be 5 or 10; 10 requires GLM/offset/neural_offset."
+        )
     if config.get("glm_value_one_hot") and config["model"] != "glm":
         raise ValueError("glm_value_one_hot is supported only for GLM.")
-    if config.get("glm_frequency") and config["model"] not in ("glm", "offset"):
-        raise ValueError("glm_frequency is supported only for GLM/offset.")
+    if config.get("glm_frequency") and config["model"] not in glm_models:
+        raise ValueError(
+            "glm_frequency is supported only for GLM/offset/neural_offset."
+        )
     if config.get("glm_pooled_tokens"):
-        if config["model"] not in ("glm", "offset") or inner_folds != 5:
+        if config["model"] not in glm_models or inner_folds != 5:
             raise ValueError(
-                "glm_pooled_tokens requires GLM/offset with glm_inner_folds=5."
+                "glm_pooled_tokens requires GLM/offset/neural_offset with glm_inner_folds=5."
             )
         from .pooled import manifest
 
         config["pooled_token_encoding"] = manifest(random_state=config["seed"])
     knots = config.get("glm_spline_knots", 0)
-    if knots < 0 or knots == 1 or (knots and config["model"] not in ("glm", "offset")):
+    if knots < 0 or knots == 1 or (knots and config["model"] not in glm_models):
         raise ValueError(
-            "glm_spline_knots must be 0 or at least 2, for GLM/offset only."
+            "glm_spline_knots must be 0 or at least 2, for GLM/offset/neural_offset only."
         )
     if config.get("phase") == "exploratory_full_data_cv" and (
         config["holdout_fraction"]
@@ -341,7 +384,9 @@ def main() -> None:
             config = vars(arguments).copy()
             config.pop("command")
             if config["patience"] is None:
-                config["patience"] = {"mlp": 5, "tabm": 6}.get(config["model"], 100)
+                config["patience"] = {"mlp": 5, "tabm": 6, "neural_offset": 6}.get(
+                    config["model"], 100
+                )
             validate_training_config(config)
             metrics = train(config)
             print(

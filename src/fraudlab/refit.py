@@ -19,6 +19,12 @@ from .models import feature_types, fit_predict
 def refit(source: Path, holdout_report: Path, output: Path, name: str) -> dict:
     started = time.perf_counter()
     config = json.loads((source / "config.json").read_text(encoding="utf-8"))
+    if config.get("original_data"):
+        raise ValueError("Original-data augmentation has no full-data refit contract.")
+    if config["model"] == "neural_offset":
+        raise ValueError(
+            "Neural offset uses the CV checkpoint ensemble; a full-data refit protocol is not defined."
+        )
     if config["model"] == "tabm":
         raise ValueError(
             "TabM uses the CV checkpoint ensemble; a full-data refit protocol is not defined."

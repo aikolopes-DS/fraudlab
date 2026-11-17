@@ -96,11 +96,34 @@ def create_run(output: Path, name: str) -> Path:
 
 def train(config: dict) -> dict:
     started = time.perf_counter()
+    original_features = original_labels = original_metadata = None
+    if (
+        config.get("original_data")
+        or config.get("original_sha256")
+        or config.get("original_id_column", "transaction_id") != "transaction_id"
+    ):
+        from .original import load_original, validate_config, verify_unchanged
+
+        validate_config(config)
     provenance = source_provenance(config.get("feature_set"))
     data_dir = Path(config["data"])
     frame, test, sample = load_data(data_dir, config["id_column"], config["target"])
     target, id_column = config["target"], config["id_column"]
     total_rows = len(frame)
+    if config.get("original_data"):
+        original_path = Path(config["original_data"])
+        original_features, original_labels, original_metadata = load_original(
+            original_path,
+            config["original_sha256"],
+            frame,
+            test,
+            original_id_column=config.get("original_id_column", "transaction_id"),
+            id_column=id_column,
+            target=target,
+        )
+        original_features = transform_features(
+            original_features, config.get("feature_set", "raw"), (id_column, target)
+        )
     holdout_fraction = config.get("holdout_fraction", 0.0)
     if holdout_fraction:
         development, _ = train_test_split(
@@ -125,6 +148,10 @@ def train(config: dict) -> dict:
     if not features:
         raise ValueError(
             "No model features remain after excluding ID, target and split columns."
+        )
+    if original_features is not None and original_features.columns.tolist() != features:
+        raise ValueError(
+            "Engineered original feature columns must match competition order."
         )
     splits = make_splits(
         frame,
@@ -152,10 +179,16 @@ def train(config: dict) -> dict:
     scores, details = [], []
     try:
         for fold, (training_rows, validation_rows) in enumerate(splits):
+            training = frame.iloc[training_rows][features]
+            labels = frame.iloc[training_rows][target].to_numpy()
+            if original_features is not None:
+                verify_unchanged(original_path, config["original_sha256"])
+                training = pd.concat([training, original_features], ignore_index=True)
+                labels = np.concatenate([labels, original_labels])
             valid_prediction, test_prediction, model_details = fit_predict(
                 config["model"],
-                frame.iloc[training_rows][features],
-                frame.iloc[training_rows][target].to_numpy(),
+                training,
+                labels,
                 frame.iloc[validation_rows][features],
                 frame.iloc[validation_rows][target].to_numpy(),
                 test[features],
@@ -163,6 +196,13 @@ def train(config: dict) -> dict:
                 config["seed"] + fold,
                 run / f"fold-{fold}",
             )
+            if original_features is not None:
+                verify_unchanged(original_path, config["original_sha256"])
+                model_details.update(
+                    training_rows=len(training),
+                    competition_training_rows=len(training_rows),
+                    additional_training_rows=len(original_labels),
+                )
             if (
                 not np.isfinite(valid_prediction).all()
                 or not np.isfinite(test_prediction).all()
@@ -177,7 +217,7 @@ def train(config: dict) -> dict:
             scores.append(score)
             details.append(model_details)
             print(
-                f"fold={fold} roc_auc={score:.8f} train={len(training_rows)} validation={len(validation_rows)}",
+                f"fold={fold} roc_auc={score:.8f} train={len(training)} validation={len(validation_rows)}",
                 flush=True,
             )
         covered = np.isfinite(oof)
@@ -190,6 +230,8 @@ def train(config: dict) -> dict:
             }
         )
         result = submission(test[id_column], test_predictions, sample, target)
+        if original_features is not None:
+            verify_unchanged(original_path, config["original_sha256"])
         oof_frame.to_csv(run / "oof.csv", index=False)
         result.to_csv(run / "predictions.csv", index=False)
         result.to_csv(run / "submission.csv", index=False)
@@ -244,7 +286,7 @@ def train(config: dict) -> dict:
                             "fresh_outer_refit": True,
                         }
                     }
-                    if config["model"] == "tabm"
+                    if config["model"] in ("tabm", "neural_offset")
                     else {}
                 ),
             },
@@ -272,6 +314,14 @@ def train(config: dict) -> dict:
                 ),
             ],
         }
+        if original_metadata is not None:
+            metrics["additional_training_data"] = {
+                **original_metadata,
+                "component_run": str(run),
+                "component_model": config["model"],
+                "component_scope": "this fitted component only; other blend sources are not retrained",
+                "fold_training_rows": [fold["training_rows"] for fold in details],
+            }
         write_json(run / "metrics.json", metrics)
         write_json(run / "status.json", {"status": "complete"})
         return metrics

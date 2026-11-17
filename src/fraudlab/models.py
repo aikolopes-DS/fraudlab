@@ -548,6 +548,20 @@ def fit_predict(
             ) from error
         # Deliberately do not forward outer validation labels to TabM.
         return fit_tabm(training, y, validation, test, config, seed, path)
+    if name == "neural_offset":
+        try:
+            from .neural_offset import fit_neural_offset
+        except ImportError as error:
+            raise RuntimeError(
+                "Neural offset requires the optional fraudlab[neural] dependencies."
+            ) from error
+        # Outer validation labels cannot enter epoch selection or either GLM fit.
+        result = fit_neural_offset(training, y, validation, test, config, seed, path)
+        if config.get("glm_pooled_tokens"):
+            from .pooled import manifest
+
+            result[2]["pooled_tokens"] = manifest(random_state=seed)
+        return result
     if name == "lightgbm":
         return fit_lightgbm(
             training, y, validation, validation_y, test, config, seed, path
@@ -573,6 +587,10 @@ def predict_saved(
         from .tabm import predict_saved_tabm
 
         return predict_saved_tabm(path, frame, device)
+    if name == "neural_offset":
+        from .neural_offset import predict_saved_neural_offset
+
+        return predict_saved_neural_offset(path, frame, device)
     if name != "mlp":
         raise ValueError(f"Unknown saved model: {name}")
     import torch
