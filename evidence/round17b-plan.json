@@ -1,6 +1,7 @@
 {
   "date": "2026-11-17",
   "status": "prospective operational recovery; not a new hyperparameter candidate",
+  "entrypoint_sha256": "4bb48df2f5266626601016803581a0b0fa8354032a98b588d33039ccdeb60000",
   "original_plan": "evidence/round17-plan.json",
   "original_run": "round17-neural-pooled-offset",
   "continuation_run": "round17-neural-pooled-offset-resumed",
