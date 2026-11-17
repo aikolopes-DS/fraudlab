@@ -1,14 +1,14 @@
 {
-  "ref": 58481744,
-  "run": "round18-pooled-share100-public25",
-  "submission_sha256": "18c92eab3d28dcefed12c5a1eebdd9380f45e13972875bf5b31cd4a0e6151e53",
-  "downloaded_submission_sha256": "18c92eab3d28dcefed12c5a1eebdd9380f45e13972875bf5b31cd4a0e6151e53",
+  "ref": 58483010,
+  "run": "round20-refit-joint-public25",
+  "submission_sha256": "3df0138f44e79314ceb4c2de22ab0fcb0e7fdcc051db24fcefd4c77bcf8677cf",
+  "downloaded_submission_sha256": "3df0138f44e79314ceb4c2de22ab0fcb0e7fdcc051db24fcefd4c77bcf8677cf",
   "submission_file_verified": true,
-  "public_auc": 0.95141,
-  "ranking": 714,
-  "total_teams": 2125,
-  "observed_at": "2026-11-17T20:53:43.234376+00:00",
+  "public_auc": 0.95162,
+  "ranking": 657,
+  "total_teams": 2126,
+  "observed_at": "2026-11-17T21:59:16.262839+00:00",
   "source": "https://www.kaggle.com/competitions/playground-series-s6e11/leaderboard",
   "method": "Official Kaggle CLI downloaded the original submitted CSV; local/remote SHA256 matched",
-  "evidence_scope": "Selected R18 only; prior R10 proof remains in its historical record"
+  "evidence_scope": "Selected R20 only; previous R18 proof remains in evidence/round18-public.json"
 }
