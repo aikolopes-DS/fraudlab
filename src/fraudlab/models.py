@@ -689,7 +689,7 @@ def make_glm_pipeline(
                 TargetEncoder(
                     target_type="binary",
                     smooth=config["target_smoothing"],
-                    cv=5,
+                    cv=config.get("glm_inner_folds", 5),
                     shuffle=True,
                     random_state=seed,
                 ),
@@ -807,7 +807,7 @@ def fit_glm(
             else None
         ),
         "target_encoder": {
-            "internal_folds": 5,
+            "internal_folds": config.get("glm_inner_folds", 5),
             "smooth": config["target_smoothing"],
             "unknown": "training prior",
             "log_odds": True,

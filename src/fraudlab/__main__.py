@@ -81,6 +81,13 @@ def parser() -> argparse.ArgumentParser:
     )
     training.add_argument("--logistic-c", type=float, default=1.0)
     training.add_argument(
+        "--glm-inner-folds",
+        type=int,
+        choices=(5, 10),
+        default=5,
+        help="Inner target-encoding partitions for GLM/offset; outer CV is unchanged.",
+    )
+    training.add_argument(
         "--glm-frequency",
         action="store_true",
         help="Add training-fold log category counts to GLM/offset inputs.",
@@ -176,6 +183,11 @@ def parser() -> argparse.ArgumentParser:
 
 
 def validate_training_config(config: dict) -> None:
+    inner_folds = config.get("glm_inner_folds", 5)
+    if inner_folds not in (5, 10) or (
+        inner_folds != 5 and config["model"] not in ("glm", "offset")
+    ):
+        raise ValueError("glm_inner_folds must be 5 or 10; 10 requires GLM/offset.")
     if config.get("glm_frequency") and config["model"] not in ("glm", "offset"):
         raise ValueError("glm_frequency is supported only for GLM/offset.")
     knots = config.get("glm_spline_knots", 0)

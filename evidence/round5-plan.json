@@ -1,0 +1,36 @@
+{
+  "date": "2026-11-17",
+  "reason": "Frequency improved the paired GLM by 0.00013589 in four of five folds, while pairs alone were slightly worse than the original GLM. Isolate frequency without pairs. Separately test whether ten inner encoding folds reduce the training-to-inference support mismatch.",
+  "previous_results": ["evidence/round3-results.json", "evidence/round4-results.json"],
+  "baseline_run": "explore5-public25",
+  "baseline_oof_auc": 0.9512586315198723,
+  "validation": "Exploratory full-data StratifiedKFold(5, shuffle=True, random_state=42). All labels participate. No independent holdout remains; do not reopen the historical reserve. Learned preprocessing is fitted only within outer training.",
+  "common": {
+    "model": "glm",
+    "phase": "exploratory_full_data_cv",
+    "feature_set": "value_digits",
+    "split": "stratified",
+    "folds": 5,
+    "seed": 42,
+    "holdout_fraction": 0,
+    "fixed_training": true,
+    "logistic_c": 0.3,
+    "target_smoothing": 50,
+    "glm_spline_knots": 0,
+    "threads": 4
+  },
+  "candidates": [
+    {"name": "round5-glm-frequency", "glm_frequency": true, "glm_inner_folds": 5},
+    {"name": "round5-glm-inner10", "glm_frequency": false, "glm_inner_folds": 10}
+  ],
+  "inner_folds_scope": "Five inner folds fit each encoding map on 80 percent of outer training; ten use 90 percent. Validation and test use the full outer-training map. This changes encoding variance and support, not outer folds or independence.",
+  "fixed_blends": {
+    "space": "probability",
+    "candidate_glm": 0.5625,
+    "explore5-lgbm": 0.1875,
+    "explore5-public-gpt2-v2": 0.25
+  },
+  "cost": "Two sequential CPU runs, four threads each, ten GLM fits total. No GPU, parameter grid, new model seed, early stopping or weight search. Comparable historical runs took 136 to 237 seconds under different loads; this is not a benchmark or completion estimate.",
+  "training_gate": "Do not train until independent code review passes, root creates the frozen source commit and explicitly authorizes the run.",
+  "submission_rule": "Compare only the two predefined probability mixtures. A candidate is eligible only if its pooled OOF gain over baseline exceeds 0.0001 and at least four of five folds improve. If both qualify, select the higher pooled OOF before any new public feedback. If neither qualifies, do not submit. At most one submission, performed by root; record negative results."
+}

@@ -1,6 +1,6 @@
 {
   "observed_at": "2026-11-17T05:26:34.672169+00:00",
-  "scope": "Local software integration, published notebook comparison and real read-only Kaggle verification; not GitHub-hosted CI or a claim of competition victory",
+  "scope": "Local software integration, published notebook comparison and real read-only Kaggle verification; GitHub-hosted CI recorded separately; no claim of competition victory",
   "software": {
     "test_command": "python -m pytest tests presentation site/test_build.py -q --junitxml=.local/research/round2/tests-phase3.xml",
     "passed": 96,
@@ -85,13 +85,14 @@
     "scope": "Training protocol, public source attribution, notebook generation, submission recorder, presentation export/review and site evidence boundaries"
   },
   "ci_remote": {
-    "status": "job_not_started",
-    "reason": "GitHub account locked due to a billing issue",
-    "source": "https://github.com/aikolopes-og/fraudlab/actions/runs/44021768008",
+    "status": "passed",
+    "source_commit": "b0cc5151b37498cfaf604f0e8f2e74cbcd247b85",
+    "source": "https://github.com/aikolopes-DS/fraudlab/actions/runs/44075567528",
     "check_run_ids": [
-      133832659689
+      134012543543
     ],
-    "verified_on": "2026-11-17"
+    "verified_on": "2026-11-17",
+    "evidence": "evidence/automation.json"
   },
   "audiovisual_verification": {
     "verified_at": "2026-11-16T18:15:19.771529+00:00",
@@ -290,5 +291,14 @@
         "passed": true
       }
     ]
+  },
+  "ci_remote_previous": {
+    "status": "job_not_started",
+    "reason": "GitHub account locked due to a billing issue",
+    "source": "https://github.com/aikolopes-og/fraudlab/actions/runs/44021768008",
+    "check_run_ids": [
+      133832659689
+    ],
+    "verified_on": "2026-11-17"
   }
 }

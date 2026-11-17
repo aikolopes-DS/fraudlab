@@ -77,7 +77,7 @@ def fit_offset(
             "spline_knots": config.get("glm_spline_knots", 0),
         },
         "target_encoder": {
-            "internal_folds": 5,
+            "internal_folds": config.get("glm_inner_folds", 5),
             "smooth": config["target_smoothing"],
             "unknown": "training prior",
             "log_odds": True,

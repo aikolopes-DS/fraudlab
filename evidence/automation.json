@@ -1,0 +1,132 @@
+{
+  "observed_at": "2026-11-17T11:41:35.159746+00:00",
+  "repository": "https://github.com/aikolopes-DS/fraudlab",
+  "purpose": "User-created account used by this project automation; authorized on 2026-11-17.",
+  "workflow": {
+    "conclusion": "success",
+    "headSha": "b0cc5151b37498cfaf604f0e8f2e74cbcd247b85",
+    "jobs": [
+      {
+        "completedAt": "2026-11-17T11:37:51Z",
+        "conclusion": "success",
+        "databaseId": 134012543543,
+        "name": "check",
+        "startedAt": "2026-11-17T11:36:39Z",
+        "status": "completed",
+        "steps": [
+          {
+            "completedAt": "2026-11-17T11:36:41Z",
+            "conclusion": "success",
+            "name": "Set up job",
+            "number": 1,
+            "startedAt": "2026-11-17T11:36:40Z",
+            "status": "completed"
+          },
+          {
+            "completedAt": "2026-11-17T11:36:42Z",
+            "conclusion": "success",
+            "name": "Check out source",
+            "number": 2,
+            "startedAt": "2026-11-17T11:36:41Z",
+            "status": "completed"
+          },
+          {
+            "completedAt": "2026-11-17T11:36:42Z",
+            "conclusion": "success",
+            "name": "Set up Python",
+            "number": 3,
+            "startedAt": "2026-11-17T11:36:42Z",
+            "status": "completed"
+          },
+          {
+            "completedAt": "2026-11-17T11:37:32Z",
+            "conclusion": "success",
+            "name": "Install dependencies and CPU PyTorch",
+            "number": 4,
+            "startedAt": "2026-11-17T11:36:42Z",
+            "status": "completed"
+          },
+          {
+            "completedAt": "2026-11-17T11:37:42Z",
+            "conclusion": "success",
+            "name": "Test contracts and synthetic experiments",
+            "number": 5,
+            "startedAt": "2026-11-17T11:37:32Z",
+            "status": "completed"
+          },
+          {
+            "completedAt": "2026-11-17T11:37:44Z",
+            "conclusion": "success",
+            "name": "Validate the public site",
+            "number": 6,
+            "startedAt": "2026-11-17T11:37:42Z",
+            "status": "completed"
+          },
+          {
+            "completedAt": "2026-11-17T11:37:48Z",
+            "conclusion": "success",
+            "name": "Post Set up Python",
+            "number": 11,
+            "startedAt": "2026-11-17T11:37:44Z",
+            "status": "completed"
+          },
+          {
+            "completedAt": "2026-11-17T11:37:48Z",
+            "conclusion": "success",
+            "name": "Post Check out source",
+            "number": 12,
+            "startedAt": "2026-11-17T11:37:48Z",
+            "status": "completed"
+          },
+          {
+            "completedAt": "2026-11-17T11:37:48Z",
+            "conclusion": "success",
+            "name": "Complete job",
+            "number": 13,
+            "startedAt": "2026-11-17T11:37:48Z",
+            "status": "completed"
+          }
+        ],
+        "url": "https://github.com/aikolopes-DS/fraudlab/actions/runs/44075567528/job/134012543543"
+      }
+    ],
+    "status": "completed",
+    "url": "https://github.com/aikolopes-DS/fraudlab/actions/runs/44075567528",
+    "test_result": "96 passed, 52 subtests passed",
+    "source_scope": "Pre-round5 source b0cc5151b37498cfaf604f0e8f2e74cbcd247b85"
+  },
+  "previous_repository": "https://github.com/aikolopes-og/fraudlab",
+  "previous_billing_lock": {
+    "resolved": false,
+    "latest_run": 44024448860,
+    "check_run": 133841330703,
+    "message": "The job was not started because your account is locked due to a billing issue.",
+    "payment_changes": false
+  },
+  "release": {
+    "url": "https://github.com/aikolopes-DS/fraudlab/releases/tag/v0.1.0",
+    "code_commit": "447289dcfbf4cfd062b8e57001936fb7d861be1d",
+    "assets_identical_to_original": true,
+    "assets": [
+      {
+        "name": "fraudlab-slides-legendas.zip",
+        "size": 6836003,
+        "digest": "sha256:e2f55fea77a06d63ef72409407654145ff38fa85e610153252990f76d327dfab",
+        "url": "https://github.com/aikolopes-DS/fraudlab/releases/download/v0.1.0/fraudlab-slides-legendas.zip"
+      },
+      {
+        "name": "SHA256SUMS.txt",
+        "size": 173,
+        "digest": "sha256:41d4e1182b7f24f5bb1f15f7978b37f6c5edc02f5a624f45ba2e95693c6f0fac",
+        "url": "https://github.com/aikolopes-DS/fraudlab/releases/download/v0.1.0/SHA256SUMS.txt"
+      },
+      {
+        "name": "video.mp4",
+        "size": 51276892,
+        "digest": "sha256:e5bbaf7a69e7c1d336c89cf9d4d1c3593b3fdb14a3003e1384746f6401574968",
+        "url": "https://github.com/aikolopes-DS/fraudlab/releases/download/v0.1.0/video.mp4"
+      }
+    ]
+  },
+  "note": "The old repository and release were preserved. New GitHub-hosted CI completed; the old account itself was not unlocked. Video and ranking remain the dated v0.1 snapshot."
+}
