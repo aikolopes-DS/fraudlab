@@ -192,8 +192,8 @@
   "review_report_sha256": "1f13f959b1058220a4f6e99437c93b04253b01943759fe8d6c051b7be85717b4",
   "visual_review_sha256": "04d86a69ad8bcff899d5089f8a915c3755cb32e583e5d283f0e57070aed8d70e",
   "release_url": "https://github.com/aikolopes-DS/fraudlab/releases/tag/v0.3.0",
-  "release_published": false,
-  "release_scope": "Assets prepared locally; this helper does not upload or verify a public release",
+  "release_published": true,
+  "release_scope": "All four v0.3 assets downloaded anonymously and matched to reviewed local bytes.",
   "history": [
     {
       "verified_at": "2026-11-16T18:15:19.771529+00:00",
@@ -528,5 +528,43 @@
       "bytes": 8391000,
       "sha256": "03179b0e31014e3c712c1e399d559d17913a397ed2cf1176180cef06e3ce97c8"
     }
-  ]
+  ],
+  "release_verification": {
+    "verified_at": "2026-11-17T18:50:43.321731+00:00",
+    "passed": true,
+    "url": "https://github.com/aikolopes-DS/fraudlab/releases/tag/v0.3.0",
+    "target": "ef07bdc9f0e07a34d5082a04df956332fbe7df84",
+    "assets": [
+      {
+        "name": "AED-FraudLab-entrega.zip",
+        "bytes": 66575528,
+        "sha256": "ba89c42b0ed2a7bc971ab001ea08197c43948e73fe12be394a360ede30f87f29",
+        "url": "https://github.com/aikolopes-DS/fraudlab/releases/download/v0.3.0/AED-FraudLab-entrega.zip"
+      },
+      {
+        "name": "fraudlab-slides-legendas.zip",
+        "bytes": 8391000,
+        "sha256": "03179b0e31014e3c712c1e399d559d17913a397ed2cf1176180cef06e3ce97c8",
+        "url": "https://github.com/aikolopes-DS/fraudlab/releases/download/v0.3.0/fraudlab-slides-legendas.zip"
+      },
+      {
+        "name": "SHA256SUMS.txt",
+        "bytes": 265,
+        "sha256": "7089c3c579586c02d4555d82d10d913171637cfe2392842061c05dd56fb7637d",
+        "url": "https://github.com/aikolopes-DS/fraudlab/releases/download/v0.3.0/SHA256SUMS.txt"
+      },
+      {
+        "name": "video.mp4",
+        "bytes": 64298759,
+        "sha256": "7a36ec2c0633ca9ecfca8feb37c62ce46ca8dcb6d5a591cd1840315be4a6c73f",
+        "url": "https://github.com/aikolopes-DS/fraudlab/releases/download/v0.3.0/video.mp4"
+      }
+    ],
+    "anonymous_downloads_verified": true,
+    "slides_zip_manifest_outputs_verified": 190,
+    "delivery_files_verified": 307,
+    "delivery_source_commit": "ef07bdc9f0e07a34d5082a04df956332fbe7df84",
+    "media_hashes_match_reviewed_files": true,
+    "zip_integrity_verified": true
+  }
 }

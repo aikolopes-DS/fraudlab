@@ -29,10 +29,11 @@
     "github": "https://github.com/aikolopes-DS/fraudlab",
     "kaggle": "https://www.kaggle.com/competitions/playground-series-s6e11",
     "presentation": "https://aikolopes-fraudlab.aikol9pes.chatgpt.site/presentation/slides.html",
-    "video": "https://github.com/aikolopes-DS/fraudlab/releases/download/v0.2.0/video.mp4",
+    "video": "https://github.com/aikolopes-DS/fraudlab/releases/download/v0.3.0/video.mp4",
     "notebook": "https://www.kaggle.com/code/aikoog/fraudlab-reproducible-neural-fraud-detection",
     "captions": "https://aikolopes-fraudlab.aikol9pes.chatgpt.site/presentation/captions.vtt",
-    "release": "https://github.com/aikolopes-DS/fraudlab/releases/tag/v0.2.0"
+    "release": "https://github.com/aikolopes-DS/fraudlab/releases/tag/v0.3.0",
+    "delivery": "https://github.com/aikolopes-DS/fraudlab/releases/download/v0.3.0/AED-FraudLab-entrega.zip"
   },
   "run": {
     "path": "artifacts/runs/round10-offset-bpe-frequency-public25",
@@ -170,7 +171,7 @@
     "A reserva inicial de 15% é histórica e participa dos treinos desta extensão; não existe novo holdout independente.",
     "O GPT-2 externo foi treinado por Masaya Kawamata. O FraudLab auditou código e artefatos, mas não reexecutou esse treinamento.",
     "O score público cobre apenas a parte pública da competição; o resultado privado permanece desconhecido.",
-    "O vídeo v0.2 registra a solução e a consulta de classificação de 17/11/2026; a posição pode mudar."
+    "O vídeo v0.3 registra a solução e o ranking de 17/11/2026 às 15h24 de São Paulo; a posição pode mudar."
   ],
   "external_components": [
     {
