@@ -16,10 +16,13 @@ from sklearn.preprocessing import (
     FunctionTransformer,
     OneHotEncoder,
     QuantileTransformer,
+    SplineTransformer,
     StandardScaler,
     TargetEncoder,
 )
 from threadpoolctl import threadpool_limits
+
+from .features import CONTINUOUS
 
 
 def feature_types(frame: pd.DataFrame) -> tuple[list[str], list[str]]:
@@ -515,6 +518,10 @@ def fit_predict(
         return fit_logistic(training, y, validation, test, config, seed, path)
     if name == "glm":
         return fit_glm(training, y, validation, test, config, seed, path)
+    if name == "offset":
+        from .offset import fit_offset
+
+        return fit_offset(training, y, validation, test, config, seed, path)
     if name == "catboost":
         return fit_catboost(
             training, y, validation, validation_y, test, config, seed, path
@@ -534,7 +541,7 @@ def predict_saved(
     name: str, path: Path, frame: pd.DataFrame, device: str = "auto"
 ) -> np.ndarray:
     """Load only locally trained checkpoints; never download executable artifacts."""
-    if name in ("logistic", "glm", "lightgbm"):
+    if name in ("logistic", "glm", "lightgbm", "offset"):
         return joblib.load(path.with_suffix(".joblib")).predict_proba(
             clean_features(frame)
         )[:, 1]
@@ -667,15 +674,12 @@ def fit_lightgbm(
     )
 
 
-def fit_glm(
+def make_glm_pipeline(
     training: pd.DataFrame,
-    y: np.ndarray,
-    validation: pd.DataFrame,
-    test: pd.DataFrame,
     config: dict,
     seed: int,
-    path: Path,
-) -> tuple[np.ndarray, np.ndarray, dict]:
+) -> Pipeline:
+    """Construct fold-local preprocessing and a regularized logistic model."""
     numeric, categorical = feature_types(training)
     nominal = [name for name in categorical if "__" not in name]
     encoding = Pipeline(
@@ -719,6 +723,33 @@ def fit_glm(
             ),
         ]
     )
+    knots = config.get("glm_spline_knots", 0)
+    continuous = [name for name in CONTINUOUS if name in numeric]
+    if knots:
+        if not continuous:
+            raise ValueError("Numeric splines require a supported continuous feature.")
+        preprocessing.transformers.append(
+            (
+                "numeric_splines",
+                Pipeline(
+                    [
+                        ("impute", SimpleImputer(strategy="median")),
+                        (
+                            "spline",
+                            SplineTransformer(
+                                n_knots=knots,
+                                degree=3,
+                                knots="quantile",
+                                include_bias=False,
+                                extrapolation="constant",
+                            ),
+                        ),
+                        ("scale", StandardScaler()),
+                    ]
+                ),
+                continuous,
+            )
+        )
     classifier = LogisticRegression(
         C=config["logistic_c"],
         solver="newton-cholesky",
@@ -726,7 +757,19 @@ def fit_glm(
         tol=1e-7,
         random_state=seed,
     )
-    model = Pipeline([("preprocessing", preprocessing), ("classifier", classifier)])
+    return Pipeline([("preprocessing", preprocessing), ("classifier", classifier)])
+
+
+def fit_glm(
+    training: pd.DataFrame,
+    y: np.ndarray,
+    validation: pd.DataFrame,
+    test: pd.DataFrame,
+    config: dict,
+    seed: int,
+    path: Path,
+) -> tuple[np.ndarray, np.ndarray, dict]:
+    model = make_glm_pipeline(training, config, seed)
     with threadpool_limits(limits=config["threads"]):
         model.fit(training, y)
     joblib.dump(model, path.with_suffix(".joblib"))
@@ -734,7 +777,18 @@ def fit_glm(
         "algorithm": "logistic_regression_with_cross_fitted_target_logits",
         "C": config["logistic_c"],
         "solver": "newton-cholesky",
-        "iterations_used": int(classifier.n_iter_[0]),
+        "iterations_used": int(model.named_steps["classifier"].n_iter_[0]),
+        "numeric_splines": (
+            {
+                "n_knots": config.get("glm_spline_knots", 0),
+                "degree": 3,
+                "knots": "quantile fitted only on outer training rows",
+                "features": [name for name in CONTINUOUS if name in training],
+                "extrapolation": "constant",
+            }
+            if config.get("glm_spline_knots", 0)
+            else None
+        ),
         "target_encoder": {
             "internal_folds": 5,
             "smooth": config["target_smoothing"],

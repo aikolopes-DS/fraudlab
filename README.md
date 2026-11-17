@@ -8,12 +8,12 @@ O objetivo é disputar as primeiras posições no [Playground S6E11](https://www
 
 ## Estado do projeto
 
-Este é o único acompanhamento de tarefas. Atualizado em 16/11/2026. Quatro submissões foram processadas. A composição selecionada melhorou o resultado, mas ainda está distante das primeiras posições. A rede GPT-2 externa tem autoria, licença e versão explícitas.
+Este é o único acompanhamento de tarefas. Atualizado em 17/11/2026. Quatro submissões foram processadas. Nova rodada em execução: GLM com curvas suaves e árvores residuais sobre sua margem, na mesma CV 5/42. O resultado anterior e a apresentação v0.1 permanecem como snapshots datados até haver uma melhoria comprovada.
 
 | Pedido | Resultado esperado | Estado real | Evidência |
 | --- | --- | --- | --- |
 | Competição vigente e inscrição | Regras verificadas, acesso aos dados e conta inscrita | Conferido; arquivos oficiais baixados pela conta `aikoog` | [Regras verificadas](docs/competition.md) |
-| Programar para competir | Rede neural treinada, comparação e melhoria com validação correta | Redes próprias e alternativas treinadas; composição selecionada por OOF 5/42: 56,25% GLM, 18,75% LightGBM e 25% GPT-2 público. Sem holdout independente nesta extensão | [Experimentos agregados](evidence/experiments.json), [seleção](evidence/hybrid-selection.json), [origem externa](evidence/external-gpt2.json) |
+| Programar para competir | Rede neural treinada, comparação e melhoria com validação correta | v0.1 selecionada e publicada; implementação e validação da rodada de curvas suaves/árvores residuais em andamento. Sem holdout independente nesta extensão | [Experimentos agregados](evidence/experiments.json), [seleção](evidence/hybrid-selection.json), [origem externa](evidence/external-gpt2.json) |
 | Concorrer de verdade | Submissão processada, score e posição com data | Quarto envio: 0,95097; posição pública 804/2.010 em 16/11/2026 às 17h23 UTC. A meta das primeiras posições segue aberta | [Evidência](evidence/public.json), submissão `58438450`; [CSV remoto idêntico ao local](evidence/submission-file-check.json) |
 | Apresentar com profundidade | Slides narrados PT-BR, matemática seguida de analogia, código e ranking | 116 slides e vídeo de 44min27s gerados; decodificação AV integral, ASR integral e inspeção dos 116 quadros passaram. Sem alegação de escuta humana ou reprodução contínua integral | [Apresentação](presentation/), [prova audiovisual](evidence/media.json) |
 | Hospedar e usar no portfólio | Repositório público e estudo de caso acessível | Site V3 e notebook V3 públicos; vídeo e ZIP na release GitHub. Acesso anônimo, reprodução/avanço e 604 legendas verificados em desktop/mobile; ZIP baixado anonimamente e íntegro | [Publicação verificada](evidence/publication.json), [site](https://aikolopes-fraudlab.aikol9pes.chatgpt.site), [downloads](https://github.com/aikolopes-og/fraudlab/releases/tag/v0.1.0) |

@@ -81,3 +81,34 @@ Padrões de dígitos são hipóteses sobre esta distribuição sintética, e nã
 universais de fraude bancária. Um ganho local só é atribuído a uma mudança quando
 as métricas das execuções comparadas sustentam essa conclusão. AUC local,
 avaliação da reserva, pontuação pública e posição final são evidências distintas.
+
+## Segunda rodada: 17/11/2026
+
+O [plano registrado antes dos novos treinos](../evidence/round2-plan.json) limita
+esta rodada a duas mudanças próprias, na mesma CV 5/42. Os resíduos OOF mostram
+complementaridade entre GLM e árvores, enquanto algumas codificações por valor
+contínuo têm pouco suporte por categoria. Isso motiva testar:
+
+- **Curvas suaves no GLM:** bases cúbicas do
+  [SplineTransformer](https://scikit-learn.org/1.7/modules/generated/sklearn.preprocessing.SplineTransformer.html),
+  com 12 nós por quantis ajustados apenas no treino de cada fold. As demais
+  representações do GLM são mantidas. Essa mudança testa formas não lineares
+  suaves sem presumir uma distribuição geradora conhecida.
+- **Árvores residuais sobre o GLM:** a margem logística inicializa árvores
+  pequenas com `init_score`; na inferência, a margem do GLM é somada ao
+  `raw_score` das árvores antes da sigmoid. O treino usa exatamente a matriz
+  com target encoding internamente cross-fitted que ajustou o GLM. A ideia foi
+  investigada nas seções 6.2–6.3 de
+  [goodpjw2008 — Part 12](https://www.kaggle.com/code/goodpjw2008/s6e11-part-12-wide-stack-2nd-lm-lb-0-95298)
+  e implementada aqui sem copiar código externo. O candidato próprio não
+  seleciona pares usando rótulos de validação nem usa early stopping externo.
+
+A ficha do original cita `gen.py`, mas a listagem oficial disponibiliza somente
+o CSV. O [notebook do próprio autor](https://www.kaggle.com/code/uditjain13/credit-card-fraud-2026-interpretable-eda)
+contém EDA, sem uma equação geradora verificável. Por isso não reconstruímos
+coeficientes ou distribuições como se fossem fatos conhecidos. Nenhum CSV
+externo foi acrescentado aos treinos desta rodada.
+
+Esses são candidatos, não melhorias comprovadas. O resultado e a decisão de
+submeter serão registrados após medir as OOF compatíveis; a antiga reserva
+continua apenas histórica.

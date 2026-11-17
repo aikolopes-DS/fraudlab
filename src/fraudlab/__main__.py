@@ -38,7 +38,7 @@ def parser() -> argparse.ArgumentParser:
     )
     training.add_argument(
         "--model",
-        choices=("logistic", "glm", "catboost", "lightgbm", "mlp"),
+        choices=("logistic", "glm", "catboost", "lightgbm", "mlp", "offset"),
         required=True,
     )
     training.add_argument(
@@ -80,6 +80,12 @@ def parser() -> argparse.ArgumentParser:
         help="Auto uses CPU for CatBoost and CUDA when available for the MLP.",
     )
     training.add_argument("--logistic-c", type=float, default=1.0)
+    training.add_argument(
+        "--glm-spline-knots",
+        type=int,
+        default=0,
+        help="Add cubic quantile splines of continuous features to GLM/offset; 0 disables them.",
+    )
     training.add_argument("--iterations", type=int, default=2000)
     training.add_argument("--depth", type=int, default=6)
     training.add_argument("--learning-rate", type=float, default=0.05)
@@ -165,6 +171,11 @@ def parser() -> argparse.ArgumentParser:
 
 
 def validate_training_config(config: dict) -> None:
+    knots = config.get("glm_spline_knots", 0)
+    if knots < 0 or knots == 1 or (knots and config["model"] not in ("glm", "offset")):
+        raise ValueError(
+            "glm_spline_knots must be 0 or at least 2, for GLM/offset only."
+        )
     if config.get("phase") == "exploratory_full_data_cv" and (
         config["holdout_fraction"]
         or config["split"] != "stratified"

@@ -1,0 +1,49 @@
+{
+  "date": "2026-11-17",
+  "scope": "Two predeclared own-model changes before observing new public submission scores",
+  "baseline_run": "explore5-public25",
+  "baseline_oof_auc": 0.9512586315198723,
+  "validation": {
+    "method": "StratifiedKFold",
+    "n_splits": 5,
+    "shuffle": true,
+    "seed": 42,
+    "independent_holdout": false,
+    "note": "Exploratory full-data CV used for model selection. The historical holdout remains historical and is not evaluated again. No labels from an outer validation fold are used to fit its preprocessing or model."
+  },
+  "candidates": [
+    {
+      "name": "round2-glm-splines12",
+      "change": "Add cubic quantile spline bases for six original continuous features; retain existing GLM numeric, cross-fitted target-logit and one-hot inputs",
+      "model": "glm",
+      "feature_set": "value_digits",
+      "glm_spline_knots": 12,
+      "spline_degree": 3,
+      "spline_extrapolation": "constant",
+      "logistic_c": 0.3,
+      "target_smoothing": 50,
+      "threads": 4
+    },
+    {
+      "name": "round2-offset1000",
+      "change": "Fit fixed small residual trees starting from the GLM margin on the identical internally cross-fitted training matrix; sum both margins at inference",
+      "model": "offset",
+      "feature_set": "value_digits",
+      "glm_spline_knots": 0,
+      "logistic_c": 0.3,
+      "target_smoothing": 50,
+      "iterations": 1000,
+      "num_leaves": 4,
+      "learning_rate": 0.03,
+      "l2_leaf_reg": 5,
+      "min_child_samples": 100,
+      "threads": 4,
+      "early_stopping": false
+    }
+  ],
+  "fixed_blend_comparisons": [
+    "Replace the GLM in the existing 56.25% GLM / 18.75% LGB / 25% public GPT-2 mixture with the spline GLM",
+    "Use 75% GLM-offset residual model / 25% already audited public GPT-2 v2"
+  ],
+  "submission_rule": "Only submit a locally improved candidate with compatible OOF/IDs/folds, positive pooled delta above 0.0001 and improvement on at least four of five folds; select by local OOF before viewing its new Kaggle score. Keep at most two actual submissions in this round. Record negative results too. No independent performance claim."
+}

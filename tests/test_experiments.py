@@ -48,6 +48,7 @@ def synthetic_data(tmp_path):
         "glm",
         "catboost",
         "lightgbm",
+        "offset",
         pytest.param(
             "mlp",
             marks=pytest.mark.skipif(
