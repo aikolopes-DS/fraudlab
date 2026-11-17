@@ -525,7 +525,12 @@ def fit_predict(
     if name == "offset":
         from .offset import fit_offset
 
-        return fit_offset(training, y, validation, test, config, seed, path)
+        result = fit_offset(training, y, validation, test, config, seed, path)
+        if config.get("glm_pooled_tokens"):
+            from .pooled import manifest
+
+            result[2]["pooled_tokens"] = manifest(random_state=seed)
+        return result
     if name == "catboost":
         return fit_catboost(
             training, y, validation, validation_y, test, config, seed, path
@@ -759,6 +764,24 @@ def make_glm_pipeline(
                 categorical,
             )
         )
+    if config.get("glm_pooled_tokens"):
+        from .pooled import COLUMNS, PooledTokenEncoder
+
+        if config.get("glm_inner_folds", 5) != 5:
+            raise ValueError("Pooled tokens require five inner folds.")
+        preprocessing.transformers.append(
+            (
+                "pooled_token_logits",
+                Pipeline(
+                    [
+                        ("pooled", PooledTokenEncoder(random_state=seed)),
+                        ("log_odds", FunctionTransformer(log_odds)),
+                        ("scale", StandardScaler()),
+                    ]
+                ),
+                list(COLUMNS),
+            )
+        )
     continuous = [name for name in CONTINUOUS if name in numeric]
     if knots:
         if not continuous:
@@ -873,6 +896,10 @@ def fit_glm(
             else "one-hot encoding of original categorical features."
         ),
     }
+    if config.get("glm_pooled_tokens"):
+        from .pooled import manifest
+
+        details["pooled_tokens"] = manifest(random_state=seed)
     return (
         model.predict_proba(validation)[:, 1],
         model.predict_proba(test)[:, 1],

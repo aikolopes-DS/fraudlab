@@ -50,6 +50,7 @@ def parser() -> argparse.ArgumentParser:
             "value_digits",
             "paired_digits",
             "bpe_digits",
+            "token_digits",
         ),
         default="raw",
     )
@@ -103,6 +104,11 @@ def parser() -> argparse.ArgumentParser:
         "--glm-frequency",
         action="store_true",
         help="Add training-fold log category counts to GLM/offset inputs.",
+    )
+    training.add_argument(
+        "--glm-pooled-tokens",
+        action="store_true",
+        help="Add 16 inner-cross-fitted hierarchical decimal/token logits to GLM/offset.",
     )
     training.add_argument(
         "--glm-spline-knots",
@@ -226,6 +232,14 @@ def validate_training_config(config: dict) -> None:
         raise ValueError("glm_value_one_hot is supported only for GLM.")
     if config.get("glm_frequency") and config["model"] not in ("glm", "offset"):
         raise ValueError("glm_frequency is supported only for GLM/offset.")
+    if config.get("glm_pooled_tokens"):
+        if config["model"] not in ("glm", "offset") or inner_folds != 5:
+            raise ValueError(
+                "glm_pooled_tokens requires GLM/offset with glm_inner_folds=5."
+            )
+        from .pooled import manifest
+
+        config["pooled_token_encoding"] = manifest(random_state=config["seed"])
     knots = config.get("glm_spline_knots", 0)
     if knots < 0 or knots == 1 or (knots and config["model"] not in ("glm", "offset")):
         raise ValueError(

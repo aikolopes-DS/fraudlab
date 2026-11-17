@@ -74,6 +74,10 @@ def source_provenance(feature_set: str | None = None) -> dict:
         from .bpe import manifest
 
         result["feature_encoding"] = manifest()
+    elif feature_set == "token_digits":
+        from .tokens import manifest
+
+        result["feature_encoding"] = manifest()
     return result
 
 

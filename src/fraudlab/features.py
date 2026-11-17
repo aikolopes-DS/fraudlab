@@ -20,6 +20,12 @@ def transform_features(
     feature_set: str = "raw",
     excluded: tuple[str, ...] = ("id", "is_fraud"),
 ) -> pd.DataFrame:
+    if feature_set == "token_digits":
+        from .tokens import token_keys
+
+        keys = token_keys(frame, excluded)
+        base = transform_features(frame, "value_digits", excluded)
+        return pd.concat([base, keys], axis=1)
     if feature_set == "bpe_digits":
         from .bpe import bpe_keys
 
