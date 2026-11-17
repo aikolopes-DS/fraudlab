@@ -10,6 +10,7 @@ from typing import Any
 from zoneinfo import ZoneInfo
 
 from .external import components_from, gpt2_slides
+from .realmlp import append_realmlp_pairs, realmlp_sources
 from .competitive import (append_pooling_pairs, append_joint_pair, append_neural_offset_pair,
                           append_transductive_pair, append_storage_pair, append_nested_stack_pair,
                           append_later_results, append_nested_result, append_context, has_transductive, round_number, pooling_run)
@@ -1036,6 +1037,7 @@ def create_slides(evidence: dict, runs: list[dict], draft: bool = False, holdout
     append_tabm_embedding_pair(pair, runs)
     append_tabm_backbone_pair(pair, runs)
     append_tabm_pair(pair, runs)
+    append_realmlp_pairs(pair, runs)
     append_nested_stack_pair(pair, runs)
     for component in external_components:
         slides.extend(Slide(**specification) for specification in gpt2_slides(component))
@@ -1335,6 +1337,7 @@ def create_slides(evidence: dict, runs: list[dict], draft: bool = False, holdout
        "o experimento não mediu.")
     sources = SOURCES.copy()
     sources.extend(continuation_sources(runs))
+    sources.extend(realmlp_sources(runs))
     if target_runs:
         sources.append(("TargetEncoder", "https://scikit-learn.org/1.7/modules/generated/sklearn.preprocessing.TargetEncoder.html"))
     if any(run.get("model") == "glm" for run in runs):

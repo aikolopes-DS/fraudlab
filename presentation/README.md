@@ -128,6 +128,19 @@ métricas: autor, código/commit, licenças, fonte das previsões, validação e
 de inferência comprovado. O conteúdo GPT-2 só é ativado por essa evidência;
 treinamento externo e trabalho próprio permanecem identificados.
 
+O conteúdo RealMLP permanece condicional. Ele só aparece para uma execução
+`complete` com arquitetura, pré-processamento, parâmetros resolvidos e épocas
+de refit registrados. Um smoke sintético não é tratado como treino competitivo.
+`presentation/realmlp.py` lê os campos produzidos pelo wrapper da biblioteca
+oficial `pytabkit==1.8.0`; ausência ou incompatibilidade desses campos bloqueia
+a explicação daquela execução em vez de preencher defaults presumidos.
+Os pares cobrem escala robusta e RMS por coluna, PBLD com oito coordenadas no
+total, SiLU parametrizada, redes completas vetorizadas, média após softmax,
+entropia cruzada suavizada, schedules e seleção interna seguida de refit novo.
+A soma das perdas dos membros e a média das probabilidades de inferência
+permanecem operações distintas. Resultados só são mostrados quando métricas
+completas são fornecidas; esta documentação não atribui AUC à R22 em preparação.
+
 O campo `evidence.run.submission_sha256` deve corresponder ao hash de submissão
 nas métricas selecionadas. Sem essa correspondência, a versão final é recusada
 e o rascunho oculta a pontuação e a posição de outro arquivo.

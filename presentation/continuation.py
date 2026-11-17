@@ -1,5 +1,6 @@
 """Conditional additions backed by completed runs; no scores are invented here."""
 
+from .realmlp import resolved_realmlp
 
 def name(run):
     return str(run.get("run_name", run.get("model", "")))
@@ -50,7 +51,7 @@ def append_proposal(add, runs, external_components, number):
     by_name = {name(run): run for run in runs}
     labels = {"offset": "GLM com correções de árvores", "lightgbm": "LightGBM próprio",
               "external_gpt2": "GPT-2 externo", "mlp": "MLP própria", "tabm": "TabM própria",
-              "neural_offset": "rede residual própria", "nested_stack": "stack próprio"}
+              "neural_offset": "rede residual própria", "nested_stack": "stack próprio", "realmlp": "RealMLP própria"}
     details = selected.get("model_details", {})
     composition = [f"{number(weight * 100, 2)}% {labels.get(by_name.get(leaf(path), {}).get('model'), leaf(path))}"
                    for path, weight in zip(details.get("sources", []), details.get("weights", [])) if weight > 0]
@@ -72,7 +73,7 @@ def append_proposal(add, runs, external_components, number):
         else:
             points.append("O GLM reúne pistas numéricas, chaves BPE e frequência")
     compared = sorted({labels[run["model"]] for run in runs
-                       if run.get("status") == "complete" and run.get("model") in {"mlp", "tabm", "neural_offset"}
+                       if run.get("status") == "complete" and run.get("model") in {"mlp", "tabm", "neural_offset", "realmlp"}
                        and run not in selected_runs(runs)})
     if compared:
         points.append("Redes próprias treinadas e comparadas: " + "; ".join(compared))
@@ -479,6 +480,14 @@ def method_code_specs(runs):
             "Este é o acumulador real do teste na R21. A variável t contém probabilidades produzidas "
             "pelo meta-modelo daquele fold. Somamos um quinto de cada resultado, sem aplicar "
             "uma nova sigmoid à média. O vetor OOF é preenchido separadamente na validação correspondente."))
+    if resolved_realmlp(runs) is not None:
+        specifications.append(("src/fraudlab/realmlp.py", "return torch.softmax(model.predict(numbers)", 1,
+            "Código: recuperar as probabilidades da RealMLP", [
+                "A biblioteca já devolve log da média das probabilidades softmax dos membros",
+                "O wrapper recupera essas probabilidades; não faz média de logits antes da softmax"],
+            "O código oficial já combinou as probabilidades dos membros e devolveu o logaritmo dessa média. "
+            "A softmax do wrapper recupera as probabilidades. A média da dimensão externa da interface "
+            "não é uma segunda média sobre dezesseis logits. A agregação dos folds acontece no pipeline de CV."))
     return specifications
 
 
@@ -492,5 +501,6 @@ def method_code_analogy(relative):
         "src/fraudlab/neural_offset.py": ("No dia a dia: avaliar o orçamento corrigido", "A avaliação olha o orçamento inicial junto das correções. Medir apenas a correção perderia o total que será usado."),
         "src/fraudlab/strings.py": ("No dia a dia: várias fichas para um verbete", "As fichas podem apontar para um mesmo verbete sem mudar sua ordem nem o significado. Economizar cópias não acrescenta informação."),
         "scripts/train_nested_stack.py": ("No dia a dia: tirar a média das notas prontas", "Cinco equipes entregam notas prontas. Cada uma contribui com um quinto para a média. Não tiramos a média de seus cálculos intermediários para só depois transformar o resultado em nota."),
+        "src/fraudlab/realmlp.py": ("No dia a dia: recuperar uma nota em outra escala", "A equipe já entregou a média das notas. O sistema a registrou em outra escala, e agora recuperamos a escala de probabilidades. Isso não significa refazer a média a partir dos cálculos intermediários de cada avaliador."),
     }
     return labels.get(relative)
