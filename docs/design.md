@@ -8,7 +8,7 @@ O projeto exige regras conferidas, treinamento neural próprio real, comparaçã
 
 A apresentação cobre problema, proposta, construção, matemática, arquiteturas, experimentos, códigos e ranking. Cada slide complexo deve ser seguido imediatamente por explicação simples com exemplo cotidiano. Narração e legendas são em português, com duração determinada pela cobertura.
 
-## Protocolo operacional atual: R18
+## Protocolo atual: seleção R18 e refit R20
 
 O [plano R18](../evidence/round18-plan.json) fixa CV estratificada com cinco folds, shuffle e seed 42 sobre as 699.960 linhas. Cada treino próprio usa quatro folds; a OOF é calculada somente no fold excluído. No teste, cada família própria usa a média das probabilidades dos cinco modelos. Target encoding e pooling têm cinco partições internas; mapas, frequência e escalas são ajustados no treino externo. Fonte: commit [8a1c7fd](https://github.com/aikolopes-DS/fraudlab/tree/8a1c7fd141b43e41b0d43e3a07b0c5ad0bf41ae5).
 
@@ -20,9 +20,11 @@ O [plano R18](../evidence/round18-plan.json) fixa CV estratificada com cinco fol
 
 `bpe_digits` estende `value_digits` — entradas originais, logs, ciclos, razão e chaves de valores/dígitos — com seis chaves do tokenizer GPT-2 para valor e saldo. `joint_bpe` acrescenta oito interações fixas. O pooling compartilha taxas entre campos relacionados com suavizações 50/2.000/200; cada linha recebe estatísticas de outros subconjuntos internos. São 92 atributos antes do pré-processamento e 223 entradas codificadas. Testamos padrões sintéticos, sem afirmar regras causais bancárias. ID e alvo ficam excluídos.
 
-A composição é `0.5625 × offset + 0.1875 × LGB + 0.25 × GPT2`, em probabilidades. Dentro do offset: `sigmoid(margem GLM + margem residual)`. Os dois termos usam a mesma matriz de treino com codificação supervisionada internamente cruzada e são salvos juntos. A seleção R18 não usa early stopping externo nem refit único com 100% dos rótulos.
+A composição é `0.5625 × offset + 0.1875 × LGB + 0.25 × GPT2`, em probabilidades. Dentro do offset: `sigmoid(margem GLM + margem residual)`. Os dois termos usam a mesma matriz de treino com codificação supervisionada internamente cruzada e são salvos juntos. A seleção R18 não usa early stopping externo. No [refit R20](../evidence/round20-plan.json), ambos os componentes próprios são reaprendidos com todos os 699.960 rótulos, preservando configurações e pesos da mistura. O GPT-2 externo permanece igual. Esses refits não produzem uma nova OOF; a nota local continua atribuída à seleção R18.
 
 A [OOF R18](../evidence/round18-results.json) é **0,9516524825255244**, ganho de 0,0001603443 sobre R10 e melhora nos cinco folds. Planos, pesos e critério precederam o treino; a [auditoria independente](../evidence/round18-verification.json) recalculou OOF, misturas e checkpoints. A CV participou da seleção e não é avaliação independente. A [submissão 58481744](../evidence/round18-public.json) obteve score público **0,95141**, posição **714/2.125**, observada em **17/11/2026 às 20h53min43s UTC**. A R10 anterior havia obtido 0,95134.
+
+O arquivo atual [R20, submissão 58483010](../evidence/round20-public.json), recebeu **0,95162**, posição **657/2.126** em **17/11/2026 às 21h59min16s UTC**. A [auditoria R20](../evidence/round20-verification.json) reproduziu 1.024 previsões de cada checkpoint e verificou a composição nas 299.984 linhas de teste; o CSV remoto completo tem o mesmo SHA-256 do local. A classificação continua provisória e as primeiras posições não foram alcançadas.
 
 ```mermaid
 flowchart LR

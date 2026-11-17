@@ -252,6 +252,17 @@
       "submission_sha256": "e870c10ec773c10d16a4f53bea41776f0b69d95e07e0157884d5371dc13ae0c9",
       "proof": "evidence/public-evaluation-results.json",
       "note": "Tentativa exploratória anterior. Sua exceção não se aplica à solução R10, que passou no critério."
+    },
+    {
+      "submission_id": "58483343",
+      "run": "round21-nested-public25",
+      "public_auc": 0.95138,
+      "protocol_deviation": false,
+      "submission_file_verified": true,
+      "submission_sha256": "de881cf072eb831a9751e72743533dd1e018bee62cb47253f66d8b78d08f3657",
+      "observed_at": "2026-11-17T22:19:05.314857+00:00",
+      "proof": "evidence/round21-public.json",
+      "note": "Passou gate local predefinido, mas não superou o melhor envio R20; não promovida."
     }
   ],
   "ranking_history": [

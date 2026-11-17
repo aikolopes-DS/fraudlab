@@ -1,0 +1,20 @@
+{
+  "ref": 58483343,
+  "run": "round21-nested-public25",
+  "status": "complete",
+  "public_auc": 0.95138,
+  "observed_at": "2026-11-17T22:19:05.314857+00:00",
+  "source": "https://www.kaggle.com/competitions/playground-series-s6e11/submissions",
+  "submission_sha256": "de881cf072eb831a9751e72743533dd1e018bee62cb47253f66d8b78d08f3657",
+  "downloaded_submission_sha256": "de881cf072eb831a9751e72743533dd1e018bee62cb47253f66d8b78d08f3657",
+  "submission_file_verified": true,
+  "promoted": false,
+  "previous_best_public_auc": 0.95162,
+  "delta_vs_best": -0.00024,
+  "rank_of_this_submission": null,
+  "rank_scope": "Kaggle team leaderboard shows its best submission; no rank is attributed to this lower-scoring trial.",
+  "winning_position_reached": false,
+  "gate_passed_before_upload": true,
+  "protocol_deviation": false,
+  "total_scored_submissions": 10
+}

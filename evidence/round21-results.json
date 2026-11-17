@@ -1,0 +1,62 @@
+{
+  "round": 21,
+  "status": "complete_not_promoted",
+  "source_revision": "8a1c7fd141b43e41b0d43e3a07b0c5ad0bf41ae5",
+  "plan": "evidence/round21-plan.json",
+  "plan_line_endings": {
+    "executed_sha256": "8cd5c3880286fb6897e74c978012b747a0f9c57d34de34120ab79926b8d49051",
+    "public_git_revision": "304135f",
+    "public_lf_sha256": "d58d975e98e705950a9e529899afbd4cd350c0faec1807358b6a0c3ddafa946a",
+    "only_line_endings": true,
+    "semantically_equal": true
+  },
+  "validation": {
+    "method": "stratified",
+    "n_splits": 5,
+    "holdout_fraction": 0.0,
+    "independent_holdout": false,
+    "early_stopping_uses_validation": false,
+    "inner_fraction": 0.25,
+    "base_training_fraction": 0.75,
+    "meta_training_fraction": 0.25,
+    "inner_seed": 2026
+  },
+  "own_oof_auc": 0.9512688819801318,
+  "own_fold_scores": [
+    0.9503571179503769,
+    0.9517076716677835,
+    0.9562276485657628,
+    0.9517311153540852,
+    0.9464569011581747
+  ],
+  "hybrid_oof_auc": 0.9516568348102683,
+  "hybrid_fold_scores": [
+    0.9506830771868682,
+    0.9520383037705912,
+    0.9566999308701775,
+    0.9518556884847956,
+    0.9471055004909782
+  ],
+  "delta_vs_r18": 4.352284743935897e-06,
+  "improved_folds_vs_r18": 4,
+  "predeclared_gate_passed": true,
+  "new_inner_base_fits": 15,
+  "meta_fits": 5,
+  "meta_input_count": 3,
+  "meta_C": 0.01,
+  "teacher_in_meta_training": false,
+  "effective_probability_blend": {
+    "own_nested_stack": 0.75,
+    "external_gpt2": 0.25
+  },
+  "public_result": "evidence/round21-public.json",
+  "verification": "evidence/round21-verification.json",
+  "promoted": false,
+  "interpretation_pt": "O pequeno ganho local não se confirmou no score público. Mantida R20, sem ajuste posterior de pesos.",
+  "limitations": [
+    "Exploratory selection on previously reused labels, not a new independent holdout.",
+    "Meta-training base models see 60% of all competition rows; inference member checkpoints see 80%. This distribution difference is acknowledged, with no post-result calibration.",
+    "R19 uses declared transductive feature counts; no validation/test labels enter those counts.",
+    "The external GPT2 was trained by its author and only enters the final fixed 25% blend."
+  ]
+}
