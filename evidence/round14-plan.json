@@ -1,0 +1,49 @@
+{
+  "date": "2026-11-17",
+  "status": "prospective; implementation and review before competition-data fitting",
+  "hypothesis": "The R10 tokenizer sees only the integer parts of amount and balance. Test full-number GPT2 token categories across all six continuous fields, magnitude-aware integer prefixes and tens buckets, together with the predeclared hierarchical pooling. This is a broader numeric representation, not a recovered generator.",
+  "inspiration": "The numeric-key and hierarchical-pooling ideas described in the source pinned by evidence/round13-plan.json; own extraction implementation. No external source is executed and no new public prediction stream is imported.",
+  "baseline_run": "round10-offset-bpe-frequency-public25",
+  "baseline_oof_auc": 0.9514921382152453,
+  "validation": "Exploratory full-data StratifiedKFold5/42, same ordered IDs, labels and folds as R10. All supervised statistics, numeric scaling and category frequency maps are fitted on outer-training rows only; target-based attributes use internal crossfit5. No independent holdout, global pair selection, transductive counts or outer-validation early stopping.",
+  "candidate": {
+    "name": "round14-full-token-pooled-offset",
+    "model": "offset",
+    "feature_set": "token_digits",
+    "glm_pooled_tokens": true,
+    "glm_frequency": true,
+    "glm_inner_folds": 5,
+    "target_smoothing": 50,
+    "logistic_c": 0.3,
+    "glm_spline_knots": 0,
+    "iterations": 1000,
+    "num_leaves": 4,
+    "learning_rate": 0.03,
+    "l2_leaf_reg": 5,
+    "min_child_samples": 100,
+    "folds": 5,
+    "seed": 42,
+    "holdout_fraction": 0,
+    "phase": "exploratory_full_data_cv",
+    "fixed_training": true,
+    "device": "cpu",
+    "threads": 4
+  },
+  "representation": {
+    "base": "Existing value_digits, unchanged; not the six-key bpe_digits extension.",
+    "continuous_fields": ["amount_usd", "hours_since_last_txn", "distance_from_home_km", "account_balance_usd", "velocity_score", "merchant_risk_score"],
+    "new_keys_per_field": ["full-number first GPT2 token", "full-number second token or-1", "full-number last token", "full-number token count", "floor(value/10)", "integer digit length plus first digit", "integer digit length plus first two digits"],
+    "new_deterministic_keys": 42,
+    "canonical_text": "Nonnegative finite float64 values rendered in fixed decimal notation with at least one fractional digit; no cent rounding. Equivalent numeric spellings are merged. Literal original CSV spelling is not retained.",
+    "pooling": "Exactly the16 cross-fitted hierarchical logits and fixed smooth50/2000/200 in round13-plan.json.",
+    "compatibility": "Do not alter the existing raw, digits, value_digits or bpe_digits outputs. IDs and labels produce no engineered keys."
+  },
+  "fixed_comparisons": {
+    "space": "probability",
+    "candidate_share_of_own_offset": [0.25, 0.5, 1.0],
+    "formula": "0.5625*(share*candidate+(1-share)*R10_own_offset)+0.1875*explore5_lgbm+0.25*approved_Masaya_GPT2_v2",
+    "selection": "Report every predeclared share and choose highest pooled OOF among eligible shares. Exploratory selection; do not add weights or alter parameters after seeing outcomes. R13 is reported separately, not silently pooled into this selection."
+  },
+  "promotion_rule": "Exceed frozen R10 hybrid pooled OOF by strictly more than0.0001 and improve at least4/5 matching folds. If R13 also qualifies, prefer the eligible submitted candidate with higher pooled OOF, without comparing public scores to set weights. At most one R14 submission after independent data/source/folds/IDs/labels/mixture/checkpoint checks. If the gate fails, no submission or exception.",
+  "training_gate": "Publish this plan and tested implementation, then run an isolated clean pinned worktree. One CPU configuration, five fits, no paid compute. Do not require R13 to succeed before testing this separately declared representation."
+}
