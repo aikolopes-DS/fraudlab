@@ -1,0 +1,177 @@
+{
+  "recorded_at": "2026-11-17T13:52:06.581437+00:00",
+  "status": "verified_gate_failed_no_submission",
+  "plan": "evidence/round11-plan.json",
+  "plan_sha256": "5738e1baf6a54f5837450267107a57c588a098b36ff8124856541f591ea42921",
+  "source_commit": "a75980b03fef5da68430c2d8cbf24416fc66d33f",
+  "source_was_dirty": false,
+  "validation": "Exploratory full-data StratifiedKFold(5, shuffle=True, random_state=42), no independent holdout or outer-validation early stopping. Fit GLM and residual on the same cross-fitted matrix. No parameters may change during this run.",
+  "candidate": "round11-offset2000-bpe-frequency",
+  "run": "round11-offset2000-bpe-frequency-public25",
+  "own_oof_auc": 0.9505952343157735,
+  "own_fold_scores": [
+    0.9497850099254823,
+    0.9509675502965413,
+    0.955492278075416,
+    0.9509531702594035,
+    0.9458841170600645
+  ],
+  "oof_auc": 0.9514594720280554,
+  "fold_scores": [
+    0.9505353213921671,
+    0.9519261842243335,
+    0.9564480471816352,
+    0.951746685441833,
+    0.9467408820341918
+  ],
+  "baseline_oof_auc": 0.9512586315198723,
+  "current_r10_oof_auc": 0.9514921382152453,
+  "delta_vs_original": 0.00020084050818303112,
+  "delta_vs_r10": -3.266618718988923e-05,
+  "fold_deltas_vs_original": [
+    0.00023251495684317725,
+    5.3334774734015156e-05,
+    8.859818041195844e-05,
+    0.000216216349237075,
+    0.00037947389273185195
+  ],
+  "improved_folds": 5,
+  "not_worse_than_r10": false,
+  "eligible_to_submit": false,
+  "weights": [
+    0.5625,
+    0.1875,
+    0.25
+  ],
+  "feature_encoding": {
+    "tiktoken": "0.14.0",
+    "encoding": "gpt2",
+    "vocabulary_size": 50257,
+    "encoding_files": [
+      {
+        "url": "https://openaipublic.blob.core.windows.net/gpt-2/encodings/main/vocab.bpe",
+        "sha256": "1ce1664773c50f3e0cc8842619a93edc4624525b728b188a9e0be33b7726adc5"
+      },
+      {
+        "url": "https://openaipublic.blob.core.windows.net/gpt-2/encodings/main/encoder.json",
+        "sha256": "196139668be63f3b5d6574427317ae82f612a97c5d1cdaf36ed2256dbf636783"
+      }
+    ],
+    "input_columns": [
+      "amount_usd",
+      "account_balance_usd"
+    ],
+    "output_suffixes": [
+      "__gpt2_first_key",
+      "__gpt2_second_key",
+      "__gpt2_second_cents_key"
+    ],
+    "representation": "cents=np.rint(float64_USD*100); ' ' + str(cents // 100)",
+    "rounding": "NumPy rint; nearest representable cent, halfway ties to even",
+    "second_token_missing": "-1",
+    "third_key": "second_token_id + ':' + str(cents % 100)",
+    "more_than_two_tokens": "retain first two; discard later integer tokens",
+    "label_usage": "none in extraction; fold-local cross-fitted TE downstream"
+  },
+  "checkpoint_reload": [
+    {
+      "fold": 0,
+      "real_validation_rows": 1024,
+      "selection": "First 1024 validation rows of this fold, original order",
+      "validation_ids_sha256_int64_little_endian": "16986d733b1f68208b7ea4b9156a33b4514b5825bf415fb4612f3d2f5f1e3ccd",
+      "max_absolute_error": 1.1102230246251565e-16,
+      "atol": 1e-12,
+      "rtol": 0,
+      "actual_trees": 2000,
+      "glm_iterations": 10,
+      "checkpoint_sha256": "54fd05f89e535fa0d4834795c3fdca8f18c83b67e5a4a348da0c8d9b8ebb19a2"
+    },
+    {
+      "fold": 1,
+      "real_validation_rows": 1024,
+      "selection": "First 1024 validation rows of this fold, original order",
+      "validation_ids_sha256_int64_little_endian": "268bb15d0044e9c274bb3556d8e6d670988b1517947b223d24cf417b68770b34",
+      "max_absolute_error": 9.996344030316351e-17,
+      "atol": 1e-12,
+      "rtol": 0,
+      "actual_trees": 2000,
+      "glm_iterations": 10,
+      "checkpoint_sha256": "195dfd886695fcef384293032906b2e53bc0d050728cd93a7f9b4d60ea3143b6"
+    },
+    {
+      "fold": 2,
+      "real_validation_rows": 1024,
+      "selection": "First 1024 validation rows of this fold, original order",
+      "validation_ids_sha256_int64_little_endian": "aec48df7fc332351557760351cfa76d1d6cf846b49e400485e4898b76b68c829",
+      "max_absolute_error": 1.1102230246251565e-16,
+      "atol": 1e-12,
+      "rtol": 0,
+      "actual_trees": 2000,
+      "glm_iterations": 10,
+      "checkpoint_sha256": "8bad69ae0389cb1c474537acc9d935bc19dcdd95d493e635cccb75edb3deed61"
+    },
+    {
+      "fold": 3,
+      "real_validation_rows": 1024,
+      "selection": "First 1024 validation rows of this fold, original order",
+      "validation_ids_sha256_int64_little_endian": "51bc701cdfa8b4eab1fba6d6f3a154968afa0f675c7c8202750aba4ad7a60648",
+      "max_absolute_error": 1.1102230246251565e-16,
+      "atol": 1e-12,
+      "rtol": 0,
+      "actual_trees": 2000,
+      "glm_iterations": 10,
+      "checkpoint_sha256": "5a55d1add63fe0b6aa1ca8e10eeba2b37520974ca23c357be0cd77ee9ca2e86e"
+    },
+    {
+      "fold": 4,
+      "real_validation_rows": 1024,
+      "selection": "First 1024 validation rows of this fold, original order",
+      "validation_ids_sha256_int64_little_endian": "4ebef535746a2b315460bc185bca2c7f84dfc0e3d60995079c4631a1e34f876b",
+      "max_absolute_error": 1.1102230246251565e-16,
+      "atol": 1e-12,
+      "rtol": 0,
+      "actual_trees": 2000,
+      "glm_iterations": 10,
+      "checkpoint_sha256": "ab28ad4c5917489dc4994e9c00189ae1424fd03ab1d5650f00027ca5ce3ad411"
+    }
+  ],
+  "training_elapsed_seconds": 483.585,
+  "checks": {
+    "source_commit_clean_and_plan_preserved": true,
+    "config_matches_prospective_plan": true,
+    "only_tree_count_changed_from_r10": true,
+    "same_ids_order_folds_labels_as_original_and_r10": true,
+    "data_hashes_rechecked": true,
+    "canonical_blend_and_formula_verified": true,
+    "pooled_and_fold_auc_recomputed": true,
+    "test_csv_schema_ids_probabilities_verified": true,
+    "five_individual_checkpoint_reloads_on_real_validation": true
+  },
+  "artifacts": {
+    "artifacts/runs/round11-offset2000-bpe-frequency/config.json": "9e194a9b4a29ca7a9db54ffea3e7f4f28f66c02208e37fd6f70872726ac0706c",
+    "artifacts/runs/round11-offset2000-bpe-frequency/fold-0.joblib": "54fd05f89e535fa0d4834795c3fdca8f18c83b67e5a4a348da0c8d9b8ebb19a2",
+    "artifacts/runs/round11-offset2000-bpe-frequency/fold-1.joblib": "195dfd886695fcef384293032906b2e53bc0d050728cd93a7f9b4d60ea3143b6",
+    "artifacts/runs/round11-offset2000-bpe-frequency/fold-2.joblib": "8bad69ae0389cb1c474537acc9d935bc19dcdd95d493e635cccb75edb3deed61",
+    "artifacts/runs/round11-offset2000-bpe-frequency/fold-3.joblib": "5a55d1add63fe0b6aa1ca8e10eeba2b37520974ca23c357be0cd77ee9ca2e86e",
+    "artifacts/runs/round11-offset2000-bpe-frequency/fold-4.joblib": "ab28ad4c5917489dc4994e9c00189ae1424fd03ab1d5650f00027ca5ce3ad411",
+    "artifacts/runs/round11-offset2000-bpe-frequency/metrics.json": "ac874a571f74011e4cfb2e77584baf8772df334493f97049cdb83e5eb75cb4ea",
+    "artifacts/runs/round11-offset2000-bpe-frequency/oof.csv": "ca76e19a977c37c392d8cffe72da0480b3d091208ef29638e23acd27168cdb88",
+    "artifacts/runs/round11-offset2000-bpe-frequency/predictions.csv": "c1c7c269f8da5675acad2fea5d7ac2dc2f25c52f6e33cfa368867cc8cc1a12e0",
+    "artifacts/runs/round11-offset2000-bpe-frequency/status.json": "970587076af8c4ebf6e94dc3999b017a4c3792faf7660c408eb91572fd86128b",
+    "artifacts/runs/round11-offset2000-bpe-frequency/submission.csv": "c1c7c269f8da5675acad2fea5d7ac2dc2f25c52f6e33cfa368867cc8cc1a12e0",
+    "artifacts/runs/round11-offset2000-bpe-frequency-public25/config.json": "45b48bc1b2cbc95b40bfee618a6b174eee388d3909ef353f909bf373b9eefc47",
+    "artifacts/runs/round11-offset2000-bpe-frequency-public25/metrics.json": "87cae571ac992f0e26fb4b53514d446128ba2d45b9de3d74807b1734737fa237",
+    "artifacts/runs/round11-offset2000-bpe-frequency-public25/oof.csv": "d905599a304f948c07810ff17380a1f6831c154390243337acb0dc87e3af5eca",
+    "artifacts/runs/round11-offset2000-bpe-frequency-public25/predictions.csv": "bd1f06974ac58e8ca09c7f46172ecb5b0b11bce183f51ccb13838ca2a72afbf1",
+    "artifacts/runs/round11-offset2000-bpe-frequency-public25/status.json": "970587076af8c4ebf6e94dc3999b017a4c3792faf7660c408eb91572fd86128b",
+    "artifacts/runs/round11-offset2000-bpe-frequency-public25/submission.csv": "bd1f06974ac58e8ca09c7f46172ecb5b0b11bce183f51ccb13838ca2a72afbf1"
+  },
+  "verifier_sha256": "4d2dc16a20167170475c7f2fafff51aa6eeb2e9b6d40460b2401a14513c608dd",
+  "training_log_sha256": "d040258e3be5cc6bc35d42c4a16a8e2c360f1f19eb62b14a54f0a04f621c8f7e",
+  "new_kaggle_submissions": 0,
+  "decision": "retain_r10_do_not_submit",
+  "limitations": [
+    "OOF reused for selection; no independent holdout remains.",
+    "This process did not submit or obtain leaderboard feedback."
+  ]
+}

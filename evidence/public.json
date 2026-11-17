@@ -5,23 +5,23 @@
     "deadline_utc": "2026-11-30T23:59:00Z"
   },
   "stage": "submitted",
-  "updated_at": "2026-11-17T13:17:10.844695+00:00",
+  "updated_at": "2026-11-17T13:34:51.848445+00:00",
   "results": {
-    "local_auc": 0.9514070520739548,
+    "local_auc": 0.9514921382152453,
     "fold_scores": [
-      0.9502377488747387,
-      0.9518408827637581,
-      0.9565415951025746,
-      0.9517207777604038,
-      0.9468143544538462
+      0.9504894214476117,
+      0.9519294871585336,
+      0.9565314284038893,
+      0.9517951792274013,
+      0.9468101628656655
     ],
-    "public_auc": 0.95108,
-    "ranking": 804,
-    "total_teams": 2088,
-    "submission_id": "58469746",
-    "observed_at": "2026-11-17T13:17:10.844695+00:00",
+    "public_auc": 0.95134,
+    "ranking": 712,
+    "total_teams": 2089,
+    "submission_id": "58470267",
+    "observed_at": "2026-11-17T13:34:51.848445+00:00",
     "local_auc_scope": "development_oof",
-    "local_auc_run": "round9-bpe-frequency-public25",
+    "local_auc_run": "round10-offset-bpe-frequency-public25",
     "holdout_auc": null,
     "holdout_observed_at": null
   },
@@ -35,14 +35,14 @@
     "release": "https://github.com/aikolopes-DS/fraudlab/releases/tag/v0.1.0"
   },
   "run": {
-    "path": "artifacts/runs/round9-bpe-frequency-public25",
+    "path": "artifacts/runs/round10-offset-bpe-frequency-public25",
     "phase": "exploratory_full_data_cv",
-    "submission_sha256": "e870c10ec773c10d16a4f53bea41776f0b69d95e07e0157884d5371dc13ae0c9",
+    "submission_sha256": "274cbe4ea90d9dc4893140cad55682f3627ced02163fff48655df4b095e428e7",
     "model": "blend",
     "validation": {
       "method": "stratified",
       "n_splits": 5,
-      "note": "Predeclared R9 combined numeric BPE and frequency ablation: six deterministic keys, fold-local TE5/50, fixed GLM, outer CV5/42 over all labels, no independent holdout or public-score selection.",
+      "note": "Predeclared R10 shallow residual trees over the combined BPE and frequency GLM: six deterministic keys, fold-local TE5/50, fixed GLM, outer CV5/42 over all labels, no independent holdout or public-score selection.",
       "group_column": null,
       "time_column": null,
       "holdout_fraction": 0.0,
@@ -150,7 +150,13 @@
         "is_fraud"
       ]
     },
-    "selection_reason": "Best observed public score after two frozen public evaluations. R9 improved pooled OOF but failed the original four-fold consistency heuristic; its submission was an explicit documented exploratory deviation, not a robust OOF promotion."
+    "selection_reason": "A rodada 10 combina GLM com tokens numéricos e frequência, correções de árvores pequenas, LightGBM e GPT-2 público. A OOF da mistura melhorou nos cinco folds sobre a referência original e superou a rodada 9. Os pesos e hiperparâmetros foram congelados antes do envio. O Kaggle processou o arquivo e confirmou o maior score público observado do projeto.",
+    "selection_reason_pt": "A rodada 10 combina GLM com tokens numéricos e frequência, correções de árvores pequenas, LightGBM e GPT-2 público. A OOF da mistura melhorou nos cinco folds sobre a referência original e superou a rodada 9. Os pesos e hiperparâmetros foram congelados antes do envio. O Kaggle processou o arquivo e confirmou o maior score público observado do projeto.",
+    "effective_weights": {
+      "offset": 0.5625,
+      "lightgbm": 0.1875,
+      "external_gpt2": 0.25
+    }
   },
   "checks": {
     "data_verified": true,
@@ -160,11 +166,11 @@
   },
   "limitations": [
     "A posição pública é provisória; as primeiras posições ainda não foram alcançadas.",
-    "A CV 5/42 desta extensão foi usada na seleção e não é uma avaliação final independente.",
-    "A reserva de 15% pertence ao protocolo inicial; não é independente para a extensão neural pública.",
-    "O componente GPT-2 usa previsões licenciadas de Masaya Kawamata. Seu treinamento foi auditado por leitura de código, sem reexecução pelo FraudLab.",
-    "CI remota não iniciou: GitHub informa bloqueio da conta por cobrança. Testes locais foram executados separadamente.",
-    "As rodadas exploratórias de 17/11 não atingiram o critério prévio de melhoria; a composição submetida permanece a mesma. O vídeo v0.1 conserva o snapshot de 16/11."
+    "A CV de cinco folds foi usada para escolher a solução; não é uma avaliação final independente.",
+    "A reserva inicial de 15% é histórica e participa dos treinos desta extensão; não existe novo holdout independente.",
+    "O GPT-2 externo foi treinado por Masaya Kawamata. O FraudLab auditou código e artefatos, mas não reexecutou esse treinamento.",
+    "O score público cobre apenas a parte pública da competição; o resultado privado permanece desconhecido.",
+    "O vídeo v0.1 conserva o snapshot de 16/11; a atualização da apresentação está em preparação."
   ],
   "external_components": [
     {
@@ -212,9 +218,31 @@
     }
   ],
   "public_evaluation": {
-    "plan": "evidence/public-evaluation-plan.json",
-    "results": "evidence/public-evaluation-results.json",
-    "protocol_deviation": true,
-    "consistency_gate_passed": false
-  }
+    "plan": "evidence/round10-plan.json",
+    "results": "evidence/round10-public.json",
+    "protocol_deviation": false,
+    "consistency_gate_passed": true,
+    "reference_run": "explore5-public25",
+    "improved_folds": 5,
+    "required_folds": 4,
+    "current_oof_exceeds_r9": true,
+    "previous_exploratory_results": "evidence/public-evaluation-results.json"
+  },
+  "historical_submissions": [
+    {
+      "submission_id": "58469746",
+      "run": "round9-bpe-frequency-public25",
+      "public_auc": 0.95108,
+      "protocol_deviation": true,
+      "observed_at": "2026-11-17T13:17:10.844695+00:00",
+      "submission_file_verified": true,
+      "declared_before_upload": true,
+      "improved_folds": 3,
+      "required_folds": 4,
+      "total_folds": 5,
+      "submission_sha256": "e870c10ec773c10d16a4f53bea41776f0b69d95e07e0157884d5371dc13ae0c9",
+      "proof": "evidence/public-evaluation-results.json",
+      "note": "Tentativa exploratória anterior. Sua exceção não se aplica à solução R10, que passou no critério."
+    }
+  ]
 }

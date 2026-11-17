@@ -55,6 +55,14 @@ class PublicBuildTests(unittest.TestCase):
         with self.assertRaisesRegex(ValueError, "external training attribution"):
             MODULE.normalize(evidence)
 
+    def test_residual_glm_retains_its_own_family_and_external_credit(self):
+        evidence = self.external_fixture()
+        evidence["run"]["effective_weights"] = {"offset": 0.5625, "lightgbm": 0.1875, "external_gpt2": 0.25}
+        public = MODULE.normalize(evidence)
+        self.assertEqual(public["run"]["effective_weights"]["offset"], 0.5625)
+        self.assertNotIn("glm", public["run"]["effective_weights"])
+        self.assertEqual(public["external_components"][0]["weight"], 0.25)
+
     def test_loading_metrics_does_not_discard_canonical_composition(self):
         evidence = self.external_fixture()
         evidence["checks"] = {"training_verified": True}

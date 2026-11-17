@@ -133,9 +133,12 @@ Enviar é uma ação explícita, sujeita às regras e limites da conta. Confirme
 Com evidências correspondentes à submissão, as métricas híbridas e a comparação MLP histórica disponíveis:
 
 ```powershell
-python -m presentation.build --evidence evidence/public.json --metrics artifacts/runs/explore5-public25/metrics.json --comparison artifacts/runs/explore5-glm/metrics.json --comparison artifacts/runs/explore5-lgbm/metrics.json --comparison artifacts/runs/dev-mlp-te-values/metrics.json --historical-holdout artifacts/holdout/evaluation.json --output artifacts/presentation-hybrid --video
-python -m presentation.review --presentation-dir artifacts/presentation-hybrid
-python site/build.py --run-dir artifacts/runs/explore5-public25 --presentation-dir artifacts/presentation-hybrid
+$fraudComparisons = @("round10-offset-bpe-frequency", "round9-glm-bpe-frequency", "round9-bpe-frequency-public25", "explore5-glm", "explore5-lgbm", "explore5-public-gpt2-v2", "explore5-public25", "round8-tabm", "round8-tabm10", "dev-mlp-te-values", "dev-logistic-raw", "dev-mlp-standard-raw", "dev-mlp-quantile-raw", "dev-lgbm-leaf4-raw", "dev-lgbm-leaf4-digits")
+$fraudPresentationArgs = @()
+foreach ($fraudRun in $fraudComparisons) { $fraudPresentationArgs += @("--comparison", "artifacts/runs/$fraudRun/metrics.json") }
+python -m presentation.build --evidence evidence/public.json --metrics artifacts/runs/round10-offset-bpe-frequency-public25/metrics.json @fraudPresentationArgs --historical-holdout artifacts/holdout/evaluation.json --output artifacts/presentation-v02 --video
+python -m presentation.review --presentation-dir artifacts/presentation-v02 --asr
+python site/build.py --run-dir artifacts/runs/round10-offset-bpe-frequency-public25 --presentation-dir artifacts/presentation-v02
 python -m http.server 8000 --directory site/dist
 ```
 
@@ -143,14 +146,22 @@ O relatório histórico é opcional: omita `--historical-holdout` se não o poss
 
 `--video` usa a voz online `pt-BR-AntonioNeural` via `edge-tts` e requer FFmpeg no PATH. No Windows, há a alternativa `--speech-engine sapi --voice "Microsoft Maria Desktop"`. São gerados slides HTML, imagens, roteiro, MP4, legendas SRT/WebVTT e manifest de hashes. Cada slide complexo é seguido por explicação simples e exemplo cotidiano; a cobertura determina a duração.
 
+Para reaproveitar narrações de uma exportação anterior, acrescente
+`--reuse-audio-dir artifacts/presentation/audio`. Apenas texto, voz e ritmo
+idênticos reutilizam o áudio; a pasta original permanece intacta. Congele uma
+cópia das evidências antes de exportar. O manifest registra os hashes de
+entrada e recusa mudanças durante a geração. A reprodução exata do snapshot
+publicado usa `evidence-snapshot.json` do ZIP da respectiva release; evidências
+atuais podem registrar uma classificação posterior.
+
 `presentation.review` verifica formato, timeline e legendas e extrai quadros. A transcrição integral automática é opcional: instale `pip install -e ".[review]"` e acrescente `--asr`; o modelo ASR pode precisar de download inicial. Nenhuma dessas verificações declara que uma pessoa assistiu ou ouviu o vídeo inteiro.
 
 O site estático é montado em `site/dist/`, com evidência pública e arquivos permitidos pelo manifest; datasets, pesos e caminhos locais não são publicados. O servidor acima é apenas preview local. Hospedagem e acesso público são verificados separadamente; o build não faz deploy.
 
-O mirror da hospedagem Sites limita cada arquivo a 32 MiB; o MP4 desta versão tem cerca de 49 MiB. Para usar o vídeo publicado na release GitHub e manter slides/legendas no site:
+O mirror da hospedagem Sites limita cada arquivo a 32 MiB. Para usar o vídeo publicado na release GitHub e manter slides/legendas no site:
 
 ```powershell
-python site/build.py --run-dir artifacts/runs/explore5-public25 --presentation-dir artifacts/presentation --video-url https://github.com/aikolopes-DS/fraudlab/releases/download/v0.1.0/video.mp4
+python site/build.py --run-dir artifacts/runs/round10-offset-bpe-frequency-public25 --presentation-dir artifacts/presentation-v02 --video-url https://github.com/aikolopes-DS/fraudlab/releases/download/v0.2.0/video.mp4
 ```
 
 O build ainda confere o hash do MP4 local, registra o hash e a URL externa no manifesto público e exclui o binário de `site/dist/`. A igualdade dos bytes publicados e a reprodução anônima precisam ser verificadas após o upload.
@@ -192,10 +203,11 @@ python site/check_browser.py
 
 O comando verifica desktop/mobile e registra capturas em `artifacts/qa/site/`. A qualidade competitiva exige os experimentos reais e o resultado processado na plataforma.
 
-## TabM prospectivo — rodada 8
+## TabM — rodada 8 descartada
 
-O [plano R8](../evidence/round8-plan.json) ainda não contém resultado da
-competição. Instale as dependências opcionais oficiais, com versões fixadas:
+O [plano R8](../evidence/round8-plan.json) foi registrado antes do treino.
+O [resultado R8](../evidence/round8-results.json) não justificou incluir a rede.
+Para reproduzir o experimento, instale as dependências opcionais oficiais:
 
 ```powershell
 python -m pip install -e ".[tabm]"
@@ -219,3 +231,14 @@ Cada fold salva `.pt` com pesos, intervalos, configuração e época escolhida,
 além de `.preprocessing.joblib` com pré-processador e máscara de constantes.
 `predict_saved("tabm", ...)` reconstrói a mesma previsão. Os testes em CPU
 usam dados fabricados e não comprovam desempenho competitivo.
+
+## Receita selecionada — rodada 10
+
+A R10 usa `value_digits_bpe` e `--glm-frequency` com o modelo `offset`.
+Mantém C=0,3, suavização=50, cinco divisões internas para target encoding e
+1.000 árvores de quatro folhas, taxa 0,03, L2=5 e mínimo de 100 exemplos por folha.
+Os comandos completos e os pesos prospectivos estão no
+[plano R10](../evidence/round10-plan.json). O teste combina 56,25% desse modelo,
+18,75% do LightGBM próprio e 25% das previsões GPT-2 v2 licenciadas.
+A comparação com 2.000 árvores foi descartada por ficar abaixo da R10:
+[resultado R11](../evidence/round11-results.json).

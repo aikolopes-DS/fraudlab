@@ -1,0 +1,25 @@
+{
+  "observed_at": "2026-11-17T13:34:51.848445+00:00",
+  "plan": "evidence/round10-plan.json",
+  "source_commit": "169f3ee5cdfbb2afe16c942a7af0efb8b12a403f",
+  "receipt": {
+    "ref": 58470267,
+    "run": "round10-offset-bpe-frequency-public25",
+    "submission_sha256": "274cbe4ea90d9dc4893140cad55682f3627ced02163fff48655df4b095e428e7",
+    "downloaded_submission_sha256": "274cbe4ea90d9dc4893140cad55682f3627ced02163fff48655df4b095e428e7",
+    "submission_file_verified": true,
+    "public_auc": 0.95134,
+    "ranking": 712,
+    "total_teams": 2089,
+    "observed_at": "2026-11-17T13:34:51.848445+00:00",
+    "source": "https://www.kaggle.com/competitions/playground-series-s6e11/leaderboard"
+  },
+  "reference_public_auc": 0.95097,
+  "public_auc_gain_over_reference": 0.00037,
+  "previous_exploratory_public_auc": 0.95108,
+  "gain_over_previous_best": 0.00026,
+  "consistency_gate_passed": true,
+  "improved_folds_vs_original": 5,
+  "independent_holdout": false,
+  "first_positions_reached": false
+}

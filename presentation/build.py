@@ -22,6 +22,8 @@ from uuid import uuid4
 import wave
 
 from .content import Slide, create_slides, ensure_pairs, validate_evidence
+from .audio_cache import edge_paths
+from .continuation import method_code_specs, method_code_analogy
 from .external import components_from
 
 
@@ -119,7 +121,8 @@ document.addEventListener('keydown',e=>{if(!document.body.classList.contains('pr
 
 def insert_code_slides(slides: list[Slide], source_root: Path, required: bool,
                        include_external: bool = False,
-                       captured: dict[Path, str] | None = None) -> list[Path]:
+                       captured: dict[Path, str] | None = None,
+                       runs: list[dict] | None = None) -> list[Path]:
     """Show literal current implementation, with its file and line reference."""
     specifications = [
         ("src/fraudlab/models.py", "loss.backward()", 2, "O gradiente vira uma atualização", [
@@ -160,6 +163,7 @@ def insert_code_slides(slides: list[Slide], source_root: Path, required: bool,
                 "de misturas aninhadas para identificar a "
                 "contribuição efetiva de cada modelo."),
         ])
+    specifications.extend(method_code_specs(runs or []))
     used, additions = [], []
     for relative, marker, count, title, points, narration in specifications:
         path = source_root / relative
@@ -183,7 +187,10 @@ def insert_code_slides(slides: list[Slide], source_root: Path, required: bool,
         code = textwrap.dedent("\n".join(text[start:start + count]))
         additions.append(Slide("08 / Da execução à competição", title, points, narration,
                                kind="technical", code=code, code_reference=f"{relative}:{start + 1}"))
-        if "models.py" in relative:
+        teaching = method_code_analogy(relative)
+        if teaching:
+            additions.append(Slide("08 / Da execução à competição", teaching[0], [], teaching[1], kind="analogy"))
+        elif "models.py" in relative:
             additions.append(Slide("08 / Da execução à competição", "No dia a dia: diagnóstico e ajuste", [
                 "Primeiro entendemos o que influenciou o erro",
                 "Depois aplicamos uma correção segundo uma regra definida",
@@ -406,7 +413,8 @@ def word_captions(boundaries: list[dict], max_chars: int = 76, text: str = "") -
     return captions
 
 
-async def edge_segments(slides: list[Slide], output: Path, voice: str, rate: int) -> list[dict]:
+async def edge_segments(slides: list[Slide], output: Path, voice: str, rate: int,
+                        reuse_audio_dir: Path | None = None) -> list[dict]:
     try:
         import aiohttp
         import edge_tts
@@ -416,13 +424,9 @@ async def edge_segments(slides: list[Slide], output: Path, voice: str, rate: int
     audio_dir = output / "audio"
     audio_dir.mkdir(exist_ok=True)
     for index, slide in enumerate(slides, 1):
-        mp3_path = audio_dir / f"edge-{index:02}.mp3"
-        metadata_path = audio_dir / f"edge-{index:02}.jsonl"
         wave_path = audio_dir / f"edge-{index:02}.wav"
-        request_path = audio_dir / f"edge-{index:02}.request.json"
         request = {"text": slide.narration, "voice": voice, "rate": rate}
-        cached = (request_path.is_file() and mp3_path.is_file() and metadata_path.is_file()
-                  and read_json(request_path) == request and mp3_path.stat().st_size > 0)
+        mp3_path, metadata_path, request_path, cached = edge_paths(audio_dir, request, reuse_audio_dir)
         if not cached:
             request_path.unlink(missing_ok=True)
             try:
@@ -469,12 +473,15 @@ def sapi_segments(slides: list[Slide], output: Path, voice: str, rate: int) -> l
     return segments
 
 
-def narrate(slides: list[Slide], output: Path, voice: str, rate: int, engine: str = "edge") -> list[dict]:
+def narrate(slides: list[Slide], output: Path, voice: str, rate: int, engine: str = "edge",
+            reuse_audio_dir: Path | None = None) -> list[dict]:
     if engine not in ("edge", "sapi"):
         raise ValueError("Unknown speech engine: " + engine)
     if not shutil.which("ffmpeg"):
         raise RuntimeError("FFmpeg não encontrado no PATH.")
-    segments = (asyncio.run(edge_segments(slides, output, voice, rate)) if engine == "edge"
+    if reuse_audio_dir and engine != "edge":
+        raise ValueError("Audio reuse currently requires the Edge speech engine.")
+    segments = (asyncio.run(edge_segments(slides, output, voice, rate, reuse_audio_dir)) if engine == "edge"
                 else sapi_segments(slides, output, voice, rate))
     # Slide changes follow measured PCM durations; cues follow measured utterances
     # (SAPI) or the service's word boundaries (Edge).
@@ -574,27 +581,35 @@ def main(argv: list[str] | None = None) -> int:
     parser.add_argument("--speech-engine", choices=("edge", "sapi"), default="edge")
     parser.add_argument("--voice", help="Default: pt-BR-AntonioNeural (edge) or Microsoft Maria Desktop (sapi)")
     parser.add_argument("--rate", type=int, default=0, choices=range(-3, 4), help="Speech pace; Edge uses steps of 10 percent")
+    parser.add_argument("--reuse-audio-dir", type=Path, help="Read exact Edge text/voice/rate cache from an earlier export; never modify it")
     args = parser.parse_args(argv)
     paths = ([args.metrics] if args.metrics else []) + args.comparison
     holdout_path = args.holdout or args.historical_holdout
-    input_paths = [args.evidence] + paths + ([holdout_path] if holdout_path else [])
+    config_paths = [path.with_name("config.json") for path in paths if path.with_name("config.json").is_file()]
+    input_paths = [args.evidence] + paths + config_paths + ([holdout_path] if holdout_path else [])
     captured = {path: sha256(path) for path in input_paths}
     evidence = read_json(args.evidence)
     runs = [{**read_json(path), "run_name": path.parent.name} for path in paths]
+    for path, run in zip(paths, runs):
+        config_path = path.with_name("config.json")
+        if config_path in captured and run.get("config_sha256"):
+            if captured[config_path] != run["config_sha256"]:
+                raise ValueError("Run config does not match its recorded hash: " + str(config_path))
+            run["run_config"] = read_json(config_path)
     holdout = read_json(holdout_path) if holdout_path else None
     if args.holdout and runs and runs[0].get("selection", {}).get("holdout_report_sha256") != sha256(args.holdout):
         raise ValueError("O relatório de reserva não corresponde ao hash registrado no modelo selecionado.")
     missing = validate_evidence(evidence, runs, args.draft, holdout, bool(args.historical_holdout))
     slides = create_slides(evidence, runs, args.draft, holdout, bool(args.historical_holdout))
     insert_code_slides(slides, Path(__file__).resolve().parents[1], not args.draft,
-                       bool(components_from(runs[:1])), captured)
+                       bool(components_from(runs[:1])), captured, runs)
     ensure_pairs(slides)
     args.output.mkdir(parents=True, exist_ok=True)
     render_slides(slides, args.output, args.draft)
     write_html(slides, args.output, args.draft)
     write_json(args.output / "script.json", {"draft": args.draft, "slides": [slide.public() for slide in slides]})
     voice = args.voice or ("pt-BR-AntonioNeural" if args.speech_engine == "edge" else "Microsoft Maria Desktop")
-    timeline = narrate(slides, args.output, voice, args.rate, args.speech_engine) if args.video else []
+    timeline = narrate(slides, args.output, voice, args.rate, args.speech_engine, args.reuse_audio_dir) if args.video else []
     if args.video:
         encode_video(args.output.resolve(), timeline)
     verify_inputs(captured)

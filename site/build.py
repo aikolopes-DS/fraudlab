@@ -73,7 +73,7 @@ def public_weights(value: object) -> dict:
         return {}
     if not isinstance(value, dict):
         raise ValueError("effective_weights must be a model-to-weight object")
-    allowed = {"glm", "lightgbm", "external_gpt2"}
+    allowed = {"glm", "offset", "lightgbm", "external_gpt2"}
     if set(value) - allowed or any(score(weight) is None for weight in value.values()):
         raise ValueError("Composition needs known model names and finite weights in [0, 1]")
     if value and not math.isclose(sum(value.values()), 1.0, abs_tol=1e-8):

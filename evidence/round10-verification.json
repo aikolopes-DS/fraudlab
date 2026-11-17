@@ -1,0 +1,391 @@
+{
+  "status": "passed",
+  "started_at_utc": "2026-11-17T13:52:54.692205+00:00",
+  "scope": "Recreate CV folds from raw labels, independently recompute saved CSV metrics/formulas, and reload each checkpoint only on its own held-out fold. No fitting, holdout evaluation or submission.",
+  "source_commit_of_training": "169f3ee5cdfbb2afe16c942a7af0efb8b12a403f",
+  "verification_current_head": "7a57e690ad348a4637acd88eef4bbe7bd41c7b0d",
+  "verification_current_git_dirty": true,
+  "verifier_sha256": "adb5f44270564b5a92013bd9a6f1b7c1bb4caa03fbfc3405fda6261087554a82",
+  "rtol": 0,
+  "atol": 1e-12,
+  "new_training_executed": false,
+  "new_holdout_evaluation_executed": false,
+  "new_kaggle_submission_executed": false,
+  "model_sources": {
+    "import_directory": "src/fraudlab",
+    "all_recorded_source_hashes_match": true,
+    "sha256": {
+      "__init__.py": "14479eff95a0233e8bf2d9f359843c36f53f36b92cc95c3e452f75bfb2982dcc",
+      "__main__.py": "1c5b2de2f4bab780c373271484a0d16af8c815714ad09af14e5396981a00bc21",
+      "bpe.py": "7adce2ce879679de655a040dffdf70ff2f3bfd65bb9458bfdf64eb21dcc08724",
+      "data.py": "f22355cc51fa6e6162b24e639923f40a11a23af00afcb65553090176271c8326",
+      "experiment.py": "9477892179c938c43d2cd996cc36b5ecbe31de084650822a92530bda79a3679c",
+      "external.py": "05ec4ec64e4a2c5cf1137c949646bed14fe83fb04506b8f2f973c2c7633c5e08",
+      "features.py": "3eaefb1484bc2b0d6b8d9a8ccdfcbfed7d0528e012308780a18fba4d0a8997b3",
+      "frequency.py": "6831c52335d82b7d6570ea2ba4cfd70ac5b6196406bc1a702f2740fe6cc257ff",
+      "holdout.py": "e3702891766326710c3b56dd7a7fe69f2f778acea3316665f130aa6955e2f4e3",
+      "models.py": "a62f2a1d2ae255141b6e5682333196164b0c27306196c6a6982dbe4ac0ca33ef",
+      "offset.py": "a4ea551e4ddf89aedc87f313eb07425aebc60f7d967986524a873a73565fdc4f",
+      "refit.py": "b50d1ca94ca4379a8a78a82e5a085adfb8c54860854572dfae08e9514a58420e",
+      "splits.py": "41215280332984010f5b616bbf6a675c623b7af3e3f00604eb3238e79c709af9",
+      "tabm.py": "df22ff1a120c8a6fde59052ea7a1b509ff1b7e7acc83d774f670a1daf4a4e667"
+    }
+  },
+  "recomputed_csv_metrics": {
+    "own": {
+      "pooled_oof_auc": 0.9507705388513052,
+      "fold_scores": [
+        0.9498048451920545,
+        0.9510880219473421,
+        0.9557789870570096,
+        0.9512063620714626,
+        0.946078120166973
+      ],
+      "rows": 699960,
+      "test_rows": 299984,
+      "raw_ids_order_folds_and_y_match": true
+    },
+    "hybrid": {
+      "pooled_oof_auc": 0.9514921382152453,
+      "fold_scores": [
+        0.9504894214476117,
+        0.9519294871585336,
+        0.9565314284038893,
+        0.9517951792274013,
+        0.9468101628656655
+      ],
+      "rows": 699960,
+      "test_rows": 299984,
+      "raw_ids_order_folds_and_y_match": true
+    },
+    "baseline": {
+      "pooled_oof_auc": 0.9512586315198723,
+      "fold_scores": [
+        0.9503028064353239,
+        0.9518728494495995,
+        0.9563594490012233,
+        0.951530469092596,
+        0.94636140814146
+      ],
+      "rows": 699960,
+      "test_rows": 299984,
+      "raw_ids_order_folds_and_y_match": true
+    },
+    "lightgbm": {
+      "pooled_oof_auc": 0.9498850732011267,
+      "fold_scores": [
+        0.9487305763556193,
+        0.9509284743788566,
+        0.954864381894611,
+        0.9509149861028812,
+        0.9441192688980317
+      ],
+      "rows": 699960,
+      "test_rows": 299984,
+      "raw_ids_order_folds_and_y_match": true
+    },
+    "external_gpt2": {
+      "pooled_oof_auc": 0.9500272037932734,
+      "fold_scores": [
+        0.9488823016904258,
+        0.9503172171563214,
+        0.9553119838543875,
+        0.949874220039898,
+        0.9458539587540016
+      ],
+      "rows": 699960,
+      "test_rows": 299984,
+      "raw_ids_order_folds_and_y_match": true
+    }
+  },
+  "formula": {
+    "weights": [
+      0.5625,
+      0.1875,
+      0.25
+    ],
+    "space": "probability",
+    "max_abs_oof_error": 1.1102230246251565e-16,
+    "max_abs_test_error": 1.1102230246251565e-16
+  },
+  "individual_checkpoint_reload": [
+    {
+      "fold": 0,
+      "selection": "First1024 validation positions from independently recreated StratifiedKFold5/shuffleTrue/seed42 for this fold",
+      "real_validation_rows": 1024,
+      "selected_ids_sha256": "13bac16f0c15094d7611ea6aa3158d48e320549b66e585d65f94057aea97deb8",
+      "selected_ids_hash_serialization": "Original ordered integer IDs as ASCII decimal, one per line, trailing LF; IDs themselves are not exported",
+      "checkpoint_sha256": "fef8c50cd51e65228807f1339ef322d32e797fd31a14c89bae9d8bad84aed0b5",
+      "max_abs_error_vs_own_oof": 1.1102230246251565e-16,
+      "atol": 1e-12,
+      "rtol": 0,
+      "passed": true,
+      "parameters": {
+        "seed": 42,
+        "glm_C": 0.3,
+        "glm_solver": "newton-cholesky",
+        "glm_tol": 1e-07,
+        "glm_max_iter": 100,
+        "glm_iterations_used": 10,
+        "encoded_features": 191,
+        "input_features": 84,
+        "target_encoder_cv": 5,
+        "target_encoder_smooth": 50.0,
+        "frequency_block_present": true,
+        "residual_parameters": {
+          "n_estimators": 1000,
+          "num_leaves": 4,
+          "learning_rate": 0.03,
+          "reg_lambda": 5.0,
+          "min_child_samples": 100,
+          "objective": "binary",
+          "verbosity": -1,
+          "random_state": 42,
+          "n_jobs": 4,
+          "deterministic": true,
+          "force_col_wise": true
+        },
+        "residual_actual_trees": 1000
+      }
+    },
+    {
+      "fold": 1,
+      "selection": "First1024 validation positions from independently recreated StratifiedKFold5/shuffleTrue/seed42 for this fold",
+      "real_validation_rows": 1024,
+      "selected_ids_sha256": "86a905704385cb33fcaf2419bbff466d9659b9b00a4cc771bfa18704ff273f0d",
+      "selected_ids_hash_serialization": "Original ordered integer IDs as ASCII decimal, one per line, trailing LF; IDs themselves are not exported",
+      "checkpoint_sha256": "663bb87d257969ac92ba0a62c1f6ac651adbbca58c0d0de9ab6e8ada2588e7ba",
+      "max_abs_error_vs_own_oof": 1.1102230246251565e-16,
+      "atol": 1e-12,
+      "rtol": 0,
+      "passed": true,
+      "parameters": {
+        "seed": 43,
+        "glm_C": 0.3,
+        "glm_solver": "newton-cholesky",
+        "glm_tol": 1e-07,
+        "glm_max_iter": 100,
+        "glm_iterations_used": 10,
+        "encoded_features": 191,
+        "input_features": 84,
+        "target_encoder_cv": 5,
+        "target_encoder_smooth": 50.0,
+        "frequency_block_present": true,
+        "residual_parameters": {
+          "n_estimators": 1000,
+          "num_leaves": 4,
+          "learning_rate": 0.03,
+          "reg_lambda": 5.0,
+          "min_child_samples": 100,
+          "objective": "binary",
+          "verbosity": -1,
+          "random_state": 43,
+          "n_jobs": 4,
+          "deterministic": true,
+          "force_col_wise": true
+        },
+        "residual_actual_trees": 1000
+      }
+    },
+    {
+      "fold": 2,
+      "selection": "First1024 validation positions from independently recreated StratifiedKFold5/shuffleTrue/seed42 for this fold",
+      "real_validation_rows": 1024,
+      "selected_ids_sha256": "2371231cf4275fda3054d1222aa81d54df05732503e69f5d2dcbc3a03c42eec8",
+      "selected_ids_hash_serialization": "Original ordered integer IDs as ASCII decimal, one per line, trailing LF; IDs themselves are not exported",
+      "checkpoint_sha256": "a5f796d366b5bf3b99c1c72e6545df2c320882c44c6db54f948728b00adb1b3c",
+      "max_abs_error_vs_own_oof": 1.1102230246251565e-16,
+      "atol": 1e-12,
+      "rtol": 0,
+      "passed": true,
+      "parameters": {
+        "seed": 44,
+        "glm_C": 0.3,
+        "glm_solver": "newton-cholesky",
+        "glm_tol": 1e-07,
+        "glm_max_iter": 100,
+        "glm_iterations_used": 10,
+        "encoded_features": 191,
+        "input_features": 84,
+        "target_encoder_cv": 5,
+        "target_encoder_smooth": 50.0,
+        "frequency_block_present": true,
+        "residual_parameters": {
+          "n_estimators": 1000,
+          "num_leaves": 4,
+          "learning_rate": 0.03,
+          "reg_lambda": 5.0,
+          "min_child_samples": 100,
+          "objective": "binary",
+          "verbosity": -1,
+          "random_state": 44,
+          "n_jobs": 4,
+          "deterministic": true,
+          "force_col_wise": true
+        },
+        "residual_actual_trees": 1000
+      }
+    },
+    {
+      "fold": 3,
+      "selection": "First1024 validation positions from independently recreated StratifiedKFold5/shuffleTrue/seed42 for this fold",
+      "real_validation_rows": 1024,
+      "selected_ids_sha256": "2a29f9e3f3c641f60c8c25e3599b333a55d39e3ae81dd09a45afd4dc7e0952de",
+      "selected_ids_hash_serialization": "Original ordered integer IDs as ASCII decimal, one per line, trailing LF; IDs themselves are not exported",
+      "checkpoint_sha256": "270719d5ea3de913b3a15349558eb48fe84e8a9266d28ca895a6a50418ad47cf",
+      "max_abs_error_vs_own_oof": 1.1102230246251565e-16,
+      "atol": 1e-12,
+      "rtol": 0,
+      "passed": true,
+      "parameters": {
+        "seed": 45,
+        "glm_C": 0.3,
+        "glm_solver": "newton-cholesky",
+        "glm_tol": 1e-07,
+        "glm_max_iter": 100,
+        "glm_iterations_used": 10,
+        "encoded_features": 191,
+        "input_features": 84,
+        "target_encoder_cv": 5,
+        "target_encoder_smooth": 50.0,
+        "frequency_block_present": true,
+        "residual_parameters": {
+          "n_estimators": 1000,
+          "num_leaves": 4,
+          "learning_rate": 0.03,
+          "reg_lambda": 5.0,
+          "min_child_samples": 100,
+          "objective": "binary",
+          "verbosity": -1,
+          "random_state": 45,
+          "n_jobs": 4,
+          "deterministic": true,
+          "force_col_wise": true
+        },
+        "residual_actual_trees": 1000
+      }
+    },
+    {
+      "fold": 4,
+      "selection": "First1024 validation positions from independently recreated StratifiedKFold5/shuffleTrue/seed42 for this fold",
+      "real_validation_rows": 1024,
+      "selected_ids_sha256": "d2ca114ab4a7f2813276a7b7837c5506968c9358ae322faa881fb266204ae95d",
+      "selected_ids_hash_serialization": "Original ordered integer IDs as ASCII decimal, one per line, trailing LF; IDs themselves are not exported",
+      "checkpoint_sha256": "82c8186358674af5eb4bf7d10f802224f9267006db437dc556b3c80315f56efd",
+      "max_abs_error_vs_own_oof": 1.1102230246251565e-16,
+      "atol": 1e-12,
+      "rtol": 0,
+      "passed": true,
+      "parameters": {
+        "seed": 46,
+        "glm_C": 0.3,
+        "glm_solver": "newton-cholesky",
+        "glm_tol": 1e-07,
+        "glm_max_iter": 100,
+        "glm_iterations_used": 10,
+        "encoded_features": 191,
+        "input_features": 84,
+        "target_encoder_cv": 5,
+        "target_encoder_smooth": 50.0,
+        "frequency_block_present": true,
+        "residual_parameters": {
+          "n_estimators": 1000,
+          "num_leaves": 4,
+          "learning_rate": 0.03,
+          "reg_lambda": 5.0,
+          "min_child_samples": 100,
+          "objective": "binary",
+          "verbosity": -1,
+          "random_state": 46,
+          "n_jobs": 4,
+          "deterministic": true,
+          "force_col_wise": true
+        },
+        "residual_actual_trees": 1000
+      }
+    }
+  ],
+  "finished_at_utc": "2026-11-17T13:53:02.179245+00:00",
+  "elapsed_seconds": 7.488,
+  "independent_fold_membership_sha256": "6133bec68225cb0860bc56c164005283417b69f88b6723e5138cd2f821af1b04",
+  "independent_fold_membership_hash_serialization": "Original raw row order, one signed int8 fold ID per row",
+  "raw_csv_hashes": {
+    "train.csv": "87eaa10b8d17a7e4f657b8da1c66242431338bdd8b6ad45861521ac0c0e9fbd5",
+    "test.csv": "10f516959020357b565abaaa4fd25baae97fc2f536d0805695bb7cc15c1660f0",
+    "sample_submission.csv": "13fc6ed8b73de5329884ec490f2a0b750cf29a7cda772b78cfa0cf486f6f35fa"
+  },
+  "input_files_sha256": {
+    "data/raw/train.csv": "87eaa10b8d17a7e4f657b8da1c66242431338bdd8b6ad45861521ac0c0e9fbd5",
+    "data/raw/test.csv": "10f516959020357b565abaaa4fd25baae97fc2f536d0805695bb7cc15c1660f0",
+    "data/raw/sample_submission.csv": "13fc6ed8b73de5329884ec490f2a0b750cf29a7cda772b78cfa0cf486f6f35fa",
+    "artifacts/runs/round10-offset-bpe-frequency/config.json": "d237d78f604f2a0ef570f46cc36ac5d0aa7fa5e149686353bb847ce15dc734e9",
+    "artifacts/runs/round10-offset-bpe-frequency/metrics.json": "9a3b92009ebcbff083c8ad39af9767a01da602992a8930eff6a4c5b548338ddd",
+    "artifacts/runs/round10-offset-bpe-frequency/status.json": "970587076af8c4ebf6e94dc3999b017a4c3792faf7660c408eb91572fd86128b",
+    "artifacts/runs/round10-offset-bpe-frequency/oof.csv": "f16b28c7d3bb09a4360f8dbaef59e9dd78a63537bd7f7b01a9a3de43a483f3b4",
+    "artifacts/runs/round10-offset-bpe-frequency/predictions.csv": "8d98b87d5da1f8bc3411e2ed0dbc24aa7c0ccb8fd150762ee3f09a4025c5ccad",
+    "artifacts/runs/round10-offset-bpe-frequency/submission.csv": "8d98b87d5da1f8bc3411e2ed0dbc24aa7c0ccb8fd150762ee3f09a4025c5ccad",
+    "artifacts/runs/round10-offset-bpe-frequency-public25/config.json": "3777c2c58519005942badff767be6d5878bbd3f730a38141bd7d7173c54a3875",
+    "artifacts/runs/round10-offset-bpe-frequency-public25/metrics.json": "66150258799c3ac2e5066ce29383afc02962c2dd35766126e7a995d9fcf57d57",
+    "artifacts/runs/round10-offset-bpe-frequency-public25/status.json": "970587076af8c4ebf6e94dc3999b017a4c3792faf7660c408eb91572fd86128b",
+    "artifacts/runs/round10-offset-bpe-frequency-public25/oof.csv": "038bc4bd9c03f777e97fa73738f261bd9881d0267e33502525697526fd577fea",
+    "artifacts/runs/round10-offset-bpe-frequency-public25/predictions.csv": "274cbe4ea90d9dc4893140cad55682f3627ced02163fff48655df4b095e428e7",
+    "artifacts/runs/round10-offset-bpe-frequency-public25/submission.csv": "274cbe4ea90d9dc4893140cad55682f3627ced02163fff48655df4b095e428e7",
+    "artifacts/runs/explore5-public25/config.json": "58e950e0eb96fe17f42b56545089060e8fce29a19e24295a719800876b4f3096",
+    "artifacts/runs/explore5-public25/metrics.json": "d23ab3f37b6dadd9a1d8c0cf8c253d9cf609f406f7ed3038051167a9c9c47e76",
+    "artifacts/runs/explore5-public25/status.json": "970587076af8c4ebf6e94dc3999b017a4c3792faf7660c408eb91572fd86128b",
+    "artifacts/runs/explore5-public25/oof.csv": "19ec931016842167003dd9822055815f8c206cb922860b1ac4b3f87cb1c9ae7f",
+    "artifacts/runs/explore5-public25/predictions.csv": "f5f658279779eab4d94b6b1b118fc39e2774c9ee6fdb4b80e2f06770cceb47d4",
+    "artifacts/runs/explore5-public25/submission.csv": "f5f658279779eab4d94b6b1b118fc39e2774c9ee6fdb4b80e2f06770cceb47d4",
+    "artifacts/runs/explore5-lgbm/config.json": "50968cd9ae1c1734ae439657839a24658480341e5dbd7aeb9a78a8e4dbb7230a",
+    "artifacts/runs/explore5-lgbm/metrics.json": "cbbec3ffbcc1461e2f34835955808e3de7ef9306336ea93bf21f3453a0950e4d",
+    "artifacts/runs/explore5-lgbm/status.json": "970587076af8c4ebf6e94dc3999b017a4c3792faf7660c408eb91572fd86128b",
+    "artifacts/runs/explore5-lgbm/oof.csv": "2a188175419c819bf5d5098125423afa8e95cd79cd965d2108b834cc4016a234",
+    "artifacts/runs/explore5-lgbm/predictions.csv": "54c9fc1229d1b8aa253520b79c4493b0ae97902ee1f76b73baa9b09d48ccd142",
+    "artifacts/runs/explore5-lgbm/submission.csv": "54c9fc1229d1b8aa253520b79c4493b0ae97902ee1f76b73baa9b09d48ccd142",
+    "artifacts/runs/explore5-public-gpt2-v2/config.json": "843e20a6839bc22dc5522a4f12c7d46f64472f20782bad6a606c295dfe741d31",
+    "artifacts/runs/explore5-public-gpt2-v2/metrics.json": "14f9e508e5f78c926cd5a4341259623f490872da3e73d5b96f1ae8903fe29bc7",
+    "artifacts/runs/explore5-public-gpt2-v2/status.json": "970587076af8c4ebf6e94dc3999b017a4c3792faf7660c408eb91572fd86128b",
+    "artifacts/runs/explore5-public-gpt2-v2/oof.csv": "4c37722b34d520a6de7d94565140cd0681baad6fb6c012d0b7a86a25b82a4dcb",
+    "artifacts/runs/explore5-public-gpt2-v2/predictions.csv": "78ada898faa132accf86daa3311ba114e44a472d31f0648357d10000ab243d58",
+    "artifacts/runs/explore5-public-gpt2-v2/submission.csv": "78ada898faa132accf86daa3311ba114e44a472d31f0648357d10000ab243d58",
+    "artifacts/runs/round10-offset-bpe-frequency/fold-0.joblib": "fef8c50cd51e65228807f1339ef322d32e797fd31a14c89bae9d8bad84aed0b5",
+    "artifacts/runs/round10-offset-bpe-frequency/fold-1.joblib": "663bb87d257969ac92ba0a62c1f6ac651adbbca58c0d0de9ab6e8ada2588e7ba",
+    "artifacts/runs/round10-offset-bpe-frequency/fold-2.joblib": "a5f796d366b5bf3b99c1c72e6545df2c320882c44c6db54f948728b00adb1b3c",
+    "artifacts/runs/round10-offset-bpe-frequency/fold-3.joblib": "270719d5ea3de913b3a15349558eb48fe84e8a9266d28ca895a6a50418ad47cf",
+    "artifacts/runs/round10-offset-bpe-frequency/fold-4.joblib": "82c8186358674af5eb4bf7d10f802224f9267006db437dc556b3c80315f56efd"
+  },
+  "gate_reproduction": {
+    "delta_vs_original_baseline": 0.00023350669537292035,
+    "fold_deltas_vs_original_baseline": [
+      0.000186615012287783,
+      5.663770893415965e-05,
+      0.00017197940266600042,
+      0.0002647101348053349,
+      0.00044875472420558005
+    ],
+    "strictly_improved_folds": 5
+  },
+  "recorded_official_receipt_reference_only": {
+    "ref": 58470267,
+    "public_auc": 0.95134,
+    "submission_sha256": "274cbe4ea90d9dc4893140cad55682f3627ced02163fff48655df4b095e428e7",
+    "receipt_sha256": "2b23ec48983348ebac27b5aa9da86f691f4276bfbe9fe517e09f63b4ab318b86",
+    "scope": "Existing local official-download receipt checked; this verification made no Kaggle request."
+  },
+  "checks": {
+    "source_hashes_equal_trained_R10": true,
+    "all_raw_csv_hashes_compared_directly": true,
+    "all_five_oofs_match_raw_ids_order_independent_folds_and_y": true,
+    "all_five_pooled_and_fold_aucs_recomputed": true,
+    "fixed_probability_formula_reproduces_hybrid_oof_and_test": true,
+    "individual_checkpoints_match_1024_own_validation_rows_each": true,
+    "fold_specific_model_and_encoding_seeds_match": true,
+    "csv_inputs_and_sources_unchanged_during_verification": true,
+    "no_ids_or_raw_rows_exported": true
+  },
+  "limitations": [
+    "Checkpoint reproduction covers the requested1024validation rows per fold; it is not exhaustive inference over all validation rows.",
+    "OOF used for selection is not an independent final assessment; historical holdout was not evaluated.",
+    "The existing public receipt is referenced only; no new remote verification or submission was performed."
+  ]
+}

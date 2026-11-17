@@ -95,7 +95,7 @@ function renderFolds(folds) {
 
 function renderComposition(run, components, checks) {
   const weights = run.effective_weights || {};
-  const names = { glm: "GLM", lightgbm: "LightGBM", external_gpt2: "GPT-2 público" };
+  const names = { glm: "GLM", offset: "GLM + correção", lightgbm: "LightGBM", external_gpt2: "GPT-2 público" };
   const entries = Object.entries(weights);
   if (checks.training_verified !== true || !entries.length || !entries.every(([name, weight]) => names[name] && validScore(weight))) return;
   const total = entries.reduce((sum, [, weight]) => sum + weight, 0);

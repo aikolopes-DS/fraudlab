@@ -10,6 +10,11 @@ from typing import Any
 from zoneinfo import ZoneInfo
 
 from .external import components_from, gpt2_slides
+from .continuation import (append_feature_pairs, append_offset_pair, append_tabm_pair,
+                           append_tabm_embedding_pair,
+                           append_tabm_result, append_selection_note, continuation_sources,
+                           missing_selection_context, append_submission_history,
+                           append_historical_deviations)
 
 
 KAGGLE = "https://www.kaggle.com/competitions/playground-series-s6e11"
@@ -145,6 +150,7 @@ def validate_evidence(evidence: dict, runs: list[dict], draft: bool, holdout: di
     neural = next((run for run in runs if run.get("model") == "mlp"), None)
     if not neural or not neural.get("model_details", {}).get("architecture"):
         missing.append("trained MLP architecture")
+    missing.extend(missing_selection_context(evidence))
     if missing and not draft:
         raise ValueError("Apresentação final bloqueada; falta evidência: " + ", ".join(missing))
     return missing
@@ -439,6 +445,7 @@ def create_slides(evidence: dict, runs: list[dict], draft: bool = False, holdout
               "a impressora, não sobre todos os documentos do mundo. "
               "Os padrões numéricos de uma distribuição sintética "
               "exigem o mesmo cuidado.")
+    append_feature_pairs(pair, runs)
     if target_runs:
         encoders = [run["model_details"]["target_encoder"] for run in target_runs]
         smooth_values = ", ".join(sorted({str(encoder.get("smooth")) for encoder in encoders}))
@@ -649,6 +656,7 @@ def create_slides(evidence: dict, runs: list[dict], draft: bool = False, holdout
                   "do passo. Newton usa informações equivalentes "
                   "de inclinação e curvatura. Cholesky é a "
                   "maneira de resolver o sistema que calcula esse passo.")
+    append_offset_pair(pair, runs)
     if neural:
         hidden = architecture.get("hidden_dims", [])
         hidden_text = " → ".join(str(size) for size in hidden)
@@ -935,6 +943,8 @@ def create_slides(evidence: dict, runs: list[dict], draft: bool = False, holdout
            "Por isso não apresenta uma arquitetura hipotética como se tivesse sido "
            "executada. O roteiro matemático específico será incluído a partir "
            "dos mecanismos registrados no experimento real.")
+    append_tabm_embedding_pair(pair, runs)
+    append_tabm_pair(pair, runs)
     for component in external_components:
         slides.extend(Slide(**specification) for specification in gpt2_slides(component))
     if selected.get("model") == "blend":
@@ -944,7 +954,8 @@ def create_slides(evidence: dict, runs: list[dict], draft: bool = False, holdout
         composition = "; ".join(f"{number(weight * 100)}% {name}" for weight, name in zip(weights, source_names))
         effective = (evidence.get("run") or {}).get("effective_weights", {})
         if effective:
-            labels = {"glm": "GLM", "lightgbm": "LightGBM", "external_gpt2": "GPT-2 externo"}
+            labels = {"glm": "GLM", "lightgbm": "LightGBM", "external_gpt2": "GPT-2 externo",
+                      "offset": "GLM com árvores residuais"}
             composition = "; ".join(f"{number(weight * 100, 2)}% {labels.get(name, name)}"
                                     for name, weight in effective.items())
         pair("07 / Os experimentos", "Combinar previsões", [
@@ -1008,6 +1019,7 @@ def create_slides(evidence: dict, runs: list[dict], draft: bool = False, holdout
                 "com uma reserva separada e AUC de cinco folds sobre todos "
                 "os rótulos não são a mesma avaliação. A fonte externa foi "
                 "auditada e sua métrica reproduzida, sem executar seu treinamento.")
+    append_tabm_result(add, runs, number)
     raw_logistic = next((run for run in development_runs if run.get("model") == "logistic" and
                          run.get("model_details", {}).get("feature_set", "raw") == "raw"), None)
     basic_neural = next((run for run in development_runs if run.get("model") == "mlp" and
@@ -1105,8 +1117,12 @@ def create_slides(evidence: dict, runs: list[dict], draft: bool = False, holdout
               "e segue a escolha definida. Isso não transforma "
               "o resultado dos testes anteriores em uma nova "
               "avaliação independente da porção maior.")
-    selection_reason = (evidence.get("run") or {}).get("selection_reason")
-    if selection_reason:
+    append_historical_deviations(add, evidence)
+    selection_reason = ((evidence.get("run") or {}).get("selection_reason_pt") or
+                        (evidence.get("run") or {}).get("selection_reason"))
+    if append_selection_note(add, evidence):
+        pass
+    elif selection_reason:
         add("07 / Os experimentos", "Por que esta solução foi submetida", [
             f"Execução selecionada: {run_label(selected)}",
             str(selection_reason),
@@ -1186,6 +1202,7 @@ def create_slides(evidence: dict, runs: list[dict], draft: bool = False, holdout
        "As dependências e a configuração registrada permitem reproduzir "
        "o procedimento com acesso autorizado aos dados. Testes sintéticos "
        "verificam contratos do código, mas não demonstram desempenho competitivo.")
+    append_submission_history(add, evidence, number, observation_time)
     add("09 / A evidência final", "Submissão e posição observadas", [
         f"AUC pública: {number(results.get('public_auc'), 5)}",
         f"Posição: {number(results.get('ranking'))} de {number(results.get('total_teams'))} equipes",
@@ -1214,6 +1231,7 @@ def create_slides(evidence: dict, runs: list[dict], draft: bool = False, holdout
        "o trabalho sem atribuir ao modelo uma capacidade que "
        "o experimento não mediu.")
     sources = SOURCES.copy()
+    sources.extend(continuation_sources(runs))
     if target_runs:
         sources.append(("TargetEncoder", "https://scikit-learn.org/1.7/modules/generated/sklearn.preprocessing.TargetEncoder.html"))
     if any(run.get("model") == "glm" for run in runs):

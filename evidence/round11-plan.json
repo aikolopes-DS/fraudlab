@@ -1,0 +1,40 @@
+{
+  "date": "2026-11-17",
+  "status": "prospective; no capacity-variant fit performed",
+  "reason": "R10 improved all five folds and public AUC. Evaluate one longer residual booster, changing only the tree count from1000 to2000, while the presentation and hosting are updated independently. This is a bounded capacity comparison, not a grid or leaderboard-based parameter sweep.",
+  "baseline_run": "explore5-public25",
+  "baseline_oof_auc": 0.9512586315198723,
+  "current_exploratory_run": "round10-offset-bpe-frequency-public25",
+  "current_exploratory_oof_auc": 0.9514921382152453,
+  "validation": "Exploratory full-data StratifiedKFold(5, shuffle=True, random_state=42), no independent holdout or outer-validation early stopping. Fit GLM and residual on the same cross-fitted matrix. No parameters may change during this run.",
+  "candidate": {
+    "name": "round11-offset2000-bpe-frequency",
+    "model": "offset",
+    "phase": "exploratory_full_data_cv",
+    "feature_set": "bpe_digits",
+    "folds": 5,
+    "seed": 42,
+    "holdout_fraction": 0,
+    "fixed_training": true,
+    "logistic_c": 0.3,
+    "target_smoothing": 50,
+    "glm_inner_folds": 5,
+    "glm_frequency": true,
+    "glm_spline_knots": 0,
+    "iterations": 2000,
+    "num_leaves": 4,
+    "learning_rate": 0.03,
+    "l2_leaf_reg": 5,
+    "min_child_samples": 100,
+    "threads": 4,
+    "device": "cpu"
+  },
+  "fixed_blend": {
+    "space": "probability",
+    "candidate_offset": 0.5625,
+    "explore5-lgbm": 0.1875,
+    "explore5-public-gpt2-v2": 0.25
+  },
+  "promotion_rule": "Same consistency rule as R10: pooled hybrid delta over the original reference strictly greater than0.0001, at least four improved folds over that reference, and pooled OOF at least as high as the current R10. At most one public submission if all conditions pass. If it fails, record the result and retain R10; no further tree count or learning-rate search is authorized by this plan.",
+  "training_gate": "Root publishes the tested clean source and this prospective plan before starting the fit. An isolated worktree keeps presentation and site edits from changing training provenance."
+}
