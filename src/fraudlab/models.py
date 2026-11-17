@@ -156,10 +156,12 @@ def fit_catboost(
             use_best_model=True,
         )
     model.save_model(str(path.with_suffix(".cbm")))
+    best_iteration = model.get_best_iteration()
     details = {
         **parameters,
-        "best_iteration": int(model.get_best_iteration()),
+        "best_iteration": int(best_iteration) if best_iteration is not None else None,
         "trees_used": int(model.tree_count_),
+        "resolved_parameters": model.get_all_params(),
         "early_stopping_patience": (
             None
             if config.get("refit") or config.get("fixed_training")
