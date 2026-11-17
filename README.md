@@ -10,7 +10,7 @@ O objetivo é disputar as primeiras posições no [Playground S6E11](https://www
 
 ## Estado do projeto
 
-Este é o único acompanhamento de tarefas. Atualizado em 17/11/2026. Sete submissões foram processadas. A composição R10 foi selecionada; a variante R11 foi rejeitada por ficar abaixo dela na OOF. A [variante de inferência dos refits completos](evidence/refit-hybrid-plan.json) permanece preparada, sem score novo registrado. Código e release estão em [aikolopes-DS/fraudlab](https://github.com/aikolopes-DS/fraudlab). O vídeo v0.1 é um registro histórico de 16/11; a v0.2 está em preparação. Site V4 e notebook V4 ainda têm links antigos e aguardam atualização.
+Este é o único acompanhamento de tarefas. Atualizado em 17/11/2026. Sete submissões foram processadas. A composição R10 foi selecionada; a variante R11 foi rejeitada por ficar abaixo dela na OOF. A [variante de inferência dos refits completos](evidence/refit-hybrid-plan.json) foi submetida e obteve 0,95107, abaixo da R10. Código e release estão em [aikolopes-DS/fraudlab](https://github.com/aikolopes-DS/fraudlab). O vídeo v0.1 é um registro histórico de 16/11; a v0.2 está em preparação. Site V4 e notebook V4 ainda têm links antigos e aguardam atualização.
 
 | Pedido | Resultado esperado | Estado real | Evidência |
 | --- | --- | --- | --- |

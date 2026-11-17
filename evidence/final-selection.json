@@ -1,0 +1,59 @@
+{
+  "observed_at_utc": "2026-11-17T14:05:58.652276+00:00",
+  "competition": "playground-series-s6e11",
+  "account": "aikoog",
+  "observation": {
+    "source": "Official Kaggle Python SDK",
+    "package": "kaggle",
+    "version": "2.2.5",
+    "method": "KaggleApi.competition_submissions",
+    "selected_query": {
+      "competition": "playground-series-s6e11",
+      "group": "SubmissionGroup.SUBMISSION_GROUP_SELECTED",
+      "page_size": 200
+    },
+    "selected_count": 0,
+    "selected_submission_refs": [],
+    "all_count": 7,
+    "all_query_group": "SubmissionGroup.SUBMISSION_GROUP_ALL",
+    "interpretation": "No submission appeared in the selected group. The best public submission is not recorded here as an explicit manual final selection."
+  },
+  "highest_public_scores_at_observation": [
+    {
+      "submission_ref": 58470267,
+      "public_score": 0.95134
+    },
+    {
+      "submission_ref": 58469746,
+      "public_score": 0.95108
+    }
+  ],
+  "official_rules": {
+    "url": "https://www.kaggle.com/competitions/playground-series-s6e11/rules",
+    "read_via": "KaggleApi.competition_list_pages('playground-series-s6e11', page_name='rules')",
+    "maximum_final_submissions": 2,
+    "automatic_selection_provided": true,
+    "scope": "S6E11 rules permit up to two final submissions and define final submissions to include automatic Kaggle selection when the user has not selected them."
+  },
+  "automatic_fallback": {
+    "mechanism": "Unfilled final-selection slots are filled from the highest public leaderboard submission scores.",
+    "conditional_candidates": [
+      58470267,
+      58469746
+    ],
+    "condition": "These are the automatic fallback candidates only if explicit selections, submission history, public scores and applicable rules remain unchanged until the competition closes.",
+    "not_equivalent_to_manual_selection": true,
+    "future_automatic_execution_verified": false,
+    "staff_sources": [
+      "https://www.kaggle.com/competitions/amazon-employee-access-challenge/discussion/5238",
+      "https://www.kaggle.com/general/223027"
+    ],
+    "source_scope": "Kaggle Staff explanations of the general fallback mechanism; the S6E11 rules above establish this competition's two-slot limit and automatic-selection provision."
+  },
+  "actions": {
+    "manual_selection_changed": false,
+    "new_submission_made": false,
+    "external_mutation_performed": false,
+    "ui_opened": false
+  }
+}
