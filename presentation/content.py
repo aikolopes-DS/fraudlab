@@ -11,7 +11,8 @@ from zoneinfo import ZoneInfo
 
 from .external import components_from, gpt2_slides
 from .continuation import (append_feature_pairs, append_offset_pair, append_tabm_pair,
-                           append_tabm_embedding_pair,
+                           append_tabm_embedding_pair, append_tabm_backbone_pair,
+                           append_proposal, append_one_hot_pair,
                            append_tabm_result, append_selection_note, continuation_sources,
                            missing_selection_context, append_submission_history,
                            append_historical_deviations)
@@ -51,6 +52,12 @@ def number(value: Any, digits: int = 0) -> str:
     return f"{value:,.0f}".replace(",", ".")
 
 
+def spoken_score(value: float) -> str:
+    digits = ("zero", "um", "dois", "três", "quatro", "cinco", "seis", "sete", "oito", "nove")
+    return " vírgula ".join(" ".join(digits[int(char)] for char in part)
+                           for part in number(value, 5).split(","))
+
+
 def is_refit(run: dict) -> bool:
     return run.get("phase") == "full_data_refit"
 
@@ -67,7 +74,8 @@ def observation_time(value: str | None, spoken: bool = False) -> str:
         return local.strftime("%d/%m/%Y às %Hh%M (São Paulo)")
     months = ("janeiro", "fevereiro", "março", "abril", "maio", "junho",
               "julho", "agosto", "setembro", "outubro", "novembro", "dezembro")
-    return (f"{local.day} de {months[local.month - 1]} de {local.year}, "
+    year = "dois mil e vinte e seis" if local.year == 2026 else str(local.year)
+    return (f"{local.day} de {months[local.month - 1]} de {year}, "
             f"às {local.hour} horas e {local.minute} minutos, no horário de São Paulo")
 
 
@@ -221,6 +229,7 @@ def create_slides(evidence: dict, runs: list[dict], draft: bool = False, holdout
        "do menos para o mais suspeito. A competição avalia essa ordenação. Um banco real também "
        "precisaria considerar custos, privacidade, monitoramento e regras operacionais, que não "
        "são comprovados por uma boa posição no Kaggle.")
+    append_proposal(add, runs, components_from(runs[:1]), number)
     pair("01 / O problema", "Formalização: aprender uma função de risco", [
         "x: características; y: rótulo observado; θ: parâmetros aprendidos",
         "A previsão estima a chance da classe positiva",
@@ -584,6 +593,7 @@ def create_slides(evidence: dict, runs: list[dict], draft: bool = False, holdout
               "Se criarmos uma saída para cada detalhe observado, "
               "podemos decorar os exemplos. Limitar as folhas testa "
               "uma forma mais simples de fazer essa triagem.")
+    append_one_hot_pair(pair, runs)
     if any(run.get("model") == "glm" for run in runs):
         pair("04 / Os modelos", "GLM: combinar logits e categorias originais", [
             "Uma regressão logística recebe múltiplas representações das entradas",
@@ -662,8 +672,16 @@ def create_slides(evidence: dict, runs: list[dict], draft: bool = False, holdout
         hidden_text = " → ".join(str(size) for size in hidden)
         neural_title = ("MLP-TE: a arquitetura treinada" if architecture.get("categorical_transform") == "target"
                         else "MLP: a arquitetura treinada")
+        target_quantile = (architecture.get("categorical_transform") == "target"
+                           and details.get("numeric_transform") == "quantile")
+        raw_numeric = architecture.get("raw_numeric_features")
+        target_values = (architecture.get("numeric_features", 0) - raw_numeric
+                         if isinstance(raw_numeric, int) else None)
+        input_note = (f"Entradas: {raw_numeric} numéricas por quantis + {target_values} logits TE padronizados"
+                      if target_quantile and target_values is not None else
+                      f"Valores numéricos de entrada da rede: {number(architecture.get('numeric_features'))}")
         add("05 / A rede neural", neural_title, [
-            f"Valores numéricos de entrada da rede: {number(architecture.get('numeric_features'))}",
+            input_note,
             "Camadas ocultas: " + (hidden_text or "ver configuração registrada"),
             f"Saída: {architecture.get('output_activation', 'ver configuração registrada')}",
             f"Dropout: {architecture.get('dropout', 'não registrado')}",
@@ -671,7 +689,10 @@ def create_slides(evidence: dict, runs: list[dict], draft: bool = False, holdout
            "As quantidades apresentadas vêm dos metadados do treinamento, não de uma "
            "arquitetura ilustrativa. As camadas ocultas registradas têm dimensões "
            + hidden_text + ". As entradas percorrem essas transformações até a saída, "
-           "que produz a pontuação usada na avaliação.", kind="technical", visual="architecture")
+           "que produz a pontuação usada na avaliação. "
+           + (f"Nesta MLP, as {raw_numeric} entradas numéricas usam quantis para a escala normal, "
+              f"e os {target_values} logits do target encoding recebem escalonamento padrão."
+              if target_quantile and target_values is not None else ""), kind="technical", visual="architecture")
         add("05 / A rede neural", "No dia a dia: etapas de uma central de triagem", [
             "As informações entram pela recepção",
             "Etapas intermediárias combinam as pistas",
@@ -681,15 +702,20 @@ def create_slides(evidence: dict, runs: list[dict], draft: bool = False, holdout
            "e a saída atribui uma prioridade. A rede faz esse percurso com "
            "operações numéricas. O número de etapas e suas dimensões são "
            "decisões registradas, que precisam ser avaliadas em experimentos.", kind="analogy")
-        if any(run.get("model") == "mlp" and "standard scaling" in
-               str(run.get("model_details", {}).get("preprocessing", "")).lower() for run in runs):
-            pair("05 / A rede neural", "Preparar entradas numéricas", [
-                "Ausências são preenchidas com a mediana do treino da divisão",
+        if target_quantile or any(run.get("model") == "mlp" and "standard scaling" in
+                                 str(run.get("model_details", {}).get("preprocessing", "")).lower() for run in runs):
+            pair("05 / A rede neural", "Escalonamento padrão: onde foi usado", [
+                ("Na MLP-TE, o escalonamento padrão atua nos logits de categorias"
+                 if target_quantile else "Nas variantes iniciais, as entradas numéricas são padronizadas"),
                 "Média e desvio do treino ajustam a escala de cada variável",
                 "As mesmas transformações são aplicadas à validação e ao teste",
-            ], "As entradas numéricas têm escalas diferentes. O pré-processamento "
-               "preenche ausências com a mediana calculada no treino da divisão "
-               "e aplica escalonamento padrão. Na fórmula, a média e o desvio "
+            ], ("As variantes iniciais usam escalonamento padrão nas entradas numéricas, "
+                "após preencher ausências com a mediana do treino. Na MLP-TE apresentada, "
+                "o escalonamento padrão atua nos logits codificados por alvo; as entradas "
+                "numéricas usam quantis, explicados no próximo par. " if target_quantile else
+                "As entradas numéricas têm escalas diferentes. O pré-processamento preenche "
+                "ausências com a mediana do treino e aplica escalonamento padrão. ")
+               + "Na fórmula, a média e o desvio "
                "são calculados nesse treino. O conjunto avaliado não redefine "
                "essas estatísticas. Para uma coluna constante, a implementação "
                "usa uma escala segura, evitando divisão por zero.",
@@ -705,12 +731,15 @@ def create_slides(evidence: dict, runs: list[dict], draft: bool = False, holdout
                   "de referência. A referência vem do treino e é mantida "
                   "quando avaliamos os exemplos que ficaram de fora.")
         if any(run.get("model_details", {}).get("numeric_transform") == "quantile" for run in runs):
-            pair("05 / A rede neural", "Quantis: outra preparação numérica", [
+            pair("05 / A rede neural", ("Quantis: preparação numérica da MLP-TE" if target_quantile
+                                         else "Quantis: outra preparação numérica"), [
                 "A posição acumulada é estimada no treino de cada divisão",
                 "Essa posição é mapeada para quantis de uma distribuição normal",
                 "A transformação preserva a ordem, mas muda as distâncias",
-            ], "Outra variante usa transformação por quantis. "
-               "Primeiro estimamos a posição acumulada de cada "
+            ], ("A MLP-TE apresentada usa transformação por quantis nas entradas numéricas, "
+                "com ausências preenchidas pela mediana do treino. " if target_quantile else
+                "Outra variante usa transformação por quantis. ")
+               + "Primeiro estimamos a posição acumulada de cada "
                "valor na distribuição do treino. Depois aplicamos "
                "a função inversa da distribuição normal. A fórmula "
                "resume esse caminho. É uma transformação não linear "
@@ -944,6 +973,7 @@ def create_slides(evidence: dict, runs: list[dict], draft: bool = False, holdout
            "executada. O roteiro matemático específico será incluído a partir "
            "dos mecanismos registrados no experimento real.")
     append_tabm_embedding_pair(pair, runs)
+    append_tabm_backbone_pair(pair, runs)
     append_tabm_pair(pair, runs)
     for component in external_components:
         slides.extend(Slide(**specification) for specification in gpt2_slides(component))
@@ -1209,7 +1239,7 @@ def create_slides(evidence: dict, runs: list[dict], draft: bool = False, holdout
         f"Submissão: {results.get('submission_id') or 'não verificada'}",
         f"Consulta: {observation_time(results.get('observed_at'))}",
     ], "A prova de participação é a submissão processada pela plataforma. "
-       + (f"O registro fornecido informa AUC pública de {number(results.get('public_auc'), 5)} "
+       + (f"O registro fornecido informa AUC pública de {spoken_score(results.get('public_auc'))} "
           f"e posição {number(results.get('ranking'))}, observadas em {observation_time(results.get('observed_at'), spoken=True)}. "
           if not draft else "Neste rascunho, os campos ausentes permanecem explicitamente não verificados. ") +
        "Essa é uma fotografia da classificação na data indicada. "
@@ -1235,6 +1265,7 @@ def create_slides(evidence: dict, runs: list[dict], draft: bool = False, holdout
     if target_runs:
         sources.append(("TargetEncoder", "https://scikit-learn.org/1.7/modules/generated/sklearn.preprocessing.TargetEncoder.html"))
     if any(run.get("model") == "glm" for run in runs):
+        sources.append(("OneHotEncoder", "https://scikit-learn.org/1.7/modules/generated/sklearn.preprocessing.OneHotEncoder.html"))
         sources.append(("Regressão logística e Newton-Cholesky", "https://scikit-learn.org/1.7/modules/generated/sklearn.linear_model.LogisticRegression.html"))
     if lightgbm_runs:
         sources.append(("LightGBM", "https://lightgbm.readthedocs.io/en/latest/pythonapi/lightgbm.LGBMClassifier.html"))

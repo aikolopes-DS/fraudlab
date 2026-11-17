@@ -5,7 +5,7 @@
     "deadline_utc": "2026-11-30T23:59:00Z"
   },
   "stage": "submitted",
-  "updated_at": "2026-11-17T13:34:51.848445+00:00",
+  "updated_at": "2026-11-17T18:24:25.231115+00:00",
   "results": {
     "local_auc": 0.9514921382152453,
     "fold_scores": [
@@ -16,10 +16,10 @@
       0.9468101628656655
     ],
     "public_auc": 0.95134,
-    "ranking": 712,
-    "total_teams": 2089,
+    "ranking": 723,
+    "total_teams": 2112,
     "submission_id": "58470267",
-    "observed_at": "2026-11-17T13:34:51.848445+00:00",
+    "observed_at": "2026-11-17T18:24:25.231115+00:00",
     "local_auc_scope": "development_oof",
     "local_auc_run": "round10-offset-bpe-frequency-public25",
     "holdout_auc": null,
@@ -243,6 +243,27 @@
       "submission_sha256": "e870c10ec773c10d16a4f53bea41776f0b69d95e07e0157884d5371dc13ae0c9",
       "proof": "evidence/public-evaluation-results.json",
       "note": "Tentativa exploratória anterior. Sua exceção não se aplica à solução R10, que passou no critério."
+    }
+  ],
+  "ranking_history": [
+    {
+      "local_auc": 0.9514921382152453,
+      "fold_scores": [
+        0.9504894214476117,
+        0.9519294871585336,
+        0.9565314284038893,
+        0.9517951792274013,
+        0.9468101628656655
+      ],
+      "public_auc": 0.95134,
+      "ranking": 712,
+      "total_teams": 2089,
+      "submission_id": "58470267",
+      "observed_at": "2026-11-17T13:34:51.848445+00:00",
+      "local_auc_scope": "development_oof",
+      "local_auc_run": "round10-offset-bpe-frequency-public25",
+      "holdout_auc": null,
+      "holdout_observed_at": null
     }
   ]
 }

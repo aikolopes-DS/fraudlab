@@ -1,6 +1,6 @@
 # Executar o projeto
 
-Os comandos partem da raiz do repositório e usam PowerShell. A receita operacional é a [híbrida 5/42](../notebooks/hybrid-recipe.json): modelos próprios fixos mais previsões públicas GPT-2 versão 2. Os resultados observados e o acompanhamento ficam no [README](../README.md) e em `evidence/public.json`.
+Os comandos partem da raiz do repositório e usam PowerShell. A receita operacional atual é a [R10](../evidence/round10-plan.json): 56,25% offset com BPE e frequência, 18,75% LightGBM e 25% das previsões públicas GPT-2 v2. Sua fonte de ML é o commit [169f3ee](https://github.com/aikolopes-DS/fraudlab/tree/169f3ee5cdfbb2afe16c942a7af0efb8b12a403f). A [receita v0.1](../notebooks/hybrid-recipe.json) e os refits anteriores são históricos. O acompanhamento único fica no [README](../README.md); os fatos publicados estão em `evidence/public.json`.
 
 Use um clone novo ou novos nomes de execução: `artifacts/runs/` não sobrescreve runs existentes. Versões e hardware podem alterar resultados; reproduzir o código não transfere uma pontuação já processada pelo Kaggle para outro arquivo.
 
@@ -13,22 +13,17 @@ py -3.11 -m venv .venv
 .\.venv\Scripts\Activate.ps1
 python -m pip install --upgrade pip
 python -m pip install "torch>=2.2,<3" --index-url https://download.pytorch.org/whl/cpu
-python -m pip install -e ".[dev,presentation]"
+python -m pip install -e ".[dev,presentation,bpe]"
 ```
 
 Sem ativação, substitua `python` por `.\.venv\Scripts\python.exe`. No Linux, use `python3.11 -m venv .venv` e `source .venv/bin/activate`. A receita híbrida roda em CPU e não treina o GPT-2. Para treinar a MLP própria em CUDA, instale PyTorch pelo [seletor oficial](https://pytorch.org/get-started/locally/) e confirme `torch.cuda.is_available()`.
 
-Para experimentar `--feature-set bpe_digits`, instale `python -m pip install -e ".[bpe]"`.
-Essa opção usa `tiktoken==0.14.0` e seis chaves numéricas; não chama uma API paga
+A R10 usa `--feature-set bpe_digits`, incluído na instalação acima.
+Essa representação usa `tiktoken==0.14.0` e seis chaves numéricas; não chama uma API paga
 nem carrega pesos de uma rede. A primeira inicialização baixa os vocabulários
 oficiais e verifica seus hashes. Para executar depois sem internet, preserve o
 diretório configurado por `TIKTOKEN_CACHE_DIR`. O manifesto registra a versão,
 os hashes, o arredondamento e o descarte dos tokens após o segundo.
-
-`--model glm --glm-value-one-hot` acrescenta efeitos por valor com one-hot
-esparso e agrupamento de contagens menores que cinco, ajustados dentro de cada
-treino. Essa opção usa L-BFGS com limite de 2.000 iterações e recusa ajustes sem
-convergência. O manifesto do modelo registra solver, limite e iterações reais.
 
 ## Dados oficiais e componente público
 
@@ -53,48 +48,49 @@ python -m fraudlab import-public-gpt2 --source .local/research/public-models/gpt
 
 O importador não executa código externo. Confere manifesto fixado, hashes dos arrays e CSVs, formas, tipos, valores finitos, ordem dos IDs e folds exatos 5/42. Os arrays contêm logits: aplica sigmoid e grava o contrato OOF/probabilidades com autoria, versão e licenças. No teste público, o autor já fez a média dos cinco logits; essa média recebe a sigmoid na importação.
 
-## Receita híbrida congelada
+## Receita atual: R10
 
 Todas as 699.960 linhas entram na CV de cinco folds, seed 42. Cada OOF exclui a linha de seu treino; o teste recebe a média das probabilidades dos cinco modelos de cada família própria. Não há reserva independente nesta etapa, nem early stopping ou escolha nova do número de árvores.
 
 Execute os treinos sequencialmente para limitar RAM:
 
 ```powershell
-$fraudRecipe = Get-Content notebooks/hybrid-recipe.json -Raw -Encoding UTF8 | ConvertFrom-Json
+$fraudR10Plan = Get-Content evidence/round10-plan.json -Raw -Encoding UTF8 | ConvertFrom-Json
 $fraudCvArgs = @(
     "--data", "data/raw", "--phase", "exploratory_full_data_cv",
-    "--feature-set", "value_digits", "--split", "stratified",
+    "--split", "stratified",
     "--folds", "5", "--seed", "42", "--holdout-fraction", "0",
-    "--fixed-training", "--validation-note", $fraudRecipe.common.validation_note
+    "--fixed-training", "--validation-note", $fraudR10Plan.validation
 )
-python -m fraudlab train @fraudCvArgs --model glm --name explore5-glm --threads 4 --logistic-c 0.3 --target-smoothing 50
-python -m fraudlab train @fraudCvArgs --model lightgbm --name explore5-lgbm --threads 6 --iterations 1438 --num-leaves 4 --learning-rate 0.04 --l2-leaf-reg 5 --min-child-samples 100 --target-smoothing 20 --patience 150
-python -m fraudlab blend --runs artifacts/runs/explore5-glm artifacts/runs/explore5-lgbm --weights 0.75 0.25 --name explore5-own
-python -m fraudlab blend --runs artifacts/runs/explore5-own artifacts/runs/explore5-public-gpt2-v2 --weights 0.75 0.25 --name explore5-public25
-python -m fraudlab validate-submission --file artifacts/runs/explore5-public25/submission.csv --sample data/raw/sample_submission.csv
+python -m fraudlab train @fraudCvArgs --model offset --name round10-offset-bpe-frequency --feature-set bpe_digits --glm-frequency --glm-inner-folds 5 --glm-spline-knots 0 --logistic-c 0.3 --target-smoothing 50 --iterations 1000 --num-leaves 4 --learning-rate 0.03 --l2-leaf-reg 5 --min-child-samples 100 --threads 4 --device cpu
+python -m fraudlab train @fraudCvArgs --model lightgbm --name explore5-lgbm --feature-set value_digits --threads 6 --iterations 1438 --num-leaves 4 --learning-rate 0.04 --l2-leaf-reg 5 --min-child-samples 100 --target-smoothing 20 --patience 150
+python -m fraudlab blend --runs artifacts/runs/round10-offset-bpe-frequency artifacts/runs/explore5-lgbm artifacts/runs/explore5-public-gpt2-v2 --weights 0.5625 0.1875 0.25 --name round10-offset-bpe-frequency-public25
+python -m fraudlab validate-submission --file artifacts/runs/round10-offset-bpe-frequency-public25/submission.csv --sample data/raw/sample_submission.csv
 ```
 
-O LGB usa 1.438 árvores fixas; `--fixed-training` desativa early stopping, portanto `patience` não seleciona árvores nesta execução. O GLM usa C=0,3, target encoding com suavização 50 e Newton-Cholesky. O LGB usa suavização 20. Transformações aprendidas são ajustadas somente dentro do treino de cada fold; o target encoding usa mais cinco divisões internas.
+O offset usa GLM Newton-Cholesky com C=0,3 e target encoding interno 5/50, mais 1.000 árvores residuais de quatro folhas, taxa 0,03, L2=5 e mínimo de 100 exemplos por folha. O GLM e as árvores usam a mesma matriz de treino com encodings cruzados; a inferência soma suas margens antes da sigmoid. O LightGBM separado mantém 1.438 árvores, taxa 0,04 e suavização 20. `--fixed-training` desativa early stopping; `patience` não seleciona árvores nessas execuções.
 
-A média final é em **probabilidades**: 75% da composição própria mais 25% GPT-2, equivalentes a **56,25% GLM / 18,75% LGB / 25% GPT-2 externo**. A grade local anterior comparou 10/25/50/75% de GPT-2 por OOF compatível; esta receita reproduz a escolha congelada, sem repetir seleção pelo leaderboard. `phase=exploratory_full_data_cv` e `independent_holdout=false` permanecem nos metadados.
+A mistura final é em **probabilidades**: **56,25% offset / 18,75% LGB / 25% GPT-2 externo**. O [resultado R10](../evidence/round10-results.json) registra OOF **0,9514921382152453** e melhora nos cinco folds sobre a baseline original. Pesos e parâmetros foram declarados antes do treino e do envio. A OOF foi usada na seleção; `phase=exploratory_full_data_cv` e `independent_holdout=false` permanecem nos metadados. A [R11](../evidence/round11-results.json), com 2.000 árvores residuais, ficou abaixo da R10 e não foi submetida.
 
 Cada run salva configuração, status, métricas, OOF, previsões do teste e submissão; treinos próprios também salvam os modelos. O blend exige hashes dos dados, IDs, folds e rótulos OOF compatíveis e propaga créditos e peso efetivo do componente externo.
 
-## Notebook público
+## Notebook V5: baseline executável histórica
+
+O [notebook V5 publicado](https://www.kaggle.com/code/aikoog/fraudlab-reproducible-neural-fraud-detection) mantém as células executáveis da baseline v0.1 e acrescenta Markdown sobre a R10, com links para sua fonte. Foi salvo **sem execução na nuvem**: as 22 células remotas conferem com as locais, sem outputs ou contagens de execução. A [verificação](../evidence/verification.json) não comprova treino, previsões ou submissão da R10 naquele notebook. A reprodução atual é a CLI da seção anterior.
+
+O exportador abaixo reconstrói a baseline v0.1, não a R10 nem o Markdown atualizado da V5. Ele regrava `notebooks/fraudlab.ipynb` e a receita; use um clone separado para preservar a versão publicada:
 
 ```powershell
 python scripts/kaggle_notebook.py --revision 30dc7eb723e4cf31291bb075ed6c0d943557264c
 ```
 
-O gerador cria um único `notebooks/fraudlab.ipynb`, incorpora a receita e exporta os módulos por `git show` desse SHA, com hashes. A metadata anexa a competição e `masayakawamata/s6e11-gpt2-target-first-oof/2`, com internet desativada. Não há pip remoto nem treinamento de GPT-2 no notebook; a imagem precisa fornecer as bibliotecas compatíveis, incluindo LightGBM >=4.7.
-
-A versão 3 foi publicada por **Save sem execução**. Sintaxe, comandos e exportação foram conferidos; isso não comprova execução do notebook no ambiente Kaggle. Treinos locais e avaliação dos CSVs pela competição têm registros separados. Ao executá-lo futuramente, os inputs precisam estar anexados na versão indicada.
+O gerador incorpora a receita histórica e exporta os módulos por `git show` desse SHA, com hashes. A metadata anexa a competição e `masayakawamata/s6e11-gpt2-target-first-oof/2`, com internet desativada. Não há pip remoto nem treinamento de GPT-2 no notebook; a imagem precisa fornecer bibliotecas compatíveis, incluindo LightGBM >=4.7. Os treinos locais e a avaliação dos CSVs pelo Kaggle têm registros separados.
 
 ## Histórico próprio: reserva e refits
 
 A primeira etapa usou três folds nos 85% de desenvolvimento e reservou 15% com seed 2026. Após congelar a composição própria 75/25, a reserva foi avaliada uma vez pelas médias dos três checkpoints de cada família. Em seguida, `final-glm` e `final-lgbm` foram refitados em todos os rótulos, sem nova OOF ou early stopping; a regra congelada definiu 1.438 árvores no LGB. Esses refits compõem a submissão própria anterior **58437018**.
 
-A híbrida **58438450** usa as médias de teste das novas CVs `explore5-glm`/`explore5-lgbm` e GPT-2 v2. Ela não usa os refits únicos anteriores. Como a nova etapa e o componente externo incluem os antigos rótulos reservados, aquele holdout é apenas histórico para a híbrida.
+A híbrida v0.1 **58438450** usava as médias de teste das CVs `explore5-glm`/`explore5-lgbm` e GPT-2 v2. Ela não usava os refits únicos anteriores. A R10 substitui seu GLM pelo offset com BPE e frequência. Como essas CVs e o componente externo incluem os antigos rótulos reservados, aquele holdout é apenas histórico para a composição atual.
 
 Uma variante fixa reaproveita os refits completos já auditados:
 
@@ -105,11 +101,11 @@ python scripts/compose_refit_hybrid.py --plan evidence/refit-hybrid-plan.json
 O comando exige os artefatos locais cujos hashes estão no plano, incluindo os
 checkpoints originais. Combina 75% de `final-blend` e 25% do GPT-2 aprovado.
 Gera apenas inferência: AUC nula, nenhuma OOF e nenhuma submissão automática.
-Sua referência CV pertence à receita anterior. Os hashes protegem os inputs
+Essa variante é histórica e não compõe a R10. Sua referência CV pertence à receita anterior. Os hashes protegem os inputs
 históricos; recriar numericamente os modelos em outro ambiente pode produzir
 outros bytes e exige registrar um novo plano, sem herdar o score anterior.
 
-O gerador aceita `--protocol artifacts/holdout/evaluation.json` para reconstruir o notebook próprio anterior, desde que o relatório e os configs de origem estejam disponíveis localmente. Ele regrava o mesmo notebook; o comando híbrido acima restaura a versão canônica. Esses artefatos locais não são incluídos no clone público.
+O gerador aceita `--protocol artifacts/holdout/evaluation.json` para reconstruir o notebook próprio anterior, desde que o relatório e os configs de origem estejam disponíveis localmente. Ele também regrava o notebook; use um clone separado. Esses artefatos locais não são incluídos no clone público.
 
 A MLP-TE própria permanece uma comparação histórica real, fora da composição final. Para reproduzir suas métricas de desenvolvimento necessárias à apresentação:
 
@@ -123,12 +119,16 @@ A execução original usou CUDA; `auto` permite CPU quando CUDA não estiver dis
 ## Submissão e evidência
 
 ```powershell
-& $fraudKaggle competitions submit playground-series-s6e11 -f artifacts/runs/explore5-public25/submission.csv -m "FraudLab: hybrid5fold-public25"
+& $fraudKaggle competitions submit playground-series-s6e11 -f artifacts/runs/round10-offset-bpe-frequency-public25/submission.csv -m "FraudLab: round10-offset-bpe-frequency-public25"
 ```
 
 Enviar é uma ação explícita, sujeita às regras e limites da conta. Confirme o processamento e registre identificador, score, posição, total de equipes e data. [record_submission.py](../scripts/record_submission.py) confere o arquivo e a resposta da plataforma; seus argumentos estão em `python scripts/record_submission.py --help`. Para a híbrida, não forneça o relatório antigo como holdout independente. O ranking público é provisório; a meta da liderança não foi alcançada.
 
+A R10 observada é a submissão **58470267**, score **0,95134**, posição **712/2.089** em **17/11/2026 às 13h34 UTC**. Esses números pertencem ao arquivo identificado por hash em [round10-public.json](../evidence/round10-public.json); uma reprodução não herda seu score. O envio R9 permanece uma [exceção exploratória declarada](../evidence/public-evaluation-results.json), sem reclassificar seu critério original como cumprido.
+
 ## Apresentação, vídeo e site
+
+A versão publicada de referência continua sendo a [v0.2](https://github.com/aikolopes-DS/fraudlab/releases/tag/v0.2.0), com 134 slides e 51min23s. Uma nova geração em implementação só deve substituir esse estado depois de revisão e publicação verificadas.
 
 Com evidências correspondentes à submissão, as métricas híbridas e a comparação MLP histórica disponíveis:
 
@@ -151,7 +151,7 @@ Para reaproveitar narrações de uma exportação anterior, acrescente
 idênticos reutilizam o áudio; a pasta original permanece intacta. Congele uma
 cópia das evidências antes de exportar. O manifest registra os hashes de
 entrada e recusa mudanças durante a geração. A reprodução exata do snapshot
-publicado usa `evidence-snapshot.json` do ZIP da respectiva release; evidências
+de evidências publicado usa `evidence-snapshot.json` do ZIP da respectiva release; evidências
 atuais podem registrar uma classificação posterior.
 
 `presentation.review` verifica formato, timeline e legendas e extrai quadros. A transcrição integral automática é opcional: instale `pip install -e ".[review]"` e acrescente `--asr`; o modelo ASR pode precisar de download inicial. Nenhuma dessas verificações declara que uma pessoa assistiu ou ouviu o vídeo inteiro.
@@ -166,9 +166,26 @@ python site/build.py --run-dir artifacts/runs/round10-offset-bpe-frequency-publi
 
 O build ainda confere o hash do MP4 local, registra o hash e a URL externa no manifesto público e exclui o binário de `site/dist/`. A igualdade dos bytes publicados e a reprodução anônima precisam ser verificadas após o upload.
 
-## Testes e limites
+## Pacote único da AED
 
-A continuação de 17/11 é reproduzida em um clone com os mesmos CSVs e novos
+`scripts/package_delivery.py` reúne vídeo, slides, legendas, código de um commit
+Git explícito e provas. Antes de empacotar, confere os hashes dos arquivos e
+exige revisão audiovisual, ASR e cobertura visual de todos os slides. Dados,
+credenciais, checkpoints e links simbólicos no código são recusados.
+
+```powershell
+$fraudDeliverySource = git rev-parse HEAD
+python scripts/package_delivery.py --presentation-dir artifacts/presentation-v03 --snapshot artifacts/presentation-input-v03/evidence.json --source-ref $fraudDeliverySource --output artifacts/delivery/AED-FraudLab-entrega.zip
+```
+
+Extraia o pacote e abra `ENTREGA.html`. O vídeo e os slides abrem localmente;
+o código e as provas acompanham a entrega. `MANIFEST.json` lista os hashes de
+cada arquivo. Saídas existentes não são sobrescritas. Os testes de empacotamento
+usam arquivos fabricados e não substituem a revisão do vídeo real.
+
+## Experimentos históricos e testes
+
+As ablações históricas de 17/11 podem ser reproduzidas em um clone com os mesmos CSVs e novos
 nomes de execução. Todos os candidatos abaixo usam cinco folds/seed42,
 pré-processamento local ao treino e nenhuma reserva independente:
 
@@ -185,6 +202,10 @@ A rodada 4 contém a fórmula de duas operações fixas em log-odds; como elas n
 atingiram o critério, não foi acrescentada uma API de produção para essa operação.
 Os resultados negativos não alteram a receita selecionada nem enviam arquivos
 automaticamente ao Kaggle. Não reexecute a avaliação histórica da reserva.
+
+`--model glm --glm-value-one-hot` é outra ablação histórica, fora da R10: usa
+one-hot esparso com suporte mínimo de cinco, L-BFGS até 2.000 iterações e rejeita
+ajustes sem convergência. Não ativa o offset nem representa a receita escolhida.
 
 ```powershell
 python -m pytest tests presentation site/test_build.py -q
@@ -225,20 +246,9 @@ embeddings lineares por partes versão B, dimensão 12 e até 48 intervalos. Os
 demais parâmetros neurais são lidos da CLI e registrados. Opções
 incompatíveis são recusadas: `--fixed-training`, outro `--hidden-dims` ou
 codificação categórica por embeddings. Não há protocolo de refit em 100%
-para este candidato; o teste usa a média dos cinco checkpoints externos.
+para este candidato; o teste usa a média dos cinco checkpoints dos folds externos.
 
 Cada fold salva `.pt` com pesos, intervalos, configuração e época escolhida,
 além de `.preprocessing.joblib` com pré-processador e máscara de constantes.
 `predict_saved("tabm", ...)` reconstrói a mesma previsão. Os testes em CPU
 usam dados fabricados e não comprovam desempenho competitivo.
-
-## Receita selecionada — rodada 10
-
-A R10 usa `bpe_digits` e `--glm-frequency` com o modelo `offset`.
-Mantém C=0,3, suavização=50, cinco divisões internas para target encoding e
-1.000 árvores de quatro folhas, taxa 0,03, L2=5 e mínimo de 100 exemplos por folha.
-Os comandos completos e os pesos prospectivos estão no
-[plano R10](../evidence/round10-plan.json). O teste combina 56,25% desse modelo,
-18,75% do LightGBM próprio e 25% das previsões GPT-2 v2 licenciadas.
-A comparação com 2.000 árvores foi descartada por ficar abaixo da R10:
-[resultado R11](../evidence/round11-results.json).

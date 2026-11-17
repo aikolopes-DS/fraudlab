@@ -4,6 +4,15 @@ O conteúdo liga os experimentos executados à participação documentada no Kag
 Não há limite fixo de duração. Cada slide técnico é seguido imediatamente por uma
 explicação simples com exemplo cotidiano; essa sequência é verificada no build.
 
+A [versão publicada v0.2](https://github.com/aikolopes-DS/fraudlab/releases/tag/v0.2.0)
+tem **134 slides, 51min23s e 693 legendas**, com [player e slides](https://aikolopes-fraudlab.aikol9pes.chatgpt.site).
+Ela explica a R10: 56,25% offset com BPE e frequência, 18,75% LightGBM e 25% GPT-2
+público v2; inclui as MLPs e a TabM próprias como comparações. O snapshot é a
+submissão **58470267**, score **0,95134**, posição **712/2.089** em
+**17/11/2026 às 13h34 UTC**. A [prova audiovisual](../evidence/media.json) registra
+decodificação e ASR integrais e inspeção dos 134 quadros, sem declarar escuta
+humana ou reprodução contínua integral. A v0.1 permanece histórica.
+
 ## Gerar
 
 Na raiz do repositório, com as dependências de apresentação instaladas:
@@ -13,22 +22,43 @@ python -m presentation.build --help
 ```
 
 Uma versão final exige uma execução MLP real, mesmo quando outro modelo tiver
-produzido a submissão selecionada. Exemplo de comando, usando diretórios de
-execuções que já existam:
+produzido a submissão selecionada. Para gerar o conteúdo atual, com as execuções
+locais completas já disponíveis:
 
 ```powershell
-python -m presentation.build `
-  --evidence evidence/public.json `
-  --metrics artifacts/runs/catboost/metrics.json `
-  --comparison artifacts/runs/mlp/metrics.json `
-  --output artifacts/presentation `
-  --video
+$fraudComparisons = @(
+  "round10-offset-bpe-frequency", "round9-glm-bpe-frequency", "round9-bpe-frequency-public25",
+  "explore5-glm", "explore5-lgbm", "explore5-public-gpt2-v2", "explore5-public25",
+  "round8-tabm", "round8-tabm10", "dev-mlp-te-values", "dev-logistic-raw",
+  "dev-mlp-standard-raw", "dev-mlp-quantile-raw", "dev-lgbm-leaf4-raw", "dev-lgbm-leaf4-digits"
+)
+$fraudPresentationArgs = @()
+foreach ($fraudRun in $fraudComparisons) {
+  $fraudPresentationArgs += @("--comparison", "artifacts/runs/$fraudRun/metrics.json")
+}
+python -m presentation.build --evidence evidence/public.json `
+  --metrics artifacts/runs/round10-offset-bpe-frequency-public25/metrics.json `
+  @fraudPresentationArgs --historical-holdout artifacts/holdout/evaluation.json `
+  --output artifacts/presentation-v02 --video
 ```
 
 `--comparison` pode ser repetido para incluir outras execuções. O build exige
 execuções com `status: complete`, hashes de dados compatíveis, métricas válidas,
 arquitetura MLP registrada e evidência de dados, treino, submissão e posição.
 Ele verifica os registros fornecidos; não autentica uma submissão no Kaggle.
+
+A R10 usa `bpe_digits`, frequência por fold, target encoding interno 5/50 e
+GLM C=0,3; 1.000 árvores residuais de 4 folhas, taxa 0,03 e L2=5. Sua CV é
+5/42, sem holdout independente. A OOF híbrida registrada é 0,9514921382152453;
+fonte, parâmetros e resultados estão no [plano](../evidence/round10-plan.json) e
+no [resultado R10](../evidence/round10-results.json). A R9 permanece uma exceção
+de avaliação pública declarada; a R11 foi rejeitada e não integra este vídeo.
+
+Para regenerar com o mesmo snapshot de evidências publicado, extraia `evidence-snapshot.json`
+do ZIP v0.2 e use esse arquivo em `--evidence`. O arquivo `evidence/public.json`
+pode registrar consultas posteriores. Omitir `--historical-holdout` é permitido
+quando o relatório antigo não estiver disponível; ele não é exigido como uma
+reserva independente da R10. Artefatos e checkpoints locais não vêm no clone.
 
 Para uma submissão produzida por refit, forneça suas métricas em `--metrics` e as
 métricas do desenvolvimento correspondente em `--comparison`. O refit usa todos
@@ -76,6 +106,7 @@ evidência pública.
 | `slide-*.png`, `formula-*.png` | Renderização 1080p e fórmulas para HTML/vídeo |
 | `narration.wav` | Narração completa, quando `--video` é usado |
 | `captions.srt`, `captions.vtt` | Legendas com tempos medidos por trecho de áudio |
+| `timeline.json` | Início e duração de cada slide no vídeo |
 | `video.mp4` | Vídeo H.264/AAC com slides sincronizados |
 | `manifest.json` | Hashes das entradas e saídas, estado e limites da verificação |
 
@@ -93,9 +124,7 @@ entre -3 e 3, em passos de 10% para Edge.
 
 Para usar a voz local do Windows sem enviar o roteiro a um serviço externo:
 
-```powershell
-python -m presentation.build --metrics artifacts/runs/mlp/metrics.json --video --speech-engine sapi
-```
+No comando completo acima, acrescente `--speech-engine sapi --voice "Microsoft Maria Desktop"`.
 
 O motor SAPI usa `Microsoft Maria Desktop` por padrão e exige Windows com essa
 voz instalada. Se a geração Edge falhar, o build para e informa o motivo; ele
@@ -117,7 +146,7 @@ invalida aquele trecho. Isso evita repetir a narração inteira após falha de r
 ## Revisar o vídeo exportado
 
 ```powershell
-python -m presentation.review --presentation-dir artifacts/presentation --asr --asr-model base --device cpu
+python -m presentation.review --presentation-dir artifacts/presentation-v02 --asr --asr-model base --device cpu
 ```
 
 O comando confere hashes, codec, resolução, duração, continuidade dos slides e

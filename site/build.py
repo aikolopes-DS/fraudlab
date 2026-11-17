@@ -159,7 +159,7 @@ def normalize(evidence: dict, metrics: dict | None = None) -> dict:
             "submission_id": results.get("submission_id") if submission_verified else None,
             "observed_at": results.get("observed_at") if submission_verified else None,
         },
-        "links": {key: public_link((evidence.get("links") or {}).get(key)) for key in ("github", "kaggle", "notebook", "presentation", "video", "captions")},
+        "links": {key: public_link((evidence.get("links") or {}).get(key)) for key in ("github", "kaggle", "notebook", "presentation", "video", "captions", "delivery")},
         "run": {**{key: run.get(key) for key in ("model", "phase", "validation", "rows", "features")}, "effective_weights": weights, "selection_reason": run.get("selection_reason") if isinstance(run.get("selection_reason"), str) else None},
         "external_components": components,
         "limitations": limitations,

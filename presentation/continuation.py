@@ -40,6 +40,63 @@ def has_frequency(runs):
                for run in selected_runs(runs))
 
 
+def append_proposal(add, runs, external_components, number):
+    selected = runs[0] if runs else {}
+    by_name = {name(run): run for run in runs}
+    labels = {"offset": "GLM com correções de árvores", "lightgbm": "LightGBM próprio",
+              "external_gpt2": "GPT-2 externo", "mlp": "MLP própria", "tabm": "TabM própria"}
+    details = selected.get("model_details", {})
+    composition = [f"{number(weight * 100, 2)}% {labels.get(by_name.get(leaf(path), {}).get('model'), leaf(path))}"
+                   for path, weight in zip(details.get("sources", []), details.get("weights", [])) if weight > 0]
+    points = (["Composição final em probabilidades: " + "; ".join(composition)] if composition else
+              ["Modelo selecionado: " + labels.get(selected.get("model"), selected.get("model", "aguardando execução"))])
+    if has_bpe(runs) and has_frequency(runs):
+        points.append("O GLM reúne pistas numéricas, chaves BPE e frequência"
+                      + ("; árvores pequenas corrigem sua margem" if any(run.get("model") == "offset"
+                         for run in selected_runs(runs)) else ""))
+    compared = sorted({labels[run["model"]] for run in runs
+                       if run.get("status") == "complete" and run.get("model") in {"mlp", "tabm"}
+                       and run not in selected_runs(runs)})
+    if compared:
+        points.append("Redes próprias treinadas e comparadas: " + "; ".join(compared))
+    authors = sorted({component["trained_by"] for component in external_components if component.get("trained_by")})
+    if authors:
+        points.append("Treinamento do GPT-2 externo: " + "; ".join(authors) + "; importamos suas previsões auditadas")
+    add("01 / O problema", "A proposta: comparar, combinar e comprovar", points,
+        "Nossa proposta é comparar modelos e reunir previsões complementares. "
+        + ". ".join(points) + ". A seguir, vamos explicar como cada parte funciona, "
+        "onde foi utilizada e o que os experimentos realmente mostraram. "
+        "Treinar uma rede para comparação não significa que ela precise entrar na composição final.")
+
+
+def append_one_hot_pair(pair, runs):
+    if not any(run.get("status") == "complete" and run.get("model") in {"glm", "offset"} for run in runs):
+        return
+    pair("04 / Os modelos", "One-hot: uma posição para cada categoria", [
+        "Cada categoria conhecida do treino ganha uma posição no vetor",
+        "A posição correspondente recebe 1; as demais recebem 0",
+        "O GLM usa esta representação nas categorias originais",
+        "No código, categoria desconhecida produz zeros; o vetor não usa o alvo",
+    ], "One-hot transforma um rótulo em posições de zero ou um. A lista de "
+       "categorias é aprendida somente no treino. Para a categoria observada, "
+       "ativamos sua posição; as outras ficam em zero. A fórmula usa um "
+       "indicador, que vale um quando c é igual à categoria conhecida v de "
+       "índice j. O GLM recebe essa representação das categorias originais "
+       "junto das medidas e dos logits codificados por alvo. Na configuração "
+       "executada, uma categoria desconhecida é ignorada pelo encoder e "
+       "recebe zeros nesse bloco. Não atribuímos uma ordem de grandeza aos rótulos.",
+       r"\mathrm{OHE}(c)_j=\mathbf{1}[c=v_j],\qquad j=1,\ldots,C",
+       "Posição j = um se a categoria é v de j; zero caso contrário",
+       "No dia a dia: marcar uma opção no formulário", [
+           "Um formulário oferece azul, verde e vermelho",
+           "Escolher verde marca somente a segunda opção: 0, 1, 0",
+           "A posição identifica a escolha; não diz que verde vale mais que azul",
+       ], "Imagine um formulário com três opções de cor. Ao escolher verde, "
+          "você marca apenas essa opção e deixa as outras vazias. O vetor "
+          "fica zero, um, zero. A marca identifica a opção, sem dizer que "
+          "uma cor é maior ou melhor que outra.")
+
+
 def missing_selection_context(evidence):
     missing = []
     status = evidence.get("presentation_input_status")
@@ -196,6 +253,42 @@ def append_tabm_embedding_pair(pair, runs):
           "localiza o número; aprender a ficha é trabalho do treinamento.")
 
 
+def append_tabm_backbone_pair(pair, runs):
+    run = next((run for run in runs if run.get("status") == "complete" and run.get("model") == "tabm"
+                and run.get("versions", {}).get("tabm") == "0.0.3"), None)
+    if not run:
+        return
+    dropout = run.get("model_details", {}).get("architecture", {}).get("dropout")
+    pair("06 / Experimento neural", "TabM: uma matriz comum, ajustes de cada membro", [
+        "Em cada camada do backbone, W é compartilhada entre os membros",
+        "Os vetores r, s e o viés b são próprios de cada membro",
+        f"Após a transformação: ReLU e dropout registrado de {dropout}",
+        "A cabeça de saída é uma camada linear própria de cada membro, com seus pesos e viés",
+    ], "O TabM executado usa a arquitetura tabm da biblioteca oficial, "
+       "versão zero ponto zero ponto três. Em cada camada interna, os "
+       "membros compartilham uma matriz de pesos W. Cada membro também "
+       "tem vetores próprios r e s e um viés próprio b. O símbolo de "
+       "multiplicação com círculo representa multiplicar posição por "
+       "posição. Primeiro multiplicamos a entrada por r, depois usamos "
+       "a matriz compartilhada transposta, multiplicamos por s e somamos "
+       "o viés daquele membro. Os blocos aplicam ReLU e dropout. A cabeça "
+       "de saída tem pesos e viés separados para cada membro; ela não "
+       "compartilha a matriz W dessa fórmula. O compartilhamento reduz "
+       "o custo de manter várias previsões, sem torná-las idênticas.",
+       r"a_m=((h_m\odot r_m)W^{\top})\odot s_m+b_m",
+       "Saída interna do membro m = entrada vezes seu r, matriz W compartilhada transposta, vezes seu s, mais seu viés b",
+       "No dia a dia: uma receita comum, temperos individuais", [
+           "Os cozinheiros partem da mesma receita",
+           "Cada um ajusta quantidades e acabamento à sua maneira",
+           "Ao final, cada cozinheiro também produz sua própria avaliação",
+       ], "Imagine cozinheiros seguindo a mesma receita. Cada um pode "
+          "ajustar algumas quantidades antes de cozinhar e o acabamento "
+          "depois. Compartilhar a receita economiza trabalho, mas os "
+          "ajustes continuam individuais. Ao final, cada cozinheiro "
+          "produz sua própria avaliação. No TabM, os ajustes e as "
+          "avaliações são operações numéricas aprendidas.")
+
+
 def append_tabm_pair(pair, runs):
     run = next((run for run in runs if run.get("status") == "complete" and run.get("model") == "tabm"), None)
     if not run:
@@ -310,7 +403,7 @@ def continuation_sources(runs):
     if has_frequency(runs):
         sources.append(("Contagem por coluna", "https://pandas.pydata.org/docs/reference/api/pandas.Series.value_counts.html"))
     if any(run.get("status") == "complete" and run.get("model") == "tabm" for run in runs):
-        sources += [("TabM: arquitetura e implementação", "https://github.com/yandex-research/tabm"),
+        sources += [("TabM 0.0.3: arquitetura e implementação", "https://pypi.org/project/tabm/0.0.3/"),
                     ("Embeddings numéricos 0.0.12", "https://pypi.org/project/rtdl_num_embeddings/0.0.12/")]
     return sources
 

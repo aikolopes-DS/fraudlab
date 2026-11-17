@@ -5,10 +5,27 @@
   "downloaded_submission_sha256": "274cbe4ea90d9dc4893140cad55682f3627ced02163fff48655df4b095e428e7",
   "submission_file_verified": true,
   "public_auc": 0.95134,
-  "ranking": 712,
-  "total_teams": 2089,
-  "observed_at": "2026-11-17T13:34:51.848445+00:00",
+  "ranking": 723,
+  "total_teams": 2112,
+  "observed_at": "2026-11-17T18:24:25.231115+00:00",
   "source": "https://www.kaggle.com/competitions/playground-series-s6e11/leaderboard",
   "scope": "Official Kaggle completed submission, original uploaded bytes matched to local CSV by SHA-256, and fresh matching best leaderboard row.",
-  "passed": true
+  "passed": true,
+  "history": [
+    {
+      "ref": 58470267,
+      "run": "round10-offset-bpe-frequency-public25",
+      "submission_sha256": "274cbe4ea90d9dc4893140cad55682f3627ced02163fff48655df4b095e428e7",
+      "downloaded_submission_sha256": "274cbe4ea90d9dc4893140cad55682f3627ced02163fff48655df4b095e428e7",
+      "submission_file_verified": true,
+      "public_auc": 0.95134,
+      "ranking": 712,
+      "total_teams": 2089,
+      "observed_at": "2026-11-17T13:34:51.848445+00:00",
+      "source": "https://www.kaggle.com/competitions/playground-series-s6e11/leaderboard",
+      "scope": "Official Kaggle completed submission, original uploaded bytes matched to local CSV by SHA-256, and fresh matching best leaderboard row.",
+      "passed": true
+    }
+  ],
+  "current_service_audit": "evidence/aed-services.json"
 }

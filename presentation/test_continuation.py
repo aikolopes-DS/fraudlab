@@ -12,7 +12,7 @@ from .audio_cache import edge_paths
 from .build import insert_code_slides, main
 from .content import Slide, create_slides, ensure_pairs, number
 from .continuation import (append_feature_pairs, append_offset_pair, append_tabm_pair,
-                           append_tabm_embedding_pair,
+                           append_tabm_embedding_pair, append_tabm_backbone_pair, append_proposal,
                            append_tabm_result, append_selection_note, has_frequency,
                            missing_selection_context, append_historical_deviations)
 
@@ -38,14 +38,15 @@ class ContinuationTests(unittest.TestCase):
     def test_new_complex_concepts_have_immediate_analogies_and_valid_formulas(self):
         slides, add, pair = collector()
         append_feature_pairs(pair, [own()])
-        neural = {"status": "complete", "model": "tabm", "model_details": {
-            "architecture": {"k": 16, "n_blocks": 2, "d_block": 256, "num_embeddings": {
+        neural = {"status": "complete", "model": "tabm", "versions": {"tabm": "0.0.3"}, "model_details": {
+            "architecture": {"k": 16, "n_blocks": 2, "d_block": 256, "dropout": 0.1, "num_embeddings": {
                 "name": "PiecewiseLinearEmbeddings", "version": "B", "activation": False,
                 "d_embedding": 12, "n_bins": 48}}}}
         append_tabm_embedding_pair(pair, [neural])
+        append_tabm_backbone_pair(pair, [neural])
         append_tabm_pair(pair, [neural])
         ensure_pairs(slides)
-        self.assertEqual(len(slides), 8)
+        self.assertEqual(len(slides), 10)
         text = " ".join(point for slide in slides for point in slide.points)
         self.assertIn("3388:35", text)
         self.assertIn("IDs não indicam ordem", text)
@@ -57,33 +58,110 @@ class ContinuationTests(unittest.TestCase):
         from .test_presentation import fixture
         evidence, mlp = fixture()
         tabm = copy.deepcopy(mlp)
-        tabm.update(model="tabm", run_name="round8-tabm")
-        tabm["model_details"] = {"architecture": {"k": 16, "n_blocks": 2, "d_block": 256,
+        tabm.update(model="tabm", run_name="round8-tabm", versions={"tabm": "0.0.3"})
+        tabm["model_details"] = {"architecture": {"k": 16, "n_blocks": 2, "d_block": 256, "dropout": 0.1,
             "num_embeddings": {"name": "PiecewiseLinearEmbeddings", "version": "B",
                 "activation": False, "d_embedding": 12, "n_bins": 48}}}
         mlp["model_details"]["external_components"] = [{"kind": "gpt2_target_first",
             "trained_by": "Fixture author", "training_code_url": "https://example.test/code",
             "training_code_commit": "fixture-only", "code_license": "MIT",
             "predictions_source_url": "https://example.test/predictions", "predictions_license": "CC BY 4.0"}]
-        slides = create_slides(evidence, [mlp, tabm])
+        glm = copy.deepcopy(mlp)
+        glm.update(model="glm", run_name="glm")
+        glm["model_details"] = {"C": 0.3}
+        slides = create_slides(evidence, [mlp, tabm, glm])
         root = next(parent for parent in Path(__file__).resolve().parents
                     if (parent / "src/fraudlab").is_dir())
         insert_code_slides(slides, root, required=True)
         ensure_pairs(slides)
         titles = [slide.title for slide in slides]
+        proposal = titles.index("A proposta: comparar, combinar e comprovar")
+        formal = titles.index("Formalização: aprender uma função de risco")
+        one_hot = titles.index("One-hot: uma posição para cada categoria")
+        glm_formula = titles.index("GLM: combinar logits e categorias originais")
         embedding = titles.index("TabM: representar posições entre cortes do treino")
+        backbone = titles.index("TabM: uma matriz comum, ajustes de cada membro")
         ensemble = titles.index("TabM: várias previsões com pesos compartilhados")
         external = titles.index("GPT-2 externo: autoria e responsabilidade")
         experiments = next(index for index, slide in enumerate(slides) if slide.chapter.startswith("07 /"))
         code = next(index for index, slide in enumerate(slides) if slide.code)
         ranking = titles.index("Submissão e posição observadas")
-        self.assertLess(embedding, ensemble)
+        self.assertEqual(proposal, 2)
+        self.assertEqual(slides[proposal].kind, "explain")
+        self.assertEqual(formal, proposal + 1)
+        self.assertLess(one_hot, glm_formula)
+        self.assertLess(embedding, backbone)
+        self.assertLess(backbone, ensemble)
         self.assertLess(ensemble, external)
         self.assertLess(external, experiments)
         self.assertLess(experiments, code)
         self.assertLess(code, ranking)
         self.assertTrue(all(index < code for index, slide in enumerate(slides)
                             if slide.kind == "technical" and not slide.code))
+
+    def test_proposal_names_only_positive_selected_contributions_and_credits(self):
+        slides, add, _ = collector()
+        selected = {"model": "blend", "run_name": "selected", "status": "complete",
+                    "model_details": {"sources": ["runs/offset", "runs/lgb", "runs/external", "runs/unused"],
+                                      "weights": [0.5625, 0.1875, 0.25, 0]}}
+        members = [{"model": model, "run_name": key, "status": "complete"}
+                   for key, model in [("offset", "offset"), ("lgb", "lightgbm"),
+                                      ("external", "external_gpt2"), ("unused", "must_not_appear")]]
+        members += [{"model": "mlp", "status": "complete"}, {"model": "tabm", "status": "complete"}]
+        append_proposal(add, [selected, *members], [{"trained_by": "Fixture author"}], number)
+        point = slides[0].points[0]
+        for contribution in ["56,25% GLM com correções de árvores", "18,75% LightGBM próprio", "25,00% GPT-2 externo"]:
+            self.assertIn(contribution, point)
+        self.assertNotIn("unused", point)
+        self.assertNotIn("must_not_appear", point)
+        self.assertIn("treinadas e comparadas", slides[0].narration)
+        self.assertIn("Fixture author", slides[0].narration)
+
+    def test_tabm_backbone_keeps_member_bias_outside_scaling_and_head_separate(self):
+        slides, _, pair = collector()
+        run = {"model": "tabm", "status": "complete", "versions": {"tabm": "0.0.3"},
+               "model_details": {"architecture": {"dropout": 0.1}}}
+        append_tabm_backbone_pair(pair, [run])
+        ensure_pairs(slides)
+        self.assertIn(r"W^{\top})\odot s_m+b_m", slides[0].formula)
+        self.assertIn("um viés próprio b", slides[0].narration)
+        self.assertIn("pesos e viés separados para cada membro", slides[0].narration)
+        self.assertIn("ela não compartilha a matriz W", slides[0].narration)
+        run["versions"]["tabm"] = "unverified"
+        before = len(slides)
+        append_tabm_backbone_pair(pair, [run])
+        self.assertEqual(len(slides), before)
+
+    def test_mlp_te_maps_numeric_quantiles_and_target_logit_standard_scaling(self):
+        from .test_presentation import fixture
+        evidence, mlp = fixture()
+        mlp["model_details"].update(numeric_transform="quantile")
+        mlp["model_details"]["architecture"].update(categorical_transform="target",
+            raw_numeric_features=2, numeric_features=7)
+        slides = create_slides(evidence, [mlp])
+        by_title = {slide.title: slide for slide in slides}
+        architecture = by_title["MLP-TE: a arquitetura treinada"]
+        self.assertIn("2 entradas numéricas usam quantis", architecture.narration)
+        self.assertIn("5 logits do target encoding recebem escalonamento padrão", architecture.narration)
+        standard = by_title["Escalonamento padrão: onde foi usado"]
+        self.assertIn("atua nos logits de categorias", " ".join(standard.points))
+        quantile = by_title["Quantis: preparação numérica da MLP-TE"]
+        self.assertIn("ausências preenchidas pela mediana do treino", quantile.narration)
+        mlp["model_details"]["numeric_transform"] = "standard"
+        changed = create_slides(evidence, [mlp])
+        self.assertNotIn("Quantis: preparação numérica da MLP-TE", [slide.title for slide in changed])
+
+    def test_final_spoken_score_and_year_preserve_visible_values(self):
+        from .test_presentation import fixture
+        evidence, mlp = fixture()
+        evidence["results"]["public_auc"] = 0.95134
+        slides = create_slides(evidence, [mlp])
+        final = next(slide for slide in slides if slide.title == "Submissão e posição observadas")
+        self.assertIn("AUC pública: 0,95134", final.points)
+        self.assertIn("zero vírgula nove cinco um três quatro", final.narration)
+        self.assertIn("dois mil e vinte e seis", final.narration)
+        self.assertNotIn("2026", final.narration)
+        self.assertTrue(any("2026" in point for point in final.points))
 
     def test_unexecuted_or_comparison_only_method_is_not_selected(self):
         slides, _, pair = collector()
