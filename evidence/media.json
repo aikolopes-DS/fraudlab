@@ -186,8 +186,8 @@
   "review_report_sha256": "4e12077d91e16f030b1b303a6775b343d585fda8759086203c21b42ced1433e2",
   "visual_review_sha256": "ddaf8d3dbf6318b7fcf45982d7066bf0504532e96afe8b877eac403b1975fccc",
   "release_url": "https://github.com/aikolopes-DS/fraudlab/releases/tag/v0.2.0",
-  "release_published": false,
-  "release_scope": "Assets prepared locally; this helper does not upload or verify a public release",
+  "release_published": true,
+  "release_scope": "All three public release assets downloaded anonymously and matched to reviewed local bytes.",
   "history": [
     {
       "verified_at": "2026-11-16T18:15:19.771529+00:00",
@@ -260,5 +260,37 @@
       "bytes": 8003617,
       "sha256": "b407d84cc2bc60501fe97420fcce1db1d6b00e0ae1889eb80b7b0c1894ffb402"
     }
-  ]
+  ],
+  "release_verification": {
+    "verified_at": "2026-11-17T14:22:55.765229+00:00",
+    "passed": true,
+    "url": "https://github.com/aikolopes-DS/fraudlab/releases/tag/v0.2.0",
+    "target": "3edaeba33923656afb1efca1cf7efc5996c3e39a",
+    "draft": false,
+    "assets": [
+      {
+        "name": "fraudlab-slides-legendas.zip",
+        "digest": "sha256:b407d84cc2bc60501fe97420fcce1db1d6b00e0ae1889eb80b7b0c1894ffb402",
+        "size": 8003617,
+        "url": "https://github.com/aikolopes-DS/fraudlab/releases/download/v0.2.0/fraudlab-slides-legendas.zip"
+      },
+      {
+        "name": "SHA256SUMS.txt",
+        "digest": "sha256:a0dcc42e0cdbc9133d1bc6118b67382ac8a6e57ec6a750cb9d0931dcac97558a",
+        "size": 173,
+        "url": "https://github.com/aikolopes-DS/fraudlab/releases/download/v0.2.0/SHA256SUMS.txt"
+      },
+      {
+        "name": "video.mp4",
+        "digest": "sha256:882b4da07adc82e8c51a0b1f8ae13d6e012491f6d2e6b58dba6605e9874cfcbf",
+        "size": 59961042,
+        "url": "https://github.com/aikolopes-DS/fraudlab/releases/download/v0.2.0/video.mp4"
+      }
+    ],
+    "anonymous_downloads_verified": true,
+    "zip_integrity_verified": true,
+    "media_hashes_match_reviewed_files": true,
+    "zip_verified_manifest_outputs": 183,
+    "zip_sha256": "b407d84cc2bc60501fe97420fcce1db1d6b00e0ae1889eb80b7b0c1894ffb402"
+  }
 }
