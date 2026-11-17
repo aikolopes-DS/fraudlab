@@ -17,6 +17,7 @@ dependencies = [
 
 [project.optional-dependencies]
 neural = ["torch>=2.2,<3"]
+tabm = ["torch>=2.2,<3", "tabm==0.0.3", "rtdl_num_embeddings==0.0.12"]
 bpe = ["tiktoken==0.14.0", "regex==2026.9.29"]
 dev = ["pytest>=8,<10"]
 presentation = ["Pillow>=10,<13", "matplotlib>=3.8,<4", "edge-tts>=7.3,<8"]

@@ -1,0 +1,163 @@
+{
+  "status": "verified_gate_failed_no_submission",
+  "started_at": "2026-11-17T12:17:23.057367+00:00",
+  "finished_at": "2026-11-17T12:29:32.832291+00:00",
+  "frozen_commit": "6797ff2a8d588e6010aff93be09b51450a6bee62",
+  "public_plan_sha256": "6786fbc751c0ff025b47657ae59fb47b4e0ca99ce7642c475acbdc6cf2dae018",
+  "candidate": {
+    "run": "round7b-glm-value-one-hot",
+    "oof_auc": 0.9449977502789698,
+    "fold_scores": [
+      0.9442371968382254,
+      0.9457126814142047,
+      0.9503883436537546,
+      0.9454173002883477,
+      0.9394336419266103
+    ],
+    "iterations": [
+      883,
+      1122,
+      1185,
+      892,
+      876
+    ],
+    "five_fits_converged": true,
+    "reported_elapsed_seconds": 718.1
+  },
+  "fixed_blend": {
+    "run": "round7b-value-one-hot-public25",
+    "weights": [
+      0.5625,
+      0.1875,
+      0.25
+    ],
+    "oof_auc": 0.9503081626356826,
+    "fold_scores": [
+      0.9495968375603417,
+      0.9509925382521728,
+      0.9554286088141822,
+      0.9503328742451583,
+      0.9453227549620665
+    ],
+    "delta_vs_baseline": -0.0009504688841897035,
+    "fold_deltas_vs_baseline": [
+      -0.0007059688749821991,
+      -0.0008803111974267086,
+      -0.0009308401870410377,
+      -0.001197594847437644,
+      -0.001038653179393445
+    ],
+    "strictly_improved_folds": 0,
+    "eligible": false
+  },
+  "eligible": false,
+  "checkpoint_reload": [
+    {
+      "fold": 0,
+      "real_validation_rows": 1024,
+      "selection": "First 1024 actual OOF validation rows of this fold, in original order",
+      "max_abs_error_vs_saved_oof": 1.1102230246251565e-16,
+      "csr_shape": [
+        1024,
+        51366
+      ],
+      "csr_dtype": "float64",
+      "iterations_used": 883,
+      "checkpoint_sha256": "fa9b167a0f8f4b96e75ddc7827f2adef65eef9889189c5f3364d76c0714ec9cd"
+    },
+    {
+      "fold": 1,
+      "real_validation_rows": 1024,
+      "selection": "First 1024 actual OOF validation rows of this fold, in original order",
+      "max_abs_error_vs_saved_oof": 1.1102230246251565e-16,
+      "csr_shape": [
+        1024,
+        51359
+      ],
+      "csr_dtype": "float64",
+      "iterations_used": 1122,
+      "checkpoint_sha256": "2ad48cddda86f75c7997a91eb897bb48fa1979b3a96111db45b0919675b1f01c"
+    },
+    {
+      "fold": 2,
+      "real_validation_rows": 1024,
+      "selection": "First 1024 actual OOF validation rows of this fold, in original order",
+      "max_abs_error_vs_saved_oof": 1.1102230246251565e-16,
+      "csr_shape": [
+        1024,
+        51428
+      ],
+      "csr_dtype": "float64",
+      "iterations_used": 1185,
+      "checkpoint_sha256": "1d246060b359af40fbfe2ecc0f25b0e6d14548723e2b0cfd7c864d6641097951"
+    },
+    {
+      "fold": 3,
+      "real_validation_rows": 1024,
+      "selection": "First 1024 actual OOF validation rows of this fold, in original order",
+      "max_abs_error_vs_saved_oof": 9.974659986866641e-17,
+      "csr_shape": [
+        1024,
+        51448
+      ],
+      "csr_dtype": "float64",
+      "iterations_used": 892,
+      "checkpoint_sha256": "fdd88b4224edd4114cb2b01fff019d1aba818d6bc4b460b25880d58bbb30fabc"
+    },
+    {
+      "fold": 4,
+      "real_validation_rows": 1024,
+      "selection": "First 1024 actual OOF validation rows of this fold, in original order",
+      "max_abs_error_vs_saved_oof": 1.1102230246251565e-16,
+      "csr_shape": [
+        1024,
+        51410
+      ],
+      "csr_dtype": "float64",
+      "iterations_used": 876,
+      "checkpoint_sha256": "bb89af55f61e380f711dd8818eea6a9fd9644e8f4c11de059e9e3db59f3cda09"
+    }
+  ],
+  "checks": {
+    "same_ids_folds_labels_as_baseline": true,
+    "canonical_blend_validated_source_alignment": true,
+    "data_hashes_rechecked": true,
+    "submission_schema_ids_probabilities_validated": true,
+    "source_commit_and_clean_tree_preserved": true,
+    "public_plan_unchanged": true
+  },
+  "artifacts": {
+    "artifacts/runs/round7b-glm-value-one-hot/config.json": "b900b3f4d56f832b909e13159cb6964548d1033fe3320b1fcf35ae88bbfc3037",
+    "artifacts/runs/round7b-glm-value-one-hot/metrics.json": "d8ecf8772f87502663d3adc52df547818a2c54eb28d0f38b99765231f1b6e923",
+    "artifacts/runs/round7b-glm-value-one-hot/oof.csv": "66511e2fe292aa9c5d0ab1d26efa356178c3b3c94769c0b700e55572cd9fefe5",
+    "artifacts/runs/round7b-glm-value-one-hot/submission.csv": "5f5a7e4a9420acd08d9101319defc1d78c2cf2498ff4d80ff747c8f360e5ec23",
+    "artifacts/runs/round7b-value-one-hot-public25/config.json": "b65b61e69bcb00e2b68d4b3f665ffcdaa4957d1e69b0e11c12735b654cd4185d",
+    "artifacts/runs/round7b-value-one-hot-public25/metrics.json": "cc8ca16229940ad01e44b3427d60ee609ba3650efdb87c36d26b096c0cbbc905",
+    "artifacts/runs/round7b-value-one-hot-public25/oof.csv": "72998e0d49e534961214148d0e75453f9e591a41fdc7760c356e6d06bebf468a",
+    "artifacts/runs/round7b-value-one-hot-public25/submission.csv": "f22a3fea3b796b284b37b7c7e2f925235c20fff64ed5e3c54c952dbf38a43b89"
+  },
+  "limitations": [
+    "Full-data OOF was used for selection; no independent holdout remains.",
+    "Memory counters describe the training subprocess, not total system RAM.",
+    "No Kaggle submission or leaderboard measurement was performed."
+  ],
+  "dimension_audit_label_correction": {
+    "frozen_plan_field": "unlabelled_dimension_audit.outer_training_ohe_columns_range",
+    "frozen_plan_values": [
+      51359,
+      51448
+    ],
+    "correct_meaning_of_those_values": "Total design width: 24 numeric + 54 target-logit + OHE columns",
+    "actual_ohe_columns_range": [
+      51281,
+      51370
+    ],
+    "source": ".local/research/round7/dimensions.json, min_frequency5 estimates for the five fixed folds",
+    "effect": "Label correction only; no model, preprocessing, fold, parameter or gate changed. The prospective plan remained frozen during training."
+  },
+  "plan": "evidence/round7b-plan.json",
+  "new_kaggle_submissions": 0,
+  "training_seconds": 718.1,
+  "observed_worker_memory_peak_gib": 7.122600555419922,
+  "memory_scope": "OS PeakWorkingSet64 sampled every2seconds; final interval after the last sample may be unobserved. PrivateMemorySize64 is a sampled maximum, not an OS lifetime peak."
+}

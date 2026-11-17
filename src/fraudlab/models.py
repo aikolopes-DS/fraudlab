@@ -532,6 +532,15 @@ def fit_predict(
         return fit_neural(
             training, y, validation, validation_y, test, config, seed, path
         )
+    if name == "tabm":
+        try:
+            from .tabm import fit_tabm
+        except ImportError as error:
+            raise RuntimeError(
+                "TabM requires the optional fraudlab[tabm] dependencies."
+            ) from error
+        # Deliberately do not forward outer validation labels to TabM.
+        return fit_tabm(training, y, validation, test, config, seed, path)
     if name == "lightgbm":
         return fit_lightgbm(
             training, y, validation, validation_y, test, config, seed, path
@@ -553,6 +562,10 @@ def predict_saved(
         model = CatBoostClassifier()
         model.load_model(str(path.with_suffix(".cbm")))
         return model.predict_proba(clean_features(frame))[:, 1]
+    if name == "tabm":
+        from .tabm import predict_saved_tabm
+
+        return predict_saved_tabm(path, frame, device)
     if name != "mlp":
         raise ValueError(f"Unknown saved model: {name}")
     import torch

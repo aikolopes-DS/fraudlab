@@ -178,3 +178,31 @@ python site/check_browser.py
 ```
 
 O comando verifica desktop/mobile e registra capturas em `artifacts/qa/site/`. A qualidade competitiva exige os experimentos reais e o resultado processado na plataforma.
+
+## TabM prospectivo — rodada 8
+
+O [plano R8](../evidence/round8-plan.json) ainda não contém resultado da
+competição. Instale as dependências opcionais oficiais, com versões fixadas:
+
+```powershell
+python -m pip install -e ".[tabm]"
+```
+
+Somente depois de congelar e revisar o código e o plano:
+
+```powershell
+python -m fraudlab train --name round8-tabm --model tabm --feature-set value_digits --phase exploratory_full_data_cv --split stratified --folds 5 --seed 42 --holdout-fraction 0 --epochs 40 --patience 6 --batch-size 1024 --neural-learning-rate 0.001 --weight-decay 0.0001 --target-smoothing 20 --threads 2 --device cuda --hidden-dims 256 256 --dropout 0.1 --neural-numeric-transform standard --neural-categorical-transform target --validation-note "Prospective TabM with inner 15% epoch selection and fresh fixed-epoch outer refits; CV 5/42 reused for selection, no independent holdout."
+```
+
+O padrão de dados e saídas é o da CLI; `--data` e `--output` aceitam caminhos
+absolutos para uma worktree isolada. A arquitetura fixa é `2×256`, `k=16`,
+embeddings lineares por partes versão B, dimensão 12 e até 48 intervalos. Os
+demais parâmetros neurais são lidos da CLI e registrados. Opções
+incompatíveis são recusadas: `--fixed-training`, outro `--hidden-dims` ou
+codificação categórica por embeddings. Não há protocolo de refit em 100%
+para este candidato; o teste usa a média dos cinco checkpoints externos.
+
+Cada fold salva `.pt` com pesos, intervalos, configuração e época escolhida,
+além de `.preprocessing.joblib` com pré-processador e máscara de constantes.
+`predict_saved("tabm", ...)` reconstrói a mesma previsão. Os testes em CPU
+usam dados fabricados e não comprovam desempenho competitivo.

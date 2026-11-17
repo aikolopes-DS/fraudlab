@@ -38,6 +38,8 @@ def versions() -> dict:
         "catboost",
         "lightgbm",
         "torch",
+        "tabm",
+        "rtdl_num_embeddings",
         "tiktoken",
         "regex",
     ):
@@ -229,6 +231,18 @@ def train(config: dict) -> dict:
                 "early_stopping_uses_validation": config["model"]
                 in ("catboost", "lightgbm", "mlp")
                 and not config.get("fixed_training"),
+                **(
+                    {
+                        "inner_epoch_selection": {
+                            "fraction": 0.15,
+                            "seed": 42,
+                            "metric": "roc_auc",
+                            "fresh_outer_refit": True,
+                        }
+                    }
+                    if config["model"] == "tabm"
+                    else {}
+                ),
             },
             "elapsed_seconds": round(time.perf_counter() - started, 3),
             "versions": versions(),

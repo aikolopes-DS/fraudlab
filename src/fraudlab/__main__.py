@@ -38,7 +38,7 @@ def parser() -> argparse.ArgumentParser:
     )
     training.add_argument(
         "--model",
-        choices=("logistic", "glm", "catboost", "lightgbm", "mlp", "offset"),
+        choices=("logistic", "glm", "catboost", "lightgbm", "mlp", "offset", "tabm"),
         required=True,
     )
     training.add_argument(
@@ -84,7 +84,7 @@ def parser() -> argparse.ArgumentParser:
         "--device",
         choices=("auto", "cpu", "cuda"),
         default="auto",
-        help="Auto uses CPU for CatBoost and CUDA when available for the MLP.",
+        help="Auto uses CPU for CatBoost and CUDA when available for neural models.",
     )
     training.add_argument("--logistic-c", type=float, default=1.0)
     training.add_argument(
@@ -118,7 +118,12 @@ def parser() -> argparse.ArgumentParser:
     training.add_argument("--min-child-samples", type=int, default=100)
     training.add_argument("--target-smoothing", type=float, default=20.0)
     training.add_argument("--epochs", type=int, default=30)
-    training.add_argument("--hidden-dims", type=int, nargs="+", default=[128, 64])
+    training.add_argument(
+        "--hidden-dims",
+        type=int,
+        nargs="+",
+        help="Defaults: MLP 128 64; TabM requires the fixed architecture 256 256.",
+    )
     training.add_argument("--dropout", type=float, default=0.1)
     training.add_argument("--neural-learning-rate", type=float, default=0.001)
     training.add_argument("--weight-decay", type=float, default=0.0001)
@@ -131,10 +136,12 @@ def parser() -> argparse.ArgumentParser:
     training.add_argument(
         "--neural-categorical-transform",
         choices=("embedding", "target"),
-        default="embedding",
+        help="Defaults: MLP embedding; TabM requires target.",
     )
     training.add_argument(
-        "--patience", type=int, help="Defaults: CatBoost 100 iterations; MLP 5 epochs."
+        "--patience",
+        type=int,
+        help="Defaults: CatBoost 100 iterations; MLP 5 epochs; TabM 6 inner epochs.",
     )
 
     blending = commands.add_parser(
@@ -195,6 +202,21 @@ def parser() -> argparse.ArgumentParser:
 
 
 def validate_training_config(config: dict) -> None:
+    if config.get("hidden_dims") is None:
+        config["hidden_dims"] = [256, 256] if config["model"] == "tabm" else [128, 64]
+    if config.get("neural_categorical_transform") is None:
+        config["neural_categorical_transform"] = (
+            "target" if config["model"] == "tabm" else "embedding"
+        )
+    if config["model"] == "tabm":
+        if config.get("fixed_training") or config.get("refit"):
+            raise ValueError(
+                "TabM requires inner epoch selection; --fixed-training/refit is unsupported."
+            )
+        if config["hidden_dims"] != [256, 256]:
+            raise ValueError("TabM requires --hidden-dims 256 256.")
+        if config["neural_categorical_transform"] != "target":
+            raise ValueError("TabM requires --neural-categorical-transform target.")
     inner_folds = config.get("glm_inner_folds", 5)
     if inner_folds not in (5, 10) or (
         inner_folds != 5 and config["model"] not in ("glm", "offset")
@@ -299,7 +321,7 @@ def main() -> None:
             config = vars(arguments).copy()
             config.pop("command")
             if config["patience"] is None:
-                config["patience"] = 5 if config["model"] == "mlp" else 100
+                config["patience"] = {"mlp": 5, "tabm": 6}.get(config["model"], 100)
             validate_training_config(config)
             metrics = train(config)
             print(

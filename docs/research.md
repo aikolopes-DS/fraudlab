@@ -174,3 +174,35 @@ antes de produzir checkpoint ou previsão. Não há AUC dessa execução. O
 otimizador para 2.000 iterações. A função objetivo, `C`, tolerância, atributos,
 folds e regra de seleção são os mesmos; a falha numérica não é um resultado
 de desempenho competitivo.
+
+## Hipótese neural TabM — rodada 8
+
+O [plano prospectivo R8](../evidence/round8-plan.json) propõe uma única
+configuração de [TabM, ICLR 2025](https://arxiv.org/html/2410.24210v3), com
+implementação oficial como dependência e treino próprio. A hipótese é que seus
+erros complementem a composição atual; nenhum ganho competitivo foi medido
+nesta preparação. Atribuímos a arquitetura aos autores, não ao FraudLab.
+
+O modelo reúne 16 MLPs implícitas de dois blocos de 256 unidades. Em uma camada,
+o membro `i` calcula `s_i ⊙ (W (r_i ⊙ x_i)) + b_i`: a matriz grande `W` é
+compartilhada, enquanto vetores próprios alteram a visão de cada membro. Antes
+dos blocos, embeddings lineares por partes aprendem uma representação de 12
+dimensões por entrada, usando até 48 intervalos calculados no treino. Usamos
+`value_digits` e o `NeuralPreprocessor` existente, incluindo target encoding
+internamente cross-fitted em cinco partições.
+
+Em linguagem cotidiana, 16 analistas usam o mesmo manual e cada um realça
+detalhes de forma própria. Cada analista recebe sua avaliação durante o estudo;
+na decisão final, fazemos a média de suas probabilidades. O treino minimiza
+`sum(BCEWithLogits(z_bi, y_b)) / (B × 16)`. A previsão é
+`mean(sigmoid(z_bi))`, como orienta a
+[implementação oficial](https://github.com/yandex-research/tabm).
+
+Dentro de cada fold externo, 15% do treino escolhem a época `E`. Imputação,
+escalas, target encoding, máscara de constantes e intervalos são ajustados
+somente nos outros 85%. Depois tudo é descartado: outro pré-processador e
+outro modelo são ajustados no treino externo completo por exatamente `E`
+épocas. O fold externo só recebe previsões. A mistura pré-declarada usa 10%
+TabM e 90% da composição `explore5-public25`, mantendo o mesmo critério de
+ganho superior a 0,0001 e melhora em pelo menos quatro folds. Continua sendo
+CV reutilizada para seleção, sem reserva independente.

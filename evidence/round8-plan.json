@@ -1,0 +1,118 @@
+{
+  "date": "2026-11-17",
+  "status": "prospective; no round8 competitive fit or OOF computed",
+  "hypothesis": "A parameter-sharing neural ensemble with learned piecewise-linear feature embeddings may complement the errors of explore5-public25. This is one structural-diversity candidate, not a hyperparameter search or evidence of improvement.",
+  "sources": [
+    "https://github.com/yandex-research/tabm",
+    "https://github.com/yandex-research/rtdl-num-embeddings/blob/main/package/README.md",
+    "https://arxiv.org/html/2410.24210v3"
+  ],
+  "attribution": "Official TabM architecture and numerical embedding implementations are dependencies. FraudLab supplies its own fold-local preprocessing, nested epoch selection, training, inference and experiment integration.",
+  "dependencies": {
+    "tabm": "0.0.3",
+    "rtdl_num_embeddings": "0.0.12",
+    "optional_extra": "tabm",
+    "licenses": "Both exact wheel distributions contain Apache-2.0 licenses. rtdl package/LICENSE governs the numerical embedding package; its repository root has a separate MIT license."
+  },
+  "baseline": {
+    "run": "explore5-public25",
+    "pooled_oof_auc": 0.9512586315198723,
+    "fold_scores": [0.9503028064353239, 0.9518728494495995, 0.9563594490012233, 0.951530469092596, 0.94636140814146]
+  },
+  "candidate": {
+    "name": "round8-tabm",
+    "model": "tabm",
+    "phase": "exploratory_full_data_cv",
+    "feature_set": "value_digits",
+    "split": "stratified",
+    "folds": 5,
+    "seed": 42,
+    "holdout_fraction": 0,
+    "fixed_training": false,
+    "epochs": 40,
+    "patience": 6,
+    "batch_size": 1024,
+    "neural_learning_rate": 0.001,
+    "weight_decay": 0.0001,
+    "target_smoothing": 20,
+    "neural_numeric_transform": "standard",
+    "neural_categorical_transform": "target",
+    "hidden_dims": [256, 256],
+    "dropout": 0.1,
+    "threads": 2,
+    "device": "cuda"
+  },
+  "architecture": {
+    "factory": "TabM.make",
+    "arch_type": "tabm",
+    "n_blocks": 2,
+    "d_block": 256,
+    "k": 16,
+    "d_out": 1,
+    "num_embeddings": "PiecewiseLinearEmbeddings",
+    "version": "B",
+    "activation": false,
+    "d_embedding": 12,
+    "n_bins": 48,
+    "binning": "quantiles of training inputs only; no y passed to compute_bins",
+    "expected_input_count": 78,
+    "input_count_note": "24 numerical and 54 crossfit categorical target-logit inputs from the existing value_digits audit. Training-only constants are dropped and the mask is persisted.",
+    "optimizer": "AdamW, no learning-rate schedule",
+    "gradient_clip": 1,
+    "precision": "float32, no autocast",
+    "loss": "Mean BCEWithLogits across every row/member pair; not BCE on the ensemble mean",
+    "prediction": "Mean of 16 sigmoid probabilities; never sigmoid of mean logits"
+  },
+  "validation": {
+    "outer": "Existing StratifiedKFold(5, shuffle=True, random_state=42) over all 699960 labels; preserve baseline row IDs and fold assignments",
+    "independent_holdout": false,
+    "selection_warning": "OOF reused for model selection is not an independent final performance estimate. The historical holdout is not reopened.",
+    "inner": "Stratified 15% of outer training, random_state=42; choose E by AUC, improvement tolerance 1e-6, patience 6, cap 40",
+    "fold_local": "NeuralPreprocessor: median imputation, standard numerical scaling, categorical TargetEncoder(smooth=20, cv=5, shuffle=True, seed=42+outerfold), log odds and standard scaling. fit_transform supplies internally crossfit training encodings.",
+    "epoch_selection": "Fit preprocessing, constant mask and quantile bins only on inner training. Inner validation only monitors AUC; no outer-validation labels are accepted by the TabM fit API.",
+    "refit": "Discard all inner preprocessing, bins, model weights and optimizer state. Refit preprocessing, constant mask and bins on complete outer training, still using crossfit target encodings for optimizer inputs. Reinitialize TabM and AdamW with the same model seed, then train exactly E epochs with no outer monitoring.",
+    "model_seeds": "42 + outerfold, matching existing experiment runner",
+    "test_prediction": "Average the probabilities from the five outer-training checkpoints; no full-data refit or additional seed"
+  },
+  "fixed_blend": {
+    "declared_before_tabm_competitive_oof": true,
+    "space": "probability",
+    "explore5-public25": 0.9,
+    "round8-tabm": 0.1
+  },
+  "gate": {
+    "preconditions": "Five successful nested fits; finite probabilities; checkpoint reload reproduction; identical data hashes, row IDs, labels, row order and fold IDs to baseline",
+    "pooled_oof_delta_strictly_greater_than": 0.0001,
+    "strictly_better_folds_at_least": 4,
+    "comparison": "Only the one fixed blend versus explore5-public25 on identical rows and folds; standalone TabM AUC is descriptive",
+    "on_failure": "Retain baseline. No architecture, seed, feature, epoch cap, optimizer or mixture-weight search and no leaderboard-driven tuning.",
+    "on_success": "Eligible for root selection and at most one submission under existing authorization; preparation never submits.",
+    "concurrent_candidate_rule": "If R7b and R8 both qualify, root selects the larger pooled OOF before obtaining further public leaderboard feedback. This does not change either prospective recipe."
+  },
+  "checkpoint": "Per fold: .pt with CPU state_dict, exact bin edges, effective config and selected E; .preprocessing.joblib with fitted NeuralPreprocessor and active-column mask. Metadata records inner history, selection/refit epochs and rows, bin counts, feature order, flags and device.",
+  "toy_cost_evidence": {
+    "hardware": "NVIDIA GeForce RTX 4070 Laptop GPU",
+    "torch": "2.11.0+cu128",
+    "data": "Fabricated Gaussian 4096x78 and random binary labels; no competition files read for benchmark",
+    "measured_steps": 100,
+    "warmup_steps": 10,
+    "seconds_per_step": 0.007644343000138178,
+    "peak_allocated_mib": 258.828125,
+    "peak_reserved_mib": 446,
+    "parameters": 391520,
+    "max_training_only_5fold_minutes": 25.786917053799456,
+    "limits": "Cost extrapolation excludes preprocessing, bin fitting, validation inference and checkpoint I/O. Fabricated repeated batches are not a wall-clock promise or competitive quality estimate. Full data tensors add memory."
+  },
+  "training_gate": "Root reviews the integrated patch independently, freezes tested source and this prospective plan publicly, then authorizes competitive CUDA training in the isolated worktree. Only manufactured fits are allowed during preparation.",
+  "proposed_argv_after_freeze_only": [
+    "-m", "fraudlab", "train", "--data", "data/raw", "--output", "artifacts/runs",
+    "--name", "round8-tabm", "--model", "tabm", "--feature-set", "value_digits",
+    "--phase", "exploratory_full_data_cv", "--split", "stratified", "--folds", "5",
+    "--seed", "42", "--holdout-fraction", "0", "--epochs", "40", "--patience", "6",
+    "--batch-size", "1024", "--neural-learning-rate", "0.001", "--weight-decay", "0.0001",
+    "--target-smoothing", "20", "--threads", "2", "--device", "cuda",
+    "--hidden-dims", "256", "256", "--dropout", "0.1",
+    "--neural-numeric-transform", "standard", "--neural-categorical-transform", "target",
+    "--validation-note", "Prospective TabM with inner 15% epoch selection and fresh fixed-epoch outer refits; CV 5/42 reused for selection, no independent holdout."
+  ]
+}
