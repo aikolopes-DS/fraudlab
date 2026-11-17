@@ -78,6 +78,10 @@ def source_provenance(feature_set: str | None = None) -> dict:
         from .tokens import manifest
 
         result["feature_encoding"] = manifest()
+    elif feature_set == "joint_bpe":
+        from .joints import manifest
+
+        result["feature_encoding"] = manifest()
     return result
 
 
@@ -96,6 +100,17 @@ def create_run(output: Path, name: str) -> Path:
 
 def train(config: dict) -> dict:
     started = time.perf_counter()
+    if "_frequency_reference" in config:
+        raise ValueError(
+            "Frequency reference maps are runtime-only, not persisted configuration."
+        )
+    if config.get("glm_transductive_frequency"):
+        from .transductive import (
+            build_reference_counts,
+            validate_config as validate_transductive,
+        )
+
+        validate_transductive(config)
     original_features = original_labels = original_metadata = None
     if (
         config.get("original_data")
@@ -153,6 +168,18 @@ def train(config: dict) -> dict:
         raise ValueError(
             "Engineered original feature columns must match competition order."
         )
+    frequency_metadata = None
+    fit_config = config
+    if config.get("glm_transductive_frequency"):
+        corpus_hashes = {
+            name: fingerprint(data_dir / name)
+            for name in ("train.csv", "test.csv", "sample_submission.csv")
+        }
+        references, frequency_metadata = build_reference_counts(
+            frame, test, features, corpus_hashes, excluded=(id_column, target)
+        )
+        config = {**config, "transductive_frequency": frequency_metadata}
+        fit_config = {**config, "_frequency_reference": references}
     splits = make_splits(
         frame,
         target,
@@ -178,6 +205,13 @@ def train(config: dict) -> dict:
     test_predictions = np.zeros(len(test))
     scores, details = [], []
     try:
+        if (
+            frequency_metadata is not None
+            and hashes != frequency_metadata["corpus_hashes"]
+        ):
+            raise ValueError(
+                "Official corpus bytes changed while constructing reference counts."
+            )
         for fold, (training_rows, validation_rows) in enumerate(splits):
             training = frame.iloc[training_rows][features]
             labels = frame.iloc[training_rows][target].to_numpy()
@@ -192,7 +226,7 @@ def train(config: dict) -> dict:
                 frame.iloc[validation_rows][features],
                 frame.iloc[validation_rows][target].to_numpy(),
                 test[features],
-                config,
+                fit_config,
                 config["seed"] + fold,
                 run / f"fold-{fold}",
             )
@@ -321,6 +355,14 @@ def train(config: dict) -> dict:
                 "component_model": config["model"],
                 "component_scope": "this fitted component only; other blend sources are not retrained",
                 "fold_training_rows": [fold["training_rows"] for fold in details],
+            }
+        if frequency_metadata is not None:
+            metrics["transductive_frequency"] = frequency_metadata
+            metrics["validation"]["transductive_feature_counts"] = {
+                "rows": frequency_metadata["rows"]["total"],
+                "label_usage": "none",
+                "counts_sha256": frequency_metadata["counts_sha256"],
+                "scalers_and_targets": "outer-training only",
             }
         write_json(run / "metrics.json", metrics)
         write_json(run / "status.json", {"status": "complete"})

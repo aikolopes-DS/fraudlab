@@ -530,6 +530,13 @@ def fit_predict(
             from .pooled import manifest
 
             result[2]["pooled_tokens"] = manifest(random_state=seed)
+        if config.get("glm_transductive_frequency"):
+            result[2]["transductive_frequency"] = config.get("transductive_frequency")
+            result[2]["preprocessing"] = (
+                "Numeric scaling and target statistics use outer training only; category counts "
+                "use official train+test features without labels. The same cross-fitted matrix "
+                "fits GLM and residual trees; inference sums their margins."
+            )
         return result
     if name == "catboost":
         return fit_catboost(
@@ -773,11 +780,30 @@ def make_glm_pipeline(
     if config.get("glm_frequency"):
         from .frequency import FrequencyEncoder
 
+        if (
+            config.get("glm_transductive_frequency")
+            and config.get("_frequency_reference") is None
+        ):
+            raise ValueError("Transductive frequency needs runtime reference counts.")
+        if config.get("_frequency_reference") is not None and not config.get(
+            "glm_transductive_frequency"
+        ):
+            raise ValueError(
+                "Reference counts require the transductive frequency flag."
+            )
         preprocessing.transformers.append(
             (
                 "category_frequency",
                 Pipeline(
-                    [("frequency", FrequencyEncoder()), ("scale", StandardScaler())]
+                    [
+                        (
+                            "frequency",
+                            FrequencyEncoder(
+                                reference_counts=config.get("_frequency_reference")
+                            ),
+                        ),
+                        ("scale", StandardScaler()),
+                    ]
                 ),
                 categorical,
             )
@@ -886,7 +912,11 @@ def fit_glm(
             else None
         ),
         "category_frequency": (
-            "log1p counts fitted on outer training rows only"
+            (
+                "log1p official train+test feature counts, no labels; outer-training scale only"
+                if config.get("glm_transductive_frequency")
+                else "log1p counts fitted on outer training rows only"
+            )
             if config.get("glm_frequency")
             else None
         ),
@@ -918,6 +948,8 @@ def fit_glm(
         from .pooled import manifest
 
         details["pooled_tokens"] = manifest(random_state=seed)
+    if config.get("glm_transductive_frequency"):
+        details["transductive_frequency"] = config.get("transductive_frequency")
     return (
         model.predict_proba(validation)[:, 1],
         model.predict_proba(test)[:, 1],

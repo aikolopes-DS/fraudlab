@@ -13,6 +13,8 @@ from importlib.metadata import version
 import numpy as np
 import pandas as pd
 
+from .strings import categorical_strings
+
 COLUMNS = ("amount_usd", "account_balance_usd")
 SUFFIXES = ("__gpt2_first_key", "__gpt2_second_key", "__gpt2_second_cents_key")
 TOKENIZER_VERSION = "0.14.0"
@@ -74,10 +76,10 @@ def bpe_keys(
         second = np.asarray(
             [row[1] if len(row) > 1 else -1 for row in tokens], dtype=np.int32
         )[inverse]
-        result[name + SUFFIXES[0]] = first.astype(str)
-        result[name + SUFFIXES[1]] = second.astype(str)
-        result[name + SUFFIXES[2]] = np.char.add(
-            np.char.add(second.astype(str), ":"), (cents % 100).astype(str)
+        result[name + SUFFIXES[0]] = categorical_strings(first)
+        result[name + SUFFIXES[1]] = categorical_strings(second)
+        result[name + SUFFIXES[2]] = categorical_strings(
+            np.char.add(np.char.add(second.astype(str), ":"), (cents % 100).astype(str))
         )
     return result
 

@@ -68,6 +68,7 @@ def parser() -> argparse.ArgumentParser:
             "paired_digits",
             "bpe_digits",
             "token_digits",
+            "joint_bpe",
         ),
         default="raw",
     )
@@ -121,6 +122,11 @@ def parser() -> argparse.ArgumentParser:
         "--glm-frequency",
         action="store_true",
         help="Add training-fold log category counts to GLM/offset inputs.",
+    )
+    training.add_argument(
+        "--glm-transductive-frequency",
+        action="store_true",
+        help="Use label-free official train+test category counts; exploratory CV only.",
     )
     training.add_argument(
         "--glm-pooled-tokens",
@@ -281,6 +287,10 @@ def validate_training_config(config: dict) -> None:
         raise ValueError(
             "glm_frequency is supported only for GLM/offset/neural_offset."
         )
+    if config.get("glm_transductive_frequency"):
+        from .transductive import validate_config
+
+        validate_config(config)
     if config.get("glm_pooled_tokens"):
         if config["model"] not in glm_models or inner_folds != 5:
             raise ValueError(

@@ -1,0 +1,152 @@
+{
+  "status": "passed",
+  "scope": "1024 actual train rows and1024 actual test rows, all seven pre-existing views; no competition fitting, scoring or full-data equivalence claim",
+  "legacy_source_commit": "f436de035a0c0cdfcffa2ff22cdb3af5d54860a8",
+  "legacy_sources_sha256": {
+    "features.py": "19267a6999009df5147f90700f541c175d79b27d6ff405e81c92d2f58b9b165e",
+    "bpe.py": "7adce2ce879679de655a040dffdf70ff2f3bfd65bb9458bfdf64eb21dcc08724"
+  },
+  "reviewed_sources_sha256": {
+    "features.py": "184fe327468194f34563b25aee2268348ca854d59e4916f8e3eacdd1b6420424",
+    "bpe.py": "fb71799ca075c657a8344f85d6a7e91653d1f319e24b5e287c17565cea456d4e",
+    "strings.py": "f3248a9c0e7bbda655e29ecac02886dfa4cd4f34f35007ad90cf99a17efccbb0"
+  },
+  "checks": [
+    {
+      "source": "train.csv",
+      "view": "raw",
+      "rows": 1024,
+      "columns": 26,
+      "dataframe_exact": true,
+      "values_hash": "e96b9ae03efae89a095ff7e31272b65af526dcfae930418abb69463a07870142"
+    },
+    {
+      "source": "train.csv",
+      "view": "behavior",
+      "rows": 1024,
+      "columns": 37,
+      "dataframe_exact": true,
+      "values_hash": "010164dee244002c3a35750e8ed6daf7432f035432dee5d8ea9a7ab036667491"
+    },
+    {
+      "source": "train.csv",
+      "view": "digits",
+      "rows": 1024,
+      "columns": 55,
+      "dataframe_exact": true,
+      "values_hash": "8ee57a4704e097e30e9d98d6913262050621a551e7e92afa99c484f2a511f4ee"
+    },
+    {
+      "source": "train.csv",
+      "view": "value_digits",
+      "rows": 1024,
+      "columns": 80,
+      "dataframe_exact": true,
+      "values_hash": "8b88d51369ceffab064f31bbe67067897779a8c6a2f5f26d7570a9668cc2ea34"
+    },
+    {
+      "source": "train.csv",
+      "view": "paired_digits",
+      "rows": 1024,
+      "columns": 84,
+      "dataframe_exact": true,
+      "values_hash": "7382ab9119ff893302a51b5c54ffd382cc51d3aa0236bb4eba2c31fa2e80470a"
+    },
+    {
+      "source": "train.csv",
+      "view": "bpe_digits",
+      "rows": 1024,
+      "columns": 86,
+      "dataframe_exact": true,
+      "values_hash": "246467d14233d65e961634a1a22f507f45a93653e9866b84a0fcc624fc82e7d5"
+    },
+    {
+      "source": "train.csv",
+      "view": "token_digits",
+      "rows": 1024,
+      "columns": 122,
+      "dataframe_exact": true,
+      "values_hash": "3b16d17dd6f31788b9e48932f4d73c77d842cd235ddcdbfcbc40cd483ff4a216"
+    },
+    {
+      "source": "test.csv",
+      "view": "raw",
+      "rows": 1024,
+      "columns": 25,
+      "dataframe_exact": true,
+      "values_hash": "65cb1bb007c73907e01c3e24fa856c5871ae81d7d6f4829bc107d8b007c7aa48"
+    },
+    {
+      "source": "test.csv",
+      "view": "behavior",
+      "rows": 1024,
+      "columns": 36,
+      "dataframe_exact": true,
+      "values_hash": "d695776a1b4a9ece43dc12b319c2dada37dd610077077c2c318aa66c35b317dd"
+    },
+    {
+      "source": "test.csv",
+      "view": "digits",
+      "rows": 1024,
+      "columns": 54,
+      "dataframe_exact": true,
+      "values_hash": "8134f7c82c5aa183b24b511692f5d2b879821104e9bf295afef0bd6f2fe89154"
+    },
+    {
+      "source": "test.csv",
+      "view": "value_digits",
+      "rows": 1024,
+      "columns": 79,
+      "dataframe_exact": true,
+      "values_hash": "3f959481b05ca5df5cd4e897218485ce96c5a1f2493d8d831c5395a8dbeed507"
+    },
+    {
+      "source": "test.csv",
+      "view": "paired_digits",
+      "rows": 1024,
+      "columns": 83,
+      "dataframe_exact": true,
+      "values_hash": "d21a51125d3390f545b617fd1de7e47c70d00c619817d46653781f8cbca88f79"
+    },
+    {
+      "source": "test.csv",
+      "view": "bpe_digits",
+      "rows": 1024,
+      "columns": 85,
+      "dataframe_exact": true,
+      "values_hash": "62bf3c4046f15fd7c875292b660d25e64e7e6401cc020faf28b0fbcd3374dfc3"
+    },
+    {
+      "source": "test.csv",
+      "view": "token_digits",
+      "rows": 1024,
+      "columns": 121,
+      "dataframe_exact": true,
+      "values_hash": "dc95e4efc32b17f0c8f595248eb91ea056f328a85a1744efe89323fc2e93d2b2"
+    }
+  ],
+  "rss_measured": false,
+  "new_models_trained": 0,
+  "synthetic_storage_evidence": {
+    "observed_at_utc": "2026-11-17T20:20:50.724015+00:00",
+    "scope": "One synthetic integer-derived column; one million rows,100 distinct eight-digit values. Count actual pointer buffers and distinct Python string objects; excludes temporary arrays, source input, interpreter overhead and process RSS.",
+    "rows": 1000000,
+    "unique_values": 100,
+    "values_exact": true,
+    "legacy": {
+      "array_pointer_buffer_bytes": 8000000,
+      "distinct_python_string_objects": 1000000,
+      "distinct_python_string_object_bytes": 57000000,
+      "buffer_plus_distinct_strings_bytes": 65000000
+    },
+    "shared": {
+      "array_pointer_buffer_bytes": 8000000,
+      "distinct_python_string_objects": 100,
+      "distinct_python_string_object_bytes": 5700,
+      "buffer_plus_distinct_strings_bytes": 8005700
+    },
+    "process_RSS_measured": false,
+    "competition_data_read": false,
+    "competitive_training": false
+  }
+}

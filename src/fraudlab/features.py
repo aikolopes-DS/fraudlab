@@ -5,6 +5,8 @@ from __future__ import annotations
 import numpy as np
 import pandas as pd
 
+from .strings import categorical_strings
+
 CONTINUOUS = (
     "amount_usd",
     "hours_since_last_txn",
@@ -20,6 +22,12 @@ def transform_features(
     feature_set: str = "raw",
     excluded: tuple[str, ...] = ("id", "is_fraud"),
 ) -> pd.DataFrame:
+    if feature_set == "joint_bpe":
+        from .joints import joint_keys
+
+        keys = joint_keys(frame, excluded)
+        base = transform_features(frame, "bpe_digits", excluded)
+        return pd.concat([base, keys], axis=1)
     if feature_set == "token_digits":
         from .tokens import token_keys
 
@@ -63,28 +71,16 @@ def transform_features(
             cents = np.rint(values * 100).astype(np.int64)
             magnitude = np.floor(np.log10(np.maximum(values, 1e-12))).astype(int)
             leading = np.floor(values / np.power(10.0, magnitude)).astype(int)
-            result[name + "__value_key"] = pd.Series(cents, index=result.index).astype(
-                str
-            )
-            result[name + "__cents_key"] = pd.Series(
-                cents % 100, index=result.index
-            ).astype(str)
-            result[name + "__leading_key"] = pd.Series(
-                leading, index=result.index
-            ).astype(str)
+            result[name + "__value_key"] = categorical_strings(cents)
+            result[name + "__cents_key"] = categorical_strings(cents % 100)
+            result[name + "__leading_key"] = categorical_strings(leading)
             if feature_set in ("value_digits", "paired_digits"):
                 leading_two = np.floor(values / np.power(10.0, magnitude - 1)).astype(
                     int
                 )
-                result[name + "__integer_key"] = pd.Series(
-                    cents // 100, index=result.index
-                ).astype(str)
-                result[name + "__tenths_key"] = pd.Series(
-                    cents // 10, index=result.index
-                ).astype(str)
-                result[name + "__leading_two_key"] = pd.Series(
-                    leading_two, index=result.index
-                ).astype(str)
+                result[name + "__integer_key"] = categorical_strings(cents // 100)
+                result[name + "__tenths_key"] = categorical_strings(cents // 10)
+                result[name + "__leading_two_key"] = categorical_strings(leading_two)
         if feature_set in ("value_digits", "paired_digits"):
             for name in frame.select_dtypes(include="number"):
                 if name not in CONTINUOUS and name not in excluded:
