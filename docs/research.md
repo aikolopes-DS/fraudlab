@@ -206,3 +206,43 @@ outro modelo são ajustados no treino externo completo por exatamente `E`
 TabM e 90% da composição `explore5-public25`, mantendo o mesmo critério de
 ganho superior a 0,0001 e melhora em pelo menos quatro folds. Continua sendo
 CV reutilizada para seleção, sem reserva independente.
+
+## Novas hipóteses após a R10 — 17/11/2026
+
+A referência desta etapa é a R10: OOF 0,95149214 e score público 0,95134.
+A R11, com mais árvores residuais, ficou abaixo dela e foi descartada.
+Os planos [R12](../evidence/round12-plan.json), [R13](../evidence/round13-plan.json)
+e [R14](../evidence/round14-plan.json) foram publicados antes dos respectivos
+treinos. Pesos, folds e critérios são fixados no plano; todas as comparações
+serão registradas, inclusive as negativas. A CV continua exploratória.
+
+A R12 testa CatBoost com categorias de valores, dígitos e BPE, usando GPU e
+6.000 árvores fixas. O smoke sintético encontrou e permitiu corrigir o registro
+de `best_iteration=None` quando não há conjunto de avaliação. Esse smoke
+comprova a execução pequena; não mede qualidade nem recursos do treino completo.
+
+A R13 testa 16 taxas hierárquicas de decimais e tokens. Para um token `t`,
+`p_pool=(sum_y+50*p_prior)/(count+50)` agrega campos relacionados;
+`p_field=(sum_y_field+2000*p_pool)/(count_field+2000)` adapta a taxa ao campo;
+a combinação do último token inteiro com a fração usa
+`p_pair=(sum_y_pair+200*p_field)/(count_pair+200)`. Cada linha de treino recebe
+estatísticas de outros quatro quintos do treino interno. O prior também vem
+somente desse subconjunto. Os mapas completos do treino externo são usados
+apenas na inferência. Em termos cotidianos, uma loja nova começa com a taxa da
+rede, ajusta a estimativa com seus próprios clientes e depois aprende grupos
+mais específicos quando reúne exemplos suficientes.
+
+A ideia vem do pooling de megayak, descrito no
+[Part 12 de goodpjw2008, versão 16](https://www.kaggle.com/code/goodpjw2008/s6e11-part-12-wide-stack-2nd-lm-lb-0-95298).
+A implementação é própria. O script externo foi lido, sem execução. Seu
+resultado declarado usa seleção global de pares, contagens de treino+teste e
+early stopping externo; nossos planos excluem esses passos e não tratam aquele
+score como validação do FraudLab. A R14 amplia separadamente a representação
+para tokens do número completo nas seis colunas contínuas, com 42 novas chaves.
+
+O [original público foi auditado](../evidence/original-data-audit.json): 20 mil
+linhas, 339 fraudes e nenhuma sobreposição exata das 24 features entre original,
+treino e teste. O gerador não foi verificado; não há mapeamento de IDs que
+justifique transferir rótulos. Nenhum modelo adicional foi treinado no original
+nesta auditoria. Essa fonte já faz parte da adaptação declarada pelo GPT-2 de
+Masaya usado na composição atual.

@@ -1,0 +1,150 @@
+{
+  "observed_at_utc": "2026-11-17T19:13:28.751161+00:00",
+  "status": "data_audited; no original-only model fitted",
+  "source": {
+    "url": "https://www.kaggle.com/datasets/uditjain13/credit-card-fraud-detection-2026",
+    "reference": "uditjain13/credit-card-fraud-detection-2026/5",
+    "license": "CC0-1.0",
+    "license_and_rules_checked_before_download": true,
+    "checked_at_utc": "2026-11-17T19:06:52.049761+00:00",
+    "downloaded_at_utc": "2026-11-17T19:07:38.769856+00:00"
+  },
+  "rules": {
+    "url": "https://www.kaggle.com/competitions/playground-series-s6e11/rules",
+    "method": "KaggleApi.competition_list_pages(page_name=rules)",
+    "section": "6. EXTERNAL DATA AND TOOLS",
+    "summary": "External data may be used to develop/test submissions if publicly/equally accessible at no cost or satisfying the stated reasonableness criteria. This original is public and CC0."
+  },
+  "files": {
+    "original": {
+      "bytes": 2754040,
+      "sha256": "4e32b1ad4880cae452d1f2e5aa53224d38eb913c185455c00a3759df5eb3da61"
+    },
+    "train": {
+      "bytes": 98533176,
+      "sha256": "87eaa10b8d17a7e4f657b8da1c66242431338bdd8b6ad45861521ac0c0e9fbd5"
+    },
+    "test": {
+      "bytes": 41068069,
+      "sha256": "10f516959020357b565abaaa4fd25baae97fc2f536d0805695bb7cc15c1660f0"
+    }
+  },
+  "datasets": {
+    "original": {
+      "rows": 20000,
+      "columns": 26
+    },
+    "train": {
+      "rows": 699960,
+      "columns": 26
+    },
+    "test": {
+      "rows": 299984,
+      "columns": 25
+    }
+  },
+  "shared_feature_columns": [
+    "amount_usd",
+    "hours_since_last_txn",
+    "txn_count_last_24h",
+    "distance_from_home_km",
+    "card_age_months",
+    "customer_age",
+    "account_balance_usd",
+    "cvv_retry_count",
+    "velocity_score",
+    "time_of_day_hour",
+    "day_of_week",
+    "merchant_risk_score",
+    "prior_disputes",
+    "merchant_category",
+    "card_type",
+    "auth_method",
+    "channel",
+    "device_type",
+    "is_foreign_transaction",
+    "is_new_merchant",
+    "used_vpn",
+    "ip_country_mismatch",
+    "billing_shipping_mismatch",
+    "is_ai_generated_scam_attempt"
+  ],
+  "feature_duplicate_method": "Read all common features with pandas float_precision=round_trip, identical dtypes and competition feature order. Exclude all IDs and labels. Compute pandas row hashes without index, then verify every candidate by exact merge on all 24 columns; report counts only.",
+  "within_dataset_duplicates": {
+    "original": {
+      "duplicate_feature_rows_beyond_first": 0,
+      "rows_in_duplicate_feature_groups": 0
+    },
+    "train": {
+      "duplicate_feature_rows_beyond_first": 0,
+      "rows_in_duplicate_feature_groups": 0
+    },
+    "test": {
+      "duplicate_feature_rows_beyond_first": 0,
+      "rows_in_duplicate_feature_groups": 0
+    }
+  },
+  "feature_overlaps": [
+    {
+      "left": "original",
+      "right": "train",
+      "common_feature_hashes": 0,
+      "left_hash_candidate_rows": 0,
+      "right_hash_candidate_rows": 0,
+      "left_exact_matching_rows": 0,
+      "right_exact_matching_rows": 0,
+      "left_hash_collision_candidates_discarded": 0,
+      "right_hash_collision_candidates_discarded": 0
+    },
+    {
+      "left": "original",
+      "right": "test",
+      "common_feature_hashes": 0,
+      "left_hash_candidate_rows": 0,
+      "right_hash_candidate_rows": 0,
+      "left_exact_matching_rows": 0,
+      "right_exact_matching_rows": 0,
+      "left_hash_collision_candidates_discarded": 0,
+      "right_hash_collision_candidates_discarded": 0
+    },
+    {
+      "left": "train",
+      "right": "test",
+      "common_feature_hashes": 0,
+      "left_hash_candidate_rows": 0,
+      "right_hash_candidate_rows": 0,
+      "left_exact_matching_rows": 0,
+      "right_exact_matching_rows": 0,
+      "left_hash_collision_candidates_discarded": 0,
+      "right_hash_collision_candidates_discarded": 0
+    }
+  ],
+  "identifiers_and_labels": {
+    "original_id_column": "transaction_id",
+    "competition_id_column": "id",
+    "original_has_public_label": true,
+    "original_label_counts": {
+      "0": 19661,
+      "1": 339
+    },
+    "competition_test_label_column_present": false,
+    "numeric_id_value_intersections": {
+      "train": 20000,
+      "test": 0
+    },
+    "all_24_features_equal_at_same_numeric_original_train_id": 0,
+    "id_mapping_established": false,
+    "note": "A numeric overlap between different ID columns is not an established identity mapping. No labels were transferred or looked up for competition test rows; feature overlap counts do not expose row IDs."
+  },
+  "findings": [
+    "No feature-exact duplicate or feature-hash overlap exists among the original, competition train and competition test under the documented canonical parsing.",
+    "No competition-ID identity mapping is established; matching integers in the two differently named ID columns have zero rows equal across all 24 features.",
+    "All competition feature values are within original numeric ranges, but important upper tails are narrower in competition data. This is a distribution difference, not proof of a generator.",
+    "Individual numeric values often recur: original support covers 97.362992 percent of training amounts, 84.832562 percent of balances, 99.562546 percent of hours, and 99.536688 percent of distances.",
+    "There is no original-label lookup opportunity established for complete competition rows. Training on licensed public original labels remains distinct from using unknown competition test labels.",
+    "Current external GPT2 predictions already declare adaptation on this original, so an additional original-only score may be redundant; improvement is unmeasured."
+  ],
+  "training_performed": false,
+  "test_labels_used": false,
+  "generator_verified": false
+}
