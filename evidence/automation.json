@@ -4,97 +4,97 @@
   "purpose": "User-created account used by this project automation; authorized on 2026-11-17.",
   "workflow": {
     "conclusion": "success",
-    "headSha": "3edaeba33923656afb1efca1cf7efc5996c3e39a",
+    "headSha": "53dda3c35b9a851a299a112e64edd87d2a1588a1",
     "jobs": [
       {
-        "completedAt": "2026-11-17T14:23:39Z",
+        "completedAt": "2026-11-17T18:36:21Z",
         "conclusion": "success",
-        "databaseId": 134105594916,
+        "databaseId": 134273151437,
         "name": "check",
-        "startedAt": "2026-11-17T14:22:32Z",
+        "startedAt": "2026-11-17T18:34:53Z",
         "status": "completed",
         "steps": [
           {
-            "completedAt": "2026-11-17T14:22:34Z",
+            "completedAt": "2026-11-17T18:34:57Z",
             "conclusion": "success",
             "name": "Set up job",
             "number": 1,
-            "startedAt": "2026-11-17T14:22:33Z",
+            "startedAt": "2026-11-17T18:34:54Z",
             "status": "completed"
           },
           {
-            "completedAt": "2026-11-17T14:22:35Z",
+            "completedAt": "2026-11-17T18:35:03Z",
             "conclusion": "success",
             "name": "Check out source",
             "number": 2,
-            "startedAt": "2026-11-17T14:22:34Z",
+            "startedAt": "2026-11-17T18:34:57Z",
             "status": "completed"
           },
           {
-            "completedAt": "2026-11-17T14:22:41Z",
+            "completedAt": "2026-11-17T18:35:23Z",
             "conclusion": "success",
             "name": "Set up Python",
             "number": 3,
-            "startedAt": "2026-11-17T14:22:35Z",
+            "startedAt": "2026-11-17T18:35:03Z",
             "status": "completed"
           },
           {
-            "completedAt": "2026-11-17T14:23:22Z",
+            "completedAt": "2026-11-17T18:35:59Z",
             "conclusion": "success",
             "name": "Install dependencies and CPU PyTorch",
             "number": 4,
-            "startedAt": "2026-11-17T14:22:41Z",
+            "startedAt": "2026-11-17T18:35:23Z",
             "status": "completed"
           },
           {
-            "completedAt": "2026-11-17T14:23:35Z",
+            "completedAt": "2026-11-17T18:36:14Z",
             "conclusion": "success",
             "name": "Test contracts and synthetic experiments",
             "number": 5,
-            "startedAt": "2026-11-17T14:23:22Z",
+            "startedAt": "2026-11-17T18:35:59Z",
             "status": "completed"
           },
           {
-            "completedAt": "2026-11-17T14:23:35Z",
+            "completedAt": "2026-11-17T18:36:18Z",
             "conclusion": "success",
             "name": "Validate the public site",
             "number": 6,
-            "startedAt": "2026-11-17T14:23:35Z",
+            "startedAt": "2026-11-17T18:36:14Z",
             "status": "completed"
           },
           {
-            "completedAt": "2026-11-17T14:23:35Z",
+            "completedAt": "2026-11-17T18:36:18Z",
             "conclusion": "success",
             "name": "Post Set up Python",
             "number": 11,
-            "startedAt": "2026-11-17T14:23:35Z",
+            "startedAt": "2026-11-17T18:36:18Z",
             "status": "completed"
           },
           {
-            "completedAt": "2026-11-17T14:23:36Z",
+            "completedAt": "2026-11-17T18:36:18Z",
             "conclusion": "success",
             "name": "Post Check out source",
             "number": 12,
-            "startedAt": "2026-11-17T14:23:35Z",
+            "startedAt": "2026-11-17T18:36:18Z",
             "status": "completed"
           },
           {
-            "completedAt": "2026-11-17T14:23:36Z",
+            "completedAt": "2026-11-17T18:36:18Z",
             "conclusion": "success",
             "name": "Complete job",
             "number": 13,
-            "startedAt": "2026-11-17T14:23:36Z",
+            "startedAt": "2026-11-17T18:36:18Z",
             "status": "completed"
           }
         ],
-        "url": "https://github.com/aikolopes-DS/fraudlab/actions/runs/44102396226/job/134105594916"
+        "url": "https://github.com/aikolopes-DS/fraudlab/actions/runs/44149374948/job/134273151437"
       }
     ],
     "status": "completed",
-    "url": "https://github.com/aikolopes-DS/fraudlab/actions/runs/44102396226",
-    "passed": 156,
-    "subtests_passed": 52,
-    "test_result": "156 passed, 55 warnings, 52 subtests passed"
+    "url": "https://github.com/aikolopes-DS/fraudlab/actions/runs/44149374948",
+    "passed": 172,
+    "subtests_passed": 53,
+    "test_result": "172 passed, 55 warnings, 53 subtests passed"
   },
   "previous_repository": "https://github.com/aikolopes-og/fraudlab",
   "previous_billing_lock": {
@@ -784,6 +784,100 @@
       ],
       "status": "completed",
       "url": "https://github.com/aikolopes-DS/fraudlab/actions/runs/44100416764",
+      "passed": 156,
+      "subtests_passed": 52,
+      "test_result": "156 passed, 55 warnings, 52 subtests passed"
+    },
+    {
+      "conclusion": "success",
+      "headSha": "3edaeba33923656afb1efca1cf7efc5996c3e39a",
+      "jobs": [
+        {
+          "completedAt": "2026-11-17T14:23:39Z",
+          "conclusion": "success",
+          "databaseId": 134105594916,
+          "name": "check",
+          "startedAt": "2026-11-17T14:22:32Z",
+          "status": "completed",
+          "steps": [
+            {
+              "completedAt": "2026-11-17T14:22:34Z",
+              "conclusion": "success",
+              "name": "Set up job",
+              "number": 1,
+              "startedAt": "2026-11-17T14:22:33Z",
+              "status": "completed"
+            },
+            {
+              "completedAt": "2026-11-17T14:22:35Z",
+              "conclusion": "success",
+              "name": "Check out source",
+              "number": 2,
+              "startedAt": "2026-11-17T14:22:34Z",
+              "status": "completed"
+            },
+            {
+              "completedAt": "2026-11-17T14:22:41Z",
+              "conclusion": "success",
+              "name": "Set up Python",
+              "number": 3,
+              "startedAt": "2026-11-17T14:22:35Z",
+              "status": "completed"
+            },
+            {
+              "completedAt": "2026-11-17T14:23:22Z",
+              "conclusion": "success",
+              "name": "Install dependencies and CPU PyTorch",
+              "number": 4,
+              "startedAt": "2026-11-17T14:22:41Z",
+              "status": "completed"
+            },
+            {
+              "completedAt": "2026-11-17T14:23:35Z",
+              "conclusion": "success",
+              "name": "Test contracts and synthetic experiments",
+              "number": 5,
+              "startedAt": "2026-11-17T14:23:22Z",
+              "status": "completed"
+            },
+            {
+              "completedAt": "2026-11-17T14:23:35Z",
+              "conclusion": "success",
+              "name": "Validate the public site",
+              "number": 6,
+              "startedAt": "2026-11-17T14:23:35Z",
+              "status": "completed"
+            },
+            {
+              "completedAt": "2026-11-17T14:23:35Z",
+              "conclusion": "success",
+              "name": "Post Set up Python",
+              "number": 11,
+              "startedAt": "2026-11-17T14:23:35Z",
+              "status": "completed"
+            },
+            {
+              "completedAt": "2026-11-17T14:23:36Z",
+              "conclusion": "success",
+              "name": "Post Check out source",
+              "number": 12,
+              "startedAt": "2026-11-17T14:23:35Z",
+              "status": "completed"
+            },
+            {
+              "completedAt": "2026-11-17T14:23:36Z",
+              "conclusion": "success",
+              "name": "Complete job",
+              "number": 13,
+              "startedAt": "2026-11-17T14:23:36Z",
+              "status": "completed"
+            }
+          ],
+          "url": "https://github.com/aikolopes-DS/fraudlab/actions/runs/44102396226/job/134105594916"
+        }
+      ],
+      "status": "completed",
+      "url": "https://github.com/aikolopes-DS/fraudlab/actions/runs/44102396226",
       "passed": 156,
       "subtests_passed": 52,
       "test_result": "156 passed, 55 warnings, 52 subtests passed"

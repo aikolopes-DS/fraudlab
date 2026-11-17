@@ -4,14 +4,14 @@ O conteúdo liga os experimentos executados à participação documentada no Kag
 Não há limite fixo de duração. Cada slide técnico é seguido imediatamente por uma
 explicação simples com exemplo cotidiano; essa sequência é verificada no build.
 
-A [versão publicada v0.2](https://github.com/aikolopes-DS/fraudlab/releases/tag/v0.2.0)
-tem **134 slides, 51min23s e 693 legendas**, com [player e slides](https://aikolopes-fraudlab.aikol9pes.chatgpt.site).
+A [apresentação v0.3](https://github.com/aikolopes-DS/fraudlab/releases/tag/v0.3.0)
+tem **139 slides, 54min51s e 738 legendas**, com [player e slides](https://aikolopes-fraudlab.aikol9pes.chatgpt.site).
 Ela explica a R10: 56,25% offset com BPE e frequência, 18,75% LightGBM e 25% GPT-2
 público v2; inclui as MLPs e a TabM próprias como comparações. O snapshot é a
-submissão **58470267**, score **0,95134**, posição **712/2.089** em
-**17/11/2026 às 13h34 UTC**. A [prova audiovisual](../evidence/media.json) registra
-decodificação e ASR integrais e inspeção dos 134 quadros, sem declarar escuta
-humana ou reprodução contínua integral. A v0.1 permanece histórica.
+submissão **58470267**, score **0,95134**, posição **723/2.112** em
+**17/11/2026 às 18h24 UTC**. A [prova audiovisual](../evidence/media.json) registra
+decodificação e ASR integrais e inspeção dos 139 quadros, sem declarar escuta
+humana ou reprodução contínua integral. As versões v0.1 e v0.2 permanecem históricas.
 
 ## Gerar
 
@@ -39,7 +39,7 @@ foreach ($fraudRun in $fraudComparisons) {
 python -m presentation.build --evidence evidence/public.json `
   --metrics artifacts/runs/round10-offset-bpe-frequency-public25/metrics.json `
   @fraudPresentationArgs --historical-holdout artifacts/holdout/evaluation.json `
-  --output artifacts/presentation-v02 --video
+  --output artifacts/presentation-v03 --video
 ```
 
 `--comparison` pode ser repetido para incluir outras execuções. O build exige
@@ -55,7 +55,7 @@ no [resultado R10](../evidence/round10-results.json). A R9 permanece uma exceç�
 de avaliação pública declarada; a R11 foi rejeitada e não integra este vídeo.
 
 Para regenerar com o mesmo snapshot de evidências publicado, extraia `evidence-snapshot.json`
-do ZIP v0.2 e use esse arquivo em `--evidence`. O arquivo `evidence/public.json`
+do ZIP v0.3 e use esse arquivo em `--evidence`. O arquivo `evidence/public.json`
 pode registrar consultas posteriores. Omitir `--historical-holdout` é permitido
 quando o relatório antigo não estiver disponível; ele não é exigido como uma
 reserva independente da R10. Artefatos e checkpoints locais não vêm no clone.
@@ -146,7 +146,7 @@ invalida aquele trecho. Isso evita repetir a narração inteira após falha de r
 ## Revisar o vídeo exportado
 
 ```powershell
-python -m presentation.review --presentation-dir artifacts/presentation-v02 --asr --asr-model base --device cpu
+python -m presentation.review --presentation-dir artifacts/presentation-v03 --asr --asr-model base --device cpu
 ```
 
 O comando confere hashes, codec, resolução, duração, continuidade dos slides e

@@ -128,7 +128,7 @@ A R10 observada é a submissão **58470267**, score **0,95134**, posição **712
 
 ## Apresentação, vídeo e site
 
-A versão publicada de referência continua sendo a [v0.2](https://github.com/aikolopes-DS/fraudlab/releases/tag/v0.2.0), com 134 slides e 51min23s. Uma nova geração em implementação só deve substituir esse estado depois de revisão e publicação verificadas.
+A apresentação revisada [v0.3](https://github.com/aikolopes-DS/fraudlab/releases/tag/v0.3.0) tem 139 slides e 54min51s. Ela inclui a proposta inicial, one-hot e a operação interna da TabM. A validação audiovisual e a publicação têm registros próprios em `evidence/media.json` e `evidence/publication.json`.
 
 Com evidências correspondentes à submissão, as métricas híbridas e a comparação MLP histórica disponíveis:
 
@@ -136,9 +136,9 @@ Com evidências correspondentes à submissão, as métricas híbridas e a compar
 $fraudComparisons = @("round10-offset-bpe-frequency", "round9-glm-bpe-frequency", "round9-bpe-frequency-public25", "explore5-glm", "explore5-lgbm", "explore5-public-gpt2-v2", "explore5-public25", "round8-tabm", "round8-tabm10", "dev-mlp-te-values", "dev-logistic-raw", "dev-mlp-standard-raw", "dev-mlp-quantile-raw", "dev-lgbm-leaf4-raw", "dev-lgbm-leaf4-digits")
 $fraudPresentationArgs = @()
 foreach ($fraudRun in $fraudComparisons) { $fraudPresentationArgs += @("--comparison", "artifacts/runs/$fraudRun/metrics.json") }
-python -m presentation.build --evidence evidence/public.json --metrics artifacts/runs/round10-offset-bpe-frequency-public25/metrics.json @fraudPresentationArgs --historical-holdout artifacts/holdout/evaluation.json --output artifacts/presentation-v02 --video
-python -m presentation.review --presentation-dir artifacts/presentation-v02 --asr
-python site/build.py --run-dir artifacts/runs/round10-offset-bpe-frequency-public25 --presentation-dir artifacts/presentation-v02
+python -m presentation.build --evidence evidence/public.json --metrics artifacts/runs/round10-offset-bpe-frequency-public25/metrics.json @fraudPresentationArgs --historical-holdout artifacts/holdout/evaluation.json --output artifacts/presentation-v03 --video
+python -m presentation.review --presentation-dir artifacts/presentation-v03 --asr
+python site/build.py --run-dir artifacts/runs/round10-offset-bpe-frequency-public25 --presentation-dir artifacts/presentation-v03
 python -m http.server 8000 --directory site/dist
 ```
 
@@ -161,7 +161,7 @@ O site estático é montado em `site/dist/`, com evidência pública e arquivos 
 O mirror da hospedagem Sites limita cada arquivo a 32 MiB. Para usar o vídeo publicado na release GitHub e manter slides/legendas no site:
 
 ```powershell
-python site/build.py --run-dir artifacts/runs/round10-offset-bpe-frequency-public25 --presentation-dir artifacts/presentation-v02 --video-url https://github.com/aikolopes-DS/fraudlab/releases/download/v0.2.0/video.mp4
+python site/build.py --run-dir artifacts/runs/round10-offset-bpe-frequency-public25 --presentation-dir artifacts/presentation-v03 --video-url https://github.com/aikolopes-DS/fraudlab/releases/download/v0.3.0/video.mp4
 ```
 
 O build ainda confere o hash do MP4 local, registra o hash e a URL externa no manifesto público e exclui o binário de `site/dist/`. A igualdade dos bytes publicados e a reprodução anônima precisam ser verificadas após o upload.

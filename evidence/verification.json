@@ -1,31 +1,32 @@
 {
-  "observed_at": "2026-11-17T14:29:06.007030+00:00",
+  "observed_at": "2026-11-17T18:38:18.717134+00:00",
   "scope": "Local software integration, published notebook comparison and real read-only Kaggle verification; GitHub-hosted CI recorded separately; no claim of competition victory",
   "software": {
-    "source_commit": "3edaeba33923656afb1efca1cf7efc5996c3e39a",
-    "test_command": "python -m pytest tests presentation site/test_build.py -q --junitxml=.local/research/presentation-v02/tests.xml",
-    "passed": 156,
-    "subtests_passed": 52,
-    "test_report_sha256": "4d58d211c57c46d2a819df98e8a2a80c68d333d99a61aad07a029c8ef23e24dd",
+    "source_commit": "53dda3c35b9a851a299a112e64edd87d2a1588a1",
+    "passed": 172,
+    "subtests_passed": 53,
+    "test_command": "python -m pytest tests presentation site/test_build.py -q --junitxml=.local/research/aed-final/tests.xml",
+    "test_report_sha256": "69b251e3b95b9e8b20d3d8d972c6591954effbf4af6b282121f247b8902c34c6",
     "node_syntax_check": "passed",
     "tested_source_sha256": {
       "presentation/__init__.py": "eddcf4aa526255f1716fab49b85e12e9b30eae4b46c14752e96f880739fa8ee4",
       "presentation/audio_cache.py": "937bc91b4ca1f56601f0edb9f94939091983a638a007dd84c58e717aa217d8ea",
       "presentation/build.py": "41c056f093b67d4b92e9dc92c0cb55c23ec4ccf58aa834d08eae371397d1d3d3",
-      "presentation/content.py": "e29dd79f4040d56cf048f4ea0bc6fa30a7091c73eaf1eeab254d495be63a34f7",
-      "presentation/continuation.py": "0ebda100af659d0693675809ca3d2db8381479f47479bf2891962dd882df4cfe",
+      "presentation/content.py": "444935f8b532eb78c41d74d7ab096c5e638d61717808e7329837a6a876cb25b0",
+      "presentation/continuation.py": "c10ac1615a8c01427ce7e7237ec7e11b22b8366285c527dd5d35563f82af1dd1",
       "presentation/external.py": "aee5ae1868f1f308bef043104ab71a43b062795d19f4c80c973eb5e82a3eca9a",
       "presentation/review.py": "1231c9b84f1fb40b988453185de1a3d00ea83298d49d2b6e96359336865d85fb",
-      "presentation/test_continuation.py": "49c926f92531f32cd12f850242414956b8f44b574ea4ae1006bb0d36438edc54",
+      "presentation/test_continuation.py": "a4cf4646c35a4c6a6dcc1afd9701fc7717ce2347384c4150f4afa5d3a6f81d6f",
       "presentation/test_presentation.py": "436d75ea75fd0394275274c011c1929ac9c9edf22fa2a686c361cf2d5f7abfdc",
       "presentation/test_review.py": "aa39de53d548395ba15cf765e81d0db9119422395c585302ba3d696f90cfedb7",
       "pyproject.toml": "0a585ebabb35661d195d4eda1dcf28f515cb53b130515573480820875db531cc",
       "scripts/compose_refit_hybrid.py": "b8f4dc258d454d5d9effd49bfa937e6020b054cafa6295b02a38ef4fe499b268",
       "scripts/export_metrics.py": "3ae3e85e730e313e1bfab247630820d0b1555b63682f642607142a56c8559ed6",
       "scripts/kaggle_notebook.py": "e84a1e09f68a5085674a4300c891be108b99d91b85cb4749286100bbc3a1b579",
+      "scripts/package_delivery.py": "0c67d0bf2be8c11fc843e068524b056d0f652712bf043820fc5b08053183608b",
       "scripts/record_submission.py": "9d84ef5270087a2140c775cc7c1b3a066e0e9742bda2cf5478b5e79a0af3b173",
       "site/app.js": "fabd14ce7205676caf52e60ae5827d5333f4c4b9e300a52fdbd81403fc08bceb",
-      "site/build.py": "34df44fabd0082635698ce3cbe3125ddc26cd775825e881d0ef92b2bf3db8c43",
+      "site/build.py": "4b07ff4f0d53be9a2fdaf432cb9f83fc0694e0ce0bce81cebecb18fa5358fd95",
       "site/check_browser.py": "73f2c4e6b69b3cc7000d40f538fe3201fcc684761f38d8e0c015287b6313b7c3",
       "site/test_build.py": "4efd586a907652911f3d01341c74a5b8e2e74480d686010cb6ce4bc5642ce92f",
       "src/fraudlab/__init__.py": "14479eff95a0233e8bf2d9f359843c36f53f36b92cc95c3e452f75bfb2982dcc",
@@ -50,16 +51,12 @@
       "tests/test_frequency.py": "943051d264f00415c88f25b08dc6e52738799841fe9c1dc889d5b7e8df374ecb",
       "tests/test_glm_encoding.py": "ba4e681e57c96d238af0f62dbcad04599bebe818524ad8b9a37291099a2821a5",
       "tests/test_offset.py": "9a6e89cca96403095367e70b8300973384552625e69b15a61b36304e806606ca",
+      "tests/test_package_delivery.py": "14165ff4be5d81de755d4777db1d49f45c3ccf629d3f3ce745b315c58b98efe8",
       "tests/test_pairs.py": "51a2b532b64abe83d64de363a0a9000c82fce28f44f8c5cb26be14a27671feee",
       "tests/test_record_submission.py": "4137d8db2e5cd0eb80405f676fac1e5e3d96d4a45de0654af7fe913390e09362",
       "tests/test_sparse_glm.py": "44d67dc1561c4402dd595dcfa196e668b0446a19035661fae3e980e79cdc1235",
       "tests/test_splines.py": "d5b247a3501bfcaaca501e6c8ea44080482a8bac33c918db1d5e6045b19aeaed",
       "tests/test_tabm.py": "42c5881f43c55c9bd07bf8aa0d6228bce9a2da64f9120dc2b6c2ef1cf91f65e7"
-    },
-    "secret_scan": {
-      "scope": "Repository candidates; high-confidence patterns, not an exhaustive security audit",
-      "files_checked": 104,
-      "findings": []
     },
     "published_notebook": {
       "checked_at_utc": "2026-11-17T14:13:45.814953+00:00",
@@ -107,6 +104,11 @@
         "normalized_all_cells_remote_sha256": "deddc2939d05a7536d989566744ef2721277ed946d43f9881afb34e384f99079"
       },
       "scope": "Published an unexecuted notebook update and verified source/config through official Kaggle services. No cloud training, cloud predictions or cloud submission were executed."
+    },
+    "secret_scan": {
+      "scope": "Tracked public files, high-confidence patterns; not an exhaustive security audit",
+      "files_checked": 107,
+      "findings": []
     }
   },
   "kaggle_recorder_real_service_check": {
@@ -133,18 +135,28 @@
       "Hash timeline.json before audiovisual review",
       "Encode video into an exclusive temporary file, validate, then atomically replace"
     ],
-    "scope": "Training protocol, public source attribution, notebook generation, submission recorder, presentation export/review and site evidence boundaries"
+    "scope": "Training protocol, public source attribution, notebook generation, submission recorder, presentation export/review and site evidence boundaries",
+    "aed_final_complement": {
+      "scope": "Proposal ordering, one-hot and TabM architecture explanations, MLP preprocessing association, and delivery packaging",
+      "reviewed_by": [
+        "root",
+        "apresentacao",
+        "sparse_glm",
+        "tabm_model"
+      ],
+      "remaining_material_findings": [],
+      "packaging_tests_use_fabricated_media": true
+    }
   },
   "ci_remote": {
     "status": "passed",
-    "source_commit": "3edaeba33923656afb1efca1cf7efc5996c3e39a",
-    "source": "https://github.com/aikolopes-DS/fraudlab/actions/runs/44102396226",
+    "source_commit": "53dda3c35b9a851a299a112e64edd87d2a1588a1",
+    "source": "https://github.com/aikolopes-DS/fraudlab/actions/runs/44149374948",
     "check_run_ids": [
-      134105594916
+      134273151437
     ],
-    "passed": 156,
-    "subtests_passed": 52,
-    "evidence": "evidence/automation.json",
+    "passed": 172,
+    "subtests_passed": 53,
     "verified_on": "2026-11-17"
   },
   "audiovisual_verification": {
@@ -846,6 +858,114 @@
         "url": "https://www.kaggle.com/code/aikoog/fraudlab-reproducible-neural-fraud-detection/versions/3"
       },
       "source_commit": "c834602a4ba7c19961fe8955f06d760d05566116"
+    },
+    {
+      "source_commit": "3edaeba33923656afb1efca1cf7efc5996c3e39a",
+      "test_command": "python -m pytest tests presentation site/test_build.py -q --junitxml=.local/research/presentation-v02/tests.xml",
+      "passed": 156,
+      "subtests_passed": 52,
+      "test_report_sha256": "4d58d211c57c46d2a819df98e8a2a80c68d333d99a61aad07a029c8ef23e24dd",
+      "node_syntax_check": "passed",
+      "tested_source_sha256": {
+        "presentation/__init__.py": "eddcf4aa526255f1716fab49b85e12e9b30eae4b46c14752e96f880739fa8ee4",
+        "presentation/audio_cache.py": "937bc91b4ca1f56601f0edb9f94939091983a638a007dd84c58e717aa217d8ea",
+        "presentation/build.py": "41c056f093b67d4b92e9dc92c0cb55c23ec4ccf58aa834d08eae371397d1d3d3",
+        "presentation/content.py": "e29dd79f4040d56cf048f4ea0bc6fa30a7091c73eaf1eeab254d495be63a34f7",
+        "presentation/continuation.py": "0ebda100af659d0693675809ca3d2db8381479f47479bf2891962dd882df4cfe",
+        "presentation/external.py": "aee5ae1868f1f308bef043104ab71a43b062795d19f4c80c973eb5e82a3eca9a",
+        "presentation/review.py": "1231c9b84f1fb40b988453185de1a3d00ea83298d49d2b6e96359336865d85fb",
+        "presentation/test_continuation.py": "49c926f92531f32cd12f850242414956b8f44b574ea4ae1006bb0d36438edc54",
+        "presentation/test_presentation.py": "436d75ea75fd0394275274c011c1929ac9c9edf22fa2a686c361cf2d5f7abfdc",
+        "presentation/test_review.py": "aa39de53d548395ba15cf765e81d0db9119422395c585302ba3d696f90cfedb7",
+        "pyproject.toml": "0a585ebabb35661d195d4eda1dcf28f515cb53b130515573480820875db531cc",
+        "scripts/compose_refit_hybrid.py": "b8f4dc258d454d5d9effd49bfa937e6020b054cafa6295b02a38ef4fe499b268",
+        "scripts/export_metrics.py": "3ae3e85e730e313e1bfab247630820d0b1555b63682f642607142a56c8559ed6",
+        "scripts/kaggle_notebook.py": "e84a1e09f68a5085674a4300c891be108b99d91b85cb4749286100bbc3a1b579",
+        "scripts/record_submission.py": "9d84ef5270087a2140c775cc7c1b3a066e0e9742bda2cf5478b5e79a0af3b173",
+        "site/app.js": "fabd14ce7205676caf52e60ae5827d5333f4c4b9e300a52fdbd81403fc08bceb",
+        "site/build.py": "34df44fabd0082635698ce3cbe3125ddc26cd775825e881d0ef92b2bf3db8c43",
+        "site/check_browser.py": "73f2c4e6b69b3cc7000d40f538fe3201fcc684761f38d8e0c015287b6313b7c3",
+        "site/test_build.py": "4efd586a907652911f3d01341c74a5b8e2e74480d686010cb6ce4bc5642ce92f",
+        "src/fraudlab/__init__.py": "14479eff95a0233e8bf2d9f359843c36f53f36b92cc95c3e452f75bfb2982dcc",
+        "src/fraudlab/__main__.py": "1c5b2de2f4bab780c373271484a0d16af8c815714ad09af14e5396981a00bc21",
+        "src/fraudlab/bpe.py": "7adce2ce879679de655a040dffdf70ff2f3bfd65bb9458bfdf64eb21dcc08724",
+        "src/fraudlab/data.py": "f22355cc51fa6e6162b24e639923f40a11a23af00afcb65553090176271c8326",
+        "src/fraudlab/experiment.py": "9477892179c938c43d2cd996cc36b5ecbe31de084650822a92530bda79a3679c",
+        "src/fraudlab/external.py": "05ec4ec64e4a2c5cf1137c949646bed14fe83fb04506b8f2f973c2c7633c5e08",
+        "src/fraudlab/features.py": "3eaefb1484bc2b0d6b8d9a8ccdfcbfed7d0528e012308780a18fba4d0a8997b3",
+        "src/fraudlab/frequency.py": "6831c52335d82b7d6570ea2ba4cfd70ac5b6196406bc1a702f2740fe6cc257ff",
+        "src/fraudlab/holdout.py": "e3702891766326710c3b56dd7a7fe69f2f778acea3316665f130aa6955e2f4e3",
+        "src/fraudlab/models.py": "a62f2a1d2ae255141b6e5682333196164b0c27306196c6a6982dbe4ac0ca33ef",
+        "src/fraudlab/offset.py": "a4ea551e4ddf89aedc87f313eb07425aebc60f7d967986524a873a73565fdc4f",
+        "src/fraudlab/refit.py": "b50d1ca94ca4379a8a78a82e5a085adfb8c54860854572dfae08e9514a58420e",
+        "src/fraudlab/splits.py": "41215280332984010f5b616bbf6a675c623b7af3e3f00604eb3238e79c709af9",
+        "src/fraudlab/tabm.py": "df22ff1a120c8a6fde59052ea7a1b509ff1b7e7acc83d774f670a1daf4a4e667",
+        "tests/test_bpe.py": "282cc43053c91c1af15bd03fdd27bf35bd2da3b3f4982fcadc510998caff15c4",
+        "tests/test_compose_refit_hybrid.py": "bb67c3a4554299a0290866c8e7b3541bf08640275024d6e6bc51d6ae04c5ea8b",
+        "tests/test_contracts.py": "a8683e8946e0556f6115fc647e4c4e0ad57b382510f881d54453c3987714e717",
+        "tests/test_experiments.py": "12a6e99503901ba16951449723f942955414405648136e908e18141307d87d59",
+        "tests/test_external.py": "98f51f904ed51a6d3bb0ad385c46b28a2f5e49c842651e74fbfeb4516064a25d",
+        "tests/test_frequency.py": "943051d264f00415c88f25b08dc6e52738799841fe9c1dc889d5b7e8df374ecb",
+        "tests/test_glm_encoding.py": "ba4e681e57c96d238af0f62dbcad04599bebe818524ad8b9a37291099a2821a5",
+        "tests/test_offset.py": "9a6e89cca96403095367e70b8300973384552625e69b15a61b36304e806606ca",
+        "tests/test_pairs.py": "51a2b532b64abe83d64de363a0a9000c82fce28f44f8c5cb26be14a27671feee",
+        "tests/test_record_submission.py": "4137d8db2e5cd0eb80405f676fac1e5e3d96d4a45de0654af7fe913390e09362",
+        "tests/test_sparse_glm.py": "44d67dc1561c4402dd595dcfa196e668b0446a19035661fae3e980e79cdc1235",
+        "tests/test_splines.py": "d5b247a3501bfcaaca501e6c8ea44080482a8bac33c918db1d5e6045b19aeaed",
+        "tests/test_tabm.py": "42c5881f43c55c9bd07bf8aa0d6228bce9a2da64f9120dc2b6c2ef1cf91f65e7"
+      },
+      "secret_scan": {
+        "scope": "Repository candidates; high-confidence patterns, not an exhaustive security audit",
+        "files_checked": 104,
+        "findings": []
+      },
+      "published_notebook": {
+        "checked_at_utc": "2026-11-17T14:13:45.814953+00:00",
+        "url": "https://www.kaggle.com/code/aikoog/fraudlab-reproducible-neural-fraud-detection",
+        "version": 5,
+        "version_api_ref": "aikoog/fraudlab-reproducible-neural-fraud-detection/5",
+        "saved_without_running": true,
+        "push_result": "Kernel version 5 successfully saved without running.",
+        "published_source_commit": "bb60270",
+        "linked_ml_source_commit": "169f3ee5cdfbb2afe16c942a7af0efb8b12a403f",
+        "checks": {
+          "version_confirmed_by_official_get_kernel": true,
+          "all_cell_types_sources_execution_counts_outputs_equal": true,
+          "cells_compared": 22,
+          "code_cells_compared": 15,
+          "all_execution_counts_null": true,
+          "all_outputs_empty": true,
+          "official_version_pull_matches_local": true,
+          "official_get_kernel_source_matches_local": true,
+          "competition_sources_match": true,
+          "dataset_sources_match_after_api_version_normalization": true,
+          "internet_disabled": true,
+          "gpu_disabled": true,
+          "public_notebook": true
+        },
+        "input_config": {
+          "local_dataset_sources": [
+            "masayakawamata/s6e11-gpt2-target-first-oof/2"
+          ],
+          "remote_dataset_sources": [
+            "masayakawamata/s6e11-gpt2-target-first-oof"
+          ],
+          "competition_sources": [
+            "playground-series-s6e11"
+          ],
+          "enable_internet": false,
+          "dataset_version_note": "Official pull metadata returns the dataset slug without /2. Local push requested version2; unchanged notebook importer retains v2 and its pinned byte hashes. No cloud input execution or mounted bytes were checked."
+        },
+        "hashes": {
+          "local_notebook_sha256": "e4100ebdc7842afa1662e30b668fe44b18e128a260cfb690684f4e119000b52d",
+          "remote_pulled_notebook_sha256": "a1a3523f236a91f04f0d9177922394b71b385203786f3b1c41ecee4b0d2e5bdd",
+          "local_config_sha256": "3727cc3c8ec59a6521f8f8a21a6c21fa5b622f08c3c1bc0ca4ce023266ff01d4",
+          "remote_metadata_sha256": "c37215a3e1d6048ca4f58c42f8d97edf1d2ef9d477ea8c2516dfcd65fab024fa",
+          "normalized_all_cells_local_sha256": "deddc2939d05a7536d989566744ef2721277ed946d43f9881afb34e384f99079",
+          "normalized_all_cells_remote_sha256": "deddc2939d05a7536d989566744ef2721277ed946d43f9881afb34e384f99079"
+        },
+        "scope": "Published an unexecuted notebook update and verified source/config through official Kaggle services. No cloud training, cloud predictions or cloud submission were executed."
+      }
     }
   ],
   "competitive_extension": {
@@ -854,5 +974,6 @@
     "current_public": "evidence/round10-public.json",
     "independent_holdout": false,
     "first_positions_reached": false
-  }
+  },
+  "aed_service_audit": "evidence/aed-services.json"
 }
