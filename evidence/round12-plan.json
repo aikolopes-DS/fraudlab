@@ -1,0 +1,34 @@
+{
+  "date": "2026-11-17",
+  "status": "prospective; no competition-data CatBoost BPE fit performed",
+  "reason": "The only prior CatBoost baseline used raw features. Test native categorical statistics and interactions over the current deterministic value/digit/BPE representation, using the existing fixed-training implementation. This is a new model family for these features, rather than a further residual-tree-count sweep.",
+  "baseline_run": "round10-offset-bpe-frequency-public25",
+  "baseline_oof_auc": 0.9514921382152453,
+  "baseline_public_score": 0.95134,
+  "validation": "Exploratory full-data StratifiedKFold(5, shuffle=True, random_state=42), same ordered IDs, labels and folds as R10. No independent holdout. No outer-validation early stopping, target maps fitted globally, public-score tuning or changes during training. CatBoost builds categorical statistics from each outer-training fold only.",
+  "candidate": {
+    "name": "round12-catboost-bpe",
+    "model": "catboost",
+    "phase": "exploratory_full_data_cv",
+    "feature_set": "bpe_digits",
+    "folds": 5,
+    "seed": 42,
+    "holdout_fraction": 0,
+    "fixed_training": true,
+    "iterations": 6000,
+    "depth": 5,
+    "learning_rate": 0.03,
+    "l2_leaf_reg": 5,
+    "threads": 4,
+    "device": "cuda"
+  },
+  "fixed_comparisons": {
+    "space": "probability",
+    "candidate_weights": [0.1, 0.25, 0.5, 0.75, 0.9, 1.0],
+    "remaining_weight": "the frozen R10 hybrid, including its existing external component",
+    "selection": "Report every comparison and choose the highest pooled OOF among eligible weights. This finite selection is exploratory, not independent validation. No additional weights may be added after seeing results."
+  },
+  "promotion_rule": "A mixture must exceed the current R10 pooled OOF by strictly more than0.0001 and improve at least4/5 corresponding folds. If none passes, retain R10 and do not submit this family. At most one submission after independent checks of folds, source/data hashes, checkpoint predictions, blend arithmetic and submission schema. No exception is preauthorized.",
+  "cost": "Five fixed GPU fits on the local RTX4070 Laptop, no paid compute. A small synthetic CUDA smoke may precede training; it does not select parameters using competition labels.",
+  "training_gate": "Publish this plan before fitting. Run an isolated clean worktree at its pinned published commit; record actual runtime, library versions and resolved CatBoost parameters. Abort and record incompatibility rather than silently changing device or configuration."
+}
