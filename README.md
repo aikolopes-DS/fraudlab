@@ -4,7 +4,7 @@ Detecção de fraude em cartão: experimentos reproduzíveis, participação rea
 
 [Baixar a AED v0.4](https://github.com/aikolopes-DS/fraudlab/releases/download/v0.4.0/AED-FraudLab-entrega.zip) · [Estudo de caso e player](https://aikolopes-fraudlab.aikol9pes.chatgpt.site) · [Slides](https://aikolopes-fraudlab.aikol9pes.chatgpt.site/presentation/slides.html) · [Release e hashes](https://github.com/aikolopes-DS/fraudlab/releases/tag/v0.4.0)
 
-Extraia o ZIP e abra `ENTREGA.html`: vídeo, slides, legendas, código, instruções e comprovantes ficam juntos. A v0.4 foi publicada, baixada anonimamente e testada com os arquivos extraídos em desktop e celular. O README incluído no ZIP registra a fonte congelada anterior à publicação; os recibos posteriores estão neste repositório. Não houve envio ao portal da faculdade.
+Extraia o ZIP e abra `ENTREGA.html`: vídeo, slides, legendas, código, instruções e comprovantes ficam juntos. A v0.4 foi publicada, baixada anonimamente e testada com os arquivos extraídos em desktop e celular. O README incluído no ZIP registra a fonte congelada anterior à publicação; os recibos posteriores estão neste repositório. O envio para disputar a competição é feito no Kaggle: a submissão `58490653` foi processada, com score público 0,95183.
 
 [![Checks](https://github.com/aikolopes-DS/fraudlab/actions/workflows/check.yml/badge.svg)](https://github.com/aikolopes-DS/fraudlab/actions/workflows/check.yml)
 
