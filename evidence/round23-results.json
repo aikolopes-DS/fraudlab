@@ -1,0 +1,30 @@
+{
+  "round": 23,
+  "status": "complete_selected",
+  "phase": "full_data_refit",
+  "source_revision": "11b139f77206101d3f5beeb5648fb459f4cd304a",
+  "new_neural_fits": 1,
+  "reused_own_models": 2,
+  "training_rows": 699960,
+  "test_rows": 299984,
+  "neural_ensemble_members": 16,
+  "neural_parameters": 6128752,
+  "selected_epoch": 3,
+  "epoch_selection": "Median[3,2,3,3,3] from audited R22, frozen before full refit",
+  "local_auc": null,
+  "reference_cv_auc": 0.9517074903582017,
+  "reference_cv_run": "round22-realmlp-offset025-public25",
+  "reference_cv_scope": "Historical exploratory source only; no new OOF or independent holdout",
+  "weights": {
+    "offset": 0.421875,
+    "realmlp": 0.140625,
+    "lightgbm": 0.1875,
+    "external_gpt2": 0.25
+  },
+  "elapsed_seconds": 204.90454979997594,
+  "elapsed_scope": "Observed full-data neural fit, inference and checks; not a controlled benchmark",
+  "public_result": "evidence/round23-public.json",
+  "verification": "evidence/round23-verification.json",
+  "full_metrics_sha256": "000cc843935e6c0fbca0cd16fd6535decc2f8565317bbcbb7854053423ace7a0",
+  "preflight_correction": "An import-scope error was corrected and republished before any competitive R23 fit or output was created."
+}

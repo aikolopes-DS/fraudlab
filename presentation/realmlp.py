@@ -1,6 +1,8 @@
 """Conditional RealMLP teaching content from completed, resolved model records."""
 
 import math
+import re
+import statistics
 
 OFFICIAL = "https://github.com/dholzmueller/pytabkit/blob/d232eecd47b127b29da0378423cb475b88fb0e80/"
 
@@ -14,7 +16,9 @@ def resolved_realmlp(runs):
         (
             run
             for run in runs
-            if run.get("status") == "complete" and run.get("model") == "realmlp"
+            if run.get("status") == "complete"
+            and run.get("model") == "realmlp"
+            and run.get("phase") != "full_data_refit"
         ),
         None,
     )
@@ -100,6 +104,166 @@ def resolved_realmlp(runs):
             "RealMLP sem épocas selecionadas e refits concluídos registrados."
         )
     return run, details, parameters, preprocessing, folds
+
+
+def append_realmlp_result(add, runs, evidence, number):
+    record = resolved_realmlp(runs)
+    if record is None:
+        return
+    own, details, p, prep, folds = record
+    own_name = str(own.get("run_name", ""))
+    candidates = [
+        run
+        for run in runs
+        if run.get("status") == "complete"
+        and run.get("model") == "blend"
+        and run.get("phase") != "full_data_refit"
+        and own_name
+        in [
+            str(path).replace("\\", "/").split("/")[-1]
+            for path in run.get("model_details", {}).get("sources", [])
+        ]
+    ]
+    if not own_name or not candidates:
+        return
+    best = max(candidates, key=lambda run: run["roc_auc"])
+    by_name = {str(run.get("run_name", "")): run for run in runs}
+    percentages = []
+    for candidate in candidates:
+        source_names = [
+            str(path).replace("\\", "/").split("/")[-1]
+            for path in candidate["model_details"]["sources"]
+        ]
+        weights = candidate["model_details"]["weights"]
+        neural_weight = weights[source_names.index(own_name)]
+        offset_weight = sum(
+            weight
+            for source, weight in zip(source_names, weights)
+            if by_name.get(source, {}).get("model") == "offset"
+        )
+        if neural_weight + offset_weight <= 0:
+            raise ValueError(
+                "Mistura RealMLP sem parcela própria de offset e rede registrada."
+            )
+        fraction = neural_weight / (neural_weight + offset_weight)
+        percentages.append(fraction * 100)
+    reference = next(
+        (
+            run
+            for run in runs
+            if run.get("run_name") == "round18-pooled-share100-public25"
+        ),
+        None,
+    )
+    delta = (
+        f"; Δ R18 {number(best['roc_auc'] - reference['roc_auc'], 8)}; "
+        f"{sum(a > b for a, b in zip(best['fold_scores'], reference['fold_scores']))}/5 folds"
+        if reference
+        else ""
+    )
+    epochs = [fold["selected_epoch"] for fold in folds]
+    grade = (
+        "Grade fornecida: substituir "
+        + ", ".join(number(value) + "%" for value in sorted(percentages))
+        + " da parcela do offset"
+    )
+    add(
+        "07 / Os experimentos",
+        "R22: execução neural e grade de combinações",
+        [
+            f"RealMLP própria: OOF {number(own['roc_auc'], 8)}; E por fold {epochs}",
+            grade,
+            f"{len(folds)} folds × {p['n_ens']} redes = {len(folds) * p['n_ens']} membros finais de CV; nenhum refit único em todos os rótulos",
+            "A grade preserva as parcelas do LightGBM e do GPT-2 externo",
+        ],
+        f"A RealMLP própria alcançou AUC OOF {number(own['roc_auc'], 8)}. "
+        f"Foram registrados {len(folds)} refits de fold, com {p['n_ens']} membros por fold, "
+        f"totalizando {len(folds) * p['n_ens']} membros finais nesse protocolo de CV. "
+        "Isso não descreve um refit único em todos os rótulos. " + grade + ". "
+        "A grade altera a parte própria do offset e preserva as parcelas do LightGBM e do GPT-2 externo. "
+        + (
+            f"O tempo de parede registrado foi {number(own['elapsed_seconds'], 2)} segundos. "
+            "É uma duração observada dessa execução, sem benchmark controlado de velocidade. "
+            if isinstance(own.get("elapsed_seconds"), (int, float))
+            else ""
+        ),
+    )
+    labels = {
+        "offset": "offset",
+        "realmlp": "RealMLP",
+        "lightgbm": "LightGBM",
+        "external_gpt2": "GPT-2 externo",
+    }
+    best_sources = [
+        str(path).replace("\\", "/").split("/")[-1]
+        for path in best["model_details"]["sources"]
+    ]
+    weights = "; ".join(
+        f"{number(weight * 100, 4)}% {labels.get(by_name.get(source, {}).get('model'), source)}"
+        for source, weight in zip(best_sources, best["model_details"]["weights"])
+    )
+    points = [
+        f"Melhor mistura local: OOF {number(best['roc_auc'], 8)}" + delta,
+        "Pesos efetivos: " + weights,
+        "A validação exploratória reutilizada não é uma nova reserva independente",
+    ]
+    history = next(
+        (
+            item
+            for item in evidence.get("historical_submissions", [])
+            if item.get("run") == best.get("run_name")
+            and item.get("submission_file_verified") is True
+            and isinstance(item.get("submission_sha256"), str)
+            and re.fullmatch(r"[a-f0-9]{64}", item["submission_sha256"])
+            and item["submission_sha256"] == best.get("submission_sha256")
+        ),
+        None,
+    )
+    if history:
+        points.append(
+            f"Envio {history['submission_id']}: AUC pública {number(history['public_auc'], 5)}; "
+            + str(history.get("note", "Resultado vinculado ao seu CSV"))
+        )
+    narration = (
+        ". ".join(points)
+        + ". O ganho é exploratório, medido nos folds reutilizados. "
+        + (
+            "O empate na precisão pública exibida, registrado nessa consulta, não prova melhora "
+            "numa precisão oculta. Não atribuímos posição individual a essa tentativa. "
+            if history and "empate" in str(history.get("note", "")).lower()
+            else ""
+        )
+    )
+    add(
+        "07 / Os experimentos",
+        "R22: ganho local e avaliação pública separados",
+        points,
+        narration,
+    )
+
+
+def full_realmlp_record(selected_members, runs):
+    full = next((run for run in selected_members if run.get("status") == "complete"
+                 and run.get("model") == "realmlp" and run.get("phase") == "full_data_refit"), None)
+    if full is None:
+        return None
+    cv = resolved_realmlp(runs)
+    if cv is None:
+        raise ValueError("Refit RealMLP exige a arquitetura CV própria completa.")
+    _, cv_details, parameters, _, folds = cv
+    epoch = statistics.median(fold["selected_epoch"] for fold in folds)
+    details = full.get("model_details", {})
+    architecture = details.get("architecture", {})
+    if (full.get("roc_auc") is not None or full.get("fold_scores") != [] or full.get("rows", {}).get("oof") != 0
+            or not isinstance(details.get("refit_rows"), int) or details["refit_rows"] <= 0
+            or details["refit_rows"] != full.get("rows", {}).get("train")
+            or details.get("validation_rows") != 0 or details.get("epochs") != epoch
+            or details.get("refit", {}).get("completed_epochs") != epoch
+            or architecture.get("library") != cv_details["architecture"]["library"]
+            or architecture.get("hidden_dims") != parameters["hidden_sizes"]
+            or architecture.get("n_ens") != parameters["n_ens"]):
+        raise ValueError("Refit RealMLP sem treino integral, mediana de épocas e ausência de nova OOF comprovados.")
+    return full, int(epoch), architecture["n_ens"]
 
 
 def append_realmlp_pairs(pair, runs):

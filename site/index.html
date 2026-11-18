@@ -1,309 +1,842 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
- <head>
-  <meta charset="utf-8"/>
-  <meta content="width=device-width, initial-scale=1" name="viewport"/>
-  <meta content="#f3f1e9" name="theme-color"/>
-  <meta content="FraudLab: um experimento aberto sobre redes neurais e detecção de fraude em cartão, da validação à participação real no Kaggle." name="description"/>
-  <title>
-   FraudLab — Detecção de fraude, ciência em aberto
-  </title>
-  <link href="favicon.svg" rel="icon" type="image/svg+xml"/>
-  <link href="styles.css" rel="stylesheet"/>
-  <script defer="" src="app.js">
-  </script>
- </head>
- <body>
-  <a class="skip-link" href="#main">Pular para o conteúdo</a>
-  <header class="site-header wrap">
-   <a aria-label="FraudLab, início" class="wordmark" href="#"><span aria-hidden="true" class="brand-symbol">f<span>·</span></span>fraudlab<span class="brand-period">.</span></a>
-   <nav aria-label="Navegação principal">
-    <a href="#problema">Problema</a>
-    <a href="#metodo">Método</a>
-    <a href="#resultados">Resultados</a>
-    <a href="#materiais">Materiais</a>
-   </nav>
-   <a class="source-link" data-link="github" hidden="">GitHub <span aria-hidden="true">↗</span></a>
-  </header>
-  <main id="main">
-   <section aria-labelledby="hero-title" class="hero wrap">
-    <div class="hero-copy">
-     <p class="eyebrow"><span aria-hidden="true" class="live-dot"></span> Redes neurais · Experimento aberto</p>
-     <h1 id="hero-title">Detectar fraude.<br/><span class="serif">Medir o que melhora.</span></h1>
-     <p class="hero-description">Uma investigação sobre como aprender com transações e reconhecer possíveis fraudes. Código aberto, validação reproduzível e participação no Kaggle.</p>
-     <div class="hero-actions">
-      <a class="button" href="#metodo">Explorar o experimento <span aria-hidden="true">↗</span></a>
-      <a class="text-link" href="#resultados">Ver evidências <span aria-hidden="true">↓</span></a>
-     </div>
+  <head>
+    <meta charset="utf-8"/>
+    <meta content="width=device-width, initial-scale=1" name="viewport"/>
+    <meta content="#173c35" name="theme-color"/>
+    <meta content="Da compra cotidiana ao experimento neural. Conheça o FraudLab: código aberto, participação real no Kaggle e uma apresentação que explica cada decisão." name="description"/>
+    <meta content="FraudLab — Fraude deixa pistas. Dados revelam." property="og:title"/>
+    <meta content="Um estudo aberto de redes neurais, validação e detecção de fraude. Assista à apresentação, confira os resultados e explore o código." property="og:description"/>
+    <meta content="website" property="og:type"/>
+    <meta content="pt_BR" property="og:locale"/>
+    <meta content="https://aikolopes-fraudlab.aikol9pes.chatgpt.site/assets/payment-detail.jpg" property="og:image"/>
+    <meta content="Fotografia ilustrativa de um pagamento com cartão. Blake Wisz / Unsplash." property="og:image:alt"/>
+    <title>
+      FraudLab — Fraude deixa pistas. Dados revelam.
+    </title>
+    <link href="favicon.svg" rel="icon" type="image/svg+xml"/>
+    <link as="font" crossorigin="" href="assets/space-grotesk.woff2" rel="preload" type="font/woff2"/>
+    <link as="font" crossorigin="" href="assets/dm-sans.woff2" rel="preload" type="font/woff2"/>
+    <link href="styles.css" rel="stylesheet"/>
+    <script defer="" src="app.js">
+    </script>
+  </head>
+  <body>
+    <a class="skip-link" href="#main">
+      Pular para o conteúdo
+    </a>
+    <div class="hero-shell">
+      <header class="site-header wrap">
+        <a aria-label="FraudLab, início" class="wordmark" href="#">
+          <span aria-hidden="true" class="brand-symbol">
+            f
+            <span>
+              ↗
+            </span>
+          </span>
+          fraudlab
+          <span class="brand-period">
+            .
+          </span>
+        </a>
+        <nav aria-label="Navegação principal">
+          <a href="#problema">
+            O problema
+          </a>
+          <a href="#metodo">
+            O método
+          </a>
+          <a href="#resultados">
+            Resultados
+          </a>
+          <a href="#materiais">
+            Materiais
+          </a>
+        </nav>
+        <a class="source-link" data-link="github" hidden="">
+          Ver código
+          <span aria-hidden="true">
+            ↗
+          </span>
+        </a>
+      </header>
     </div>
-    <aside aria-labelledby="competition-label" class="competition-card">
-     <div class="card-topline">
-      <span class="eyebrow" id="competition-label">O desafio</span>
-      <span class="tiny-badge">Kaggle</span>
-     </div>
-     <div aria-hidden="true" class="signal">
-      <svg fill="none" viewBox="0 0 300 130">
-       <path class="signal-grid" d="M0 32H300M0 65H300M0 98H300M50 0V130M100 0V130M150 0V130M200 0V130M250 0V130">
-       </path>
-       <path class="signal-path" d="M0 91L36 91L50 81L67 91L93 91L108 30L126 111L143 70L158 91L192 91L207 80L224 91L255 91L274 48L289 91H300">
-       </path>
-       <circle cx="108" cy="30" r="5">
-       </circle>
-      </svg>
-     </div>
-     <p class="competition-series">Playground Series · S6E11</p>
-     <h2 data-competition-title="">Predicting Credit Card Fraud</h2>
-     <dl class="competition-facts">
-      <div>
-       <dt>Objetivo</dt>
-       <dd>Probabilidade de fraude</dd>
+    <main id="main">
+      <div class="hero-shell">
+        <section aria-labelledby="hero-title" class="hero wrap">
+          <div class="hero-copy">
+            <p class="eyebrow">
+              <span aria-hidden="true" class="live-dot">
+              </span>
+              Redes neurais. Ciência em aberto.
+            </p>
+            <h1 id="hero-title">
+              Fraude
+              <br/>
+              deixa
+              <span>
+                pistas.
+              </span>
+            </h1>
+            <p class="hero-description">
+              Uma compra dura segundos. Entender seus padrões exige ir além. Treinamos modelos com dados sintéticos e colocamos as previsões à prova no Kaggle.
+            </p>
+            <div class="hero-actions">
+              <a class="button button-lime" href="#apresentacao">
+                Assistir ao estudo
+                <span aria-hidden="true" class="play-arrow">
+                  ▶
+                </span>
+              </a>
+              <a class="text-link" data-link="delivery" hidden="">
+                Baixar AED
+                <span aria-hidden="true">
+                  ↓
+                </span>
+              </a>
+            </div>
+            <p class="hero-small">
+              Código aberto. Dados sintéticos. Competição real.
+            </p>
+          </div>
+          <figure class="hero-image">
+            <img alt="Mãos aproximam um cartão de um terminal de pagamento sobre uma mesa de café." fetchpriority="high" height="1467" src="assets/payment-detail.jpg" width="2200"/>
+            <figcaption>
+              <span>
+                01 / Um gesto cotidiano
+              </span>
+              <span>
+                Uma nova pergunta para os dados.
+                <span aria-hidden="true">
+                  ↗
+                </span>
+              </span>
+            </figcaption>
+          </figure>
+          <div class="project-caption">
+            <div class="hero-proof">
+              <strong data-hero-public="">
+                —
+              </strong>
+              <span>
+                ROC-AUC pública
+                <br/>
+                <span data-hero-observed="">
+                  Aguardando registro
+                </span>
+              </span>
+            </div>
+            <div class="hero-state">
+              <span class="stage" data-stage="">
+                Carregando evidências
+              </span>
+              <span>
+                Validação local e ranking detalhados abaixo.
+              </span>
+            </div>
+            <a href="#resultados">
+              Ver resultados registrados
+              <span aria-hidden="true">
+                ↓
+              </span>
+            </a>
+          </div>
+        </section>
       </div>
-      <div>
-       <dt>Avaliação</dt>
-       <dd>ROC-AUC <span aria-hidden="true">↗</span></dd>
+      <section aria-labelledby="problem-title" class="section wrap problem-section" id="problema">
+        <div class="section-label">
+          <span>
+            01 — O problema
+          </span>
+          <span>
+            Do cotidiano para os dados
+          </span>
+        </div>
+        <div class="problem-grid">
+          <figure class="context-image">
+            <img alt="Cliente faz um pagamento com cartão no balcão de um salão." height="1467" loading="lazy" src="assets/payment-context.jpg" width="2200"/>
+            <figcaption>
+              O contexto é real. Os dados da competição são sintéticos.
+              <br/>
+              Fotografias ilustrativas de Blake Wisz / Unsplash.
+            </figcaption>
+          </figure>
+          <div class="problem-copy">
+            <h2 id="problem-title">
+              Parece só
+              <br/>
+              uma compra.
+              <br/>
+              <span class="soft-ink">
+                O modelo vê
+                <br/>
+                relações.
+              </span>
+            </h2>
+            <div class="prose">
+              <p>
+                O desafio é aprender com transações rotuladas e estimar quais têm maior risco de fraude. O modelo recebe atributos, encontra relações e produz uma pontuação entre 0 e 1.
+              </p>
+              <p>
+                Acertar a ordem importa: uma transação fraudulenta deve aparecer acima de uma legítima na lista de suspeitas. É isso que a ROC-AUC ajuda a medir.
+              </p>
+              <a class="text-link" href="#auc">
+                Entender com um exemplo
+                <span aria-hidden="true">
+                  ↗
+                </span>
+              </a>
+            </div>
+          </div>
+        </div>
+        <aside aria-labelledby="competition-label" class="competition-brief">
+          <div>
+            <p class="eyebrow" id="competition-label">
+              Kaggle · Playground Series S6E11
+            </p>
+            <h3 data-competition-title="">
+              Predicting Credit Card Fraud
+            </h3>
+          </div>
+          <dl>
+            <div>
+              <dt>
+                Avaliação
+              </dt>
+              <dd>
+                ROC-AUC
+              </dd>
+            </div>
+            <div>
+              <dt>
+                Encerramento publicado
+              </dt>
+              <dd data-deadline="">
+                Consultar o Kaggle
+              </dd>
+            </div>
+          </dl>
+          <a class="text-link" data-link="kaggle" hidden="">
+            Ver competição
+            <span aria-hidden="true">
+              ↗
+            </span>
+          </a>
+        </aside>
+      </section>
+      <section aria-labelledby="method-title" class="method-section" id="metodo">
+        <div class="wrap section">
+          <div class="section-label">
+            <span>
+              02 — A construção
+            </span>
+            <span>
+              Uma hipótese precisa sobreviver ao teste
+            </span>
+          </div>
+          <div class="section-heading">
+            <h2 id="method-title">
+              Aprender.
+              <br/>
+              Comparar.
+              <br/>
+              <span class="soft-ink">
+                Só então, submeter.
+              </span>
+            </h2>
+            <div class="heading-aside">
+              <span aria-hidden="true" class="section-glyph">
+                ↳
+              </span>
+              <p>
+                Redes neurais próprias, modelos de referência e previsões externas auditadas. Cada etapa tem um papel; cada resultado, um registro.
+              </p>
+              <a class="text-link" data-link="github" hidden="">
+                Examinar a implementação
+                <span aria-hidden="true">
+                  ↗
+                </span>
+              </a>
+            </div>
+          </div>
+          <div class="research-artifact">
+            <figure aria-labelledby="architecture-title" class="architecture-figure">
+              <div class="artifact-file">
+                <span>
+                  src / fraudlab / realmlp.py
+                </span>
+                <span>
+                  Configuração real
+                </span>
+              </div>
+              <figcaption id="architecture-title">
+                Dentro de cada rede
+              </figcaption>
+              <div aria-label="Três camadas ocultas com 512, 256 e 128 unidades" class="architecture-layers">
+                <div>
+                  <span class="layer-bar layer-large">
+                  </span>
+                  <strong>
+                    512
+                  </strong>
+                  <span>
+                    camada 1
+                  </span>
+                </div>
+                <span aria-hidden="true" class="layer-connector">
+                  →
+                </span>
+                <div>
+                  <span class="layer-bar layer-medium">
+                  </span>
+                  <strong>
+                    256
+                  </strong>
+                  <span>
+                    camada 2
+                  </span>
+                </div>
+                <span aria-hidden="true" class="layer-connector">
+                  →
+                </span>
+                <div>
+                  <span class="layer-bar layer-small">
+                  </span>
+                  <strong>
+                    128
+                  </strong>
+                  <span>
+                    camada 3
+                  </span>
+                </div>
+              </div>
+              <pre aria-label="Recorte da função official_config"><code><span class="code-key">"n_ens"</span>: <span class="code-value">16</span>,
+<span class="code-key">"hidden_sizes"</span>: [<span class="code-value">512, 256, 128</span>],
+<span class="code-key">"act"</span>: <span class="code-value">"silu"</span>,
+<span class="code-key">"num_emb_type"</span>: <span class="code-value">"pbld"</span>,</code></pre>
+            </figure>
+            <div class="artifact-copy">
+              <p class="eyebrow">
+                Um recorte da implementação
+              </p>
+              <h3>
+                A rede por dentro.
+                <br/>
+                O método à vista.
+              </h3>
+              <p>
+                A RealMLP usa três camadas ocultas e 16 membros no conjunto. Atributos numéricos recebem embeddings PBLD; categorias têm codificação própria. A saída combina probabilidades dos membros.
+              </p>
+              <p>
+                O treinamento foi executado pelo projeto com a biblioteca oficial
+                <strong>
+                  pytabkit 1.8.0
+                </strong>
+                . O código mostra a configuração completa e como os dados são separados.
+              </p>
+              <a class="text-link" href="https://github.com/aikolopes-DS/fraudlab/blob/main/src/fraudlab/realmlp.py#L121" rel="noopener noreferrer" target="_blank">
+                Ler a implementação da rede
+                <span aria-hidden="true">
+                  ↗
+                </span>
+              </a>
+            </div>
+          </div>
+          <ol aria-label="Etapas do experimento" class="pipeline">
+            <li>
+              <span class="step-number">
+                01
+              </span>
+              <h3>
+                Conhecer os dados
+              </h3>
+              <p>
+                Conferir o esquema oficial, o alvo, duplicatas e possíveis fontes de vazamento.
+              </p>
+            </li>
+            <li>
+              <span class="step-number">
+                02
+              </span>
+              <h3>
+                Separar antes de aprender
+              </h3>
+              <p>
+                Ajustar transformações no treino e avaliar em exemplos que ficaram de fora.
+              </p>
+            </li>
+            <li>
+              <span class="step-number">
+                03
+              </span>
+              <h3>
+                Treinar e comparar
+              </h3>
+              <p>
+                Investigar redes neurais e referências lineares e de árvores, com o mesmo protocolo de avaliação.
+              </p>
+            </li>
+            <li>
+              <span class="step-number">
+                04
+              </span>
+              <h3>
+                Prever fora do treino
+              </h3>
+              <p>
+                Gerar previsões OOF: cada linha é prevista por um modelo que não aprendeu com ela.
+              </p>
+            </li>
+            <li>
+              <span class="step-number">
+                05
+              </span>
+              <h3>
+                Medir a combinação
+              </h3>
+              <p>
+                Comparar ROC-AUC e estabilidade entre divisões. Manter a autoria dos componentes externos.
+              </p>
+            </li>
+            <li>
+              <span class="step-number">
+                06
+              </span>
+              <h3>
+                Competir de verdade
+              </h3>
+              <p>
+                Validar o arquivo, enviar as previsões e registrar a avaliação e a posição observadas.
+              </p>
+            </li>
+          </ol>
+          <div class="method-note">
+            <span class="eyebrow">
+              Sem atalhos na atribuição
+            </span>
+            <p>
+              Treinamento próprio e previsões de terceiros são identificados separadamente. Os pesos da composição efetivamente avaliada e os créditos estão nos resultados abaixo.
+            </p>
+          </div>
+        </div>
+      </section>
+      <section aria-labelledby="results-title" class="section wrap results-section" id="resultados">
+        <div class="section-label">
+          <span>
+            03 — A prova
+          </span>
+          <span class="evidence-date" data-updated="">
+            Sem registro carregado
+          </span>
+        </div>
+        <div class="section-heading">
+          <h2 id="results-title">
+            O resultado precisa
+            <br/>
+            <span class="soft-ink">
+              ter de onde vir.
+            </span>
+          </h2>
+          <p>
+            Treino, validação e ranking contam partes diferentes da história. Os números só aparecem quando há evidência correspondente.
+          </p>
+        </div>
+        <div aria-live="polite" class="metrics">
+          <article class="metric-card">
+            <p class="metric-label">
+              ROC-AUC OOF · desenvolvimento
+              <span>
+                01
+              </span>
+            </p>
+            <p class="metric-value" data-local-auc="">
+              —
+            </p>
+            <p class="metric-context" data-local-context="">
+              Aguardando experimento verificado
+            </p>
+          </article>
+          <article class="metric-card metric-public">
+            <p class="metric-label">
+              ROC-AUC pública
+              <span>
+                02
+              </span>
+            </p>
+            <p class="metric-value" data-public-auc="">
+              —
+            </p>
+            <p class="metric-context" data-public-context="">
+              Ainda sem submissão verificada
+            </p>
+          </article>
+          <article class="metric-card">
+            <p class="metric-label">
+              Posição observada
+              <span>
+                03
+              </span>
+            </p>
+            <p class="metric-value" data-ranking="">
+              —
+            </p>
+            <p class="metric-context" data-ranking-context="">
+              O ranking será registrado após a avaliação
+            </p>
+          </article>
+        </div>
+        <div class="composition" data-composition="" hidden="">
+          <p class="eyebrow" data-composition-title="">
+            Composição submetida
+          </p>
+          <div class="composition-weights" data-composition-weights="">
+          </div>
+          <p class="composition-explanation">
+            Pesos na média de probabilidades de cada modelo.
+          </p>
+          <p class="composition-selection" data-selection-reason="" hidden="">
+          </p>
+          <div class="composition-credits" data-component-credits="">
+          </div>
+        </div>
+        <p class="result-note" data-refit-note="" hidden="">
+          O modelo final foi treinado com 100% dos dados rotulados. A AUC OOF acima pertence à etapa de desenvolvimento; o treino final não gera uma nova OOF.
+        </p>
+        <p class="result-note" data-independent-note="" hidden="">
+          Esta extensão foi selecionada pela CV de cinco folds. A reserva de 15% pertence ao protocolo inicial e não é independente para esta composição.
+        </p>
+        <div class="holdout-note" data-holdout="" hidden="">
+          <p>
+            <strong>
+              Reserva independente
+            </strong>
+            <span data-holdout-auc="">
+            </span>
+          </p>
+          <p>
+            Avaliação separada da OOF, realizada após congelar a escolha dos modelos e seus pesos.
+          </p>
+        </div>
+        <div class="fold-panel" data-fold-panel="" hidden="">
+          <div>
+            <p class="eyebrow">
+              Validação cruzada
+            </p>
+            <h3>
+              Uma divisão boa
+              <br/>
+              não conta tudo.
+            </h3>
+            <p>
+              A variação entre folds ajuda a avaliar a estabilidade da estimativa local.
+            </p>
+          </div>
+          <div aria-label="ROC-AUC por fold" class="fold-chart" data-fold-chart="">
+          </div>
+        </div>
+        <div class="evidence-notes">
+          <div>
+            <p class="eyebrow">
+              Verificação
+            </p>
+            <h3>
+              O que sustenta os números
+            </h3>
+            <ul class="check-list" data-checks="">
+              <li>
+                Carregando registros do projeto.
+              </li>
+            </ul>
+          </div>
+          <div>
+            <p class="eyebrow">
+              Contexto
+            </p>
+            <h3>
+              O que ainda exige cuidado
+            </h3>
+            <ul data-limitations="">
+              <li>
+                Uma boa pontuação local não garante a mesma posição na classificação final.
+              </li>
+            </ul>
+          </div>
+        </div>
+        <a class="text-link evidence-link" href="evidence.json">
+          Consultar o registro de evidências
+          <span aria-hidden="true">
+            ↗
+          </span>
+        </a>
+        <p class="load-error" data-load-error="" hidden="">
+          Não foi possível carregar o registro de evidências. Nenhum resultado foi presumido.
+          <a href="evidence.json">
+            Consultar o arquivo de evidências
+          </a>
+          .
+        </p>
+      </section>
+      <section aria-labelledby="auc-title" class="auc-section" id="auc">
+        <div class="wrap auc-grid">
+          <div>
+            <p class="eyebrow">
+              Da matemática ao cotidiano
+            </p>
+            <h2 id="auc-title">
+              Da fórmula à ideia:
+              <br/>
+              pense em
+              <span>
+                uma fila.
+              </span>
+            </h2>
+            <p>
+              Na apresentação, a matemática vem acompanhada de exemplos para tornar o raciocínio claro.
+            </p>
+          </div>
+          <div class="auc-explanation">
+            <p class="auc-question">
+              “Entre uma fraude e uma compra legítima, qual o modelo coloca primeiro na fila de investigação?”
+            </p>
+            <p>
+              A ROC-AUC mede a qualidade dessa ordenação ao comparar pares. Cada conceito complexo é seguido de uma explicação simples e um exemplo do dia a dia.
+            </p>
+            <a class="text-link" href="#apresentacao">
+              Ver a explicação completa
+              <span aria-hidden="true">
+                ↗
+              </span>
+            </a>
+            <p class="footnote">
+              Exemplo conceitual. Não representa previsões ou resultados reais.
+            </p>
+          </div>
+        </div>
+      </section>
+      <section aria-labelledby="materials-title" class="section wrap materials-section" id="materiais">
+        <div class="section-label">
+          <span>
+            04 — O estudo completo
+          </span>
+          <span>
+            Para assistir, entender e reproduzir
+          </span>
+        </div>
+        <div class="section-heading">
+          <h2 id="materials-title">
+            Da primeira pergunta
+            <br/>
+            <span class="soft-ink">
+              à última linha de código.
+            </span>
+          </h2>
+          <p>
+            Problema, matemática, arquitetura, experimentos e participação real. Uma apresentação narrada em português, com os materiais para conferir cada etapa.
+          </p>
+        </div>
+        <div class="presentation-block" id="apresentacao">
+          <div class="presentation-topline">
+            <span class="eyebrow">
+              <span aria-hidden="true" class="live-dot">
+              </span>
+              Apresentação narrada · Português
+            </span>
+            <a class="text-link" data-link="video" hidden="">
+              Abrir vídeo
+              <span aria-hidden="true">
+                ↗
+              </span>
+            </a>
+          </div>
+          <div class="video-container" data-video-container="" hidden="">
+            <video aria-label="Apresentação narrada do projeto FraudLab" controls="" data-video="" poster="assets/payment-detail.jpg" preload="metadata">
+              <track data-captions="" kind="captions" label="Português" srclang="pt-BR"/>
+            </video>
+            <div class="video-cover" data-video-cover="">
+              <span class="eyebrow">
+                FraudLab / Estudo narrado
+              </span>
+              <div>
+                <p class="cover-title">
+                  Do dado
+                  <br/>
+                  à competição.
+                </p>
+                <button aria-label="Reproduzir apresentação narrada" class="cover-play" data-play-video="" type="button">
+                  <span aria-hidden="true" class="cover-play-icon">
+                    ▶
+                  </span>
+                  <span>
+                    Assistir apresentação
+                  </span>
+                </button>
+              </div>
+              <p class="cover-note">
+                Problema · Matemática · Arquitetura · Resultados
+              </p>
+            </div>
+          </div>
+          <div class="video-details">
+            <p data-video-status="">
+              O vídeo será publicado após a verificação do conteúdo e da narração.
+            </p>
+            <p class="video-version">
+              Vídeo v0.3: solução e ranking registrados em 17/11/2026. Os resultados acima têm sua própria data de consulta.
+            </p>
+          </div>
+        </div>
+        <div class="resource-grid">
+          <article class="resource">
+            <span class="resource-index">
+              01 / Código aberto
+            </span>
+            <span aria-hidden="true" class="resource-icon">
+              &lt;/&gt;
+            </span>
+            <h3>
+              Abra. Execute.
+              <br/>
+              Questione.
+            </h3>
+            <p>
+              Preparação, treinamento, validação e geração dos materiais. A implementação completa, para ir além do resultado.
+            </p>
+            <div class="resource-links">
+              <a class="text-link" data-link="github" hidden="">
+                Explorar no GitHub
+                <span aria-hidden="true">
+                  ↗
+                </span>
+              </a>
+              <a class="text-link" data-link="notebook" hidden="">
+                Notebook no Kaggle
+                <span aria-hidden="true">
+                  ↗
+                </span>
+              </a>
+            </div>
+            <p class="resource-status" data-code-status="">
+              O repositório público será vinculado após a publicação.
+            </p>
+          </article>
+          <article class="resource">
+            <span class="resource-index">
+              02 / Apresentação
+            </span>
+            <span aria-hidden="true" class="resource-icon">
+              Aa
+            </span>
+            <h3>
+              Complexo na teoria.
+              <br/>
+              Claro no exemplo.
+            </h3>
+            <p>
+              Conceitos matemáticos, decisões e arquiteturas, seguidos de explicações simples para acompanhar o raciocínio.
+            </p>
+            <div class="resource-links">
+              <a class="text-link" data-link="presentation" hidden="">
+                Abrir os slides
+                <span aria-hidden="true">
+                  ↗
+                </span>
+              </a>
+            </div>
+            <p class="resource-status" data-slides-status="">
+              A apresentação completa depende dos experimentos e resultados.
+            </p>
+          </article>
+        </div>
+      </section>
+      <section aria-labelledby="delivery-title" class="delivery-section">
+        <div class="wrap delivery-grid">
+          <div>
+            <p class="eyebrow">
+              Leve a investigação com você
+            </p>
+            <h2 id="delivery-title">
+              O trabalho inteiro.
+              <br/>
+              <span>
+                Sem caixa-preta.
+              </span>
+            </h2>
+            <p>
+              Vídeo, slides, legendas, código e comprovantes.
+              <br/>
+              Um só pacote para examinar o estudo completo.
+            </p>
+          </div>
+          <div class="delivery-actions">
+            <a class="button button-lime" data-link="delivery" hidden="">
+              Baixar AED completa
+              <span aria-hidden="true">
+                ↓
+              </span>
+            </a>
+            <a class="text-link" data-link="github" hidden="">
+              Ou explore o repositório
+              <span aria-hidden="true">
+                ↗
+              </span>
+            </a>
+          </div>
+        </div>
+      </section>
+    </main>
+    <footer class="site-footer wrap">
+      <div class="footer-top">
+        <a class="wordmark" href="#">
+          fraudlab
+          <span class="brand-period">
+            .
+          </span>
+        </a>
+        <p>
+          Uma investigação de
+          <strong>
+            aikolopes-DS
+          </strong>
+          .
+          <br/>
+          Redes neurais. Método. Ciência em aberto.
+        </p>
+        <div class="footer-links">
+          <a data-link="github" hidden="">
+            GitHub ↗
+          </a>
+          <a data-link="kaggle" hidden="">
+            Kaggle ↗
+          </a>
+          <a href="evidence.json">
+            Evidências ↗
+          </a>
+        </div>
       </div>
-      <div>
-       <dt>Encerramento publicado</dt>
-       <dd data-deadline="">Consultar o Kaggle</dd>
+      <div class="footer-bottom">
+        <p>
+          O ranking é uma fotografia da data registrada. A competição continua.
+        </p>
+        <p>
+          Fotos:
+          <a href="https://unsplash.com/@blakewisz" rel="noopener noreferrer" target="_blank">
+            Blake Wisz / Unsplash
+          </a>
+          ·
+          <a href="assets/credits.json">
+            Créditos e licenças ↗
+          </a>
+        </p>
       </div>
-     </dl>
-     <a class="card-link" data-link="kaggle" hidden="">Abrir competição <span aria-hidden="true">↗</span></a>
-    </aside>
-    <div class="project-caption">
-     <span>Um projeto de <strong>aikolopes-og</strong></span>
-     <span>Machine learning · Método · Comunicação</span>
-     <span class="stage" data-stage="">Carregando evidências</span>
-    </div>
-   </section>
-   <section aria-labelledby="problem-title" class="section wrap" id="problema">
-    <div class="section-label">
-     <span>01 / Problema</span>
-     <span>O que o modelo precisa aprender</span>
-    </div>
-    <div class="problem-grid">
-     <h2 id="problem-title">O desafio está<br/>em <span class="serif">ordenar o risco.</span></h2>
-     <div class="prose">
-      <p>Cada transação recebe uma estimativa entre 0 e 1. Quanto maior o valor, maior a suspeita de fraude segundo o modelo.</p>
-      <p>A competição avalia se transações fraudulentas tendem a receber pontuações maiores que as legítimas. Uma boa classificação depende da ordem dessas pontuações, não de acertar um único limite de aprovação.</p>
-      <a class="text-link" href="#auc">Entender a métrica <span aria-hidden="true">↓</span></a>
-     </div>
-    </div>
-    <div class="principles">
-     <div>
-      <span class="principle-number">01</span>
-      <h3>Aprender com o treino</h3>
-      <p>Usar os exemplos rotulados para reconhecer relações entre os atributos e a fraude.</p>
-     </div>
-     <div>
-      <span class="principle-number">02</span>
-      <h3>Avaliar em dados separados</h3>
-      <p>Medir o modelo em exemplos que não participaram do ajuste de seus parâmetros.</p>
-     </div>
-     <div>
-      <span class="principle-number">03</span>
-      <h3>Comprovar na competição</h3>
-      <p>Submeter as previsões e registrar a pontuação e a posição observadas no Kaggle.</p>
-     </div>
-    </div>
-   </section>
-   <section aria-labelledby="method-title" class="method-section" id="metodo">
-    <div class="wrap section">
-     <div class="section-label">
-      <span>02 / Método</span>
-      <span>Do dado à submissão</span>
-     </div>
-     <div class="section-heading">
-      <h2 id="method-title">Um processo enxuto.<br/><span class="serif">Cada escolha, uma medida.</span></h2>
-      <p>O desenho do experimento conecta preparação, comparação de modelos e verificação. As decisões finais dependem das evidências de cada execução.</p>
-     </div>
-     <ol aria-label="Etapas do experimento" class="pipeline">
-      <li>
-       <span>01</span>
-       <h3>Dados oficiais</h3>
-       <p>Esquema, distribuição do alvo, duplicatas e possíveis fontes de vazamento.</p>
-      </li>
-      <li>
-       <span>02</span>
-       <h3>Validação</h3>
-       <p>Separação coerente com os dados e transformações ajustadas apenas no treino.</p>
-      </li>
-      <li>
-       <span>03</span>
-       <h3>Modelos</h3>
-       <p>MLPs e TabM próprias comparadas; GLM com correções de árvores, LightGBM e GPT-2 na composição submetida.</p>
-      </li>
-      <li>
-       <span>04</span>
-       <h3>Previsões OOF</h3>
-       <p>Cada linha é prevista por um modelo que não a utilizou no treinamento.</p>
-      </li>
-      <li>
-       <span>05</span>
-       <h3>Comparação</h3>
-       <p>ROC-AUC e estabilidade entre divisões para medir o efeito das escolhas.</p>
-      </li>
-      <li>
-       <span>06</span>
-       <h3>Submissão</h3>
-       <p>Arquivo validado, envio ao Kaggle e registro da pontuação e posição.</p>
-      </li>
-     </ol>
-     <div class="method-note">
-      <span aria-hidden="true" class="note-mark">↳</span>
-      <p><strong>Redes neurais na comparação e na solução.</strong> As MLPs e a TabM próprias foram treinadas e comparadas. A composição submetida usa previsões do GPT-2 público de Masaya Kawamata, com autoria e licenças identificadas nos resultados.</p>
-     </div>
-    </div>
-   </section>
-   <section aria-labelledby="results-title" class="section wrap" id="resultados">
-    <div class="section-label">
-     <span>03 / Resultados</span>
-     <span class="evidence-date" data-updated="">Sem registro carregado</span>
-    </div>
-    <div class="section-heading">
-     <h2 id="results-title">Evidência antes<br/>da <span class="serif">conclusão.</span></h2>
-     <p>Validação local, avaliação pública e ranking são medidas diferentes. Cada resultado abaixo aparece apenas quando há um registro correspondente.</p>
-    </div>
-    <div aria-live="polite" class="metrics">
-     <article class="metric-card">
-      <div class="metric-label">
-       ROC-AUC OOF · desenvolvimento
-       <span>01</span>
-      </div>
-      <p class="metric-value" data-local-auc="">—</p>
-      <p class="metric-context" data-local-context="">Aguardando experimento verificado</p>
-     </article>
-     <article class="metric-card">
-      <div class="metric-label">
-       ROC-AUC pública
-       <span>02</span>
-      </div>
-      <p class="metric-value" data-public-auc="">—</p>
-      <p class="metric-context" data-public-context="">Ainda sem submissão verificada</p>
-     </article>
-     <article class="metric-card">
-      <div class="metric-label">
-       Posição observada
-       <span>03</span>
-      </div>
-      <p class="metric-value" data-ranking="">—</p>
-      <p class="metric-context" data-ranking-context="">O ranking será registrado após a avaliação</p>
-     </article>
-    </div>
-    <div class="composition" data-composition="" hidden="">
-     <p class="eyebrow" data-composition-title="">Composição submetida</p>
-     <div class="composition-weights" data-composition-weights=""></div>
-     <p class="composition-explanation">Pesos na média de probabilidades de cada modelo.</p>
-     <p class="composition-selection" data-selection-reason="" hidden=""></p>
-     <div class="composition-credits" data-component-credits=""></div>
-    </div>
-    <p class="result-note" data-refit-note="" hidden="">O modelo final foi treinado com 100% dos dados rotulados. A AUC OOF acima pertence à etapa de desenvolvimento; o treino final não gera uma nova OOF.</p>
-    <p class="result-note" data-independent-note="" hidden="">Esta extensão foi selecionada pela CV de cinco folds. A reserva de 15% pertence ao protocolo inicial e não é independente para esta composição.</p>
-    <div class="holdout-note" data-holdout="" hidden="">
-     <p><strong>Reserva independente</strong><span data-holdout-auc=""></span></p>
-     <p>Avaliação separada da OOF, realizada após congelar a escolha dos modelos e seus pesos.</p>
-    </div>
-    <div class="fold-panel" data-fold-panel="" hidden="">
-     <div>
-      <p class="eyebrow">Validação cruzada</p>
-      <h3>Consistência entre divisões</h3>
-      <p>A variação entre folds ajuda a avaliar a estabilidade da estimativa local.</p>
-     </div>
-     <div aria-label="ROC-AUC por fold" class="fold-chart" data-fold-chart="">
-     </div>
-    </div>
-    <div class="evidence-notes">
-     <div>
-      <h3>O que foi verificado</h3>
-      <ul class="check-list" data-checks="">
-       <li>
-        Carregando registros do projeto.
-       </li>
-      </ul>
-     </div>
-     <div>
-      <h3>Limites desta leitura</h3>
-      <ul data-limitations="">
-       <li>
-        Uma boa pontuação local não garante a mesma posição na classificação final.
-       </li>
-      </ul>
-     </div>
-    </div>
-    <p class="load-error" data-load-error="" hidden="">Não foi possível carregar o registro de evidências. Nenhum resultado foi presumido. <a href="evidence.json">Consultar o arquivo de evidências</a>.</p>
-   </section>
-   <section class="auc-section" id="auc">
-    <div class="wrap auc-grid">
-     <div>
-      <p class="eyebrow">Da matemática ao cotidiano</p>
-      <h2>O que a ROC-AUC<br/><span class="serif">está perguntando?</span></h2>
-     </div>
-     <div>
-      <p class="auc-question">“Ao comparar uma fraude e uma compra legítima, o modelo coloca a fraude acima na lista de suspeitas?”</p>
-      <p>Imagine uma equipe organizando a fila de transações para investigar. A métrica avalia a qualidade dessa ordenação ao longo de todos os pares. Ela não informa, sozinha, quantos alertas um banco deve emitir.</p>
-      <p class="footnote">Explicação conceitual da métrica · não representa um resultado do projeto.</p>
-     </div>
-    </div>
-   </section>
-   <section aria-labelledby="materials-title" class="section wrap" id="materiais">
-    <div class="section-label">
-     <span>04 / Materiais</span>
-     <span>Da execução à explicação</span>
-    </div>
-    <div class="section-heading">
-     <h2 id="materials-title">O trabalho aberto.<br/><span class="serif">Em cada camada.</span></h2>
-     <p>O código permite examinar o método. A apresentação conecta conceitos matemáticos, exemplos cotidianos e os resultados obtidos.</p>
-    </div>
-    <p><a class="button" data-link="delivery" hidden="">Baixar AED completa <span aria-hidden="true">↗</span></a></p>
-    <p>Vídeo, slides, legendas, código e comprovantes em um único ZIP.</p>
-    <div class="resource-grid">
-     <article class="resource source-resource">
-      <span aria-hidden="true" class="resource-icon">&lt;/&gt;</span>
-      <p class="eyebrow">Código-fonte</p>
-      <h3>Reproduzir e revisar.</h3>
-      <p>Preparação dos dados, experimentos, validação das previsões e geração dos materiais.</p>
-      <a class="text-link" data-link="github" hidden="">Explorar no GitHub <span aria-hidden="true">↗</span></a>
-      <a class="text-link" data-link="notebook" hidden="">Notebook no Kaggle <span aria-hidden="true">↗</span></a>
-      <p class="resource-status" data-code-status="">O repositório público será vinculado após a publicação.</p>
-     </article>
-     <article class="resource">
-      <span aria-hidden="true" class="resource-icon">Aa</span>
-      <p class="eyebrow">Apresentação</p>
-      <h3>Entender, passo a passo.</h3>
-      <p>Cada conceito complexo é seguido de uma explicação simples com um exemplo do dia a dia.</p>
-      <a class="text-link" data-link="presentation" hidden="">Abrir os slides <span aria-hidden="true">↗</span></a>
-      <p class="resource-status" data-slides-status="">A apresentação completa depende dos experimentos e resultados.</p>
-     </article>
-     <article class="resource">
-      <span aria-hidden="true" class="resource-icon play-icon">▷</span>
-      <p class="eyebrow">Vídeo narrado · Português</p>
-      <h3>Uma explicação completa.</h3>
-      <p>Problema, construção, matemática, decisões, códigos e participação real na competição.</p>
-      <a class="text-link" data-link="video" hidden="">Abrir o vídeo <span aria-hidden="true">↗</span></a>
-      <p class="resource-status" data-video-status="">O vídeo será publicado após a verificação do conteúdo e da narração.</p>
-      <p class="resource-status">Vídeo v0.3: solução e ranking registrados em 17/11/2026. Os resultados acima têm sua própria data de consulta.</p>
-     </article>
-    </div>
-    <div class="video-container" data-video-container="" hidden="">
-     <video aria-label="Apresentação narrada do projeto FraudLab" controls="" data-video="" preload="metadata">
-      <track data-captions="" kind="captions" label="Português" srclang="pt-BR"/>
-     </video>
-    </div>
-   </section>
-  </main>
-  <footer class="site-footer wrap">
-   <div>
-    <a class="wordmark" href="#">fraudlab<span class="brand-period">.</span></a>
-    <p>Um estudo aberto de aprendizado de máquina.</p>
-   </div>
-   <div class="footer-links">
-    <a data-link="github" hidden="">Código ↗</a>
-    <a data-link="kaggle" hidden="">Competição ↗</a>
-    <a href="evidence.json">Registro de evidências ↗</a>
-   </div>
-   <p class="footer-note">Resultados científicos são contextuais.<br/>O ranking exibido é uma fotografia da data registrada.</p>
-  </footer>
-  <noscript>
-   <p class="noscript-note wrap">Ative JavaScript para carregar as evidências atualizadas. Você também pode consultar diretamente <a href="evidence.json">o registro do projeto</a>.</p>
-  </noscript>
- </body>
+    </footer>
+    <noscript>
+      <p class="noscript-note wrap">
+        Ative JavaScript para carregar as evidências atualizadas. Você também pode consultar diretamente
+        <a href="evidence.json">
+          o registro do projeto
+        </a>
+        .
+      </p>
+    </noscript>
+  </body>
 </html>

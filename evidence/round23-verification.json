@@ -1,0 +1,44 @@
+{
+  "status": "passed",
+  "recorded_at": "2026-11-18T02:09:36.698353+00:00",
+  "auditor_sha256": "5c647c70819bf36debd8f2acd6532872dac4290db93af9227ba0907f33f37181",
+  "source_revision": "11b139f77206101d3f5beeb5648fb459f4cd304a",
+  "plan_sha256": "46ba3e33786e111fff9492904c462a7ec279288889d64bf9dd2d45f4981f987c",
+  "local_auc": null,
+  "reference_cv_auc": 0.9517074903582017,
+  "reference_cv_scope": "Historical R22 exploratory CV only, not a score of this full-data inference",
+  "checkpoints": [
+    {
+      "role": "offset",
+      "sha256": "43da6386631e966647d2600a77e1c811dc3dc984925525ab1f7e7e8a7dbef17a",
+      "rows_reloaded": 1024,
+      "max_abs_error": 0.0,
+      "reused_without_training": true
+    },
+    {
+      "role": "lightgbm",
+      "sha256": "93566d24f2e38273f02cdf5f29b55820f3f9137500601339e81392436138f315",
+      "rows_reloaded": 1024,
+      "max_abs_error": 0.0,
+      "reused_without_training": true
+    },
+    {
+      "role": "realmlp",
+      "sha256": "48a424811a341e96c294da3aadfdf797fb7c3723ab85bc04c4400a4b5d9677c2",
+      "rows_reloaded": 1024,
+      "max_abs_error": 1.1920928955078125e-07,
+      "all_label_prior_imputer_verified": true,
+      "training_rows": 699960,
+      "validation_rows": 0,
+      "epochs": 3,
+      "schedule_horizon": 3,
+      "parameters": 6128752
+    }
+  ],
+  "formula_rows": 299984,
+  "formula_max_abs_error": 2.220446049250313e-16,
+  "submission_sha256": "937dc4dd355229bc49fda67c3099ea97867a23fb9c9bbe97a2bf57fae6cf24de",
+  "new_fits": 0,
+  "new_submissions": 0,
+  "full_private_report_sha256": "6fa5ed9ec21d885e3be663ad1eb6bfbd7894591b752b4cc55a7db6c7ccbb3f5f"
+}

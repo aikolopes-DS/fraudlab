@@ -5,6 +5,15 @@ const text = (selector, value) => { const element = select(selector); if (elemen
 const validScore = (value) => typeof value === "number" && Number.isFinite(value) && value >= 0 && value <= 1;
 const score = (value) => value.toLocaleString("pt-BR", { minimumFractionDigits: 5, maximumFractionDigits: 5 });
 
+const videoPlayer = select("[data-video]");
+videoPlayer.addEventListener("playing", () => { select("[data-video-cover]").hidden = true; });
+select("[data-play-video]").addEventListener("click", () => {
+  videoPlayer.play().catch(() => {
+    select("[data-video-cover]").hidden = true;
+    videoPlayer.focus();
+  });
+});
+
 function dateLabel(value, includeTime = false) {
   if (!value) return null;
   const date = new Date(/^\d{4}-\d{2}-\d{2}$/.test(value) ? `${value}T12:00:00Z` : value);
@@ -95,7 +104,7 @@ function renderFolds(folds) {
 
 function renderComposition(run, components, checks) {
   const weights = run.effective_weights || {};
-  const names = { glm: "GLM", offset: "GLM + correção", lightgbm: "LightGBM", external_gpt2: "GPT-2 público" };
+  const names = { glm: "GLM", offset: "GLM + correção", realmlp: "RealMLP própria", lightgbm: "LightGBM", external_gpt2: "GPT-2 público" };
   const entries = Object.entries(weights);
   if (checks.training_verified !== true || !entries.length || !entries.every(([name, weight]) => names[name] && validScore(weight))) return;
   const total = entries.reduce((sum, [, weight]) => sum + weight, 0);
@@ -194,6 +203,9 @@ function render(evidence) {
   }
   if (checks.submission_verified === true && validScore(results.public_auc)) {
     text("[data-public-auc]", score(results.public_auc));
+    text("[data-hero-public]", score(results.public_auc));
+    const observed = dateLabel(results.observed_at, true);
+    text("[data-hero-observed]", observed ? `${observed} · SP` : "Avaliação verificada");
     text("[data-public-context]", results.submission_id ? `Submissão ${results.submission_id}` : "Avaliação pública registrada");
   }
   if (checks.submission_verified === true && Number.isInteger(results.ranking) && results.ranking > 0 && results.observed_at) {

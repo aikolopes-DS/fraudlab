@@ -50,6 +50,8 @@ $fraudComparisons = @(
   "round17-neural-pooled-offset-resumed", "round17-pooled-share050-public25",
   "round19-transductive-pooled-offset", "round19-pooled-share100-public25",
   "round21-nested-owned-stack", "round21-nested-public25",
+  "round22-realmlp53", "round22-realmlp-offset010-public25", "round22-realmlp-offset025-public25",
+  "round22-realmlp-offset050-public25", "round22-realmlp-offset100-public25",
   "round9-glm-bpe-frequency", "round9-bpe-frequency-public25",
   "explore5-glm", "explore5-lgbm", "explore5-public-gpt2-v2", "explore5-public25",
   "round8-tabm", "round8-tabm10", "dev-mlp-te-values", "dev-logistic-raw",
@@ -128,7 +130,19 @@ métricas: autor, código/commit, licenças, fonte das previsões, validação e
 de inferência comprovado. O conteúdo GPT-2 só é ativado por essa evidência;
 treinamento externo e trabalho próprio permanecem identificados.
 
-O conteúdo RealMLP permanece condicional. Ele só aparece para uma execução
+O conteúdo RealMLP usa as métricas completas da R22 no exemplo. A própria rede
+teve OOF **0,9501312331**; a melhor das quatro misturas declaradas teve
+**0,9517074904**, com melhora em quatro folds contra a R18. A grade substituiu
+10%, 25%, 50% ou 100% da parcela do offset por RealMLP. A mistura escolhida
+ficou em 42,1875% offset, 14,0625% RealMLP, 18,75% LightGBM e 25% GPT-2 externo.
+O envio **58489662** recebeu **0,95162**, empatou na precisão pública exibida e
+não foi promovido. A melhor submissão continua sendo a R20; não atribuímos à
+tentativa uma posição própria. Os refits de fold usaram E = [3, 2, 3, 3, 3]:
+cinco conjuntos de 16 redes, ou 80 membros finais de CV, com 53 representações
+(20 numéricas e 33 categóricas). A duração registrada é tempo de parede dessa
+execução, sem benchmark controlado de velocidade.
+
+A ativação do conteúdo RealMLP permanece condicional: ele só aparece para uma execução
 `complete` com arquitetura, pré-processamento, parâmetros resolvidos e épocas
 de refit registrados. Um smoke sintético não é tratado como treino competitivo.
 `presentation/realmlp.py` lê os campos produzidos pelo wrapper da biblioteca
@@ -139,7 +153,11 @@ total, SiLU parametrizada, redes completas vetorizadas, média após softmax,
 entropia cruzada suavizada, schedules e seleção interna seguida de refit novo.
 A soma das perdas dos membros e a média das probabilidades de inferência
 permanecem operações distintas. Resultados só são mostrados quando métricas
-completas são fornecidas; esta documentação não atribui AUC à R22 em preparação.
+completas são fornecidas. Um componente RealMLP `full_data_refit` sem OOF é
+ignorado na escolha da arquitetura CV; a apresentação exige a fonte CV própria
+completa da R22 e mantém separados seus 80 membros de CV e um eventual conjunto
+de 16 membros em todos os rótulos. O refit completo R23 só será descrito quando
+suas métricas estiverem completas; não recebe nova AUC por herança.
 
 O campo `evidence.run.submission_sha256` deve corresponder ao hash de submissão
 nas métricas selecionadas. Sem essa correspondência, a versão final é recusada

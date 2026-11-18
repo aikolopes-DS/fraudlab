@@ -38,6 +38,49 @@ FLOWS = {
 }
 
 
+def flow_labels(slide: Slide) -> list[str]:
+    return slide.visual_labels or FLOWS.get(slide.visual, [])
+
+
+def result_rows(slide: Slide) -> list[tuple[str, str]]:
+    """Keep actual metric strings intact; only change their visual alignment."""
+    if not slide.title.startswith("Resultados:"):
+        return []
+    matches = [re.fullmatch(r"(.+): AUC OOF ([\d,]+)", point) for point in slide.points]
+    return [(match[1], match[2]) for match in matches] if matches and all(matches) else []
+
+
+def slide_label(slide: Slide) -> str:
+    if slide.code:
+        return "CÓDIGO"
+    if slide.kind == "analogy":
+        return "EXEMPLO COTIDIANO"
+    if slide.formula:
+        return "MATEMÁTICA"
+    if slide.visual:
+        return "ARQUITETURA / FLUXO"
+    return "CONTEXTO / EVIDÊNCIA"
+
+
+def analogy_labels(slide: Slide) -> list[str]:
+    title = slide.title.lower()
+    if "verbete" in title or "fichas" in title:
+        return ["Várias fichas", "Um verbete", "Mesmo significado"]
+    if "orçamento" in title:
+        return ["Orçamento inicial", "+ ajustes", "Total avaliado"]
+    if "rua" in title or "endereço" in title:
+        return ["Rua", "+ número", "Endereço completo"]
+    if "referência da rede" in title or "avaliações de lojas" in title:
+        return ["Referência da rede", "Evidência da loja", "Avaliação combinada"]
+    if "média das notas prontas" in title:
+        return ["5 equipes", "Cada nota × 1/5", "Média das notas"]
+    return []
+
+
+def is_cover(slide: Slide, index: int) -> bool:
+    return index == 1 and slide.chapter.startswith("01") and not slide.formula and not slide.code
+
+
 def read_json(path: Path) -> dict:
     with path.open(encoding="utf-8-sig") as stream:
         value = json.load(stream)
@@ -75,16 +118,29 @@ def write_html(slides: list[Slide], output: Path, draft: bool) -> None:
     parts = []
     for index, slide in enumerate(slides, 1):
         points = "".join(f"<li>{html.escape(point)}</li>" for point in slide.points)
+        rows = result_rows(slide)
+        body = ("<table class=\"results\"><thead><tr><th>Experimento registrado</th><th>AUC OOF</th></tr></thead><tbody>" +
+                "".join(f"<tr><td>{html.escape(name)}</td><td>{html.escape(value)}</td></tr>" for name, value in rows) +
+                "</tbody></table>" if rows else "<ul>" + points + "</ul>")
+        if slide.kind == "analogy":
+            labels = analogy_labels(slide)
+            motif = ("<span aria-hidden=\"true\">↓</span>".join(f"<strong>{html.escape(label)}</strong>" for label in labels)
+                     if labels else '<b class="quote" aria-hidden="true">“</b><span>Uma ideia.<br>Um exemplo.</span>')
+            body = '<div class="analogy-layout"><aside class="analogy-motif">' + motif + '</aside>' + body + '</div>'
         formula = (f'<div class="formula"><img src="formula-{index:02}.png" '
                    f'alt="{html.escape(slide.formula_text)}"></div>' if slide.formula else "")
         code = (f'<pre><code>{html.escape(slide.code)}</code></pre><p class="code-source">'
                 f'{html.escape(slide.code_reference)}</p>' if slide.code else "")
         diagram = ('<div class="flow" aria-label="Fluxo">' +
                    '<span aria-hidden="true">→</span>'.join('<strong>' + html.escape(label) + '</strong>'
-                   for label in FLOWS.get(slide.visual, [])) + '</div>' if slide.visual else '')
-        parts.append(f'''<section class="slide" id="slide-{index}" aria-label="Slide {index}">
-  <p class="eyebrow">{html.escape(slide.chapter)} · {html.escape(slide.kind)}</p>
-  <h1>{html.escape(slide.title)}</h1><ul>{points}</ul>{formula}{diagram}{code}
+                   for label in flow_labels(slide)) + '</div>' if slide.visual else '')
+        cover = is_cover(slide, index)
+        if cover:
+            diagram = '<div class="cover-route"><small>PERCURSO DO PROJETO</small>' + ''.join('<strong>' + html.escape(label) + '</strong>' for label in FLOWS['pipeline']) + '</div>'
+        css_class = " cover" if cover else " analogy" if slide.kind == "analogy" else " code-slide" if slide.code else ""
+        parts.append(f'''<section class="slide{css_class}" id="slide-{index}" aria-label="Slide {index}">
+  <p class="eyebrow">{html.escape(slide.chapter)} <span class="kind-label">{html.escape(slide_label(slide))}</span></p>
+  <h1>{html.escape(slide.title)}</h1>{body}{formula}{diagram}{code}
   <details><summary>Roteiro da narração</summary><p>{html.escape(slide.narration)}</p></details>
   <footer><span>{"RASCUNHO · EVIDÊNCIAS INCOMPLETAS" if draft else "FRAUDLAB · EVIDÊNCIAS DOCUMENTADAS"}</span>
   <span>{index:02} / {len(slides):02}</span></footer></section>''')
@@ -102,9 +158,13 @@ ul{list-style:none;padding:0;max-width:1100px}li{padding:12px 0 12px 24px;positi
 .formula img{max-width:100%;max-height:125px;object-fit:contain;margin:18px 0}details{font-size:17px;color:#536561;margin-top:30px}summary{cursor:pointer}
 pre{padding:24px;background:#e1e8df;white-space:pre-wrap;overflow-wrap:anywhere;font:20px/1.65 ui-monospace,monospace}.code-source{font-size:15px;color:#536561}
 .flow{display:flex;align-items:center;justify-content:space-between;gap:10px;margin:35px 0;flex-wrap:wrap}.flow strong{padding:15px;border:1px solid var(--accent);font-size:17px;border-radius:5px}
+.kind-label{float:right;font-size:12px;letter-spacing:.08em;padding:5px 10px;border:1px solid currentColor;border-radius:3px}
+.analogy{background:#eaf1e9;border-color:#b4d875}.analogy-layout{display:grid;grid-template-columns:1fr 3fr;gap:40px;align-items:center}.analogy-layout ul{margin:0}.analogy-motif{align-self:stretch;min-height:260px;background:var(--ink);color:#eaf1e9;padding:24px;display:flex;flex-direction:column;justify-content:center;align-items:center;gap:16px;border-radius:8px;text-align:center}.analogy-motif strong{font-size:17px;font-weight:500;border:1px solid #7d9a8a;padding:12px;width:100%}.analogy-motif .quote{font-size:130px;line-height:.8;color:#b4d875}.analogy-motif>span{font-size:17px}.analogy-layout li{font-size:23px}
+.results{border-collapse:collapse;width:100%;margin:25px 0;font-size:21px}.results th{font-size:14px;letter-spacing:.06em;text-transform:uppercase;text-align:left;color:#536561;padding:12px 16px;border-bottom:2px solid var(--ink)}.results td{padding:18px 16px;border-bottom:1px solid #cbd3ca;overflow-wrap:anywhere}.results td:last-child,.results th:last-child{text-align:right;white-space:nowrap}.results td:last-child{font-size:30px;font-variant-numeric:tabular-nums;font-weight:650}
+.cover{background:var(--ink);color:#f5f3ec;min-height:800px;border-color:#b4d875}.cover .eyebrow{color:#b4d875}.cover h1{max-width:66%;font-size:clamp(42px,5vw,76px);letter-spacing:-.04em;font-weight:650}.cover ul{max-width:62%;color:#d5dfd6}.cover li:before{background:#b4d875}.cover footer{color:#bacabe}.cover-route{position:absolute;right:6%;top:22%;width:25%;display:flex;flex-direction:column;gap:18px}.cover-route small{font-size:13px;letter-spacing:.1em;color:#b4d875}.cover-route strong{padding:20px 15px;border:1px solid #617b6e;font-size:21px;font-weight:500}.cover details{color:#d5dfd6;max-width:65%}
 footer{position:absolute;bottom:30px;left:7%;right:7%;display:flex;justify-content:space-between;color:#536561;font-size:13px;letter-spacing:.05em}
 body.present main{max-width:none;margin:0}body.present .slide{display:none;min-height:calc(100vh - 70px);margin:0;box-shadow:none;padding-top:4vh}body.present .slide.active{display:block}
-@media(max-width:700px){body{font-size:17px}.slide{margin:16px 10px;padding:30px 24px 95px;min-height:650px}h1{margin:20px 0 30px}footer{left:24px;right:24px;gap:20px;font-size:10px}nav{font-size:14px}}
+@media(max-width:700px){body{font-size:17px}.slide{margin:16px 10px;padding:30px 24px 95px;min-height:650px}h1{margin:20px 0 30px}footer{left:24px;right:24px;gap:20px;font-size:10px}nav{font-size:14px}.kind-label{float:none;display:table;margin-top:12px}.analogy-layout{grid-template-columns:1fr;gap:20px}.analogy-motif{display:none}.analogy-layout li{font-size:19px}.cover h1,.cover ul,.cover details{max-width:100%}.cover-route{position:static;width:100%;margin:30px 0}.cover-route strong{padding:12px}.results{font-size:16px}.results td,.results th{padding:12px 4px}.results td:last-child{font-size:22px}}
 @media print{nav,details{display:none}.slide{break-after:page;margin:0;box-shadow:none;min-height:95vh}body{background:white}.slide:last-child{break-after:auto}}
 </style></head><body><nav aria-label="Controles da apresentação"><button id="mode">Apresentar</button>
 <button id="previous" aria-label="Slide anterior">←</button><span id="progress" aria-live="polite"></span><button id="next" aria-label="Próximo slide">→</button>
@@ -189,7 +249,7 @@ def insert_code_slides(slides: list[Slide], source_root: Path, required: bool,
                                kind="technical", code=code, code_reference=f"{relative}:{start + 1}"))
         teaching = method_code_analogy(relative)
         if teaching:
-            additions.append(Slide("08 / Da execução à competição", teaching[0], [], teaching[1], kind="analogy"))
+            additions.append(Slide("08 / Da execução à competição", teaching[0], [teaching[1]], teaching[1], kind="analogy"))
         elif "models.py" in relative:
             additions.append(Slide("08 / Da execução à competição", "No dia a dia: diagnóstico e ajuste", [
                 "Primeiro entendemos o que influenciou o erro",
@@ -285,15 +345,91 @@ def formula_image(slide: Slide):
     return image
 
 
+def draw_cover(draw, slide: Slide) -> None:
+    draw.rectangle((0, 0, WIDTH, HEIGHT), fill=INK)
+    draw.rectangle((0, 0, WIDTH, 8), fill="#b4d875")
+    draw.text((110, 65), "FRAUDLAB / REDES NEURAIS", fill="#b4d875", font=font(25))
+    y = 185
+    for line in lines(slide.title, font(92, True), 1150):
+        draw.text((110, y), line, fill=BACKGROUND, font=font(92, True))
+        y += 112
+    y += 58
+    for point in slide.points:
+        for line in lines(point, font(33), 1100):
+            draw.text((110, y), line, fill="#d5dfd6", font=font(33))
+            y += 46
+        y += 18
+    draw.text((1400, 210), "PERCURSO DO PROJETO", fill="#b4d875", font=font(23))
+    for index, label in enumerate(FLOWS["pipeline"]):
+        top = 270 + index * 135
+        draw.rounded_rectangle((1390, top, 1810, top + 90), radius=8, outline="#617b6e", width=2)
+        draw.text((1414, top + 29), label, fill=BACKGROUND, font=font(28))
+        if index < 3:
+            draw.text((1587, top + 96), "↓", fill="#b4d875", font=font(27))
+
+
+def draw_analogy_motif(draw, slide: Slide, top: int, height: int) -> None:
+    draw.rounded_rectangle((110, top, 530, top + height), radius=12, fill=INK)
+    labels = analogy_labels(slide)
+    if not labels:
+        draw.text((160, top + 30), "“", fill="#b4d875", font=font(165, True))
+        draw.text((155, top + 240), "UMA IDEIA,", fill=BACKGROUND, font=font(27, True))
+        draw.text((155, top + 280), "UM EXEMPLO.", fill=BACKGROUND, font=font(27, True))
+        return
+    step = min(124, (height - 38) // len(labels))
+    for index, label in enumerate(labels):
+        y = top + 24 + index * step
+        draw.rounded_rectangle((135, y, 505, y + 78), radius=6, outline="#617b6e", width=2)
+        face = font(26)
+        draw.text((320 - face.getlength(label) / 2, y + 23), label, fill=BACKGROUND, font=face)
+        if index < len(labels) - 1:
+            draw.text((307, y + 81), "↓", fill="#b4d875", font=font(26))
+
+
+def draw_results(draw, rows: list[tuple[str, str]], y: int) -> int:
+    draw.text((130, y), "EXPERIMENTO REGISTRADO", fill=MUTED, font=font(23))
+    draw.text((1650, y), "AUC OOF", fill=MUTED, font=font(23))
+    y += 48
+    draw.line((110, y, 1810, y), fill=INK, width=3)
+    for index, (name, value) in enumerate(rows):
+        label_lines = lines(name, font(31), 1390)
+        height = max(92, len(label_lines) * 42 + 30)
+        if index % 2 == 0:
+            draw.rectangle((110, y + 2, 1810, y + height), fill="#edf0e9")
+        for line_index, line in enumerate(label_lines):
+            draw.text((130, y + 15 + line_index * 42), line, fill=INK, font=font(31))
+        face = font(42, True)
+        draw.text((1788 - face.getlength(value), y + (height - 53) / 2), value, fill=ACCENT, font=face)
+        y += height
+        draw.line((110, y, 1810, y), fill="#cbd3ca", width=2)
+    return y + 20
+
+
 def render_slides(slides: list[Slide], output: Path, draft: bool) -> None:
     from PIL import Image, ImageDraw
 
     title_font, body_font, small_font = font(64, True), font(36), font(24)
     for index, slide in enumerate(slides, 1):
-        image = Image.new("RGB", (WIDTH, HEIGHT), BACKGROUND)
+        cover = is_cover(slide, index)
+        image = Image.new("RGB", (WIDTH, HEIGHT), "#eaf1e9" if slide.kind == "analogy" else BACKGROUND)
         draw = ImageDraw.Draw(image)
+        if cover:
+            draw_cover(draw, slide)
+            footer_color = "#bacabe"
+            label = "RASCUNHO · EVIDÊNCIAS INCOMPLETAS" if draft else "FRAUDLAB · EVIDÊNCIAS DOCUMENTADAS"
+            draw.line((110, HEIGHT - 95, WIDTH - 110, HEIGHT - 95), fill="#617b6e", width=2)
+            draw.text((110, HEIGHT - 70), label, fill=footer_color, font=small_font)
+            draw.text((WIDTH - 250, HEIGHT - 70), f"{index:02} / {len(slides):02}", fill=footer_color, font=small_font)
+            image.save(output / f"slide-{index:02}.png", optimize=True)
+            continue
         draw.rectangle((0, 0, WIDTH, 8), fill=ACCENT)
         draw.text((110, 65), slide.chapter.upper(), fill=ACCENT, font=small_font)
+        category = slide_label(slide)
+        category_face = font(20, True)
+        category_width = category_face.getlength(category)
+        draw.rounded_rectangle((WIDTH - 140 - category_width, 60, WIDTH - 110, 103), radius=4,
+                               fill=INK if slide.code else "#e3eadd", outline=ACCENT)
+        draw.text((WIDTH - 125 - category_width, 69), category, fill=BACKGROUND if slide.code else ACCENT, font=category_face)
         title_lines = lines(slide.title, title_font, WIDTH - 220)
         y = 140
         for line in title_lines:
@@ -304,12 +440,24 @@ def render_slides(slides: list[Slide], output: Path, draft: bool) -> None:
         # Dense references use a smaller type size, while remaining readable at 1080p.
         face = font(29) if slide.chapter == "Referências" else body_font
         line_height = 44 if slide.chapter == "Referências" else 52
-        for point in slide.points:
-            draw.ellipse((113, y + 17, 123, y + 27), fill=ACCENT)
-            for line in lines(point, face, body_width):
-                draw.text((150, y), line, fill=INK, font=face)
-                y += line_height
-            y += 22
+        point_x = 150
+        if slide.kind == "analogy":
+            right_width = 1120
+            height = sum(len(lines(point, face, right_width)) * line_height + 22 for point in slide.points)
+            if height + y < HEIGHT - 165:
+                draw_analogy_motif(draw, slide, y, min(max(height + 30, 390), HEIGHT - 140 - y))
+                draw.rounded_rectangle((575, y - 8, 1810, y + height + 25), radius=12, fill="#ffffff")
+                point_x, body_width = 635, right_width
+        rows = result_rows(slide)
+        if rows:
+            y = draw_results(draw, rows, y)
+        else:
+            for point in slide.points:
+                draw.ellipse((point_x - 37, y + 17, point_x - 27, y + 27), fill=ACCENT)
+                for line in lines(point, face, body_width):
+                    draw.text((point_x, y), line, fill=INK, font=face)
+                    y += line_height
+                y += 22
         if slide.code:
             from PIL import ImageFont
             from matplotlib import font_manager
@@ -327,7 +475,7 @@ def render_slides(slides: list[Slide], output: Path, draft: bool) -> None:
             draw.text((110, y), slide.code_reference, fill=MUTED, font=small_font)
             y += 50
         if slide.visual in FLOWS:
-            labels = FLOWS[slide.visual]
+            labels = flow_labels(slide)
             gap, box_width = 58, (WIDTH - 220 - 58 * (len(labels) - 1)) // len(labels)
             for box_index, label in enumerate(labels):
                 x = 110 + box_index * (box_width + gap)

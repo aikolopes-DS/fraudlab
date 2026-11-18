@@ -1,0 +1,22 @@
+[
+  {
+    "family": "spacegrotesk",
+    "source_css": "https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300..700&display=swap",
+    "file_url": "https://fonts.gstatic.com/s/spacegrotesk/v22/V8mDoQDjQSkFtoMM3T6r8E7mPbF4Cw.woff2",
+    "source_repository": "https://github.com/google/fonts/tree/main/ofl/spacegrotesk",
+    "license": "SIL Open Font License1.1",
+    "license_url": "https://raw.githubusercontent.com/google/fonts/main/ofl/spacegrotesk/OFL.txt",
+    "license_file": "space-grotesk-OFL.txt",
+    "woff2_sha256": "0640890476fc1198ab4de571fb658de443c4d85b66466ec09534a8737ab1ce9d"
+  },
+  {
+    "family": "dmsans",
+    "source_css": "https://fonts.googleapis.com/css2?family=DM+Sans:wght@400..700&display=swap",
+    "file_url": "https://fonts.gstatic.com/s/dmsans/v17/rP2Yp2ywxg089UriI5-g4vlH9VoD8Cmcqbu0-K4.woff2",
+    "source_repository": "https://github.com/google/fonts/tree/main/ofl/dmsans",
+    "license": "SIL Open Font License1.1",
+    "license_url": "https://raw.githubusercontent.com/google/fonts/main/ofl/dmsans/OFL.txt",
+    "license_file": "dm-sans-OFL.txt",
+    "woff2_sha256": "9fea608a947e67020c33cad9a6fe3d60c54119dfb8cff87768a8117a15ed7543"
+  }
+]

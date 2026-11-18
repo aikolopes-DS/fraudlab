@@ -17,7 +17,13 @@ from urllib.parse import urlsplit
 
 SITE_DIR = Path(__file__).resolve().parent
 ROOT = SITE_DIR.parent
-ASSETS = ("index.html", "styles.css", "app.js", "favicon.svg")
+ASSETS = (
+    "index.html", "styles.css", "app.js", "favicon.svg",
+    "assets/payment-detail.jpg", "assets/payment-context.jpg",
+    "assets/space-grotesk.woff2", "assets/dm-sans.woff2",
+    "assets/space-grotesk-OFL.txt", "assets/dm-sans-OFL.txt",
+    "assets/credits.json", "assets/font-sources.json",
+)
 PRESENTATION_ASSET = re.compile(r"(?:slides\.html|script\.json|captions\.(?:srt|vtt)|video\.mp4|(?:slide|formula)-\d+\.png)")
 
 
@@ -73,7 +79,7 @@ def public_weights(value: object) -> dict:
         return {}
     if not isinstance(value, dict):
         raise ValueError("effective_weights must be a model-to-weight object")
-    allowed = {"glm", "offset", "lightgbm", "external_gpt2"}
+    allowed = {"glm", "offset", "realmlp", "lightgbm", "external_gpt2"}
     if set(value) - allowed or any(score(weight) is None for weight in value.values()):
         raise ValueError("Composition needs known model names and finite weights in [0, 1]")
     if value and not math.isclose(sum(value.values()), 1.0, abs_tol=1e-8):
@@ -228,7 +234,9 @@ def build(evidence_path: Path, run_dir: Path | None = None, output_dir: Path | N
         shutil.rmtree(output)
     output.mkdir(parents=True, exist_ok=True)
     for name in ASSETS:
-        shutil.copyfile(SITE_DIR / name, output / name)
+        destination = output / name
+        destination.parent.mkdir(parents=True, exist_ok=True)
+        shutil.copyfile(SITE_DIR / name, destination)
     if presentation_dir:
         destination = output / "presentation"
         destination.mkdir()

@@ -1,0 +1,30 @@
+{
+  "photos": [
+    {
+      "author": "Blake Wisz",
+      "source": "https://unsplash.com/photos/person-holding-credit-card-swipe-machine--JJg90OAnWI",
+      "published_at": "2019-05-01",
+      "sha256": "44e6debdab0da36e0cf3f6ad3dccbd535e7dc0f472059588110af2e2b1839cfa",
+      "license": "Unsplash License",
+      "license_url": "https://unsplash.com/license",
+      "credit_pt": "Foto ilustrativa: Blake Wisz / Unsplash",
+      "limits": "Illustrative commerce photo. Does not depict a FraudLab client, training sample, endorsement or fraud event.",
+      "file": "payment-detail.jpg"
+    },
+    {
+      "author": "Blake Wisz",
+      "source": "https://unsplash.com/photos/woman-paying-at-salon-checkout-counter-tE6th1h6Bfk",
+      "published_at": "2019-05-01",
+      "sha256": "2d2361bda897c439ef829002a9e2d140a625fbe2bf1ae323396575485db18595",
+      "license": "Unsplash License",
+      "license_url": "https://unsplash.com/license",
+      "credit_pt": "Foto ilustrativa: Blake Wisz / Unsplash",
+      "limits": "Illustrative commerce photo. Does not depict a FraudLab client, training sample, endorsement or fraud event.",
+      "file": "payment-context.jpg"
+    }
+  ],
+  "fonts": {
+    "license": "SIL Open Font License 1.1",
+    "sources": "font-sources.json"
+  }
+}

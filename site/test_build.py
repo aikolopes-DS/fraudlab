@@ -70,6 +70,17 @@ class PublicBuildTests(unittest.TestCase):
         self.assertEqual(public["run"]["effective_weights"]["external_gpt2"], 0.25)
         self.assertFalse(public["external_components"][0]["trained_by_us"])
 
+    def test_own_neural_model_keeps_four_component_weights_and_external_credit(self):
+        evidence = self.external_fixture()
+        evidence["run"]["effective_weights"] = {
+            "offset": 0.421875, "realmlp": 0.140625,
+            "lightgbm": 0.1875, "external_gpt2": 0.25,
+        }
+        public = MODULE.normalize(evidence)
+        self.assertEqual(public["run"]["effective_weights"], evidence["run"]["effective_weights"])
+        self.assertEqual(public["external_components"][0]["trained_by"], "Masaya Kawamata")
+        self.assertFalse(public["external_components"][0]["trained_by_us"])
+
     def test_technical_asr_and_slide_checks_do_not_claim_full_listening(self):
         verification = {"technical_checks": "passed", "whole_audio_asr": True, "all_slides_visually_reviewed": True, "watched_in_full": False, "audio_reviewed": False, "human_listening_review": False}
         self.assertEqual(MODULE.video_review_status(verification), "checked")
@@ -226,7 +237,8 @@ class PublicBuildTests(unittest.TestCase):
             evidence = path / "source.json"
             evidence.write_text('{"stage":"implementation"}', encoding="utf-8")
             output = MODULE.build(evidence, output_dir=path / "dist")
-            self.assertEqual({item.name for item in output.iterdir()}, set(MODULE.ASSETS) | {"evidence.json"})
+            actual = {item.relative_to(output).as_posix() for item in output.rglob("*") if item.is_file()}
+            self.assertEqual(actual, set(MODULE.ASSETS) | {"evidence.json"})
 
     def test_rebuild_removes_stale_files_inside_validated_dist(self):
         with tempfile.TemporaryDirectory(dir=Path(__file__).parent, prefix=".test-build-") as directory:

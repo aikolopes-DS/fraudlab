@@ -5,26 +5,26 @@
     "deadline_utc": "2026-11-30T23:59:00Z"
   },
   "stage": "submitted",
-  "updated_at": "2026-11-17T21:59:16.262839+00:00",
+  "updated_at": "2026-11-18T02:12:21.191510+00:00",
   "results": {
-    "local_auc": 0.9516524825255244,
+    "local_auc": 0.9517074903582017,
     "fold_scores": [
-      0.9506790019581457,
-      0.9520317507242809,
-      0.9566745172306466,
-      0.9518625895354618,
-      0.9470964306274507
+      0.9508397792121277,
+      0.9521231453682678,
+      0.9567561770742115,
+      0.9518950875493822,
+      0.9470391404103492
     ],
-    "public_auc": 0.95162,
-    "ranking": 657,
-    "total_teams": 2126,
-    "submission_id": "58483010",
-    "observed_at": "2026-11-17T21:59:16.262839+00:00",
+    "public_auc": 0.95183,
+    "ranking": 626,
+    "total_teams": 2135,
+    "submission_id": "58490653",
+    "observed_at": "2026-11-18T02:12:21.191510+00:00",
     "local_auc_scope": "development_oof",
-    "local_auc_run": "round18-pooled-share100-public25",
+    "local_auc_run": "round22-realmlp-offset025-public25",
     "holdout_auc": null,
     "holdout_observed_at": null,
-    "local_auc_note": "Historical exploratory CV of R18 selection source; no new OOF of full-data refits"
+    "local_auc_note": "Historical exploratory R22 CV; R23 full-data refit has no new local AUC"
   },
   "links": {
     "github": "https://github.com/aikolopes-DS/fraudlab",
@@ -37,12 +37,12 @@
     "delivery": "https://github.com/aikolopes-DS/fraudlab/releases/download/v0.3.0/AED-FraudLab-entrega.zip"
   },
   "run": {
-    "path": "artifacts/runs/round20-refit-joint-public25",
+    "path": "artifacts/runs/round23-refit-realmlp-offset025-public25",
     "phase": "full_data_refit",
-    "submission_sha256": "3df0138f44e79314ceb4c2de22ab0fcb0e7fdcc051db24fcefd4c77bcf8677cf",
+    "submission_sha256": "937dc4dd355229bc49fda67c3099ea97867a23fb9c9bbe97a2bf57fae6cf24de",
     "model": "blend",
     "validation": {
-      "method": "all_labels_refit_of_audited_exploratory_cv",
+      "method": "fixed_median_epoch_refit_of_audited_exploratory_cv",
       "n_splits": 0,
       "independent_holdout": false,
       "early_stopping_uses_validation": false
@@ -156,19 +156,40 @@
       ]
     },
     "effective_weights": {
-      "offset": 0.5625,
+      "offset": 0.421875,
+      "realmlp": 0.140625,
       "lightgbm": 0.1875,
       "external_gpt2": 0.25
     },
-    "selection_reason_pt": "Receita R18 congelada e reestimada com todos os 699.960 rótulos; pesos preservados. O refit R20 melhorou o score público, sem produzir uma nova AUC local.",
-    "own_component": {
-      "name": "R20 full-data refit of R18 offset",
-      "representation": "joint_bpe + frequency + pooled target logits",
-      "encoded_features": 223,
-      "source_revision": "8a1c7fd141b43e41b0d43e3a07b0c5ad0bf41ae5",
-      "training_rows": 699960
-    },
-    "selection_reason": "Receita R18 congelada e reestimada com todos os 699.960 rótulos; pesos preservados. O refit R20 melhorou o score público, sem produzir uma nova AUC local."
+    "selection_reason_pt": "Receita neural R22 escolhida em CV e reaprendida com todos os rótulos, com três épocas e pesos fixos; árvores full R20 preservadas. R23 melhorou o score público sem produzir nova AUC local.",
+    "selection_reason": "Receita neural R22 escolhida em CV e reaprendida com todos os rótulos, com três épocas e pesos fixos; árvores full R20 preservadas. R23 melhorou o score público sem produzir nova AUC local.",
+    "own_components": [
+      {
+        "name": "GLM offset",
+        "encoded_features": 223,
+        "training_rows": 699960
+      },
+      {
+        "name": "RealMLP",
+        "raw_features": 24,
+        "views": 53,
+        "numeric_views": 20,
+        "categorical_views": 33,
+        "members": 16,
+        "hidden_dims": [
+          512,
+          256,
+          128
+        ],
+        "epochs": 3,
+        "training_rows": 699960
+      },
+      {
+        "name": "LightGBM",
+        "trees": 1438,
+        "training_rows": 699960
+      }
+    ]
   },
   "checks": {
     "data_verified": true,
@@ -229,12 +250,12 @@
     }
   ],
   "public_evaluation": {
-    "plan": "evidence/round20-plan.json",
-    "results": "evidence/round20-public.json",
-    "verification": "evidence/round20-verification.json",
+    "plan": "evidence/round23-plan.json",
+    "results": "evidence/round23-public.json",
+    "verification": "evidence/round23-verification.json",
     "protocol_deviation": false,
     "new_local_oof": false,
-    "selection_source": "evidence/round18-results.json",
+    "selection_source": "evidence/round22-results.json",
     "selection_consistency_gate_passed": true
   },
   "historical_submissions": [
@@ -297,7 +318,7 @@
       "holdout_observed_at": null
     }
   ],
-  "curated_at": "2026-11-17T22:01:38.162882+00:00",
+  "curated_at": "2026-11-18T02:18:53.097272+00:00",
   "presentation_context": {
     "string_storage_probe": {
       "rows": 1000000,

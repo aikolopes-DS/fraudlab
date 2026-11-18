@@ -10,7 +10,7 @@ from typing import Any
 from zoneinfo import ZoneInfo
 
 from .external import components_from, gpt2_slides
-from .realmlp import append_realmlp_pairs, realmlp_sources
+from .realmlp import append_realmlp_pairs, append_realmlp_result, realmlp_sources, resolved_realmlp, full_realmlp_record
 from .competitive import (append_pooling_pairs, append_joint_pair, append_neural_offset_pair,
                           append_transductive_pair, append_storage_pair, append_nested_stack_pair,
                           append_later_results, append_nested_result, append_context, has_transductive, round_number, pooling_run)
@@ -44,6 +44,7 @@ class Slide:
     visual: str = ""
     code: str = ""
     code_reference: str = ""
+    visual_labels: list[str] | None = None
 
     def public(self) -> dict[str, Any]:
         return asdict(self)
@@ -187,6 +188,11 @@ def validate_evidence(evidence: dict, runs: list[dict], draft: bool, holdout: di
     neural = next((run for run in runs if run.get("model") == "mlp"), None)
     if not neural or not neural.get("model_details", {}).get("architecture"):
         missing.append("trained MLP architecture")
+    if any(run.get("model") == "realmlp" for run in selected_runs(runs)) and resolved_realmlp(runs) is None:
+        missing.append("completed RealMLP CV architecture")
+    elif any(run.get("model") == "realmlp" and is_refit(run) and run.get("status") == "complete"
+             for run in selected_runs(runs)):
+        full_realmlp_record(selected_runs(runs), runs)
     missing.extend(missing_selection_context(evidence))
     if missing and not draft:
         raise ValueError("Apresentação final bloqueada; falta evidência: " + ", ".join(missing))
@@ -753,7 +759,13 @@ def create_slides(evidence: dict, runs: list[dict], draft: bool = False, holdout
            "que produz a pontuação usada na avaliação. "
            + (f"Nesta MLP, as {raw_numeric} entradas numéricas usam quantis para a escala normal, "
               f"e os {target_values} logits do target encoding recebem escalonamento padrão."
-              if target_quantile and target_values is not None else ""), kind="technical", visual="architecture")
+              if target_quantile and target_values is not None else ""), kind="technical", visual="architecture",
+            visual_labels=[
+                (f"{architecture.get('numeric_features', 'Ver configuração:')} entradas"
+                 if not architecture.get("categorical_cardinalities") else "Entradas mistas"),
+                *[f"{size} unidades" for size in hidden],
+                "1 saída · " + architecture.get("output_activation", "ver configuração"),
+            ])
         add("05 / A rede neural", "No dia a dia: etapas de uma central de triagem", [
             "As informações entram pela recepção",
             "Etapas intermediárias combinam as pistas",
@@ -1117,6 +1129,7 @@ def create_slides(evidence: dict, runs: list[dict], draft: bool = False, holdout
                 "auditada e sua métrica reproduzida, sem executar seu treinamento.")
     append_later_results(add, runs, number)
     append_nested_result(add, runs, evidence, number)
+    append_realmlp_result(add, runs, evidence, number)
     append_tabm_result(add, runs, number)
     raw_logistic = next((run for run in development_runs if run.get("model") == "logistic" and
                          run.get("model_details", {}).get("feature_set", "raw") == "raw"), None)
@@ -1184,19 +1197,37 @@ def create_slides(evidence: dict, runs: list[dict], draft: bool = False, holdout
            "treinar todas as fontes. Uma pontuação maior no "
            "ranking público pode não se repetir na parte privada do teste.")
     if is_refit(selected):
+        refit_models = {run.get("model") for run in selected_members if is_refit(run)}
+        neural_full = full_realmlp_record(selected_members, runs)
         final_composition = ("Um GLM + um LightGBM, com composição congelada" if
                              selected.get("model") == "blend" and
-                             {run.get("model") for run in runs if is_refit(run)}.issuperset({"glm", "lightgbm"})
+                             refit_models.issuperset({"glm", "lightgbm"})
                              else "A configuração foi escolhida e congelada antes do refit")
         if (components_from(runs[:1]) and
-                {run.get("model") for run in runs if is_refit(run)}.issuperset({"offset", "lightgbm"})):
+                refit_models.issuperset({"offset", "lightgbm"})):
             final_composition = "Offset e LightGBM próprios refeitos; GPT-2 externo preservado"
-        pair("07 / Os experimentos", "Refit final: aprender novamente com todos os rótulos", [
+        if components_from(runs[:1]) and refit_models.issuperset({"offset", "lightgbm", "realmlp"}):
+            final_composition = "Offset, LightGBM e RealMLP próprios refeitos; GPT-2 externo preservado"
+        reused_trees = (neural_full and all((selected.get("reused_models") or {}).get(role, {}).get("new_fit") is False
+                                          for role in ("offset", "lightgbm")))
+        if reused_trees:
+            final_composition = "Offset e LightGBM full anteriores reutilizados; RealMLP nova; GPT-2 preservado"
+        refit_points = [
             f"Registros usados no refit: {number(rows.get('train'))}",
             final_composition,
-            "Parâmetros dos modelos são reaprendidos; hiperparâmetros e pesos da mistura ficam fixos",
+            ("Parâmetros da nova rede reaprendidos; modelos reutilizados e pesos da mistura ficam fixos" if reused_trees else
+             "Parâmetros dos modelos são reaprendidos; hiperparâmetros e pesos da mistura ficam fixos"),
+            *([f"RealMLP integral: {neural_full[2]} membros; E = {neural_full[1]}, mediana da CV; sem nova validação interna"] if neural_full else []),
             "Este refit não produz uma nova AUC OOF ou independente",
-        ], "Depois da seleção e da conferência registradas, o "
+        ]
+        pair("07 / Os experimentos", "Refit final: aprender novamente com todos os rótulos", refit_points,
+           ("Nesta execução, a rede foi treinada novamente com todos os rótulos. Os componentes offset e LightGBM "
+            "integrais anteriores foram reutilizados sem novos fits; o GPT-2 externo também foi preservado. "
+            if reused_trees else "") +
+           (f"São {neural_full[2]} membros neurais integrais por {neural_full[1]} épocas fixas, escolhidas pela mediana "
+            "das épocas da CV. Isso é diferente dos oitenta membros finais dos cinco folds históricos; "
+            "este ajuste não seleciona épocas numa nova validação interna. " if neural_full else "") +
+           "Depois da seleção e da conferência registradas, o "
            "refit usa todos os rótulos disponíveis. A configuração "
            "é mantida e os parâmetros do modelo são aprendidos "
            "novamente. Quando existe um número de épocas ou "

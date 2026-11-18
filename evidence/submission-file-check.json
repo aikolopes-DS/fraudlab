@@ -1,14 +1,14 @@
 {
-  "ref": 58483010,
-  "run": "round20-refit-joint-public25",
-  "submission_sha256": "3df0138f44e79314ceb4c2de22ab0fcb0e7fdcc051db24fcefd4c77bcf8677cf",
-  "downloaded_submission_sha256": "3df0138f44e79314ceb4c2de22ab0fcb0e7fdcc051db24fcefd4c77bcf8677cf",
+  "ref": 58490653,
+  "run": "round23-refit-realmlp-offset025-public25",
+  "submission_sha256": "937dc4dd355229bc49fda67c3099ea97867a23fb9c9bbe97a2bf57fae6cf24de",
+  "downloaded_submission_sha256": "937dc4dd355229bc49fda67c3099ea97867a23fb9c9bbe97a2bf57fae6cf24de",
   "submission_file_verified": true,
-  "public_auc": 0.95162,
-  "ranking": 657,
-  "total_teams": 2126,
-  "observed_at": "2026-11-17T21:59:16.262839+00:00",
+  "public_auc": 0.95183,
+  "ranking": 626,
+  "total_teams": 2135,
+  "observed_at": "2026-11-18T02:12:21.191510+00:00",
   "source": "https://www.kaggle.com/competitions/playground-series-s6e11/leaderboard",
-  "method": "Official Kaggle CLI downloaded the original submitted CSV; local/remote SHA256 matched",
-  "evidence_scope": "Selected R20 only; previous R18 proof remains in evidence/round18-public.json"
+  "method": "Official Kaggle CLI downloaded the original submitted CSV; complete SHA256 matched locally",
+  "evidence_scope": "Selected R23; previous R20/R22 proofs remain in their own immutable public records"
 }

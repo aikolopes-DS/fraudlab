@@ -6,9 +6,14 @@ import unittest
 
 from matplotlib.mathtext import MathTextParser
 
-from .content import create_slides, ensure_pairs
+from .content import create_slides, ensure_pairs, number, validate_evidence
 from .build import insert_code_slides
-from .realmlp import append_realmlp_pairs, realmlp_sources, resolved_realmlp
+from .realmlp import (
+    append_realmlp_pairs,
+    append_realmlp_result,
+    realmlp_sources,
+    resolved_realmlp,
+)
 from .test_continuation import collector
 
 
@@ -112,6 +117,142 @@ class RealMLPContentTests(unittest.TestCase):
         run["model_details"]["folds"] = [copy.deepcopy(run["model_details"]), second]
         with self.assertRaisesRegex(ValueError, "épocas selecionadas"):
             resolved_realmlp([run])
+
+    def test_full_refit_before_cv_does_not_steal_the_cv_architecture_or_oof(self):
+        cv = fixture()
+        full = {
+            "status": "complete",
+            "phase": "full_data_refit",
+            "model": "realmlp",
+            "roc_auc": None,
+        }
+        self.assertIs(resolved_realmlp([full, cv])[0], cv)
+        self.assertIsNone(resolved_realmlp([full]))
+
+    def test_real_result_grid_and_public_trial_need_matching_submission_hash(self):
+        slides, add, _ = collector()
+        own = fixture()
+        own["run_name"] = "real-cv"
+        offset = {"run_name": "offset", "model": "offset"}
+        tree = {"run_name": "tree", "model": "lightgbm"}
+        teacher = {"run_name": "teacher", "model": "external_gpt2"}
+        candidates = []
+        for fraction, auc in [
+            (0.1, 0.80001),
+            (0.25, 0.80002),
+            (0.5, 0.80000),
+            (1.0, 0.79999),
+        ]:
+            candidates.append(
+                {
+                    "run_name": str(fraction),
+                    "status": "complete",
+                    "model": "blend",
+                    "roc_auc": auc,
+                    "fold_scores": [auc] * 5,
+                    "submission_sha256": "a" * 64,
+                    "model_details": {
+                        "sources": ["offset", "real-cv", "tree", "teacher"],
+                        "weights": [
+                            0.5625 * (1 - fraction),
+                            0.5625 * fraction,
+                            0.1875,
+                            0.25,
+                        ],
+                    },
+                }
+            )
+        historical = {
+            "run": "0.25",
+            "submission_file_verified": True,
+            "submission_sha256": "b" * 64,
+            "submission_id": "fixture-trial",
+            "public_auc": 0.8,
+            "note": "Empate público; não promovida.",
+        }
+        runs = [own, offset, tree, teacher, *candidates]
+        append_realmlp_result(
+            add, runs, {"historical_submissions": [historical]}, number
+        )
+        self.assertIn("10%, 25%, 50%, 100%", slides[0].points[1])
+        self.assertIn("14,0625% RealMLP", slides[1].points[1])
+        self.assertFalse(
+            any("Envio fixture-trial" in point for point in slides[1].points)
+        )
+        historical["submission_sha256"] = "a" * 64
+        slides.clear()
+        append_realmlp_result(
+            add, runs, {"historical_submissions": [historical]}, number
+        )
+        self.assertIn("não promovida", slides[1].points[-1])
+        self.assertIn("Não atribuímos posição individual", slides[1].narration)
+
+    def test_full_recipe_requires_historical_cv_and_names_all_three_owned_components(
+        self,
+    ):
+        from .test_presentation import fixture as basic_fixture
+
+        evidence, mlp = basic_fixture()
+        cv = fixture()
+        cv.update(run_name="neural-cv", data_hashes=mlp["data_hashes"])
+        development = copy.deepcopy(mlp)
+        development.update(run_name="hybrid-cv", model="blend")
+        selection = {"reference_cv_run": "hybrid-cv", "development_roc_auc": 0.7}
+        components = []
+        for model in ("offset", "lightgbm", "realmlp"):
+            component = copy.deepcopy(mlp)
+            component.update(
+                run_name="full-" + model,
+                phase="full_data_refit",
+                model=model,
+                roc_auc=None,
+                selection=selection,
+                validation={"independent_holdout": False},
+            )
+            if model == "realmlp":
+                component.update(fold_scores=[], rows={**mlp["rows"], "oof": 0})
+                component["model_details"] = copy.deepcopy(cv["model_details"])
+                component["model_details"].update(
+                    refit_rows=mlp["rows"]["train"], validation_rows=0, epochs=2
+                )
+            components.append(component)
+        selected = copy.deepcopy(components[0])
+        selected.update(
+            run_name="full-recipe",
+            model="blend",
+            model_details={
+                "sources": [run["run_name"] for run in components],
+                "weights": [0.5, 0.25, 0.25],
+            },
+            external_components=[
+                {
+                    "trained_by": "fixture-author",
+                    "training_code_url": "source",
+                    "training_code_commit": "commit",
+                    "code_license": "MIT",
+                    "predictions_source_url": "source",
+                    "predictions_license": "CC BY 4.0",
+                }
+            ],
+        )
+        runs = [selected, *components, development, mlp]
+        with self.assertRaisesRegex(ValueError, "completed RealMLP CV"):
+            validate_evidence(evidence, runs, False)
+        slides = create_slides(evidence, [*runs, cv])
+        refit = next(slide for slide in slides if slide.title.startswith("Refit final"))
+        self.assertIn(
+            "Offset, LightGBM e RealMLP próprios refeitos; GPT-2 externo preservado",
+            refit.points,
+        )
+        self.assertIn(
+            "Este refit não produz uma nova AUC OOF ou independente", refit.points
+        )
+        invalid = copy.deepcopy([*runs, cv])
+        full_neural = next(run for run in invalid if run.get("model") == "realmlp"
+                           and run.get("phase") == "full_data_refit")
+        full_neural["rows"]["oof"] = 1
+        with self.assertRaisesRegex(ValueError, "ausência de nova OOF"):
+            validate_evidence(evidence, invalid, False)
 
     def test_realmlp_math_and_literal_code_stay_before_the_final_ranking(self):
         from .test_presentation import fixture as basic_fixture
