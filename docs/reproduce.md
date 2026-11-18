@@ -98,6 +98,51 @@ O script especializado verifica fonte limpa 8a1c7fd, hashes do plano, código, d
 
 A CLI comum `fraudlab refit` continua ligada ao seu contrato de holdout independente. A R20 usa o script acima porque sua seleção veio da CV exploratória. O ajuste em mais linhas não constitui uma nova estimativa local de desempenho. Sua [auditoria](../evidence/round20-verification.json) e [avaliação pública](../evidence/round20-public.json) têm registros separados.
 
+## Inferência R20 com modelos salvos
+
+Os dois refits auditados podem prever o lote oficial sem repetir treino ou aprender novos mapas. Execute a API abaixo numa sessão Python do ambiente com o núcleo 8a1c7fd. Os checkpoints locais precisam coincidir com a prova publicada; os CSVs públicos de GPT-2 correspondem somente aos IDs desse lote.
+
+```python
+import json
+from pathlib import Path
+import numpy as np
+import pandas as pd
+from fraudlab.data import fingerprint, submission, validate_submission
+from fraudlab.features import transform_features
+from fraudlab.models import predict_saved
+
+plan = json.loads(Path("evidence/round20-plan.json").read_text(encoding="utf-8"))
+proof = json.loads(Path("evidence/round20-verification.json").read_text(encoding="utf-8"))
+model_hashes = {item["role"]: item["model_sha256"] for item in proof["checkpoints"]}
+for name in ("test.csv", "sample_submission.csv"):
+    assert fingerprint(Path("data/raw") / name) == plan["data_hashes"][name]
+test = pd.read_csv("data/raw/test.csv")
+sample = pd.read_csv("data/raw/sample_submission.csv")
+scores = []
+for role, feature_set in (("offset", "joint_bpe"), ("lightgbm", "value_digits")):
+    checkpoint = Path("artifacts/runs") / plan["refit_names"][role] / "model"
+    assert fingerprint(checkpoint.with_suffix(".joblib")) == model_hashes[role]
+    features = transform_features(test.drop(columns="id"), feature_set)
+    score = predict_saved(role, checkpoint, features, "cpu")
+    assert np.isfinite(score).all() and ((score >= 0) & (score <= 1)).all()
+    scores.append(score)
+    del features
+external = Path(plan["inputs"]["external"]["path"]) / "predictions.csv"
+assert fingerprint(external) == plan["inputs"]["external"]["sha256"]["predictions.csv"]
+public = pd.read_csv(external)
+validate_submission(public, sample, "id", "is_fraud")
+probability = 0.5625 * scores[0] + 0.1875 * scores[1] + 0.25 * public["is_fraud"].to_numpy()
+result = submission(test["id"], probability, sample, "is_fraud")
+validate_submission(result, sample, "id", "is_fraud")
+output = Path(".local/replayed-r20.csv")
+output.parent.mkdir(parents=True, exist_ok=True)
+with output.open("x", encoding="utf-8", newline="") as stream:
+    result.to_csv(stream, index=False)
+print({"file": str(output), "sha256": fingerprint(output)})
+```
+
+Esse fluxo só faz inferência; não gera OOF, não calcula uma nova AUC e não submete o arquivo. A sigmoid do offset já inclui GLM e residual: não acrescente o `init_score` novamente. Mantenha os modelos e o componente externo auditados da mesma receita.
+
 ## R21: mistura aprendida com validação aninhada
 
 O [plano R21](../evidence/round21-plan.json) fixa três bases próprias: `round18-joint-bpe-pooled-offset`, `round19-transductive-pooled-offset` e `explore5-lgbm`. O método é `nested_owned_logit_holdout_stack`; o plano e os resultados efetivamente registrados determinam seu estado, sem score presumido nesta documentação.
@@ -115,6 +160,28 @@ python scripts/train_nested_stack.py --plan evidence/round21-plan.json --source-
 O protocolo prevê 15 novos fits-base e cinco metas, persistidos com hashes. A previsão própria de teste é a média de cinco probabilidades meta. Só depois entra o GPT-2: **75% stack próprio + 25% Masaya aprovado**. Os coeficientes aprendidos nos logits não são percentuais de probabilidade nem precisam somar um. Convergência inadequada invalida a execução, sem retry automático.
 
 O gate prospectivo exige híbrida acima da R18, delta estritamente maior que 0,0001 sobre a R10 e pelo menos quatro folds melhores que a R18. Não há novo holdout independente; a OOF continua exploratória. O script não submete ao Kaggle.
+
+## R22: inferência da comparação RealMLP
+
+A [R22](../evidence/round22-plan.json) é uma comparação separada da receita R20. Seu adaptador usa a biblioteca oficial PyTabKit 1.8.0: aprende 53 vistas dos 24 atributos brutos, escolhe E em 15% internos e descarta esse modelo antes de um ajuste novo no treino externo. O horizonte dos schedules permanece em três épocas mesmo quando E=1. Os mapas, vocabulários e pesos entram no bundle local `.pkl`; valores categóricos novos usam o índice zero.
+
+Para usar esse suporte, instale `python -m pip install -e ".[realmlp]"` no ambiente e selecione a fonte que contém R22, em vez da worktree histórica 8a1c7fd: no PowerShell, `$env:PYTHONPATH = (Resolve-Path src).Path`. O extra fixa as dependências oficiais e exige scikit-learn >=1.7. A inferência CPU não exige GPU.
+
+Após completar e auditar os cinco checkpoints do run, a API aceita apenas os 24 atributos brutos, sem `id` ou alvo. Em uma sessão Python com `test` carregado do CSV oficial:
+
+```python
+from pathlib import Path
+from fraudlab.models import predict_saved
+
+run = Path("artifacts/runs/round22-realmlp53")
+raw_features = test.drop(columns="id")
+probability = sum(
+    predict_saved("realmlp", run / f"fold-{fold}", raw_features, "cpu")
+    for fold in range(5)
+) / 5
+```
+
+Cada checkpoint reconstrói os mapas armazenados e a média das probabilidades de seus 16 membros; a média acima combina os cinco folds. Não ajuste transformadores durante a inferência nem passe dados por `joint_bpe` nesse modelo. O contrato não define refit RealMLP em 100% dos rótulos. Este exemplo não declara resultado competitivo, promoção ou checkpoints já concluídos; os resultados e a seleção seguem o plano e a auditoria da rodada.
 
 ## Resultado público e submissão
 
@@ -144,7 +211,7 @@ Para a suíte com as comparações neurais em CPU e os geradores:
 
 ```powershell
 python -m pip install "torch>=2.2,<3" --index-url https://download.pytorch.org/whl/cpu
-python -m pip install -e ".[dev,bpe,tabm,presentation]"
+python -m pip install -e ".[dev,bpe,tabm,realmlp,presentation]"
 python -m pytest tests presentation site/test_build.py
 ```
 
