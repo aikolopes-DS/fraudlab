@@ -332,9 +332,9 @@
     "tests": {
       "passed": 369,
       "subtests": 81,
-      "scope": "CI 17d43d7: core, scripts, apresentação e site; sem skips",
-      "observed_at": "2026-11-18T02:54:11Z",
-      "ci_url": "https://github.com/aikolopes-DS/fraudlab/actions/runs/44226439599"
+      "scope": "CI 7f6b0a5: core, scripts, apresentação e site; sem skips",
+      "observed_at": "2026-11-18T03:09:08Z",
+      "ci_url": "https://github.com/aikolopes-DS/fraudlab/actions/runs/44228205444"
     }
   }
 }
