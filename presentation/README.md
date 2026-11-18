@@ -4,26 +4,35 @@ O conteúdo liga os experimentos executados à participação documentada no Kag
 Não há limite fixo de duração. Cada slide técnico é seguido imediatamente por uma
 explicação simples com exemplo cotidiano; essa sequência é verificada no build.
 
-A [apresentação v0.3](https://github.com/aikolopes-DS/fraudlab/releases/tag/v0.3.0)
-tem **139 slides, 54min51s e 738 legendas**, com [player e slides](https://aikolopes-fraudlab.aikol9pes.chatgpt.site).
-Ela explica a R10: 56,25% offset com BPE e frequência, 18,75% LightGBM e 25% GPT-2
-público v2; inclui as MLPs e a TabM próprias como comparações. O snapshot é a
-submissão **58470267**, score **0,95134**, posição **723/2.112** em
-**17/11/2026 às 18h24 UTC**. A [prova audiovisual](../evidence/media.json) registra
-decodificação e ASR integrais e inspeção dos 139 quadros, sem declarar escuta
-humana ou reprodução contínua integral. As versões v0.1 e v0.2 permanecem históricas.
+A [apresentação v0.4.0 publicada](https://github.com/aikolopes-DS/fraudlab/releases/tag/v0.4.0)
+tem **198 slides, 78 pares técnico/exemplo, 62 fórmulas, 13 trechos de código,
+87min58s e 1.181 legendas**. O [site público](https://aikolopes-fraudlab.aikol9pes.chatgpt.site)
+oferece player, slides navegáveis e materiais; o [ZIP de entrega](https://github.com/aikolopes-DS/fraudlab/releases/download/v0.4.0/AED-FraudLab-entrega.zip)
+inclui a mídia, o snapshot e a fonte congelada em `17d43d70641f6cda4d09f2a797f633450dba42ec`.
 
-As fontes em edição para **v0.4** cobrem a R18, seu refit R20 e as comparações posteriores.
-Isso ainda não representa um novo vídeo publicado. A receita usa 56,25% de offset
-próprio com BPE, frequência, pooling e oito interações; 18,75% de LightGBM
-próprio e 25% de GPT-2 externo de Masaya Kawamata. As 92 colunas após engenharia
-produzem 223 entradas codificadas no offset; a R10 anterior tinha 191.
-OOF híbrida R18: **0,9516524825**, com melhora em cinco folds contra a R10.
-O refit R20 reaprendeu os dois componentes próprios nos 699.960 rótulos,
-sem nova OOF. Sua submissão **58483010** recebeu **0,95162** e posição
-**657/2.126** no snapshot de **17/11/2026 às 21h59min16s UTC**.
-O resultado ainda não alcançou as primeiras posições. A OOF R18 permanece
-uma referência histórica de seleção, sem atribuição ao arquivo do refit.
+A V04 explica a receita atual R23: **42,1875% offset próprio, 14,0625% RealMLP
+própria, 18,75% LightGBM próprio e 25% GPT-2 externo de Masaya Kawamata**.
+O snapshot é a submissão **58490653**, score **0,95183**, posição **626/2.135** em
+**18/11/2026 às 02h12min21s UTC**. A RealMLP integral usa 16 membros e três épocas,
+sem nova OOF. A referência OOF **0,9517074904** pertence à CV exploratória R22;
+o ranking continua provisório e as primeiras posições não foram alcançadas.
+
+A [prova audiovisual](../evidence/media.json) registra decodificação e ASR do
+áudio inteiro, além da revisão visual dos 198 slides. A [prova de publicação](../evidence/publication.json)
+separa a conferência do site e dos downloads públicos. ASR e quadros não equivalem
+a escuta humana ou reprodução contínua integral; o reconhecimento automático
+errou nomes e números em amostras, por isso os registros e as legendas do roteiro
+são as referências. No HTML a 390px, fórmulas longas podem exigir paisagem ou zoom.
+
+O [notebook V7](https://www.kaggle.com/code/aikoog/fraudlab-reproducible-neural-fraud-detection)
+foi salvo publicamente e [conferido por readback integral](../evidence/notebook-v7.json):
+45 células, 49 arquivos de fonte reconstituídos, contagens e outputs vazios.
+Ele preserva o baseline executável R18/R20 e um apêndice de fontes R23;
+não houve treinamento na nuvem.
+
+A [v0.3 histórica](https://github.com/aikolopes-DS/fraudlab/releases/tag/v0.3.0)
+preserva a R10 em 139 slides, 54min51s e 738 legendas, com submissão 58470267 e
+score 0,95134. As versões anteriores e seus snapshots permanecem históricos.
 
 ## Gerar
 
@@ -34,11 +43,15 @@ python -m presentation.build --help
 ```
 
 Uma versão final exige uma execução MLP real, mesmo quando outro modelo tiver
-produzido a submissão selecionada. Este exemplo prepara um preview marcado,
-sem voz ou vídeo, com métricas completas disponíveis localmente:
+produzido a submissão selecionada. O exemplo final V04 abaixo seleciona as métricas
+R23 e usa o snapshot congelado. Ele exige os artefatos locais das execuções,
+que não vêm no clone ou no ZIP público; uma nova exportação terá seus próprios
+hashes e QA. As comparações RealMLP R22 e o refit neural R23 são necessários
+para explicar a arquitetura, a seleção e o conjunto integral sem inventar OOF.
 
 ```powershell
 $fraudComparisons = @(
+  "round23-refit-realmlp", "round20-refit-joint-public25",
   "round20-refit-joint-offset", "round20-refit-lgbm",
   "round18-pooled-share100-public25", "round18-joint-bpe-pooled-offset",
   "round10-offset-bpe-frequency-public25", "round10-offset-bpe-frequency",
@@ -61,10 +74,10 @@ $fraudPresentationArgs = @()
 foreach ($fraudRun in $fraudComparisons) {
   $fraudPresentationArgs += @("--comparison", "artifacts/runs/$fraudRun/metrics.json")
 }
-python -m presentation.build --evidence evidence/public.json `
-  --metrics artifacts/runs/round20-refit-joint-public25/metrics.json `
+python -m presentation.build --evidence artifacts/presentation-input-v04/evidence.json `
+  --metrics artifacts/runs/round23-refit-realmlp-offset025-public25/metrics.json `
   @fraudPresentationArgs --historical-holdout artifacts/holdout/evaluation.json `
-  --output artifacts/presentation-v04-preview --draft
+  --output artifacts/presentation-v04-reproduzida --video
 ```
 
 `--comparison` pode ser repetido para incluir outras execuções. O build exige
@@ -95,13 +108,14 @@ e as cinco probabilidades são promediadas. As bases do meta-treino viram 60%
 dos rótulos totais, enquanto os checkpoints de inferência viram 80%; essa
 diferença de distribuição permanece uma limitação declarada. Esses
 conceitos são condicionados à evidência fornecida; um plano não vira treino
-executado. Para o vídeo final, congele todos os JSONs, forneça o snapshot em
+executado. Para uma nova exportação, congele todos os JSONs, forneça o snapshot em
 `--evidence`, selecione as métricas do CSV realmente enviado e remova `--draft`.
-Só então use `--video --output artifacts/presentation-v04`. As mídias anteriores
+O exemplo final acima já usa `--video` em um diretório novo. As mídias anteriores
 devem permanecer nos seus próprios diretórios e releases.
 
 Para regenerar com o mesmo snapshot de evidências publicado, extraia `evidence-snapshot.json`
-do ZIP v0.3 e use esse arquivo em `--evidence`. O arquivo `evidence/public.json`
+do ZIP v0.4 e use esse arquivo em `--evidence`. No ambiente da publicação, a cópia
+congelada é `artifacts/presentation-input-v04/evidence.json`. O arquivo `evidence/public.json`
 pode registrar consultas posteriores. Omitir `--historical-holdout` é permitido
 quando o relatório antigo não estiver disponível; ele não é exigido como uma
 reserva independente da R18. Artefatos e checkpoints locais não vêm no clone.
@@ -136,8 +150,9 @@ teve OOF **0,9501312331**; a melhor das quatro misturas declaradas teve
 10%, 25%, 50% ou 100% da parcela do offset por RealMLP. A mistura escolhida
 ficou em 42,1875% offset, 14,0625% RealMLP, 18,75% LightGBM e 25% GPT-2 externo.
 O envio **58489662** recebeu **0,95162**, empatou na precisão pública exibida e
-não foi promovido. A melhor submissão continua sendo a R20; não atribuímos à
-tentativa uma posição própria. Os refits de fold usaram E = [3, 2, 3, 3, 3]:
+não foi promovido naquele estágio. A R23 posterior refez a rede em todos os
+rótulos e alcançou 0,95183; não atribuímos à tentativa R22 uma posição própria.
+Os refits de fold usaram E = [3, 2, 3, 3, 3]:
 cinco conjuntos de 16 redes, ou 80 membros finais de CV, com 53 representações
 (20 numéricas e 33 categóricas). A duração registrada é tempo de parede dessa
 execução, sem benchmark controlado de velocidade.
@@ -155,9 +170,11 @@ A soma das perdas dos membros e a média das probabilidades de inferência
 permanecem operações distintas. Resultados só são mostrados quando métricas
 completas são fornecidas. Um componente RealMLP `full_data_refit` sem OOF é
 ignorado na escolha da arquitetura CV; a apresentação exige a fonte CV própria
-completa da R22 e mantém separados seus 80 membros de CV e um eventual conjunto
-de 16 membros em todos os rótulos. O refit completo R23 só será descrito quando
-suas métricas estiverem completas; não recebe nova AUC por herança.
+completa da R22 e mantém separados seus 80 membros de CV e o conjunto R23 de
+16 membros em todos os rótulos. O refit completo R23 foi concluído e auditado,
+com mediana E=3 congelada, zero OOF e nenhuma validação nesse novo ajuste.
+As métricas próprias completas e a referência CV R22 são fornecidas no exemplo;
+o refit não recebe nova AUC por herança.
 
 O campo `evidence.run.submission_sha256` deve corresponder ao hash de submissão
 nas métricas selecionadas. Sem essa correspondência, a versão final é recusada
@@ -227,6 +244,14 @@ coincidem com a requisição salva. Uma mudança em qualquer um desses campos
 invalida aquele trecho. Isso evita repetir a narração inteira após falha de rede.
 
 ## Revisar o vídeo exportado
+
+Exemplo para uma nova revisão dos artefatos V04 disponíveis localmente:
+
+```powershell
+python -m presentation.review --presentation-dir artifacts/presentation-v04 --asr --asr-model base --device cpu
+```
+
+Comando histórico da V03, somente para seus próprios artefatos:
 
 ```powershell
 python -m presentation.review --presentation-dir artifacts/presentation-v03 --asr --asr-model base --device cpu

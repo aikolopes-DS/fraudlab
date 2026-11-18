@@ -250,8 +250,8 @@
   "review_report_sha256": "f15ccb83c7214790729d1a327af2722ba780b35c6907f7198db89445bbdfaa15",
   "visual_review_sha256": "51254c0260c87eee38630bc08da4792dfafbfbc44784c50d90f44449ba337359",
   "release_url": "https://github.com/aikolopes-DS/fraudlab/releases/tag/v0.4.0",
-  "release_published": false,
-  "release_scope": "Assets prepared locally; this helper does not upload or verify a public release",
+  "release_published": true,
+  "release_scope": "All four v0.4 assets downloaded anonymously in full and matched to reviewed local bytes; ZIP entries and exact public Git source archive verified.",
   "history": [
     {
       "verified_at": "2026-11-16T18:15:19.771529+00:00",
@@ -1105,5 +1105,70 @@
       "bytes": 14360303,
       "sha256": "7c24a51e99745ebc02464ad9403588a210d766d72a2600d0f15e47eb97d33cf7"
     }
-  ]
+  ],
+  "release_verification": {
+    "verified_at_utc": "2026-11-18T02:57:27.329246+00:00",
+    "passed": true,
+    "url": "https://github.com/aikolopes-DS/fraudlab/releases/tag/v0.4.0",
+    "target": "17d43d70641f6cda4d09f2a797f633450dba42ec",
+    "source_commit": "17d43d70641f6cda4d09f2a797f633450dba42ec",
+    "assets": [
+      {
+        "name": "AED-FraudLab-entrega.zip",
+        "bytes": 113698088,
+        "sha256": "d6c8b11cd0c796da7829fae5802285dae22c9850f81da2edd992c1ae182d553c",
+        "url": "https://github.com/aikolopes-DS/fraudlab/releases/download/v0.4.0/AED-FraudLab-entrega.zip"
+      },
+      {
+        "name": "fraudlab-slides-legendas.zip",
+        "bytes": 14360303,
+        "sha256": "7c24a51e99745ebc02464ad9403588a210d766d72a2600d0f15e47eb97d33cf7",
+        "url": "https://github.com/aikolopes-DS/fraudlab/releases/download/v0.4.0/fraudlab-slides-legendas.zip"
+      },
+      {
+        "name": "SHA256SUMS.txt",
+        "bytes": 262,
+        "sha256": "cc4625c8ccc4a652940d784bf53880be3ca6c11ecb7fb5d7a8b3836dcac3309f",
+        "url": "https://github.com/aikolopes-DS/fraudlab/releases/download/v0.4.0/SHA256SUMS.txt"
+      },
+      {
+        "name": "video.mp4",
+        "bytes": 107713512,
+        "sha256": "475f8a7cf4535d6aac5edecf7ed569b14a6a388749e2ae13cfeada8835970daf",
+        "url": "https://github.com/aikolopes-DS/fraudlab/releases/download/v0.4.0/video.mp4"
+      }
+    ],
+    "anonymous_downloads_verified": true,
+    "personal_credentials_used": false,
+    "all_four_asset_bytes_hash_verified": true,
+    "source_archive_sha256": "8552af4d328ea378be38f55b3e7edd1f97f19a138ec0815ecbf2b7bf01dc4764",
+    "zip_integrity_and_exact_allowlists_verified": true,
+    "qa_reperformed": false,
+    "slides": 198,
+    "media_outputs_verified": 266,
+    "delivery_files_verified": 471,
+    "source_files_verified": 196,
+    "result_snapshot": {
+      "local_auc": 0.9517074903582017,
+      "fold_scores": [
+        0.9508397792121277,
+        0.9521231453682678,
+        0.9567561770742115,
+        0.9518950875493822,
+        0.9470391404103492
+      ],
+      "public_auc": 0.95183,
+      "ranking": 626,
+      "total_teams": 2135,
+      "submission_id": "58490653",
+      "observed_at": "2026-11-18T02:12:21.191510+00:00",
+      "local_auc_scope": "development_oof",
+      "local_auc_run": "round22-realmlp-offset025-public25",
+      "holdout_auc": null,
+      "holdout_observed_at": null,
+      "local_auc_note": "Historical exploratory R22 CV; R23 full-data refit has no new local AUC"
+    },
+    "manifest_sha256": "244242f0e02d0868addfd9da61faba44983d6e22a971d326e15965a421b85901",
+    "input_snapshot_sha256": "9414b9d1496ee3d8014ef5ca943674c654dc834c5cd0c9eaf3a6a68057577cce"
+  }
 }

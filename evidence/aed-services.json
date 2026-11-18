@@ -334,5 +334,13 @@
         "GitHub MP4/ZIP remote hashes are API digests matched to full local hashes; anonymous access was sampled. The checksum asset was fully downloaded and verified."
       ]
     }
-  ]
+  ],
+  "subsequent_publication_verification": {
+    "verified_at": "2026-11-18T03:06:05.889528+00:00",
+    "release": "evidence/delivery.json",
+    "site": "evidence/publication.json",
+    "site_version": 8,
+    "anonymous_full_assets_verified": 4,
+    "release_source": "17d43d70641f6cda4d09f2a797f633450dba42ec"
+  }
 }

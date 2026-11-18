@@ -1,169 +1,350 @@
 {
-  "observed_at": "2026-11-17T18:57:49.404186+00:00",
-  "scope": "Local software integration, published notebook comparison and real read-only Kaggle verification; GitHub-hosted CI recorded separately; no claim of competition victory",
+  "observed_at": "2026-11-18T03:06:05.889528+00:00",
+  "status": "passed_for_material_scope",
+  "scope": "Operational local training and official submission receipts, actual public source/notebook, complete automatic audiovisual checks, all-frame/source review, anonymous release readback, extracted offline flow and real deployed playback. This does not claim first places, a competition win, institutional upload or human continuous listening.",
   "software": {
-    "source_commit": "53dda3c35b9a851a299a112e64edd87d2a1588a1",
-    "passed": 172,
-    "subtests_passed": 53,
-    "test_command": "python -m pytest tests presentation site/test_build.py -q --junitxml=.local/research/aed-final/tests.xml",
-    "test_report_sha256": "69b251e3b95b9e8b20d3d8d972c6591954effbf4af6b282121f247b8902c34c6",
-    "node_syntax_check": "passed",
+    "checked_at": "2026-11-18T02:54:45.823534+00:00",
+    "status": "passed",
+    "scope": "Actual public GitHub CI, contract tests and manufactured integration experiments, plus site build. Competition submissions and audiovisual QA have separate evidence.",
+    "source_commit": "17d43d70641f6cda4d09f2a797f633450dba42ec",
+    "passed": 369,
+    "subtests_passed": 81,
+    "ci": {
+      "conclusion": "success",
+      "headSha": "17d43d70641f6cda4d09f2a797f633450dba42ec",
+      "status": "completed",
+      "updatedAt": "2026-11-18T02:54:11Z",
+      "url": "https://github.com/aikolopes-DS/fraudlab/actions/runs/44226439599"
+    },
+    "code_files_matched": 84,
     "tested_source_sha256": {
+      ".github/workflows/check.yml": "17ad2b316d69eb879d7ec1fedd6952ac12e874c638b47148655f805cce2022a4",
       "presentation/__init__.py": "eddcf4aa526255f1716fab49b85e12e9b30eae4b46c14752e96f880739fa8ee4",
       "presentation/audio_cache.py": "937bc91b4ca1f56601f0edb9f94939091983a638a007dd84c58e717aa217d8ea",
-      "presentation/build.py": "41c056f093b67d4b92e9dc92c0cb55c23ec4ccf58aa834d08eae371397d1d3d3",
-      "presentation/content.py": "444935f8b532eb78c41d74d7ab096c5e638d61717808e7329837a6a876cb25b0",
-      "presentation/continuation.py": "c10ac1615a8c01427ce7e7237ec7e11b22b8366285c527dd5d35563f82af1dd1",
-      "presentation/external.py": "aee5ae1868f1f308bef043104ab71a43b062795d19f4c80c973eb5e82a3eca9a",
+      "presentation/build.py": "171598a83b486adb91ee5bfb3745a64e8bbf4c19c5104b2569d90dbdd28e76c1",
+      "presentation/competitive.py": "bcd047f5e3543ceecb7098d3f1d018fb46dda980514b04a7b3a8e5c141dd9fef",
+      "presentation/content.py": "b4eed9471bf90489ba490d20847499413431a4321e98cb89c9e6d05b281feb28",
+      "presentation/continuation.py": "3ff1a83f4e4effbc5af169d60d47802aaf031da5ec82e5c02cf6fc69fecdf5d1",
+      "presentation/external.py": "2f7804140be50ceb9a68eab1364fd295e211a36e77c086ce85fa5410243a786c",
+      "presentation/realmlp.py": "11ce79a72ba59e535efc96d382614b33445366b2909a1e108c6732ca358ca385",
       "presentation/review.py": "1231c9b84f1fb40b988453185de1a3d00ea83298d49d2b6e96359336865d85fb",
-      "presentation/test_continuation.py": "a4cf4646c35a4c6a6dcc1afd9701fc7717ce2347384c4150f4afa5d3a6f81d6f",
+      "presentation/test_continuation.py": "faf25ad02ea76f6cebc922a45abcbc61ba359ed75dc98660dcb0efd0d844184f",
       "presentation/test_presentation.py": "436d75ea75fd0394275274c011c1929ac9c9edf22fa2a686c361cf2d5f7abfdc",
+      "presentation/test_realmlp.py": "ccfcc1c71db9c261e12eda604e0c069cbc930541cd41a0a8efcfb217e5caa8d7",
       "presentation/test_review.py": "aa39de53d548395ba15cf765e81d0db9119422395c585302ba3d696f90cfedb7",
-      "pyproject.toml": "0a585ebabb35661d195d4eda1dcf28f515cb53b130515573480820875db531cc",
+      "presentation/test_visual_layout.py": "b4c125a2b2f0692773da32c9249529f4b3cd85a9fc1a0c1e59d4961ece8b36b1",
+      "pyproject.toml": "a37ec35814d2017bb9c1459eb4be468351aa4d0bd0ab7e400b8713a51c368304",
       "scripts/compose_refit_hybrid.py": "b8f4dc258d454d5d9effd49bfa937e6020b054cafa6295b02a38ef4fe499b268",
       "scripts/export_metrics.py": "3ae3e85e730e313e1bfab247630820d0b1555b63682f642607142a56c8559ed6",
-      "scripts/kaggle_notebook.py": "e84a1e09f68a5085674a4300c891be108b99d91b85cb4749286100bbc3a1b579",
+      "scripts/kaggle_notebook.py": "31a300bdeaf63d6a68a1e22e698c713511b16f09170a565ff46c8ec8b8732d81",
       "scripts/package_delivery.py": "0c67d0bf2be8c11fc843e068524b056d0f652712bf043820fc5b08053183608b",
       "scripts/record_submission.py": "9d84ef5270087a2140c775cc7c1b3a066e0e9742bda2cf5478b5e79a0af3b173",
-      "site/app.js": "fabd14ce7205676caf52e60ae5827d5333f4c4b9e300a52fdbd81403fc08bceb",
-      "site/build.py": "4b07ff4f0d53be9a2fdaf432cb9f83fc0694e0ce0bce81cebecb18fa5358fd95",
+      "scripts/refit_neural_cv.py": "a25e9d6971f07a459e7de0532a64584f8e394d81e678c5b9ed641b166ac631e1",
+      "scripts/refit_selected_cv.py": "b58c0b9919a6aa17874170c3276cc528c26a86639c50012cb0a35aa26e3bc754",
+      "scripts/resume_neural_cv.py": "4bb48df2f5266626601016803581a0b0fa8354032a98b588d33039ccdeb60000",
+      "scripts/train_nested_stack.py": "30edbf3556db99c153e4a2e44006a5060ced6b7f94f96cc2ab0c09b4d3adb796",
+      "site/app.js": "ab47382658359e318d56365e405425f9b61727f5a377eb8cc61fb349c2fbdce7",
+      "site/build.py": "1acbc041109359b2da54dcfbb143a3af1c13eddd832b323f030613f614ff8a5a",
       "site/check_browser.py": "73f2c4e6b69b3cc7000d40f538fe3201fcc684761f38d8e0c015287b6313b7c3",
-      "site/test_build.py": "4efd586a907652911f3d01341c74a5b8e2e74480d686010cb6ce4bc5642ce92f",
+      "site/favicon.svg": "c8518aec7cb0d9b49189b44293ca1b1f0012fdcedb4578f89cd142535e61be49",
+      "site/index.html": "b5e74865b0f387dca7e306831183e8eec764bd706b40d099ad2e6f94a5cc475d",
+      "site/styles.css": "ab21920c6ba75032b887da5d6303cd9318c0684ff685c1ff4b6ce7b100bb69fd",
+      "site/test_build.py": "bfd3342e6692a17fbb82a062f9961befbe791ce4513702ff39191e1099309cfa",
       "src/fraudlab/__init__.py": "14479eff95a0233e8bf2d9f359843c36f53f36b92cc95c3e452f75bfb2982dcc",
-      "src/fraudlab/__main__.py": "1c5b2de2f4bab780c373271484a0d16af8c815714ad09af14e5396981a00bc21",
-      "src/fraudlab/bpe.py": "7adce2ce879679de655a040dffdf70ff2f3bfd65bb9458bfdf64eb21dcc08724",
+      "src/fraudlab/__main__.py": "ad2a700e81de61cd32f5885092d03ff1109a227dc50289df19b8b23f4bdbfd97",
+      "src/fraudlab/bpe.py": "fb71799ca075c657a8344f85d6a7e91653d1f319e24b5e287c17565cea456d4e",
       "src/fraudlab/data.py": "f22355cc51fa6e6162b24e639923f40a11a23af00afcb65553090176271c8326",
-      "src/fraudlab/experiment.py": "9477892179c938c43d2cd996cc36b5ecbe31de084650822a92530bda79a3679c",
+      "src/fraudlab/experiment.py": "51fab0578a28f05078148ace515191b993682c34f8afeb0d36f5d2c45d49951b",
       "src/fraudlab/external.py": "05ec4ec64e4a2c5cf1137c949646bed14fe83fb04506b8f2f973c2c7633c5e08",
-      "src/fraudlab/features.py": "3eaefb1484bc2b0d6b8d9a8ccdfcbfed7d0528e012308780a18fba4d0a8997b3",
-      "src/fraudlab/frequency.py": "6831c52335d82b7d6570ea2ba4cfd70ac5b6196406bc1a702f2740fe6cc257ff",
+      "src/fraudlab/features.py": "184fe327468194f34563b25aee2268348ca854d59e4916f8e3eacdd1b6420424",
+      "src/fraudlab/frequency.py": "de06b4f581f6864066d94b140d67e4ed16f7cef054a30ef20bc408a972279ce6",
       "src/fraudlab/holdout.py": "e3702891766326710c3b56dd7a7fe69f2f778acea3316665f130aa6955e2f4e3",
-      "src/fraudlab/models.py": "a62f2a1d2ae255141b6e5682333196164b0c27306196c6a6982dbe4ac0ca33ef",
+      "src/fraudlab/joints.py": "620851854c56aceceba02d5855fe22525e748973e80ffe0f83040f5e75a271e8",
+      "src/fraudlab/models.py": "761f72365c5d510bc77b217ccd51c3f5b46538263a5c7bf7965fbdccd02d1a77",
+      "src/fraudlab/neural_offset.py": "042eec5ea088477bb37b045ace2f537c6e6e39ff49b3e810dc5e501b4ea8e487",
       "src/fraudlab/offset.py": "a4ea551e4ddf89aedc87f313eb07425aebc60f7d967986524a873a73565fdc4f",
-      "src/fraudlab/refit.py": "b50d1ca94ca4379a8a78a82e5a085adfb8c54860854572dfae08e9514a58420e",
+      "src/fraudlab/original.py": "4db9d8d54929ba9d9a36fd55b8f8655611a800d22fade59af079e0497ce7b934",
+      "src/fraudlab/pooled.py": "6f15acb31c8a878efc262410a0ddf3f6b733b1a636a7bfa917758d568164601a",
+      "src/fraudlab/realmlp.py": "5bf0ec39dd482c71f82f30f6670082e2a2c70707cd5469ee9a64c486bdf4f278",
+      "src/fraudlab/refit.py": "0768665f10806858d9eeca83160bcb5b819d5417f26b775d3bc8262b988c01e4",
+      "src/fraudlab/scores.py": "8bae07482b56eb488a388c54ecd7ec0cf87a8644d9e98e53d7c1fcc75d2e58a1",
       "src/fraudlab/splits.py": "41215280332984010f5b616bbf6a675c623b7af3e3f00604eb3238e79c709af9",
+      "src/fraudlab/strings.py": "f3248a9c0e7bbda655e29ecac02886dfa4cd4f34f35007ad90cf99a17efccbb0",
       "src/fraudlab/tabm.py": "df22ff1a120c8a6fde59052ea7a1b509ff1b7e7acc83d774f670a1daf4a4e667",
+      "src/fraudlab/tokens.py": "8e3abfcbe2e437eee859d120f2a89b0a45bd84dfe389a06c11b622ee5ac9cbb4",
+      "src/fraudlab/transductive.py": "b2848df445f94d1135df27b99e7586048c279860b244dcf9544c30687263ca3b",
       "tests/test_bpe.py": "282cc43053c91c1af15bd03fdd27bf35bd2da3b3f4982fcadc510998caff15c4",
+      "tests/test_catboost.py": "68d619c4def55e8f5bb0607cc13d2cf9538d4a6cfc0761d9bbd5a453f777f32c",
       "tests/test_compose_refit_hybrid.py": "bb67c3a4554299a0290866c8e7b3541bf08640275024d6e6bc51d6ae04c5ea8b",
       "tests/test_contracts.py": "a8683e8946e0556f6115fc647e4c4e0ad57b382510f881d54453c3987714e717",
       "tests/test_experiments.py": "12a6e99503901ba16951449723f942955414405648136e908e18141307d87d59",
       "tests/test_external.py": "98f51f904ed51a6d3bb0ad385c46b28a2f5e49c842651e74fbfeb4516064a25d",
       "tests/test_frequency.py": "943051d264f00415c88f25b08dc6e52738799841fe9c1dc889d5b7e8df374ecb",
       "tests/test_glm_encoding.py": "ba4e681e57c96d238af0f62dbcad04599bebe818524ad8b9a37291099a2821a5",
+      "tests/test_joints.py": "ac5acb0035ee2d7cb2682e0b9106d6b0e73cad847dc788b030b1f2a8601c0c63",
+      "tests/test_kaggle_notebook.py": "f0c151f80822ebb13a1ecc81f0c49e690851a24c647d5aa90f4229e269205115",
+      "tests/test_nested_stack.py": "d76d1471eaa27b436db8f7ef61ada7c38826bfcd38d90e7803685ef5feb68623",
+      "tests/test_neural_offset.py": "6c12f85bc85e858ef6bb05a3edb32faddb4c12b4134d68cbddb681b8e2ac9f4c",
       "tests/test_offset.py": "9a6e89cca96403095367e70b8300973384552625e69b15a61b36304e806606ca",
+      "tests/test_original.py": "46a8ff19d6d289b433d5d0bc6ce235b3f1f37606f3a3f40bd72f0feeda74e98d",
       "tests/test_package_delivery.py": "14165ff4be5d81de755d4777db1d49f45c3ccf629d3f3ce745b315c58b98efe8",
       "tests/test_pairs.py": "51a2b532b64abe83d64de363a0a9000c82fce28f44f8c5cb26be14a27671feee",
+      "tests/test_pooled.py": "8ae47c5723df42b6c764906443d077723cdf448d96594d6006010e5658a8f2ab",
+      "tests/test_realmlp.py": "f163d85e759de3e89e7daab869fdd5d3cd7397a95cc7ae9e2cf46393b02e66eb",
       "tests/test_record_submission.py": "4137d8db2e5cd0eb80405f676fac1e5e3d96d4a45de0654af7fe913390e09362",
+      "tests/test_refit_neural_cv.py": "2b2a36069ce21709217677ad27ec784200422f79aedc8b12710c988eb67a353f",
+      "tests/test_refit_selected_cv.py": "93401cb6c4d0706229222a7bca38be67f8816cb2f5acbcf67c9feddf6f26a2c6",
+      "tests/test_resume_neural_cv.py": "38c1f46cc021b7741c7829775dea131446853b0869f043e204efe47ff843b088",
+      "tests/test_scores.py": "ae825d08e9eb8d05a34344b0be139cf6e5111238b066484a311e24c32f47e4c1",
       "tests/test_sparse_glm.py": "44d67dc1561c4402dd595dcfa196e668b0446a19035661fae3e980e79cdc1235",
       "tests/test_splines.py": "d5b247a3501bfcaaca501e6c8ea44080482a8bac33c918db1d5e6045b19aeaed",
-      "tests/test_tabm.py": "42c5881f43c55c9bd07bf8aa0d6228bce9a2da64f9120dc2b6c2ef1cf91f65e7"
+      "tests/test_strings.py": "29c772f7539fda3f8cdd2b6e8dcecec059fb415ebb3c7df91fe5cac681188c83",
+      "tests/test_tabm.py": "42c5881f43c55c9bd07bf8aa0d6228bce9a2da64f9120dc2b6c2ef1cf91f65e7",
+      "tests/test_tokens.py": "f848ad70d4b8938ec9c2c3f2a9c6079cbf8394db59ea7a1b6ad3610396ee298c",
+      "tests/test_transductive.py": "47852e5a7bf9ee6ecb00edbdb0d34cb8aa925875e77afd3d24d9e1d8a0623f1c"
     },
-    "published_notebook": {
-      "checked_at_utc": "2026-11-17T14:13:45.814953+00:00",
-      "url": "https://www.kaggle.com/code/aikoog/fraudlab-reproducible-neural-fraud-detection",
-      "version": 5,
-      "version_api_ref": "aikoog/fraudlab-reproducible-neural-fraud-detection/5",
-      "saved_without_running": true,
-      "push_result": "Kernel version 5 successfully saved without running.",
-      "published_source_commit": "bb60270",
-      "linked_ml_source_commit": "169f3ee5cdfbb2afe16c942a7af0efb8b12a403f",
-      "checks": {
-        "version_confirmed_by_official_get_kernel": true,
-        "all_cell_types_sources_execution_counts_outputs_equal": true,
-        "cells_compared": 22,
-        "code_cells_compared": 15,
-        "all_execution_counts_null": true,
-        "all_outputs_empty": true,
-        "official_version_pull_matches_local": true,
-        "official_get_kernel_source_matches_local": true,
-        "competition_sources_match": true,
-        "dataset_sources_match_after_api_version_normalization": true,
-        "internet_disabled": true,
-        "gpu_disabled": true,
-        "public_notebook": true
+    "working_files_normalized_to_tracked_LF_only": [],
+    "history": [
+      {
+        "checked_at": "2026-11-18T01:27:11.152341+00:00",
+        "status": "passed",
+        "scope": "Real public GitHub CI: contract tests and manufactured integration experiments, plus site build. This does not prove competition victory, cloud notebook training or final audiovisual delivery.",
+        "source_commit": "cab2650f5c0558c29e9c3493197bd09e2bcf3a15",
+        "passed": 351,
+        "subtests_passed": 72,
+        "ci": {
+          "conclusion": "success",
+          "headSha": "cab2650f5c0558c29e9c3493197bd09e2bcf3a15",
+          "status": "completed",
+          "updatedAt": "2026-11-17T23:20:31Z",
+          "url": "https://github.com/aikolopes-DS/fraudlab/actions/runs/44198322482"
+        },
+        "tested_source_sha256": {
+          ".github/workflows/check.yml": "d9df03c99e883c95bd8366fdadd9dffcd412f5f321fd8242b8ac70c41f13b48a",
+          "presentation/__init__.py": "eddcf4aa526255f1716fab49b85e12e9b30eae4b46c14752e96f880739fa8ee4",
+          "presentation/audio_cache.py": "937bc91b4ca1f56601f0edb9f94939091983a638a007dd84c58e717aa217d8ea",
+          "presentation/build.py": "41c056f093b67d4b92e9dc92c0cb55c23ec4ccf58aa834d08eae371397d1d3d3",
+          "presentation/competitive.py": "bcd047f5e3543ceecb7098d3f1d018fb46dda980514b04a7b3a8e5c141dd9fef",
+          "presentation/content.py": "8db340eae0cd8eff027e84c1aee8ea43f34ede4425265bb89ffadb472c7f16fc",
+          "presentation/continuation.py": "3ff1a83f4e4effbc5af169d60d47802aaf031da5ec82e5c02cf6fc69fecdf5d1",
+          "presentation/external.py": "2f7804140be50ceb9a68eab1364fd295e211a36e77c086ce85fa5410243a786c",
+          "presentation/realmlp.py": "cfec18c17dde71e64a4cffea5623e271d7167c7ffb5a78ad54afc706fe7fbca5",
+          "presentation/review.py": "1231c9b84f1fb40b988453185de1a3d00ea83298d49d2b6e96359336865d85fb",
+          "presentation/test_continuation.py": "faf25ad02ea76f6cebc922a45abcbc61ba359ed75dc98660dcb0efd0d844184f",
+          "presentation/test_presentation.py": "436d75ea75fd0394275274c011c1929ac9c9edf22fa2a686c361cf2d5f7abfdc",
+          "presentation/test_realmlp.py": "faae4986bb5a86ea9ee3d5577c39ecb7d82a0da9ca94357d657b68edfff58f0c",
+          "presentation/test_review.py": "aa39de53d548395ba15cf765e81d0db9119422395c585302ba3d696f90cfedb7",
+          "pyproject.toml": "a37ec35814d2017bb9c1459eb4be468351aa4d0bd0ab7e400b8713a51c368304",
+          "scripts/compose_refit_hybrid.py": "b8f4dc258d454d5d9effd49bfa937e6020b054cafa6295b02a38ef4fe499b268",
+          "scripts/export_metrics.py": "3ae3e85e730e313e1bfab247630820d0b1555b63682f642607142a56c8559ed6",
+          "scripts/kaggle_notebook.py": "e3e50c95c9727b2dc6d356f1779c62297da4bf7b476aab9e33707c0b2f4893be",
+          "scripts/package_delivery.py": "0c67d0bf2be8c11fc843e068524b056d0f652712bf043820fc5b08053183608b",
+          "scripts/record_submission.py": "9d84ef5270087a2140c775cc7c1b3a066e0e9742bda2cf5478b5e79a0af3b173",
+          "scripts/refit_selected_cv.py": "b58c0b9919a6aa17874170c3276cc528c26a86639c50012cb0a35aa26e3bc754",
+          "scripts/resume_neural_cv.py": "4bb48df2f5266626601016803581a0b0fa8354032a98b588d33039ccdeb60000",
+          "scripts/train_nested_stack.py": "30edbf3556db99c153e4a2e44006a5060ced6b7f94f96cc2ab0c09b4d3adb796",
+          "site/app.js": "fabd14ce7205676caf52e60ae5827d5333f4c4b9e300a52fdbd81403fc08bceb",
+          "site/build.py": "4b07ff4f0d53be9a2fdaf432cb9f83fc0694e0ce0bce81cebecb18fa5358fd95",
+          "site/check_browser.py": "73f2c4e6b69b3cc7000d40f538fe3201fcc684761f38d8e0c015287b6313b7c3",
+          "site/favicon.svg": "c8518aec7cb0d9b49189b44293ca1b1f0012fdcedb4578f89cd142535e61be49",
+          "site/index.html": "d742f6c7a260b7bae236bea10f68697b2241ec237f28c758a41c3de69e16f781",
+          "site/styles.css": "ce728b34d730e2ccf34ac90d8a77f0e367410f7d70397adbf06d8b1658c4eb18",
+          "site/test_build.py": "4efd586a907652911f3d01341c74a5b8e2e74480d686010cb6ce4bc5642ce92f",
+          "src/fraudlab/__init__.py": "14479eff95a0233e8bf2d9f359843c36f53f36b92cc95c3e452f75bfb2982dcc",
+          "src/fraudlab/__main__.py": "ad2a700e81de61cd32f5885092d03ff1109a227dc50289df19b8b23f4bdbfd97",
+          "src/fraudlab/bpe.py": "fb71799ca075c657a8344f85d6a7e91653d1f319e24b5e287c17565cea456d4e",
+          "src/fraudlab/data.py": "f22355cc51fa6e6162b24e639923f40a11a23af00afcb65553090176271c8326",
+          "src/fraudlab/experiment.py": "51fab0578a28f05078148ace515191b993682c34f8afeb0d36f5d2c45d49951b",
+          "src/fraudlab/external.py": "05ec4ec64e4a2c5cf1137c949646bed14fe83fb04506b8f2f973c2c7633c5e08",
+          "src/fraudlab/features.py": "184fe327468194f34563b25aee2268348ca854d59e4916f8e3eacdd1b6420424",
+          "src/fraudlab/frequency.py": "de06b4f581f6864066d94b140d67e4ed16f7cef054a30ef20bc408a972279ce6",
+          "src/fraudlab/holdout.py": "e3702891766326710c3b56dd7a7fe69f2f778acea3316665f130aa6955e2f4e3",
+          "src/fraudlab/joints.py": "620851854c56aceceba02d5855fe22525e748973e80ffe0f83040f5e75a271e8",
+          "src/fraudlab/models.py": "761f72365c5d510bc77b217ccd51c3f5b46538263a5c7bf7965fbdccd02d1a77",
+          "src/fraudlab/neural_offset.py": "042eec5ea088477bb37b045ace2f537c6e6e39ff49b3e810dc5e501b4ea8e487",
+          "src/fraudlab/offset.py": "a4ea551e4ddf89aedc87f313eb07425aebc60f7d967986524a873a73565fdc4f",
+          "src/fraudlab/original.py": "4db9d8d54929ba9d9a36fd55b8f8655611a800d22fade59af079e0497ce7b934",
+          "src/fraudlab/pooled.py": "6f15acb31c8a878efc262410a0ddf3f6b733b1a636a7bfa917758d568164601a",
+          "src/fraudlab/realmlp.py": "5bf0ec39dd482c71f82f30f6670082e2a2c70707cd5469ee9a64c486bdf4f278",
+          "src/fraudlab/refit.py": "0768665f10806858d9eeca83160bcb5b819d5417f26b775d3bc8262b988c01e4",
+          "src/fraudlab/scores.py": "8bae07482b56eb488a388c54ecd7ec0cf87a8644d9e98e53d7c1fcc75d2e58a1",
+          "src/fraudlab/splits.py": "41215280332984010f5b616bbf6a675c623b7af3e3f00604eb3238e79c709af9",
+          "src/fraudlab/strings.py": "f3248a9c0e7bbda655e29ecac02886dfa4cd4f34f35007ad90cf99a17efccbb0",
+          "src/fraudlab/tabm.py": "df22ff1a120c8a6fde59052ea7a1b509ff1b7e7acc83d774f670a1daf4a4e667",
+          "src/fraudlab/tokens.py": "8e3abfcbe2e437eee859d120f2a89b0a45bd84dfe389a06c11b622ee5ac9cbb4",
+          "src/fraudlab/transductive.py": "b2848df445f94d1135df27b99e7586048c279860b244dcf9544c30687263ca3b",
+          "tests/test_bpe.py": "282cc43053c91c1af15bd03fdd27bf35bd2da3b3f4982fcadc510998caff15c4",
+          "tests/test_catboost.py": "68d619c4def55e8f5bb0607cc13d2cf9538d4a6cfc0761d9bbd5a453f777f32c",
+          "tests/test_compose_refit_hybrid.py": "bb67c3a4554299a0290866c8e7b3541bf08640275024d6e6bc51d6ae04c5ea8b",
+          "tests/test_contracts.py": "a8683e8946e0556f6115fc647e4c4e0ad57b382510f881d54453c3987714e717",
+          "tests/test_experiments.py": "12a6e99503901ba16951449723f942955414405648136e908e18141307d87d59",
+          "tests/test_external.py": "98f51f904ed51a6d3bb0ad385c46b28a2f5e49c842651e74fbfeb4516064a25d",
+          "tests/test_frequency.py": "943051d264f00415c88f25b08dc6e52738799841fe9c1dc889d5b7e8df374ecb",
+          "tests/test_glm_encoding.py": "ba4e681e57c96d238af0f62dbcad04599bebe818524ad8b9a37291099a2821a5",
+          "tests/test_joints.py": "ac5acb0035ee2d7cb2682e0b9106d6b0e73cad847dc788b030b1f2a8601c0c63",
+          "tests/test_nested_stack.py": "d76d1471eaa27b436db8f7ef61ada7c38826bfcd38d90e7803685ef5feb68623",
+          "tests/test_neural_offset.py": "6c12f85bc85e858ef6bb05a3edb32faddb4c12b4134d68cbddb681b8e2ac9f4c",
+          "tests/test_offset.py": "9a6e89cca96403095367e70b8300973384552625e69b15a61b36304e806606ca",
+          "tests/test_original.py": "46a8ff19d6d289b433d5d0bc6ce235b3f1f37606f3a3f40bd72f0feeda74e98d",
+          "tests/test_package_delivery.py": "14165ff4be5d81de755d4777db1d49f45c3ccf629d3f3ce745b315c58b98efe8",
+          "tests/test_pairs.py": "51a2b532b64abe83d64de363a0a9000c82fce28f44f8c5cb26be14a27671feee",
+          "tests/test_pooled.py": "8ae47c5723df42b6c764906443d077723cdf448d96594d6006010e5658a8f2ab",
+          "tests/test_realmlp.py": "f163d85e759de3e89e7daab869fdd5d3cd7397a95cc7ae9e2cf46393b02e66eb",
+          "tests/test_record_submission.py": "4137d8db2e5cd0eb80405f676fac1e5e3d96d4a45de0654af7fe913390e09362",
+          "tests/test_refit_selected_cv.py": "93401cb6c4d0706229222a7bca38be67f8816cb2f5acbcf67c9feddf6f26a2c6",
+          "tests/test_resume_neural_cv.py": "38c1f46cc021b7741c7829775dea131446853b0869f043e204efe47ff843b088",
+          "tests/test_scores.py": "ae825d08e9eb8d05a34344b0be139cf6e5111238b066484a311e24c32f47e4c1",
+          "tests/test_sparse_glm.py": "44d67dc1561c4402dd595dcfa196e668b0446a19035661fae3e980e79cdc1235",
+          "tests/test_splines.py": "d5b247a3501bfcaaca501e6c8ea44080482a8bac33c918db1d5e6045b19aeaed",
+          "tests/test_strings.py": "29c772f7539fda3f8cdd2b6e8dcecec059fb415ebb3c7df91fe5cac681188c83",
+          "tests/test_tabm.py": "42c5881f43c55c9bd07bf8aa0d6228bce9a2da64f9120dc2b6c2ef1cf91f65e7",
+          "tests/test_tokens.py": "f848ad70d4b8938ec9c2c3f2a9c6079cbf8394db59ea7a1b6ad3610396ee298c",
+          "tests/test_transductive.py": "47852e5a7bf9ee6ecb00edbdb0d34cb8aa925875e77afd3d24d9e1d8a0623f1c"
+        },
+        "code_files_matched": 80,
+        "local_presentation_site_check": {
+          "passed": 82,
+          "subtests_passed": 72,
+          "report_sha256": "61cdfb72cb73d5ea01b9a8387e5da9a56e3ed5e4f83c924195c334f64d7e5910",
+          "scope": "Actual local presentation/site contracts; no model fit or AV review in this command"
+        },
+        "working_files_normalized_to_tracked_LF_only": [
+          "site/index.html",
+          "site/styles.css"
+        ]
       },
-      "input_config": {
-        "local_dataset_sources": [
-          "masayakawamata/s6e11-gpt2-target-first-oof/2"
-        ],
-        "remote_dataset_sources": [
-          "masayakawamata/s6e11-gpt2-target-first-oof"
-        ],
-        "competition_sources": [
-          "playground-series-s6e11"
-        ],
-        "enable_internet": false,
-        "dataset_version_note": "Official pull metadata returns the dataset slug without /2. Local push requested version2; unchanged notebook importer retains v2 and its pinned byte hashes. No cloud input execution or mounted bytes were checked."
-      },
-      "hashes": {
-        "local_notebook_sha256": "e4100ebdc7842afa1662e30b668fe44b18e128a260cfb690684f4e119000b52d",
-        "remote_pulled_notebook_sha256": "a1a3523f236a91f04f0d9177922394b71b385203786f3b1c41ecee4b0d2e5bdd",
-        "local_config_sha256": "3727cc3c8ec59a6521f8f8a21a6c21fa5b622f08c3c1bc0ca4ce023266ff01d4",
-        "remote_metadata_sha256": "c37215a3e1d6048ca4f58c42f8d97edf1d2ef9d477ea8c2516dfcd65fab024fa",
-        "normalized_all_cells_local_sha256": "deddc2939d05a7536d989566744ef2721277ed946d43f9881afb34e384f99079",
-        "normalized_all_cells_remote_sha256": "deddc2939d05a7536d989566744ef2721277ed946d43f9881afb34e384f99079"
-      },
-      "scope": "Published an unexecuted notebook update and verified source/config through official Kaggle services. No cloud training, cloud predictions or cloud submission were executed."
-    },
-    "secret_scan": {
-      "scope": "Tracked public files, high-confidence patterns; not an exhaustive security audit",
-      "files_checked": 107,
-      "findings": []
-    },
-    "release_code_commit": "ef07bdc9f0e07a34d5082a04df956332fbe7df84"
-  },
-  "kaggle_recorder_real_service_check": {
-    "ref": 58470267,
-    "run": "round10-offset-bpe-frequency-public25",
-    "submission_sha256": "274cbe4ea90d9dc4893140cad55682f3627ced02163fff48655df4b095e428e7",
-    "downloaded_submission_sha256": "274cbe4ea90d9dc4893140cad55682f3627ced02163fff48655df4b095e428e7",
-    "submission_file_verified": true,
-    "public_auc": 0.95134,
-    "ranking": 712,
-    "total_teams": 2089,
-    "observed_at": "2026-11-17T13:34:51.848445+00:00",
-    "source": "https://www.kaggle.com/competitions/playground-series-s6e11/leaderboard",
-    "scope": "Official Kaggle completed submission, original uploaded bytes matched to local CSV by SHA-256, and fresh matching best leaderboard row.",
-    "passed": true
-  },
-  "submission_file_proof": "evidence/submission-file-check.json",
-  "independent_code_review": {
-    "result": "Accepted after fixes; no remaining material findings in the final reviewed scope",
-    "fixed": [
-      "Require original Kaggle upload bytes before binding a score to a local CSV",
-      "Preserve public composition only for the same run and submission hash",
-      "Capture input hashes before long presentation generation and reject changed inputs",
-      "Hash timeline.json before audiovisual review",
-      "Encode video into an exclusive temporary file, validate, then atomically replace"
-    ],
-    "scope": "Training protocol, public source attribution, notebook generation, submission recorder, presentation export/review and site evidence boundaries",
-    "aed_final_complement": {
-      "scope": "Proposal ordering, one-hot and TabM architecture explanations, MLP preprocessing association, and delivery packaging",
-      "reviewed_by": [
-        "root",
-        "apresentacao",
-        "sparse_glm",
-        "tabm_model"
-      ],
-      "remaining_material_findings": [],
-      "packaging_tests_use_fabricated_media": true
-    }
+      {
+        "checked_at": "2026-11-18T02:49:23.733370+00:00",
+        "status": "passed",
+        "scope": "Actual public GitHub CI, contract tests and manufactured integration experiments, plus site build. Competition submissions and audiovisual QA have separate evidence.",
+        "source_commit": "c21414a4ebd9acedca7b65ced95402bba1ffa299",
+        "passed": 369,
+        "subtests_passed": 81,
+        "ci": {
+          "conclusion": "success",
+          "headSha": "c21414a4ebd9acedca7b65ced95402bba1ffa299",
+          "status": "completed",
+          "updatedAt": "2026-11-18T02:48:06Z",
+          "url": "https://github.com/aikolopes-DS/fraudlab/actions/runs/44225647965"
+        },
+        "code_files_matched": 84,
+        "tested_source_sha256": {
+          ".github/workflows/check.yml": "17ad2b316d69eb879d7ec1fedd6952ac12e874c638b47148655f805cce2022a4",
+          "presentation/__init__.py": "eddcf4aa526255f1716fab49b85e12e9b30eae4b46c14752e96f880739fa8ee4",
+          "presentation/audio_cache.py": "937bc91b4ca1f56601f0edb9f94939091983a638a007dd84c58e717aa217d8ea",
+          "presentation/build.py": "171598a83b486adb91ee5bfb3745a64e8bbf4c19c5104b2569d90dbdd28e76c1",
+          "presentation/competitive.py": "bcd047f5e3543ceecb7098d3f1d018fb46dda980514b04a7b3a8e5c141dd9fef",
+          "presentation/content.py": "b4eed9471bf90489ba490d20847499413431a4321e98cb89c9e6d05b281feb28",
+          "presentation/continuation.py": "3ff1a83f4e4effbc5af169d60d47802aaf031da5ec82e5c02cf6fc69fecdf5d1",
+          "presentation/external.py": "2f7804140be50ceb9a68eab1364fd295e211a36e77c086ce85fa5410243a786c",
+          "presentation/realmlp.py": "11ce79a72ba59e535efc96d382614b33445366b2909a1e108c6732ca358ca385",
+          "presentation/review.py": "1231c9b84f1fb40b988453185de1a3d00ea83298d49d2b6e96359336865d85fb",
+          "presentation/test_continuation.py": "faf25ad02ea76f6cebc922a45abcbc61ba359ed75dc98660dcb0efd0d844184f",
+          "presentation/test_presentation.py": "436d75ea75fd0394275274c011c1929ac9c9edf22fa2a686c361cf2d5f7abfdc",
+          "presentation/test_realmlp.py": "ccfcc1c71db9c261e12eda604e0c069cbc930541cd41a0a8efcfb217e5caa8d7",
+          "presentation/test_review.py": "aa39de53d548395ba15cf765e81d0db9119422395c585302ba3d696f90cfedb7",
+          "presentation/test_visual_layout.py": "b4c125a2b2f0692773da32c9249529f4b3cd85a9fc1a0c1e59d4961ece8b36b1",
+          "pyproject.toml": "a37ec35814d2017bb9c1459eb4be468351aa4d0bd0ab7e400b8713a51c368304",
+          "scripts/compose_refit_hybrid.py": "b8f4dc258d454d5d9effd49bfa937e6020b054cafa6295b02a38ef4fe499b268",
+          "scripts/export_metrics.py": "3ae3e85e730e313e1bfab247630820d0b1555b63682f642607142a56c8559ed6",
+          "scripts/kaggle_notebook.py": "31a300bdeaf63d6a68a1e22e698c713511b16f09170a565ff46c8ec8b8732d81",
+          "scripts/package_delivery.py": "0c67d0bf2be8c11fc843e068524b056d0f652712bf043820fc5b08053183608b",
+          "scripts/record_submission.py": "9d84ef5270087a2140c775cc7c1b3a066e0e9742bda2cf5478b5e79a0af3b173",
+          "scripts/refit_neural_cv.py": "a25e9d6971f07a459e7de0532a64584f8e394d81e678c5b9ed641b166ac631e1",
+          "scripts/refit_selected_cv.py": "b58c0b9919a6aa17874170c3276cc528c26a86639c50012cb0a35aa26e3bc754",
+          "scripts/resume_neural_cv.py": "4bb48df2f5266626601016803581a0b0fa8354032a98b588d33039ccdeb60000",
+          "scripts/train_nested_stack.py": "30edbf3556db99c153e4a2e44006a5060ced6b7f94f96cc2ab0c09b4d3adb796",
+          "site/app.js": "ab47382658359e318d56365e405425f9b61727f5a377eb8cc61fb349c2fbdce7",
+          "site/build.py": "1acbc041109359b2da54dcfbb143a3af1c13eddd832b323f030613f614ff8a5a",
+          "site/check_browser.py": "73f2c4e6b69b3cc7000d40f538fe3201fcc684761f38d8e0c015287b6313b7c3",
+          "site/favicon.svg": "c8518aec7cb0d9b49189b44293ca1b1f0012fdcedb4578f89cd142535e61be49",
+          "site/index.html": "b9c520a26a2d1a634eea11a64d28e5fb47450fb600fec7990949a134b0ee860e",
+          "site/styles.css": "ab21920c6ba75032b887da5d6303cd9318c0684ff685c1ff4b6ce7b100bb69fd",
+          "site/test_build.py": "bfd3342e6692a17fbb82a062f9961befbe791ce4513702ff39191e1099309cfa",
+          "src/fraudlab/__init__.py": "14479eff95a0233e8bf2d9f359843c36f53f36b92cc95c3e452f75bfb2982dcc",
+          "src/fraudlab/__main__.py": "ad2a700e81de61cd32f5885092d03ff1109a227dc50289df19b8b23f4bdbfd97",
+          "src/fraudlab/bpe.py": "fb71799ca075c657a8344f85d6a7e91653d1f319e24b5e287c17565cea456d4e",
+          "src/fraudlab/data.py": "f22355cc51fa6e6162b24e639923f40a11a23af00afcb65553090176271c8326",
+          "src/fraudlab/experiment.py": "51fab0578a28f05078148ace515191b993682c34f8afeb0d36f5d2c45d49951b",
+          "src/fraudlab/external.py": "05ec4ec64e4a2c5cf1137c949646bed14fe83fb04506b8f2f973c2c7633c5e08",
+          "src/fraudlab/features.py": "184fe327468194f34563b25aee2268348ca854d59e4916f8e3eacdd1b6420424",
+          "src/fraudlab/frequency.py": "de06b4f581f6864066d94b140d67e4ed16f7cef054a30ef20bc408a972279ce6",
+          "src/fraudlab/holdout.py": "e3702891766326710c3b56dd7a7fe69f2f778acea3316665f130aa6955e2f4e3",
+          "src/fraudlab/joints.py": "620851854c56aceceba02d5855fe22525e748973e80ffe0f83040f5e75a271e8",
+          "src/fraudlab/models.py": "761f72365c5d510bc77b217ccd51c3f5b46538263a5c7bf7965fbdccd02d1a77",
+          "src/fraudlab/neural_offset.py": "042eec5ea088477bb37b045ace2f537c6e6e39ff49b3e810dc5e501b4ea8e487",
+          "src/fraudlab/offset.py": "a4ea551e4ddf89aedc87f313eb07425aebc60f7d967986524a873a73565fdc4f",
+          "src/fraudlab/original.py": "4db9d8d54929ba9d9a36fd55b8f8655611a800d22fade59af079e0497ce7b934",
+          "src/fraudlab/pooled.py": "6f15acb31c8a878efc262410a0ddf3f6b733b1a636a7bfa917758d568164601a",
+          "src/fraudlab/realmlp.py": "5bf0ec39dd482c71f82f30f6670082e2a2c70707cd5469ee9a64c486bdf4f278",
+          "src/fraudlab/refit.py": "0768665f10806858d9eeca83160bcb5b819d5417f26b775d3bc8262b988c01e4",
+          "src/fraudlab/scores.py": "8bae07482b56eb488a388c54ecd7ec0cf87a8644d9e98e53d7c1fcc75d2e58a1",
+          "src/fraudlab/splits.py": "41215280332984010f5b616bbf6a675c623b7af3e3f00604eb3238e79c709af9",
+          "src/fraudlab/strings.py": "f3248a9c0e7bbda655e29ecac02886dfa4cd4f34f35007ad90cf99a17efccbb0",
+          "src/fraudlab/tabm.py": "df22ff1a120c8a6fde59052ea7a1b509ff1b7e7acc83d774f670a1daf4a4e667",
+          "src/fraudlab/tokens.py": "8e3abfcbe2e437eee859d120f2a89b0a45bd84dfe389a06c11b622ee5ac9cbb4",
+          "src/fraudlab/transductive.py": "b2848df445f94d1135df27b99e7586048c279860b244dcf9544c30687263ca3b",
+          "tests/test_bpe.py": "282cc43053c91c1af15bd03fdd27bf35bd2da3b3f4982fcadc510998caff15c4",
+          "tests/test_catboost.py": "68d619c4def55e8f5bb0607cc13d2cf9538d4a6cfc0761d9bbd5a453f777f32c",
+          "tests/test_compose_refit_hybrid.py": "bb67c3a4554299a0290866c8e7b3541bf08640275024d6e6bc51d6ae04c5ea8b",
+          "tests/test_contracts.py": "a8683e8946e0556f6115fc647e4c4e0ad57b382510f881d54453c3987714e717",
+          "tests/test_experiments.py": "12a6e99503901ba16951449723f942955414405648136e908e18141307d87d59",
+          "tests/test_external.py": "98f51f904ed51a6d3bb0ad385c46b28a2f5e49c842651e74fbfeb4516064a25d",
+          "tests/test_frequency.py": "943051d264f00415c88f25b08dc6e52738799841fe9c1dc889d5b7e8df374ecb",
+          "tests/test_glm_encoding.py": "ba4e681e57c96d238af0f62dbcad04599bebe818524ad8b9a37291099a2821a5",
+          "tests/test_joints.py": "ac5acb0035ee2d7cb2682e0b9106d6b0e73cad847dc788b030b1f2a8601c0c63",
+          "tests/test_kaggle_notebook.py": "f0c151f80822ebb13a1ecc81f0c49e690851a24c647d5aa90f4229e269205115",
+          "tests/test_nested_stack.py": "d76d1471eaa27b436db8f7ef61ada7c38826bfcd38d90e7803685ef5feb68623",
+          "tests/test_neural_offset.py": "6c12f85bc85e858ef6bb05a3edb32faddb4c12b4134d68cbddb681b8e2ac9f4c",
+          "tests/test_offset.py": "9a6e89cca96403095367e70b8300973384552625e69b15a61b36304e806606ca",
+          "tests/test_original.py": "46a8ff19d6d289b433d5d0bc6ce235b3f1f37606f3a3f40bd72f0feeda74e98d",
+          "tests/test_package_delivery.py": "14165ff4be5d81de755d4777db1d49f45c3ccf629d3f3ce745b315c58b98efe8",
+          "tests/test_pairs.py": "51a2b532b64abe83d64de363a0a9000c82fce28f44f8c5cb26be14a27671feee",
+          "tests/test_pooled.py": "8ae47c5723df42b6c764906443d077723cdf448d96594d6006010e5658a8f2ab",
+          "tests/test_realmlp.py": "f163d85e759de3e89e7daab869fdd5d3cd7397a95cc7ae9e2cf46393b02e66eb",
+          "tests/test_record_submission.py": "4137d8db2e5cd0eb80405f676fac1e5e3d96d4a45de0654af7fe913390e09362",
+          "tests/test_refit_neural_cv.py": "2b2a36069ce21709217677ad27ec784200422f79aedc8b12710c988eb67a353f",
+          "tests/test_refit_selected_cv.py": "93401cb6c4d0706229222a7bca38be67f8816cb2f5acbcf67c9feddf6f26a2c6",
+          "tests/test_resume_neural_cv.py": "38c1f46cc021b7741c7829775dea131446853b0869f043e204efe47ff843b088",
+          "tests/test_scores.py": "ae825d08e9eb8d05a34344b0be139cf6e5111238b066484a311e24c32f47e4c1",
+          "tests/test_sparse_glm.py": "44d67dc1561c4402dd595dcfa196e668b0446a19035661fae3e980e79cdc1235",
+          "tests/test_splines.py": "d5b247a3501bfcaaca501e6c8ea44080482a8bac33c918db1d5e6045b19aeaed",
+          "tests/test_strings.py": "29c772f7539fda3f8cdd2b6e8dcecec059fb415ebb3c7df91fe5cac681188c83",
+          "tests/test_tabm.py": "42c5881f43c55c9bd07bf8aa0d6228bce9a2da64f9120dc2b6c2ef1cf91f65e7",
+          "tests/test_tokens.py": "f848ad70d4b8938ec9c2c3f2a9c6079cbf8394db59ea7a1b6ad3610396ee298c",
+          "tests/test_transductive.py": "47852e5a7bf9ee6ecb00edbdb0d34cb8aa925875e77afd3d24d9e1d8a0623f1c"
+        },
+        "working_files_normalized_to_tracked_LF_only": [
+          "site/build.py",
+          "site/index.html",
+          "site/styles.css"
+        ]
+      }
+    ]
   },
   "ci_remote": {
-    "status": "passed",
-    "source_commit": "ef07bdc9f0e07a34d5082a04df956332fbe7df84",
-    "source": "https://github.com/aikolopes-DS/fraudlab/actions/runs/44151653841",
-    "passed": 172,
-    "subtests_passed": 53,
-    "verified_on": "2026-11-17"
+    "conclusion": "success",
+    "headSha": "17d43d70641f6cda4d09f2a797f633450dba42ec",
+    "status": "completed",
+    "updatedAt": "2026-11-18T02:54:11Z",
+    "url": "https://github.com/aikolopes-DS/fraudlab/actions/runs/44226439599"
   },
+  "release_source_ci": {
+    "source_commit": "17d43d70641f6cda4d09f2a797f633450dba42ec",
+    "passed": 369,
+    "subtests_passed": 81,
+    "source": "https://github.com/aikolopes-DS/fraudlab/actions/runs/44226439599",
+    "package_code_files_matched": 84,
+    "passed_all_blob_checks": true
+  },
+  "publication": "evidence/publication.json",
   "audiovisual_verification": {
-    "version": "v0.3.0",
-    "verified_at": "2026-11-17T18:45:34.043182+00:00",
-    "video_sha256": "7a36ec2c0633ca9ecfca8feb37c62ce46ca8dcb6d5a591cd1840315be4a6c73f",
-    "slides": 139,
-    "duration_seconds": 3291.177596,
-    "bytes": 64298759,
+    "version": "v0.4.0",
+    "verified_at": "2026-11-18T02:49:41.859131+00:00",
+    "video_sha256": "475f8a7cf4535d6aac5edecf7ed569b14a6a388749e2ae13cfeada8835970daf",
+    "slides": 198,
+    "duration_seconds": 5278.041667,
+    "bytes": 107713512,
     "format": {
       "video": "H.264",
       "audio": "AAC",
@@ -172,7 +353,7 @@
     },
     "speech_engine": "edge",
     "voice": "pt-BR-AntonioNeural",
-    "caption_cues": 738,
+    "caption_cues": 1181,
     "full_av_decode": {
       "scope": "entire video and audio streams",
       "exit_code": 0,
@@ -185,20 +366,19 @@
       "model": "base",
       "device": "cpu",
       "language": "pt",
-      "input_duration_seconds": 3291.196375,
+      "input_duration_seconds": 5278.0350625,
       "input_media": "video.mp4",
-      "input_media_sha256": "7a36ec2c0633ca9ecfca8feb37c62ce46ca8dcb6d5a591cd1840315be4a6c73f",
+      "input_media_sha256": "475f8a7cf4535d6aac5edecf7ed569b14a6a388749e2ae13cfeada8835970daf",
       "whole_input_processed": true,
-      "elapsed_seconds": 122.594,
+      "elapsed_seconds": 195.951,
       "limitation": "ASR can misrecognize speech and is not a human listening review.",
       "observed_limitations": [
-        "The entire exported MP4 was automatically transcribed and all139 slides have nonempty aligned text. This verifies automatic coverage, not exact pronunciation.",
-        "The base recognizer distorts technical terms and names including one-hot, LightGBM, NumPy, logits, TabM and Masaya Kawamata.",
-        "On slide130, ASR reports2016 and a distorted decimal while the original narration explicitly spells dois mil e vinte e seis and zero virgula nove cinco um tres quatro. The visible slide, source request and timed captions retain the correct recorded values. No human pronunciation approval is claimed.",
-        "On slide100, the recognizer distorts run names and decimal AUC values. Midpoint alignment can place a preceding phrase in the next slide, as on76.",
-        "Visual midpoint frames and automatic ASR do not constitute continuous full viewing or human listening."
+        "Whole-input ASR and alignment cover every slide, but do not certify pronunciation or factual correctness of recognized words.",
+        "ASR misrecognized acronyms, English module names, Masaya Kawamata and technical terms such as schedule, SiLU and pooling in the inspected samples.",
+        "ASR dropped or changed decimal digits and year words in inspected result slides, including186. Recognized numbers are not authoritative; the source narration, displayed formulas, result records and synchronized source captions must be consulted. No claim is made that a person listened to or certified every spoken number.",
+        "Similarity is a triage measure only and cannot prove exact speech, synchronization at every word, or pedagogical quality."
       ],
-      "notes_report_sha256": "586cfd3aac13d8a02e08f824acbe17643757915eba832fa5f6fb1a4a3fbd43f8"
+      "notes_report_sha256": "2f2b628dc3f0cf8dfc924321a9683d45d2cb7b843ee444e82b4352017c35f78a"
     },
     "all_slides_visually_reviewed": true,
     "visually_reviewed_slides": [
@@ -340,42 +520,346 @@
       136,
       137,
       138,
-      139
+      139,
+      140,
+      141,
+      142,
+      143,
+      144,
+      145,
+      146,
+      147,
+      148,
+      149,
+      150,
+      151,
+      152,
+      153,
+      154,
+      155,
+      156,
+      157,
+      158,
+      159,
+      160,
+      161,
+      162,
+      163,
+      164,
+      165,
+      166,
+      167,
+      168,
+      169,
+      170,
+      171,
+      172,
+      173,
+      174,
+      175,
+      176,
+      177,
+      178,
+      179,
+      180,
+      181,
+      182,
+      183,
+      184,
+      185,
+      186,
+      187,
+      188,
+      189,
+      190,
+      191,
+      192,
+      193,
+      194,
+      195,
+      196,
+      197,
+      198
     ],
     "visual_scope": "Agent/root inspection of extracted midpoint frames; overlapping assignments allowed",
     "watched_in_full": false,
     "human_listening_review": false,
     "limitation": "Frame inspection and automatic ASR do not mean continuous playback or human listening. ASR can misrecognize words; captions follow the original narration.",
-    "input_snapshot_sha256": "9149eff22e1d60a55f57d324d8cd69773b2b04e6273c5b3c570a7c00f07eb5b2",
-    "manifest_sha256": "1d0be45b3e677e131d11039c619040702efb9ddb8bbe4f26750e6d64c9219826",
-    "review_report_sha256": "1f13f959b1058220a4f6e99437c93b04253b01943759fe8d6c051b7be85717b4",
-    "visual_review_sha256": "04d86a69ad8bcff899d5089f8a915c3755cb32e583e5d283f0e57070aed8d70e",
-    "release_url": "https://github.com/aikolopes-DS/fraudlab/releases/tag/v0.3.0",
+    "input_snapshot_sha256": "9414b9d1496ee3d8014ef5ca943674c654dc834c5cd0c9eaf3a6a68057577cce",
+    "manifest_sha256": "244242f0e02d0868addfd9da61faba44983d6e22a971d326e15965a421b85901",
+    "review_report_sha256": "f15ccb83c7214790729d1a327af2722ba780b35c6907f7198db89445bbdfaa15",
+    "visual_review_sha256": "51254c0260c87eee38630bc08da4792dfafbfbc44784c50d90f44449ba337359",
+    "release_url": "https://github.com/aikolopes-DS/fraudlab/releases/tag/v0.4.0",
     "release_published": true,
-    "release_scope": "All four v0.3 assets downloaded anonymously and matched to reviewed local bytes.",
+    "release_scope": "All four v0.4 assets downloaded anonymously in full and matched to reviewed local bytes; ZIP entries and exact public Git source archive verified.",
     "asr_review_notes": {
       "reviewer": "root",
+      "reviewed_at_utc": "2026-11-18T02:44:08.551557+00:00",
+      "video_sha256": "475f8a7cf4535d6aac5edecf7ed569b14a6a388749e2ae13cfeada8835970daf",
       "alignment_slides_reviewed": [
+        1,
+        2,
         3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10,
+        11,
+        12,
+        13,
+        14,
+        15,
+        16,
+        17,
+        18,
+        19,
+        20,
+        21,
+        22,
+        23,
+        24,
+        25,
+        26,
+        27,
+        28,
+        29,
+        30,
+        31,
+        32,
+        33,
+        34,
+        35,
+        36,
+        37,
         38,
+        39,
+        40,
+        41,
+        42,
+        43,
+        44,
+        45,
+        46,
+        47,
+        48,
+        49,
         50,
         51,
         52,
+        53,
+        54,
+        55,
+        56,
+        57,
+        58,
+        59,
+        60,
+        61,
+        62,
+        63,
+        64,
+        65,
+        66,
+        67,
+        68,
+        69,
+        70,
+        71,
         72,
+        73,
         74,
+        75,
         76,
+        77,
+        78,
+        79,
+        80,
+        81,
+        82,
+        83,
+        84,
+        85,
+        86,
+        87,
+        88,
+        89,
+        90,
+        91,
+        92,
+        93,
+        94,
+        95,
+        96,
+        97,
+        98,
+        99,
         100,
+        101,
+        102,
+        103,
+        104,
+        105,
+        106,
+        107,
+        108,
+        109,
         110,
+        111,
+        112,
+        113,
+        114,
+        115,
+        116,
+        117,
+        118,
+        119,
+        120,
+        121,
+        122,
+        123,
+        124,
+        125,
+        126,
         127,
+        128,
+        129,
         130,
-        131
+        131,
+        132,
+        133,
+        134,
+        135,
+        136,
+        137,
+        138,
+        139,
+        140,
+        141,
+        142,
+        143,
+        144,
+        145,
+        146,
+        147,
+        148,
+        149,
+        150,
+        151,
+        152,
+        153,
+        154,
+        155,
+        156,
+        157,
+        158,
+        159,
+        160,
+        161,
+        162,
+        163,
+        164,
+        165,
+        166,
+        167,
+        168,
+        169,
+        170,
+        171,
+        172,
+        173,
+        174,
+        175,
+        176,
+        177,
+        178,
+        179,
+        180,
+        181,
+        182,
+        183,
+        184,
+        185,
+        186,
+        187,
+        188,
+        189,
+        190,
+        191,
+        192,
+        193,
+        194,
+        195,
+        196,
+        197,
+        198
+      ],
+      "scope": "Verified nonempty automatic segment alignment on all198 slides. Read full expected/recognized text for slides3,24,92,94,96,98,100,102,104,106,132,133,136,138,140,150,153,185,186,187,189,191, including the eight lowest similarity samples. This is automatic-text inspection, not human listening or continuous audiovisual playback.",
+      "text_samples_read": [
+        3,
+        24,
+        92,
+        94,
+        96,
+        98,
+        100,
+        102,
+        104,
+        106,
+        132,
+        133,
+        136,
+        138,
+        140,
+        150,
+        153,
+        185,
+        186,
+        187,
+        189,
+        191
+      ],
+      "lowest_text_similarity": [
+        {
+          "slide": 132,
+          "ratio": 0.8582677165354331
+        },
+        {
+          "slide": 133,
+          "ratio": 0.8785714285714286
+        },
+        {
+          "slide": 140,
+          "ratio": 0.8796561604584527
+        },
+        {
+          "slide": 138,
+          "ratio": 0.881578947368421
+        },
+        {
+          "slide": 189,
+          "ratio": 0.882943143812709
+        },
+        {
+          "slide": 136,
+          "ratio": 0.8914405010438413
+        },
+        {
+          "slide": 191,
+          "ratio": 0.8916155419222904
+        },
+        {
+          "slide": 24,
+          "ratio": 0.8923076923076924
+        }
       ],
       "observed_limitations": [
-        "The entire exported MP4 was automatically transcribed and all139 slides have nonempty aligned text. This verifies automatic coverage, not exact pronunciation.",
-        "The base recognizer distorts technical terms and names including one-hot, LightGBM, NumPy, logits, TabM and Masaya Kawamata.",
-        "On slide130, ASR reports2016 and a distorted decimal while the original narration explicitly spells dois mil e vinte e seis and zero virgula nove cinco um tres quatro. The visible slide, source request and timed captions retain the correct recorded values. No human pronunciation approval is claimed.",
-        "On slide100, the recognizer distorts run names and decimal AUC values. Midpoint alignment can place a preceding phrase in the next slide, as on76.",
-        "Visual midpoint frames and automatic ASR do not constitute continuous full viewing or human listening."
+        "Whole-input ASR and alignment cover every slide, but do not certify pronunciation or factual correctness of recognized words.",
+        "ASR misrecognized acronyms, English module names, Masaya Kawamata and technical terms such as schedule, SiLU and pooling in the inspected samples.",
+        "ASR dropped or changed decimal digits and year words in inspected result slides, including186. Recognized numbers are not authoritative; the source narration, displayed formulas, result records and synchronized source captions must be consulted. No claim is made that a person listened to or certified every spoken number.",
+        "Similarity is a triage measure only and cannot prove exact speech, synchronization at every word, or pedagogical quality."
       ],
       "human_listening_review": false,
       "watched_in_full": false
@@ -383,958 +867,95 @@
     "release_assets": [
       {
         "name": "video.mp4",
-        "bytes": 64298759,
-        "sha256": "7a36ec2c0633ca9ecfca8feb37c62ce46ca8dcb6d5a591cd1840315be4a6c73f"
+        "bytes": 107713512,
+        "sha256": "475f8a7cf4535d6aac5edecf7ed569b14a6a388749e2ae13cfeada8835970daf"
       },
       {
         "name": "fraudlab-slides-legendas.zip",
-        "bytes": 8391000,
-        "sha256": "03179b0e31014e3c712c1e399d559d17913a397ed2cf1176180cef06e3ce97c8"
+        "bytes": 14360303,
+        "sha256": "7c24a51e99745ebc02464ad9403588a210d766d72a2600d0f15e47eb97d33cf7"
       }
     ],
     "release_verification": {
-      "verified_at": "2026-11-17T18:50:43.321731+00:00",
+      "verified_at_utc": "2026-11-18T02:57:27.329246+00:00",
       "passed": true,
-      "url": "https://github.com/aikolopes-DS/fraudlab/releases/tag/v0.3.0",
-      "target": "ef07bdc9f0e07a34d5082a04df956332fbe7df84",
+      "url": "https://github.com/aikolopes-DS/fraudlab/releases/tag/v0.4.0",
+      "target": "17d43d70641f6cda4d09f2a797f633450dba42ec",
+      "source_commit": "17d43d70641f6cda4d09f2a797f633450dba42ec",
       "assets": [
         {
           "name": "AED-FraudLab-entrega.zip",
-          "bytes": 66575528,
-          "sha256": "ba89c42b0ed2a7bc971ab001ea08197c43948e73fe12be394a360ede30f87f29",
-          "url": "https://github.com/aikolopes-DS/fraudlab/releases/download/v0.3.0/AED-FraudLab-entrega.zip"
+          "bytes": 113698088,
+          "sha256": "d6c8b11cd0c796da7829fae5802285dae22c9850f81da2edd992c1ae182d553c",
+          "url": "https://github.com/aikolopes-DS/fraudlab/releases/download/v0.4.0/AED-FraudLab-entrega.zip"
         },
         {
           "name": "fraudlab-slides-legendas.zip",
-          "bytes": 8391000,
-          "sha256": "03179b0e31014e3c712c1e399d559d17913a397ed2cf1176180cef06e3ce97c8",
-          "url": "https://github.com/aikolopes-DS/fraudlab/releases/download/v0.3.0/fraudlab-slides-legendas.zip"
+          "bytes": 14360303,
+          "sha256": "7c24a51e99745ebc02464ad9403588a210d766d72a2600d0f15e47eb97d33cf7",
+          "url": "https://github.com/aikolopes-DS/fraudlab/releases/download/v0.4.0/fraudlab-slides-legendas.zip"
         },
         {
           "name": "SHA256SUMS.txt",
-          "bytes": 265,
-          "sha256": "7089c3c579586c02d4555d82d10d913171637cfe2392842061c05dd56fb7637d",
-          "url": "https://github.com/aikolopes-DS/fraudlab/releases/download/v0.3.0/SHA256SUMS.txt"
+          "bytes": 262,
+          "sha256": "cc4625c8ccc4a652940d784bf53880be3ca6c11ecb7fb5d7a8b3836dcac3309f",
+          "url": "https://github.com/aikolopes-DS/fraudlab/releases/download/v0.4.0/SHA256SUMS.txt"
         },
         {
           "name": "video.mp4",
-          "bytes": 64298759,
-          "sha256": "7a36ec2c0633ca9ecfca8feb37c62ce46ca8dcb6d5a591cd1840315be4a6c73f",
-          "url": "https://github.com/aikolopes-DS/fraudlab/releases/download/v0.3.0/video.mp4"
+          "bytes": 107713512,
+          "sha256": "475f8a7cf4535d6aac5edecf7ed569b14a6a388749e2ae13cfeada8835970daf",
+          "url": "https://github.com/aikolopes-DS/fraudlab/releases/download/v0.4.0/video.mp4"
         }
       ],
       "anonymous_downloads_verified": true,
-      "slides_zip_manifest_outputs_verified": 190,
-      "delivery_files_verified": 307,
-      "delivery_source_commit": "ef07bdc9f0e07a34d5082a04df956332fbe7df84",
-      "media_hashes_match_reviewed_files": true,
-      "zip_integrity_verified": true
-    }
-  },
-  "publication": {
-    "site": {
-      "url": "https://aikolopes-fraudlab.aikol9pes.chatgpt.site",
-      "project_id": "appgprj_6afb134a2cec819188da595bd6a8ba6d",
-      "version_id": "appgprj_6afb134a2cec819188da595bd6a8ba6d~appgver_73063e2072b88191bd0a56138ca041b1",
-      "version_number": 6,
-      "source_commit": "3e8567625da2faaccfb392208d88f93d4a0a2d10",
-      "deployment_id": "appgdep_6afca2f023808191b4c981e5cc8d4db8",
-      "deployment_status": "succeeded",
-      "published_at": "2026-11-17T18:55:00.824043+00:00",
-      "archive_sha256": "sha256:0d53e5c28d64c473df848c533ed6abcd496c03f6a4d024047f1800960813b6d2",
-      "site_audience": "public",
-      "video_host": "GitHub Release",
-      "browser_check": {
-        "url": "https://aikolopes-fraudlab.aikol9pes.chatgpt.site",
-        "observed_at": "2026-11-17T18:55:17.571309+00:00",
-        "passed": true,
-        "scope": "Anonymous deployed v0.3: responsive UI, exact snapshot/weights/credits, caption/slides bytes and sampled muted playback/seek; no continuous full viewing or human audio review.",
-        "watched_in_full": false,
-        "audio_listened_to": false,
-        "helper_sha256": "0cfa15d58b310c9b158cf26d9a2c00521ac03063ebce7d5c16b4a6177fae66b5",
-        "local_inputs_sha256": {
-          "manifest.json": "1d0be45b3e677e131d11039c619040702efb9ddb8bbe4f26750e6d64c9219826",
-          "timeline.json": "a4e400e8292f78a4a4ef99a52fe653b8f46a695bee71dd72277d606557bdadf3",
-          "script.json": "a945056e7405d05a4ba6fbf395c0c30f4ce9433eaf41a254edb0f93dcc5c0bfd"
-        },
-        "sample_slides_by_title": {
-          "first": {
-            "number": 1,
-            "title": "Fraude em cartão: do dado à competição"
-          },
-          "proposal": {
-            "number": 3,
-            "title": "A proposta: comparar, combinar e comprovar"
-          },
-          "one_hot": {
-            "number": 38,
-            "title": "One-hot: uma posição para cada categoria"
-          },
-          "bpe": {
-            "number": 24,
-            "title": "BPE numérico: seis chaves, sem treinar um GPT-2"
-          },
-          "ple": {
-            "number": 72,
-            "title": "TabM: representar posições entre cortes do treino"
-          },
-          "tabm_backbone": {
-            "number": 74,
-            "title": "TabM: uma matriz comum, ajustes de cada membro"
-          },
-          "offset_code": {
-            "number": 127,
-            "title": "Código: preservar a margem inicial na inferência"
-          },
-          "ranking": {
-            "number": 130,
-            "title": "Submissão e posição observadas"
-          },
-          "last": {
-            "number": 139,
-            "title": "Fontes e próximos pontos de inspeção"
-          }
-        },
-        "viewports": [
-          {
-            "viewport": "desktop",
-            "initial_cookies": 0,
-            "overflow": false,
-            "ranking_context": "Entre 2.112 equipes · 17/11/2026, 15:24 (SP)",
-            "composition_weights": {
-              "GLM + correção": "56,25%",
-              "LightGBM": "18,75%",
-              "GPT-2 público": "25%"
-            },
-            "metadata": {
-              "duration": 3291.177596,
-              "width": 1920,
-              "height": 1080,
-              "src": "https://github.com/aikolopes-DS/fraudlab/releases/download/v0.3.0/video.mp4",
-              "error": null
-            },
-            "caption_cues": 738,
-            "playback_started": true,
-            "seek_samples": [
-              {
-                "slide": 1,
-                "title": "Fraude em cartão: do dado à competição",
-                "requested_time": 11.156,
-                "time": 11.156,
-                "error": null,
-                "activeCaptions": [
-                  "matemática e a avaliação.\nAo final, veremos os códigos e a"
-                ],
-                "playback_resumed_time": 11.374981
-              },
-              {
-                "slide": 3,
-                "title": "A proposta: comparar, combinar e comprovar",
-                "requested_time": 76.2445,
-                "time": 76.2445,
-                "error": null,
-                "activeCaptions": [
-                  "frequência; árvores pequenas corrigem sua\nmargem.\nRedes próprias"
-                ],
-                "playback_resumed_time": 76.464745
-              },
-              {
-                "slide": 38,
-                "title": "One-hot: uma posição para cada categoria",
-                "requested_time": 926.3735,
-                "time": 926.3735,
-                "error": null,
-                "activeCaptions": [
-                  "indicador, que vale um quando c é igual à\ncategoria conhecida v de índice j."
-                ],
-                "playback_resumed_time": 926.593246
-              },
-              {
-                "slide": 24,
-                "title": "BPE numérico: seis chaves, sem treinar um GPT-2",
-                "requested_time": 588.0825,
-                "time": 588.0825,
-                "error": null,
-                "activeCaptions": [
-                  "sessenta e nove e trinta e cinco centavos.\nO texto começa com um espaço."
-                ],
-                "playback_resumed_time": 588.302025
-              },
-              {
-                "slide": 72,
-                "title": "TabM: representar posições entre cortes do treino",
-                "requested_time": 1724.863,
-                "time": 1724.863,
-                "error": null,
-                "activeCaptions": [
-                  "zeros nos seguintes.\nNa versão B, uma projeção linear do valor\né"
-                ],
-                "playback_resumed_time": 1725.07792
-              },
-              {
-                "slide": 74,
-                "title": "TabM: uma matriz comum, ajustes de cada membro",
-                "requested_time": 1803.8305,
-                "time": 1803.8305,
-                "error": null,
-                "activeCaptions": [
-                  "a entrada por r, depois usamos a matriz\ncompartilhada transposta,"
-                ],
-                "playback_resumed_time": 1804.051638
-              },
-              {
-                "slide": 127,
-                "title": "Código: preservar a margem inicial na inferência",
-                "requested_time": 3069.673,
-                "time": 3069.673,
-                "error": null,
-                "activeCaptions": [
-                  "árvores sozinho não contém a previsão\ninicial do GLM."
-                ],
-                "playback_resumed_time": 3069.885737
-              },
-              {
-                "slide": 130,
-                "title": "Submissão e posição observadas",
-                "requested_time": 3116.7155000000002,
-                "time": 3116.7155,
-                "error": null,
-                "activeCaptions": [
-                  "e vinte e seis, às 15 horas e 24 minutos,\nno horário de São Paulo."
-                ],
-                "playback_resumed_time": 3116.936152
-              },
-              {
-                "slide": 139,
-                "title": "Fontes e próximos pontos de inspeção",
-                "requested_time": 3286.7365,
-                "time": 3286.7365,
-                "error": null,
-                "activeCaptions": [
-                  "Licença das previsões externas.\nOs links completos estão no slide"
-                ],
-                "playback_resumed_time": 3286.951793
-              }
-            ],
-            "remote_asset_sha256": {
-              "slides.html": "84f0c27e27d3551c78f948d542448e5307c9ebadf2c8c7e7413634d7812977fa",
-              "captions.vtt": "ea44af575ab54b7bce5d72e9a7a58ad98f3b12910806d2340304afbc2db37d62"
-            },
-            "video_status": "Vídeo narrado · verificação técnica, transcrição integral automática e revisão visual dos slides.",
-            "delivery_link": "https://github.com/aikolopes-DS/fraudlab/releases/download/v0.3.0/AED-FraudLab-entrega.zip",
-            "public_delivery_link": "https://github.com/aikolopes-DS/fraudlab/releases/download/v0.3.0/AED-FraudLab-entrega.zip"
-          },
-          {
-            "viewport": "mobile",
-            "initial_cookies": 0,
-            "overflow": false,
-            "ranking_context": "Entre 2.112 equipes · 17/11/2026, 15:24 (SP)",
-            "composition_weights": {
-              "GLM + correção": "56,25%",
-              "LightGBM": "18,75%",
-              "GPT-2 público": "25%"
-            },
-            "metadata": {
-              "duration": 3291.177596,
-              "width": 1920,
-              "height": 1080,
-              "src": "https://github.com/aikolopes-DS/fraudlab/releases/download/v0.3.0/video.mp4",
-              "error": null
-            },
-            "caption_cues": 738,
-            "playback_started": true,
-            "seek_samples": [
-              {
-                "slide": 130,
-                "title": "Submissão e posição observadas",
-                "requested_time": 3116.7155000000002,
-                "time": 3116.7155,
-                "error": null,
-                "activeCaptions": [
-                  "e vinte e seis, às 15 horas e 24 minutos,\nno horário de São Paulo."
-                ],
-                "playback_resumed_time": 3116.934674
-              }
-            ],
-            "remote_asset_sha256": {
-              "slides.html": "84f0c27e27d3551c78f948d542448e5307c9ebadf2c8c7e7413634d7812977fa",
-              "captions.vtt": "ea44af575ab54b7bce5d72e9a7a58ad98f3b12910806d2340304afbc2db37d62"
-            },
-            "video_status": "Vídeo narrado · verificação técnica, transcrição integral automática e revisão visual dos slides.",
-            "delivery_link": "https://github.com/aikolopes-DS/fraudlab/releases/download/v0.3.0/AED-FraudLab-entrega.zip",
-            "public_delivery_link": "https://github.com/aikolopes-DS/fraudlab/releases/download/v0.3.0/AED-FraudLab-entrega.zip"
-          }
+      "personal_credentials_used": false,
+      "all_four_asset_bytes_hash_verified": true,
+      "source_archive_sha256": "8552af4d328ea378be38f55b3e7edd1f97f19a138ec0815ecbf2b7bf01dc4764",
+      "zip_integrity_and_exact_allowlists_verified": true,
+      "qa_reperformed": false,
+      "slides": 198,
+      "media_outputs_verified": 266,
+      "delivery_files_verified": 471,
+      "source_files_verified": 196,
+      "result_snapshot": {
+        "local_auc": 0.9517074903582017,
+        "fold_scores": [
+          0.9508397792121277,
+          0.9521231453682678,
+          0.9567561770742115,
+          0.9518950875493822,
+          0.9470391404103492
         ],
-        "page_errors": [],
-        "console_errors": [],
-        "download_links": {
-          "code": "https://github.com/aikolopes-DS/fraudlab",
-          "release": "https://github.com/aikolopes-DS/fraudlab/releases/tag/v0.3.0",
-          "delivery": "https://github.com/aikolopes-DS/fraudlab/releases/download/v0.3.0/AED-FraudLab-entrega.zip",
-          "assets": [
-            {
-              "name": "AED-FraudLab-entrega.zip",
-              "url": "https://github.com/aikolopes-DS/fraudlab/releases/download/v0.3.0/AED-FraudLab-entrega.zip",
-              "head_status": 200,
-              "github_digest": "sha256:ba89c42b0ed2a7bc971ab001ea08197c43948e73fe12be394a360ede30f87f29",
-              "size": 66575528
-            },
-            {
-              "name": "fraudlab-slides-legendas.zip",
-              "url": "https://github.com/aikolopes-DS/fraudlab/releases/download/v0.3.0/fraudlab-slides-legendas.zip",
-              "head_status": 200,
-              "github_digest": "sha256:03179b0e31014e3c712c1e399d559d17913a397ed2cf1176180cef06e3ce97c8",
-              "size": 8391000
-            },
-            {
-              "name": "SHA256SUMS.txt",
-              "url": "https://github.com/aikolopes-DS/fraudlab/releases/download/v0.3.0/SHA256SUMS.txt",
-              "head_status": 200,
-              "github_digest": "sha256:7089c3c579586c02d4555d82d10d913171637cfe2392842061c05dd56fb7637d",
-              "size": 265
-            },
-            {
-              "name": "video.mp4",
-              "url": "https://github.com/aikolopes-DS/fraudlab/releases/download/v0.3.0/video.mp4",
-              "head_status": 200,
-              "github_digest": "sha256:7a36ec2c0633ca9ecfca8feb37c62ce46ca8dcb6d5a591cd1840315be4a6c73f",
-              "size": 64298759
-            }
-          ],
-          "sha256sums": {
-            "video.mp4": "7a36ec2c0633ca9ecfca8feb37c62ce46ca8dcb6d5a591cd1840315be4a6c73f",
-            "fraudlab-slides-legendas.zip": "03179b0e31014e3c712c1e399d559d17913a397ed2cf1176180cef06e3ce97c8",
-            "AED-FraudLab-entrega.zip": "ba89c42b0ed2a7bc971ab001ea08197c43948e73fe12be394a360ede30f87f29"
-          },
-          "all_three_payload_hashes_match_local": true,
-          "scope": "Anonymous link HEADs, release metadata/digests and SHA256SUMS checked; browser playback/seek is checked separately. Full MP4/ZIP byte downloads belong to the separate release readback."
-        }
-      }
-    },
-    "release_code_commit": "ef07bdc9f0e07a34d5082a04df956332fbe7df84",
-    "release": {
-      "verified_at": "2026-11-17T18:50:43.321731+00:00",
-      "passed": true,
-      "url": "https://github.com/aikolopes-DS/fraudlab/releases/tag/v0.3.0",
-      "target": "ef07bdc9f0e07a34d5082a04df956332fbe7df84",
-      "assets": [
-        {
-          "name": "AED-FraudLab-entrega.zip",
-          "bytes": 66575528,
-          "sha256": "ba89c42b0ed2a7bc971ab001ea08197c43948e73fe12be394a360ede30f87f29",
-          "url": "https://github.com/aikolopes-DS/fraudlab/releases/download/v0.3.0/AED-FraudLab-entrega.zip"
-        },
-        {
-          "name": "fraudlab-slides-legendas.zip",
-          "bytes": 8391000,
-          "sha256": "03179b0e31014e3c712c1e399d559d17913a397ed2cf1176180cef06e3ce97c8",
-          "url": "https://github.com/aikolopes-DS/fraudlab/releases/download/v0.3.0/fraudlab-slides-legendas.zip"
-        },
-        {
-          "name": "SHA256SUMS.txt",
-          "bytes": 265,
-          "sha256": "7089c3c579586c02d4555d82d10d913171637cfe2392842061c05dd56fb7637d",
-          "url": "https://github.com/aikolopes-DS/fraudlab/releases/download/v0.3.0/SHA256SUMS.txt"
-        },
-        {
-          "name": "video.mp4",
-          "bytes": 64298759,
-          "sha256": "7a36ec2c0633ca9ecfca8feb37c62ce46ca8dcb6d5a591cd1840315be4a6c73f",
-          "url": "https://github.com/aikolopes-DS/fraudlab/releases/download/v0.3.0/video.mp4"
-        }
-      ],
-      "anonymous_downloads_verified": true,
-      "slides_zip_manifest_outputs_verified": 190,
-      "delivery_files_verified": 307,
-      "delivery_source_commit": "ef07bdc9f0e07a34d5082a04df956332fbe7df84",
-      "media_hashes_match_reviewed_files": true,
-      "zip_integrity_verified": true
-    },
-    "code_commit": "ef07bdc9f0e07a34d5082a04df956332fbe7df84",
-    "verified_at": "2026-11-17T18:57:49.404186+00:00",
-    "history": [
-      {
-        "site": {
-          "url": "https://aikolopes-fraudlab.aikol9pes.chatgpt.site",
-          "project_id": "appgprj_6afb134a2cec819188da595bd6a8ba6d",
-          "version_id": "appgprj_6afb134a2cec819188da595bd6a8ba6d~appgver_e369f66fbdb881918a9d2250bb98d1d5",
-          "version_number": 4,
-          "source_commit": "b0987aa1ce09241871b820825ecad41461f34020",
-          "deployment_id": "appgdep_6afbe4cf6a708191afbb071e7f5b7642",
-          "deployment_status": "succeeded",
-          "published_at": "2026-11-17T05:23:40.861520+00:00",
-          "archive_sha256": "sha256:c0f960d003f4ff1e938a898304fe13f2c7949769b8718ce8799bf5089633306b",
-          "video_host": "GitHub Release",
-          "site_audience": "public",
-          "browser_check": {
-            "url": "https://aikolopes-fraudlab.aikol9pes.chatgpt.site",
-            "observed_at": "2026-11-17T05:24:10.576161+00:00",
-            "scope": "Anonymous real published page: responsive UI, links, captions and sampled video playback/seek; not continuous full watching or human listening",
-            "viewports": [
-              {
-                "viewport": "desktop",
-                "initial_cookies": 0,
-                "overflow": false,
-                "metadata": {
-                  "duration": 2666.729161,
-                  "width": 1920,
-                  "height": 1080,
-                  "src": "https://github.com/aikolopes-og/fraudlab/releases/download/v0.1.0/video.mp4",
-                  "error": null
-                },
-                "caption_cues": 604,
-                "playback_started": true,
-                "seek_samples": [
-                  {
-                    "slide": 109,
-                    "requested_time": 2518.4091383219948,
-                    "time": 2518.409138,
-                    "error": null,
-                    "activeCues": 1
-                  }
-                ],
-                "video_status": "Vídeo narrado · verificação técnica, transcrição integral automática e revisão visual dos slides."
-              },
-              {
-                "viewport": "mobile",
-                "initial_cookies": 0,
-                "overflow": false,
-                "metadata": {
-                  "duration": 2666.729161,
-                  "width": 1920,
-                  "height": 1080,
-                  "src": "https://github.com/aikolopes-og/fraudlab/releases/download/v0.1.0/video.mp4",
-                  "error": null
-                },
-                "caption_cues": 604,
-                "playback_started": true,
-                "seek_samples": [
-                  {
-                    "slide": 109,
-                    "requested_time": 2518.4091383219948,
-                    "time": 2518.409138,
-                    "error": null,
-                    "activeCues": 1
-                  }
-                ],
-                "video_status": "Vídeo narrado · verificação técnica, transcrição integral automática e revisão visual dos slides."
-              }
-            ],
-            "page_errors": [],
-            "passed": true
-          },
-          "delta_check_scope": "Updated ranking/date and explicit historical video label; video bytes unchanged, sampled playback/captions verified. Prior full audiovisual QA remains valid for the unchanged v0.1 asset."
-        },
-        "release": {
-          "assets": [
-            {
-              "digest": "sha256:e2f55fea77a06d63ef72409407654145ff38fa85e610153252990f76d327dfab",
-              "name": "fraudlab-slides-legendas.zip",
-              "size": 6836003,
-              "url": "https://github.com/aikolopes-og/fraudlab/releases/download/v0.1.0/fraudlab-slides-legendas.zip"
-            },
-            {
-              "digest": "sha256:41d4e1182b7f24f5bb1f15f7978b37f6c5edc02f5a624f45ba2e95693c6f0fac",
-              "name": "SHA256SUMS.txt",
-              "size": 173,
-              "url": "https://github.com/aikolopes-og/fraudlab/releases/download/v0.1.0/SHA256SUMS.txt"
-            },
-            {
-              "digest": "sha256:e5bbaf7a69e7c1d336c89cf9d4d1c3593b3fdb14a3003e1384746f6401574968",
-              "name": "video.mp4",
-              "size": 51276892,
-              "url": "https://github.com/aikolopes-og/fraudlab/releases/download/v0.1.0/video.mp4"
-            }
-          ],
-          "draft": false,
-          "target": "447289dcfbf4cfd062b8e57001936fb7d861be1d",
-          "url": "https://github.com/aikolopes-og/fraudlab/releases/tag/v0.1.0",
-          "anonymous_zip_download_verified": true,
-          "zip_integrity_verified": true,
-          "media_hashes_match_reviewed_files": true,
-          "zip_sha256": "e2f55fea77a06d63ef72409407654145ff38fa85e610153252990f76d327dfab"
-        },
-        "code_commit": "c834602a4ba7c19961fe8955f06d760d05566116",
-        "verified_at": "2026-11-17T05:26:34.672169+00:00",
-        "release_code_commit": "447289dcfbf4cfd062b8e57001936fb7d861be1d"
+        "public_auc": 0.95183,
+        "ranking": 626,
+        "total_teams": 2135,
+        "submission_id": "58490653",
+        "observed_at": "2026-11-18T02:12:21.191510+00:00",
+        "local_auc_scope": "development_oof",
+        "local_auc_run": "round22-realmlp-offset025-public25",
+        "holdout_auc": null,
+        "holdout_observed_at": null,
+        "local_auc_note": "Historical exploratory R22 CV; R23 full-data refit has no new local AUC"
       },
-      {
-        "site": {
-          "url": "https://aikolopes-fraudlab.aikol9pes.chatgpt.site",
-          "project_id": "appgprj_6afb134a2cec819188da595bd6a8ba6d",
-          "version_id": "appgprj_6afb134a2cec819188da595bd6a8ba6d~appgver_65608dc3675881919b0dc8eae8cb29cf",
-          "version_number": 5,
-          "source_commit": "9bc2caea536cd8e023e6ef80ab3a95cd05a92f24",
-          "deployment_id": "appgdep_6afc63bf3d248191b82d10dd784f403d",
-          "deployment_status": "succeeded",
-          "published_at": "2026-11-17T14:25:27.425823+00:00",
-          "archive_sha256": "sha256:0dcf55f37e6316a34bbd0c5c38566612956d30655643c03d2b0ad5bd46bae164",
-          "video_host": "GitHub Release",
-          "site_audience": "public",
-          "browser_check": {
-            "url": "https://aikolopes-fraudlab.aikol9pes.chatgpt.site",
-            "observed_at": "2026-11-17T14:25:57.258879+00:00",
-            "passed": true,
-            "scope": "Anonymous deployed v0.2: responsive UI, exact snapshot/weights/credits, caption/slides bytes and sampled muted playback/seek; no continuous full viewing or human audio review.",
-            "watched_in_full": false,
-            "audio_listened_to": false,
-            "helper_sha256": "f1ab5a951397578b342c33223fe5e6ab4131abd7001280d4d4986d03c6a36fa7",
-            "local_inputs_sha256": {
-              "manifest.json": "e800994277599548f5e94a0b194bfc0195a03378cdb37b05c45d404b2127e12d",
-              "timeline.json": "256025a72a171220d7764c47cbe28423c3067e27a16888695c83ebbce5b2362e",
-              "script.json": "f3e5a66ee50f2efbac3122491e0ef821243fb4dc5327aafc3ceb16b7cbcdfbe9"
-            },
-            "sample_slides_by_title": {
-              "first": {
-                "number": 1,
-                "title": "Fraude em cartão: do dado à competição"
-              },
-              "bpe": {
-                "number": 23,
-                "title": "BPE numérico: seis chaves, sem treinar um GPT-2"
-              },
-              "ple": {
-                "number": 69,
-                "title": "TabM: representar posições entre cortes do treino"
-              },
-              "offset_code": {
-                "number": 122,
-                "title": "Código: preservar a margem inicial na inferência"
-              },
-              "ranking": {
-                "number": 125,
-                "title": "Submissão e posição observadas"
-              },
-              "last": {
-                "number": 134,
-                "title": "Fontes e próximos pontos de inspeção"
-              }
-            },
-            "viewports": [
-              {
-                "viewport": "desktop",
-                "initial_cookies": 0,
-                "overflow": false,
-                "ranking_context": "Entre 2.089 equipes · 17/11/2026, 10:34 (SP)",
-                "composition_weights": {
-                  "GLM + correção": "56,25%",
-                  "LightGBM": "18,75%",
-                  "GPT-2 público": "25%"
-                },
-                "metadata": {
-                  "duration": 3082.583333,
-                  "width": 1920,
-                  "height": 1080,
-                  "src": "https://github.com/aikolopes-DS/fraudlab/releases/download/v0.2.0/video.mp4",
-                  "error": null
-                },
-                "caption_cues": 693,
-                "playback_started": true,
-                "seek_samples": [
-                  {
-                    "slide": 1,
-                    "title": "Fraude em cartão: do dado à competição",
-                    "requested_time": 11.156,
-                    "time": 11.156,
-                    "error": null,
-                    "activeCaptions": [
-                      "matemática e a avaliação.\nAo final, veremos os códigos e a"
-                    ],
-                    "playback_resumed_time": 11.365689
-                  },
-                  {
-                    "slide": 23,
-                    "title": "BPE numérico: seis chaves, sem treinar um GPT-2",
-                    "requested_time": 535.1545,
-                    "time": 535.1545,
-                    "error": null,
-                    "activeCaptions": [
-                      "sessenta e nove e trinta e cinco centavos.\nO texto começa com um espaço."
-                    ],
-                    "playback_resumed_time": 535.366387
-                  },
-                  {
-                    "slide": 69,
-                    "title": "TabM: representar posições entre cortes do treino",
-                    "requested_time": 1593.031,
-                    "time": 1593.031,
-                    "error": null,
-                    "activeCaptions": [
-                      "zeros nos seguintes.\nNa versão B, uma projeção linear do valor\né"
-                    ],
-                    "playback_resumed_time": 1593.238284
-                  },
-                  {
-                    "slide": 122,
-                    "title": "Código: preservar a margem inicial na inferência",
-                    "requested_time": 2864.457,
-                    "time": 2864.457,
-                    "error": null,
-                    "activeCaptions": [
-                      "árvores sozinho não contém a previsão\ninicial do GLM."
-                    ],
-                    "playback_resumed_time": 2864.672799
-                  },
-                  {
-                    "slide": 125,
-                    "title": "Submissão e posição observadas",
-                    "requested_time": 2914.7865,
-                    "time": 2914.7865,
-                    "error": null,
-                    "activeCaptions": [
-                      "no horário de São Paulo.\nEssa é uma fotografia da classificação na\ndata"
-                    ],
-                    "playback_resumed_time": 2915.005195
-                  },
-                  {
-                    "slide": 134,
-                    "title": "Fontes e próximos pontos de inspeção",
-                    "requested_time": 3076.3100000000004,
-                    "time": 3076.31,
-                    "error": null,
-                    "activeCaptions": [
-                      "Este grupo reúne as referências de Licença\ndas previsões externas.\nOs"
-                    ],
-                    "playback_resumed_time": 3076.52261
-                  }
-                ],
-                "remote_asset_sha256": {
-                  "slides.html": "eb1c97d3fbc3fdfb0b3c11a5f06d011a73566c8c8039916de3cd2d220c0e97fc",
-                  "captions.vtt": "f2f5f2634fb5ffe05e770ccea9cb4c31f6b96f96000fcaf8389fe5b2ea3e9138"
-                },
-                "video_status": "Vídeo narrado · verificação técnica, transcrição integral automática e revisão visual dos slides."
-              },
-              {
-                "viewport": "mobile",
-                "initial_cookies": 0,
-                "overflow": false,
-                "ranking_context": "Entre 2.089 equipes · 17/11/2026, 10:34 (SP)",
-                "composition_weights": {
-                  "GLM + correção": "56,25%",
-                  "LightGBM": "18,75%",
-                  "GPT-2 público": "25%"
-                },
-                "metadata": {
-                  "duration": 3082.583333,
-                  "width": 1920,
-                  "height": 1080,
-                  "src": "https://github.com/aikolopes-DS/fraudlab/releases/download/v0.2.0/video.mp4",
-                  "error": null
-                },
-                "caption_cues": 693,
-                "playback_started": true,
-                "seek_samples": [
-                  {
-                    "slide": 125,
-                    "title": "Submissão e posição observadas",
-                    "requested_time": 2914.7865,
-                    "time": 2914.7865,
-                    "error": null,
-                    "activeCaptions": [
-                      "no horário de São Paulo.\nEssa é uma fotografia da classificação na\ndata"
-                    ],
-                    "playback_resumed_time": 2915.007852
-                  }
-                ],
-                "remote_asset_sha256": {
-                  "slides.html": "eb1c97d3fbc3fdfb0b3c11a5f06d011a73566c8c8039916de3cd2d220c0e97fc",
-                  "captions.vtt": "f2f5f2634fb5ffe05e770ccea9cb4c31f6b96f96000fcaf8389fe5b2ea3e9138"
-                },
-                "video_status": "Vídeo narrado · verificação técnica, transcrição integral automática e revisão visual dos slides."
-              }
-            ],
-            "page_errors": [],
-            "console_errors": [],
-            "download_links": {
-              "code": "https://github.com/aikolopes-DS/fraudlab",
-              "release": "https://github.com/aikolopes-DS/fraudlab/releases/tag/v0.2.0",
-              "assets": [
-                {
-                  "name": "fraudlab-slides-legendas.zip",
-                  "url": "https://github.com/aikolopes-DS/fraudlab/releases/download/v0.2.0/fraudlab-slides-legendas.zip",
-                  "head_status": 200,
-                  "github_digest": "sha256:b407d84cc2bc60501fe97420fcce1db1d6b00e0ae1889eb80b7b0c1894ffb402",
-                  "size": 8003617
-                },
-                {
-                  "name": "SHA256SUMS.txt",
-                  "url": "https://github.com/aikolopes-DS/fraudlab/releases/download/v0.2.0/SHA256SUMS.txt",
-                  "head_status": 200,
-                  "github_digest": "sha256:a0dcc42e0cdbc9133d1bc6118b67382ac8a6e57ec6a750cb9d0931dcac97558a",
-                  "size": 173
-                },
-                {
-                  "name": "video.mp4",
-                  "url": "https://github.com/aikolopes-DS/fraudlab/releases/download/v0.2.0/video.mp4",
-                  "head_status": 200,
-                  "github_digest": "sha256:882b4da07adc82e8c51a0b1f8ae13d6e012491f6d2e6b58dba6605e9874cfcbf",
-                  "size": 59961042
-                }
-              ],
-              "scope": "Anonymous link HEADs, release metadata/digests and SHA256SUMS checked; browser playback/seek is checked separately. Full MP4/ZIP byte downloads belong to the separate release readback."
-            }
-          }
-        },
-        "release_code_commit": "3edaeba33923656afb1efca1cf7efc5996c3e39a",
-        "release": {
-          "verified_at": "2026-11-17T14:22:55.765229+00:00",
-          "passed": true,
-          "url": "https://github.com/aikolopes-DS/fraudlab/releases/tag/v0.2.0",
-          "target": "3edaeba33923656afb1efca1cf7efc5996c3e39a",
-          "draft": false,
-          "assets": [
-            {
-              "name": "fraudlab-slides-legendas.zip",
-              "digest": "sha256:b407d84cc2bc60501fe97420fcce1db1d6b00e0ae1889eb80b7b0c1894ffb402",
-              "size": 8003617,
-              "url": "https://github.com/aikolopes-DS/fraudlab/releases/download/v0.2.0/fraudlab-slides-legendas.zip"
-            },
-            {
-              "name": "SHA256SUMS.txt",
-              "digest": "sha256:a0dcc42e0cdbc9133d1bc6118b67382ac8a6e57ec6a750cb9d0931dcac97558a",
-              "size": 173,
-              "url": "https://github.com/aikolopes-DS/fraudlab/releases/download/v0.2.0/SHA256SUMS.txt"
-            },
-            {
-              "name": "video.mp4",
-              "digest": "sha256:882b4da07adc82e8c51a0b1f8ae13d6e012491f6d2e6b58dba6605e9874cfcbf",
-              "size": 59961042,
-              "url": "https://github.com/aikolopes-DS/fraudlab/releases/download/v0.2.0/video.mp4"
-            }
-          ],
-          "anonymous_downloads_verified": true,
-          "zip_integrity_verified": true,
-          "media_hashes_match_reviewed_files": true,
-          "zip_verified_manifest_outputs": 183,
-          "zip_sha256": "b407d84cc2bc60501fe97420fcce1db1d6b00e0ae1889eb80b7b0c1894ffb402"
-        },
-        "code_commit": "3edaeba33923656afb1efca1cf7efc5996c3e39a",
-        "verified_at": "2026-11-17T14:28:02.395735+00:00"
-      }
-    ]
-  },
-  "published_code_matches_tested_source_hashes": true,
-  "continuation": {
-    "date": "2026-11-17",
-    "own_training_configurations": 4,
-    "outer_folds_each": 5,
-    "fixed_unfitted_logit_comparisons": 2,
-    "new_submissions": 0,
-    "results": [
-      "evidence/round2-results.json",
-      "evidence/round3-results.json",
-      "evidence/round4-results.json"
-    ],
-    "best_new_oof": 0.9513213957790125,
-    "baseline_oof": 0.9512586315198723,
-    "decision": "Retain published solution; predeclared improvement thresholds not reached.",
-    "external_audit": "evidence/external-megayak-audit.json",
-    "independent_code_review": "Spline/offset, fixed pairs and support-count changes accepted after read-only review; no material findings.",
-    "real_checkpoint_reload": [
-      {
-        "run": "round2-offset1000",
-        "real_test_rows": 1024,
-        "averaged_checkpoints": 5,
-        "max_absolute_error": 2.220446049250313e-16,
-        "passed": true
-      },
-      {
-        "run": "round2-glm-splines12",
-        "real_test_rows": 1024,
-        "averaged_checkpoints": 5,
-        "max_absolute_error": 1.1102230246251565e-16,
-        "passed": true
-      }
-    ]
-  },
-  "ci_remote_previous": {
-    "status": "job_not_started",
-    "reason": "GitHub account locked due to a billing issue",
-    "source": "https://github.com/aikolopes-og/fraudlab/actions/runs/44021768008",
-    "check_run_ids": [
-      133832659689
-    ],
-    "verified_on": "2026-11-17"
-  },
-  "software_history": [
-    {
-      "test_command": "python -m pytest tests presentation site/test_build.py -q --junitxml=.local/research/round2/tests-phase3.xml",
-      "passed": 96,
-      "subtests_passed": 52,
-      "node_syntax_check": "passed",
-      "tested_source_sha256": {
-        "presentation/__init__.py": "eddcf4aa526255f1716fab49b85e12e9b30eae4b46c14752e96f880739fa8ee4",
-        "presentation/build.py": "53916ae52095a31b78cdacae981669dcb907a90383a332cda8083eec24331797",
-        "presentation/content.py": "2847088250e90653506f348b2d37988c6267f35325d9fe4d57e36f155df11e0b",
-        "presentation/external.py": "aee5ae1868f1f308bef043104ab71a43b062795d19f4c80c973eb5e82a3eca9a",
-        "presentation/review.py": "1231c9b84f1fb40b988453185de1a3d00ea83298d49d2b6e96359336865d85fb",
-        "presentation/test_presentation.py": "436d75ea75fd0394275274c011c1929ac9c9edf22fa2a686c361cf2d5f7abfdc",
-        "presentation/test_review.py": "aa39de53d548395ba15cf765e81d0db9119422395c585302ba3d696f90cfedb7",
-        "pyproject.toml": "764d4dbb5eec2826fdd3adffa935c161fc2af411a1bc68f7418272dbd9141382",
-        "scripts/export_metrics.py": "e93184b3ab827d30ab150805044f578bf1c764a9bf3216738d14de7ec55e2708",
-        "scripts/kaggle_notebook.py": "e84a1e09f68a5085674a4300c891be108b99d91b85cb4749286100bbc3a1b579",
-        "scripts/record_submission.py": "9d84ef5270087a2140c775cc7c1b3a066e0e9742bda2cf5478b5e79a0af3b173",
-        "site/app.js": "0d533b4b06d7d5fb55fab8a83db6d798c2d321dde6ceae53ea28f8bcd7889bd6",
-        "site/build.py": "dce6c83f257bd21c225896d2fb8a1e4f27f2f6e26f7619a0c925d383ca011f7e",
-        "site/check_browser.py": "73f2c4e6b69b3cc7000d40f538fe3201fcc684761f38d8e0c015287b6313b7c3",
-        "site/test_build.py": "f66bac99f371b3dcf75cfa5e26a7ed2a57c9c8626a49529a6909c0679e19b7fe",
-        "src/fraudlab/__init__.py": "14479eff95a0233e8bf2d9f359843c36f53f36b92cc95c3e452f75bfb2982dcc",
-        "src/fraudlab/__main__.py": "010592bcbf670b981e350d12d98e6ab1f88a1b6224dea9a58991c5df0aeb5c8b",
-        "src/fraudlab/data.py": "f22355cc51fa6e6162b24e639923f40a11a23af00afcb65553090176271c8326",
-        "src/fraudlab/experiment.py": "c5ffd6cc41aa52f639b378c187932649ca27589915c131c93666d4539a343811",
-        "src/fraudlab/external.py": "05ec4ec64e4a2c5cf1137c949646bed14fe83fb04506b8f2f973c2c7633c5e08",
-        "src/fraudlab/features.py": "1ecb3f3ab94e48edecb2b6baa5747c5fadeb879990eef224553d0f47e223d54a",
-        "src/fraudlab/frequency.py": "6831c52335d82b7d6570ea2ba4cfd70ac5b6196406bc1a702f2740fe6cc257ff",
-        "src/fraudlab/holdout.py": "e3702891766326710c3b56dd7a7fe69f2f778acea3316665f130aa6955e2f4e3",
-        "src/fraudlab/models.py": "72d46485aca21394f46f88cc13c2dc9fc58f37d3013bf40124714819464fad81",
-        "src/fraudlab/offset.py": "8e246ea0d04eda456dccc284d43a9a165825bc625e7505681d24de6a5585e1cf",
-        "src/fraudlab/refit.py": "571c4f4206b3a228341f2c5bf23a5641565e6dbf2ffe9d01ed0e7ffa12a5ce99",
-        "src/fraudlab/splits.py": "41215280332984010f5b616bbf6a675c623b7af3e3f00604eb3238e79c709af9",
-        "tests/test_contracts.py": "a8683e8946e0556f6115fc647e4c4e0ad57b382510f881d54453c3987714e717",
-        "tests/test_experiments.py": "12a6e99503901ba16951449723f942955414405648136e908e18141307d87d59",
-        "tests/test_external.py": "98f51f904ed51a6d3bb0ad385c46b28a2f5e49c842651e74fbfeb4516064a25d",
-        "tests/test_frequency.py": "943051d264f00415c88f25b08dc6e52738799841fe9c1dc889d5b7e8df374ecb",
-        "tests/test_offset.py": "9a6e89cca96403095367e70b8300973384552625e69b15a61b36304e806606ca",
-        "tests/test_pairs.py": "51a2b532b64abe83d64de363a0a9000c82fce28f44f8c5cb26be14a27671feee",
-        "tests/test_record_submission.py": "4137d8db2e5cd0eb80405f676fac1e5e3d96d4a45de0654af7fe913390e09362",
-        "tests/test_splines.py": "d5b247a3501bfcaaca501e6c8ea44080482a8bac33c918db1d5e6045b19aeaed"
-      },
-      "secret_scan": {
-        "scope": "Repository candidates; high-confidence token/key patterns, not an exhaustive security audit",
-        "files_checked": 69,
-        "findings": []
-      },
-      "published_notebook": {
-        "version": 3,
-        "cells_match_local_source": true,
-        "public": true,
-        "competition_attached": true,
-        "external_dataset_attached": true,
-        "internet_enabled": false,
-        "cloud_execution_performed": false,
-        "api_normalizes_dataset_version_reference": true,
-        "runtime_manifest_version_pin": true,
-        "url": "https://www.kaggle.com/code/aikoog/fraudlab-reproducible-neural-fraud-detection/versions/3"
-      },
-      "source_commit": "c834602a4ba7c19961fe8955f06d760d05566116"
-    },
-    {
-      "source_commit": "3edaeba33923656afb1efca1cf7efc5996c3e39a",
-      "test_command": "python -m pytest tests presentation site/test_build.py -q --junitxml=.local/research/presentation-v02/tests.xml",
-      "passed": 156,
-      "subtests_passed": 52,
-      "test_report_sha256": "4d58d211c57c46d2a819df98e8a2a80c68d333d99a61aad07a029c8ef23e24dd",
-      "node_syntax_check": "passed",
-      "tested_source_sha256": {
-        "presentation/__init__.py": "eddcf4aa526255f1716fab49b85e12e9b30eae4b46c14752e96f880739fa8ee4",
-        "presentation/audio_cache.py": "937bc91b4ca1f56601f0edb9f94939091983a638a007dd84c58e717aa217d8ea",
-        "presentation/build.py": "41c056f093b67d4b92e9dc92c0cb55c23ec4ccf58aa834d08eae371397d1d3d3",
-        "presentation/content.py": "e29dd79f4040d56cf048f4ea0bc6fa30a7091c73eaf1eeab254d495be63a34f7",
-        "presentation/continuation.py": "0ebda100af659d0693675809ca3d2db8381479f47479bf2891962dd882df4cfe",
-        "presentation/external.py": "aee5ae1868f1f308bef043104ab71a43b062795d19f4c80c973eb5e82a3eca9a",
-        "presentation/review.py": "1231c9b84f1fb40b988453185de1a3d00ea83298d49d2b6e96359336865d85fb",
-        "presentation/test_continuation.py": "49c926f92531f32cd12f850242414956b8f44b574ea4ae1006bb0d36438edc54",
-        "presentation/test_presentation.py": "436d75ea75fd0394275274c011c1929ac9c9edf22fa2a686c361cf2d5f7abfdc",
-        "presentation/test_review.py": "aa39de53d548395ba15cf765e81d0db9119422395c585302ba3d696f90cfedb7",
-        "pyproject.toml": "0a585ebabb35661d195d4eda1dcf28f515cb53b130515573480820875db531cc",
-        "scripts/compose_refit_hybrid.py": "b8f4dc258d454d5d9effd49bfa937e6020b054cafa6295b02a38ef4fe499b268",
-        "scripts/export_metrics.py": "3ae3e85e730e313e1bfab247630820d0b1555b63682f642607142a56c8559ed6",
-        "scripts/kaggle_notebook.py": "e84a1e09f68a5085674a4300c891be108b99d91b85cb4749286100bbc3a1b579",
-        "scripts/record_submission.py": "9d84ef5270087a2140c775cc7c1b3a066e0e9742bda2cf5478b5e79a0af3b173",
-        "site/app.js": "fabd14ce7205676caf52e60ae5827d5333f4c4b9e300a52fdbd81403fc08bceb",
-        "site/build.py": "34df44fabd0082635698ce3cbe3125ddc26cd775825e881d0ef92b2bf3db8c43",
-        "site/check_browser.py": "73f2c4e6b69b3cc7000d40f538fe3201fcc684761f38d8e0c015287b6313b7c3",
-        "site/test_build.py": "4efd586a907652911f3d01341c74a5b8e2e74480d686010cb6ce4bc5642ce92f",
-        "src/fraudlab/__init__.py": "14479eff95a0233e8bf2d9f359843c36f53f36b92cc95c3e452f75bfb2982dcc",
-        "src/fraudlab/__main__.py": "1c5b2de2f4bab780c373271484a0d16af8c815714ad09af14e5396981a00bc21",
-        "src/fraudlab/bpe.py": "7adce2ce879679de655a040dffdf70ff2f3bfd65bb9458bfdf64eb21dcc08724",
-        "src/fraudlab/data.py": "f22355cc51fa6e6162b24e639923f40a11a23af00afcb65553090176271c8326",
-        "src/fraudlab/experiment.py": "9477892179c938c43d2cd996cc36b5ecbe31de084650822a92530bda79a3679c",
-        "src/fraudlab/external.py": "05ec4ec64e4a2c5cf1137c949646bed14fe83fb04506b8f2f973c2c7633c5e08",
-        "src/fraudlab/features.py": "3eaefb1484bc2b0d6b8d9a8ccdfcbfed7d0528e012308780a18fba4d0a8997b3",
-        "src/fraudlab/frequency.py": "6831c52335d82b7d6570ea2ba4cfd70ac5b6196406bc1a702f2740fe6cc257ff",
-        "src/fraudlab/holdout.py": "e3702891766326710c3b56dd7a7fe69f2f778acea3316665f130aa6955e2f4e3",
-        "src/fraudlab/models.py": "a62f2a1d2ae255141b6e5682333196164b0c27306196c6a6982dbe4ac0ca33ef",
-        "src/fraudlab/offset.py": "a4ea551e4ddf89aedc87f313eb07425aebc60f7d967986524a873a73565fdc4f",
-        "src/fraudlab/refit.py": "b50d1ca94ca4379a8a78a82e5a085adfb8c54860854572dfae08e9514a58420e",
-        "src/fraudlab/splits.py": "41215280332984010f5b616bbf6a675c623b7af3e3f00604eb3238e79c709af9",
-        "src/fraudlab/tabm.py": "df22ff1a120c8a6fde59052ea7a1b509ff1b7e7acc83d774f670a1daf4a4e667",
-        "tests/test_bpe.py": "282cc43053c91c1af15bd03fdd27bf35bd2da3b3f4982fcadc510998caff15c4",
-        "tests/test_compose_refit_hybrid.py": "bb67c3a4554299a0290866c8e7b3541bf08640275024d6e6bc51d6ae04c5ea8b",
-        "tests/test_contracts.py": "a8683e8946e0556f6115fc647e4c4e0ad57b382510f881d54453c3987714e717",
-        "tests/test_experiments.py": "12a6e99503901ba16951449723f942955414405648136e908e18141307d87d59",
-        "tests/test_external.py": "98f51f904ed51a6d3bb0ad385c46b28a2f5e49c842651e74fbfeb4516064a25d",
-        "tests/test_frequency.py": "943051d264f00415c88f25b08dc6e52738799841fe9c1dc889d5b7e8df374ecb",
-        "tests/test_glm_encoding.py": "ba4e681e57c96d238af0f62dbcad04599bebe818524ad8b9a37291099a2821a5",
-        "tests/test_offset.py": "9a6e89cca96403095367e70b8300973384552625e69b15a61b36304e806606ca",
-        "tests/test_pairs.py": "51a2b532b64abe83d64de363a0a9000c82fce28f44f8c5cb26be14a27671feee",
-        "tests/test_record_submission.py": "4137d8db2e5cd0eb80405f676fac1e5e3d96d4a45de0654af7fe913390e09362",
-        "tests/test_sparse_glm.py": "44d67dc1561c4402dd595dcfa196e668b0446a19035661fae3e980e79cdc1235",
-        "tests/test_splines.py": "d5b247a3501bfcaaca501e6c8ea44080482a8bac33c918db1d5e6045b19aeaed",
-        "tests/test_tabm.py": "42c5881f43c55c9bd07bf8aa0d6228bce9a2da64f9120dc2b6c2ef1cf91f65e7"
-      },
-      "secret_scan": {
-        "scope": "Repository candidates; high-confidence patterns, not an exhaustive security audit",
-        "files_checked": 104,
-        "findings": []
-      },
-      "published_notebook": {
-        "checked_at_utc": "2026-11-17T14:13:45.814953+00:00",
-        "url": "https://www.kaggle.com/code/aikoog/fraudlab-reproducible-neural-fraud-detection",
-        "version": 5,
-        "version_api_ref": "aikoog/fraudlab-reproducible-neural-fraud-detection/5",
-        "saved_without_running": true,
-        "push_result": "Kernel version 5 successfully saved without running.",
-        "published_source_commit": "bb60270",
-        "linked_ml_source_commit": "169f3ee5cdfbb2afe16c942a7af0efb8b12a403f",
-        "checks": {
-          "version_confirmed_by_official_get_kernel": true,
-          "all_cell_types_sources_execution_counts_outputs_equal": true,
-          "cells_compared": 22,
-          "code_cells_compared": 15,
-          "all_execution_counts_null": true,
-          "all_outputs_empty": true,
-          "official_version_pull_matches_local": true,
-          "official_get_kernel_source_matches_local": true,
-          "competition_sources_match": true,
-          "dataset_sources_match_after_api_version_normalization": true,
-          "internet_disabled": true,
-          "gpu_disabled": true,
-          "public_notebook": true
-        },
-        "input_config": {
-          "local_dataset_sources": [
-            "masayakawamata/s6e11-gpt2-target-first-oof/2"
-          ],
-          "remote_dataset_sources": [
-            "masayakawamata/s6e11-gpt2-target-first-oof"
-          ],
-          "competition_sources": [
-            "playground-series-s6e11"
-          ],
-          "enable_internet": false,
-          "dataset_version_note": "Official pull metadata returns the dataset slug without /2. Local push requested version2; unchanged notebook importer retains v2 and its pinned byte hashes. No cloud input execution or mounted bytes were checked."
-        },
-        "hashes": {
-          "local_notebook_sha256": "e4100ebdc7842afa1662e30b668fe44b18e128a260cfb690684f4e119000b52d",
-          "remote_pulled_notebook_sha256": "a1a3523f236a91f04f0d9177922394b71b385203786f3b1c41ecee4b0d2e5bdd",
-          "local_config_sha256": "3727cc3c8ec59a6521f8f8a21a6c21fa5b622f08c3c1bc0ca4ce023266ff01d4",
-          "remote_metadata_sha256": "c37215a3e1d6048ca4f58c42f8d97edf1d2ef9d477ea8c2516dfcd65fab024fa",
-          "normalized_all_cells_local_sha256": "deddc2939d05a7536d989566744ef2721277ed946d43f9881afb34e384f99079",
-          "normalized_all_cells_remote_sha256": "deddc2939d05a7536d989566744ef2721277ed946d43f9881afb34e384f99079"
-        },
-        "scope": "Published an unexecuted notebook update and verified source/config through official Kaggle services. No cloud training, cloud predictions or cloud submission were executed."
-      }
+      "manifest_sha256": "244242f0e02d0868addfd9da61faba44983d6e22a971d326e15965a421b85901",
+      "input_snapshot_sha256": "9414b9d1496ee3d8014ef5ca943674c654dc834c5cd0c9eaf3a6a68057577cce"
     }
-  ],
-  "competitive_extension": {
-    "r10": "evidence/round10-verification.json",
-    "r11": "evidence/round11-results.json",
-    "current_public": "evidence/round10-public.json",
-    "independent_holdout": false,
-    "first_positions_reached": false
   },
-  "aed_service_audit": "evidence/aed-services.json",
   "aed_content_audit": "evidence/aed-content.json",
-  "aed_delivery": "evidence/delivery.json"
+  "aed_delivery": "evidence/delivery.json",
+  "competition": "evidence/aed-services.json",
+  "selected_run": "evidence/round23-results.json",
+  "model_integrity": "evidence/round23-verification.json",
+  "public_submission": "evidence/round23-public.json",
+  "notebook": "evidence/notebook-v7.json",
+  "design": "evidence/design-review.json",
+  "published_code_matches_tested_source_hashes": true,
+  "college_portal_submission_performed": false,
+  "first_positions_reached": false,
+  "historical_verification": {
+    "source_commit": "17d43d70641f6cda4d09f2a797f633450dba42ec",
+    "path": "evidence/verification.json",
+    "url": "https://github.com/aikolopes-DS/fraudlab/blob/17d43d70641f6cda4d09f2a797f633450dba42ec/evidence/verification.json"
+  }
 }

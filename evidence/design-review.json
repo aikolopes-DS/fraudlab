@@ -1,8 +1,8 @@
 {
   "schema_version": 1,
   "recorded_at": "2026-11-18T02:38:12.269511+00:00",
-  "scope": "Evidência da pesquisa, refatoração, revisão visual local e verificação atribuída da landing publicada V7. Não é medição de conversão nem atestado de revisão audiovisual integral.",
-  "sites_source_commit": "627583cd3d5105c8fcc258b41a4447556a4487e6",
+  "scope": "Evidence of actual research, local design iteration and published V8 review. No measured conversion, universal artistic equivalence or human full-video listening claimed.",
+  "sites_source_commit": "344a5bfd2586d15b0d283bd40a9412a97a319180",
   "team": {
     "research_agent": "design_research",
     "frontend_agent": "design_frontend",
@@ -272,97 +272,44 @@
     }
   },
   "production_review": {
-    "site_url": "https://aikolopes-fraudlab.aikol9pes.chatgpt.site/",
-    "version": 7,
-    "reviewer_agent": "design_critic",
-    "recorded_at": "2026-11-18T02:36:45.755923+00:00",
-    "status": "Published V7 visually accepted in reviewed desktop/mobile flows; media replacement remains pending",
-    "receipt": {
-      "file": ".local/design-review/published-v7/production-review.json",
-      "sha256": "d0c0c20ffd2c4eab890903b69abc0477548d25d0d91abaea8295147ed713ce64"
-    },
-    "supporting_receipts": [
-      {
-        "file": ".local/design-review/published-v7/public-browser-checks.json",
-        "sha256": "408a14c37a3e6664a9da61c2276914288369006b609bac6757eb15d9ba593ea1"
-      },
-      {
-        "file": ".local/design-review/published-v7/public-source-assets.json",
-        "sha256": "473261d5bd99deccc5f2d2adf36c0144025d1c54cb9bf733cd0b240b380d3656"
-      }
-    ],
+    "reviewer": "design_critic",
+    "status": "passed",
+    "recorded_at": "2026-11-18T03:04:13.817260+00:00",
+    "url": "https://aikolopes-fraudlab.aikol9pes.chatgpt.site/",
     "root_reported_deployment": {
-      "id": "appgdep_6afd0e090f1c8191bb9ab2dd7046ad9e",
+      "id": "appgdep_6afd14a51b808191b460aa0c2afb8ed7",
       "status": "succeeded",
-      "source_sha": "627583cd3d5105c8fcc258b41a4447556a4487e6"
+      "source_sha": "344a5bfd2586d15b0d283bd40a9412a97a319180"
     },
-    "independently_verified": {
-      "chromium_viewports": [
-        [
-          1440,
-          900
-        ],
-        [
-          1280,
-          720
-        ],
-        [
-          390,
-          844
-        ],
-        [
-          360,
-          780
-        ]
-      ],
-      "overflow_px": 0,
-      "javascript_errors": 0,
-      "both_fonts_loaded": true,
-      "both_photos_loaded_and_credit_hash_matched": true,
-      "public_source_matches_dist": true,
-      "hero_cta_navigates_to_player": true,
-      "code_video_delivery_anonymously_accessible": true,
-      "public_results": {
-        "local_auc": 0.9517074903582017,
-        "local_auc_scope": "development_oof",
-        "fold_scores": [
-          0.9508397792121277,
-          0.9521231453682678,
-          0.9567561770742115,
-          0.9518950875493822,
-          0.9470391404103492
-        ],
-        "holdout_auc": null,
-        "public_auc": 0.95183,
-        "ranking": 626,
-        "total_teams": 2135,
-        "submission_id": "58490653",
-        "observed_at": "2026-11-18T02:12:21.191510+00:00"
-      },
-      "github_readme_has_r23": true,
-      "github_realmlp_configuration_matches": true
+    "scope": "Actual published V8 in Chromium at desktop1440×900 and mobile390×844. Visual inspection of five screenshots covering hero, material links and guidance, and player version. Reused no V7 screenshots and preserved all V7 evidence.",
+    "checks": {
+      "no_horizontal_overflow": true,
+      "no_javascript_errors": true,
+      "fonts_loaded": true,
+      "photos_loaded": true,
+      "same_verified_v7_photo_and_font_assets": true,
+      "landscape_zoom_guidance_visible": true,
+      "v04_video_and_zip_targets": true,
+      "v04_current_version_label": true,
+      "current_r23_score": true,
+      "video_not_played_in_this_round": true
     },
-    "public_source_hashes": {
-      "index": {
-        "status": 200,
-        "sha256": "b3b92cae163036177487418b5a3471a2b5d5572dadd5dde624639a70d471c391",
-        "bytes": 30195,
-        "matches_dist": true
-      },
-      "styles": {
-        "status": 200,
-        "sha256": "081b1e37c72f3eaf10fdea3ec0365eac486c0b0172d2e8d97801f0347d80d813",
-        "bytes": 50446,
-        "matches_dist": true
-      },
-      "app": {
-        "status": 200,
-        "sha256": "ab47382658359e318d56365e405425f9b61727f5a377eb8cc61fb349c2fbdce7",
-        "bytes": 12342,
-        "matches_dist": true
-      }
+    "opened_screenshots": [
+      "desktop-hero.png",
+      "mobile-hero.png",
+      "desktop-materials.png",
+      "mobile-materials.png",
+      "mobile-player.png"
+    ],
+    "screenshots_sha256": {
+      "desktop-hero.png": "5a9b6eb5357447ec846c6452b426368beb4bc74d6c36533dbe4ec8863fc222d1",
+      "mobile-hero.png": "a7be1f1116c4742c2ee9bd60f1bac140896d7d93e30734d47734a0e12ac345f3",
+      "desktop-materials.png": "ab6e86e7a483054b1ca9d3cdf774d3f40b06587407b10474fe3f1ff15eddd225",
+      "mobile-materials.png": "7233996e3a3d320a4b536e260b3dbd6e4c284a0962555e7175d694cea661e2c6",
+      "mobile-player.png": "d50a24fed95d280354fc304675356842bdacc1b8cb87be993e193593d5314fe2"
     },
-    "public_asset_hashes": {
+    "browser_report_sha256": "fe89c63b252e22c6e5dc512495a65bbc78ef1fe8db541d9d53b0df9afa85849b",
+    "assets": {
       "payment-detail.jpg": {
         "status": 200,
         "bytes": 252003,
@@ -384,68 +331,67 @@
         "sha256": "9fea608a947e67020c33cad9a6fe3d60c54119dfb8cff87768a8117a15ed7543"
       }
     },
-    "screenshots_actually_opened_sha256": {
-      "desktop-hero.png": "5a9b6eb5357447ec846c6452b426368beb4bc74d6c36533dbe4ec8863fc222d1",
-      "mobile-hero.png": "a7be1f1116c4742c2ee9bd60f1bac140896d7d93e30734d47734a0e12ac345f3",
-      "mobile-artifact.png": "91a891cd6f85b0a0b66c3a9392c2da5e389bc5c0098b80dc7a02da352d0c12d7",
-      "mobile-player.png": "41f655cf4415e20bf25594814a62512cea5d43dda1a42c95c7b71f11725dd978",
-      "desktop-footer.png": "359f440e3622809cfcd5aa847e609d4214b5427c7b6ca2ee0ade4aeb4f32027c"
-    },
-    "short_historical_playback": {
-      "time": 0.107956,
-      "duration": 3291.177596,
-      "readyState": 4,
-      "paused": false,
-      "source": "https://github.com/aikolopes-DS/fraudlab/releases/download/v0.3.0/video.mp4",
-      "captions": 1,
-      "cover_hidden": true
-    },
-    "download_endpoint_heads": {
-      "github": {
-        "target": "https://github.com/aikolopes-DS/fraudlab",
-        "status": 200,
-        "final_host": "github.com",
-        "content_type": "text/html; charset=utf-8",
-        "content_length": null,
-        "accept_ranges": "bytes"
-      },
-      "video": {
-        "target": "https://github.com/aikolopes-DS/fraudlab/releases/download/v0.3.0/video.mp4",
-        "status": 200,
-        "final_host": "release-assets.githubusercontent.com",
-        "content_type": "application/octet-stream",
-        "content_length": "64298759",
-        "accept_ranges": "bytes"
-      },
-      "delivery": {
-        "target": "https://github.com/aikolopes-DS/fraudlab/releases/download/v0.3.0/AED-FraudLab-entrega.zip",
-        "status": 200,
-        "final_host": "release-assets.githubusercontent.com",
-        "content_type": "application/octet-stream",
-        "content_length": "66575528",
-        "accept_ranges": "bytes"
+    "credit_metadata": {
+      "status": 200,
+      "data": {
+        "photos": [
+          {
+            "author": "Blake Wisz",
+            "source": "https://unsplash.com/photos/person-holding-credit-card-swipe-machine--JJg90OAnWI",
+            "published_at": "2019-05-01",
+            "sha256": "44e6debdab0da36e0cf3f6ad3dccbd535e7dc0f472059588110af2e2b1839cfa",
+            "license": "Unsplash License",
+            "license_url": "https://unsplash.com/license",
+            "credit_pt": "Foto ilustrativa: Blake Wisz / Unsplash",
+            "limits": "Illustrative commerce photo. Does not depict a FraudLab client, training sample, endorsement or fraud event.",
+            "file": "payment-detail.jpg"
+          },
+          {
+            "author": "Blake Wisz",
+            "source": "https://unsplash.com/photos/woman-paying-at-salon-checkout-counter-tE6th1h6Bfk",
+            "published_at": "2019-05-01",
+            "sha256": "2d2361bda897c439ef829002a9e2d140a625fbe2bf1ae323396575485db18595",
+            "license": "Unsplash License",
+            "license_url": "https://unsplash.com/license",
+            "credit_pt": "Foto ilustrativa: Blake Wisz / Unsplash",
+            "limits": "Illustrative commerce photo. Does not depict a FraudLab client, training sample, endorsement or fraud event.",
+            "file": "payment-context.jpg"
+          }
+        ],
+        "fonts": {
+          "license": "SIL Open Font License 1.1",
+          "sources": "font-sources.json"
+        }
       }
     },
-    "published_slides_probe": {
-      "status": 200,
-      "slide_sections": 139,
-      "title": "FraudLab — apresentação",
-      "has_r23": false,
-      "has_legacy_r10": true
+    "active_material_links": {
+      "github": "https://github.com/aikolopes-DS/fraudlab",
+      "kaggle": "https://www.kaggle.com/competitions/playground-series-s6e11",
+      "notebook": "https://www.kaggle.com/code/aikoog/fraudlab-reproducible-neural-fraud-detection",
+      "presentation": "presentation/slides.html",
+      "video": "https://github.com/aikolopes-DS/fraudlab/releases/download/v0.4.0/video.mp4",
+      "captions": "presentation/captions.vtt",
+      "delivery": "https://github.com/aikolopes-DS/fraudlab/releases/download/v0.4.0/AED-FraudLab-entrega.zip"
     },
-    "visual_blockers": [],
-    "delivery_pending": [
-      "Replace historical v03 video, slides and AED ZIP with validated v04 when generated; currently ZIP link also targetsv0.3.0",
-      "If retaining this interim snapshot, make historical package version visible beside download CTA as well as video"
+    "displayed_guidance": [
+      "Em telas pequenas, use modo paisagem ou zoom para ampliar fórmulas longas dos slides."
     ],
+    "stale_v03_body_mentions": [],
+    "findings": {
+      "blocking": [],
+      "observed": [
+        "Desktop/mobile composition and real payment-photo crop remain consistent with approved V7 visuals",
+        "Landscape or zoom guidance is readable in the presentation resource block next to the slide action",
+        "Player label identifies v0.4,198slides,R23 and dated ranking; no visible v0.3 body mention remained",
+        "Source photographs and self-hosted fonts are byte-identical to the V7 assets whose credits were verified"
+      ]
+    },
     "limits": [
-      "Five actual screenshots visually opened in this deployment round; other captured images were not all inspected",
-      "Short playback only (about0.108s), not new-media full audiovisual review",
-      "Download endpoint HEAD inspected; AED ZIP not fully downloaded or unpacked in this round",
-      "No measured conversion experiment or artistic equivalence claim",
-      "Initial raw urllib request was403; browser actual navigation and same-origin fetch worked"
-    ],
-    "attribution_scope": "Verificação em produção executada pelo agente design_critic; integrada por design_frontend a partir dos três recibos. Distinta dos checks locais e da revisão do futuro MP4 v0.4."
+      "No audiovisual playback,seeks,captions audit or full package download was repeated in this visual round; those belong to the root final QA",
+      "The long-equation portrait limitation remains in immutable v04 slide HTML and is now disclosed beside the slide link",
+      "No conversion measurement or universal artistic-equivalence claim",
+      "Only the five listed screenshots were opened visually in this deployment round; other captured screenshots are available for provenance"
+    ]
   },
   "explicit_limits": [
     "Não houve experimento de conversão, estudo com usuários ou medição comercial.",
@@ -501,5 +447,183 @@
       "site/assets/font-sources.json"
     ],
     "not_used": "Nenhuma imagem do Pinterest, Behance ou Adobe Stock foi reutilizada. A foto alternativa SumUp foi examinada e não entrou no site."
-  }
+  },
+  "production_review_history": [
+    {
+      "site_url": "https://aikolopes-fraudlab.aikol9pes.chatgpt.site/",
+      "version": 7,
+      "reviewer_agent": "design_critic",
+      "recorded_at": "2026-11-18T02:36:45.755923+00:00",
+      "status": "Published V7 visually accepted in reviewed desktop/mobile flows; media replacement remains pending",
+      "receipt": {
+        "file": ".local/design-review/published-v7/production-review.json",
+        "sha256": "d0c0c20ffd2c4eab890903b69abc0477548d25d0d91abaea8295147ed713ce64"
+      },
+      "supporting_receipts": [
+        {
+          "file": ".local/design-review/published-v7/public-browser-checks.json",
+          "sha256": "408a14c37a3e6664a9da61c2276914288369006b609bac6757eb15d9ba593ea1"
+        },
+        {
+          "file": ".local/design-review/published-v7/public-source-assets.json",
+          "sha256": "473261d5bd99deccc5f2d2adf36c0144025d1c54cb9bf733cd0b240b380d3656"
+        }
+      ],
+      "root_reported_deployment": {
+        "id": "appgdep_6afd0e090f1c8191bb9ab2dd7046ad9e",
+        "status": "succeeded",
+        "source_sha": "627583cd3d5105c8fcc258b41a4447556a4487e6"
+      },
+      "independently_verified": {
+        "chromium_viewports": [
+          [
+            1440,
+            900
+          ],
+          [
+            1280,
+            720
+          ],
+          [
+            390,
+            844
+          ],
+          [
+            360,
+            780
+          ]
+        ],
+        "overflow_px": 0,
+        "javascript_errors": 0,
+        "both_fonts_loaded": true,
+        "both_photos_loaded_and_credit_hash_matched": true,
+        "public_source_matches_dist": true,
+        "hero_cta_navigates_to_player": true,
+        "code_video_delivery_anonymously_accessible": true,
+        "public_results": {
+          "local_auc": 0.9517074903582017,
+          "local_auc_scope": "development_oof",
+          "fold_scores": [
+            0.9508397792121277,
+            0.9521231453682678,
+            0.9567561770742115,
+            0.9518950875493822,
+            0.9470391404103492
+          ],
+          "holdout_auc": null,
+          "public_auc": 0.95183,
+          "ranking": 626,
+          "total_teams": 2135,
+          "submission_id": "58490653",
+          "observed_at": "2026-11-18T02:12:21.191510+00:00"
+        },
+        "github_readme_has_r23": true,
+        "github_realmlp_configuration_matches": true
+      },
+      "public_source_hashes": {
+        "index": {
+          "status": 200,
+          "sha256": "b3b92cae163036177487418b5a3471a2b5d5572dadd5dde624639a70d471c391",
+          "bytes": 30195,
+          "matches_dist": true
+        },
+        "styles": {
+          "status": 200,
+          "sha256": "081b1e37c72f3eaf10fdea3ec0365eac486c0b0172d2e8d97801f0347d80d813",
+          "bytes": 50446,
+          "matches_dist": true
+        },
+        "app": {
+          "status": 200,
+          "sha256": "ab47382658359e318d56365e405425f9b61727f5a377eb8cc61fb349c2fbdce7",
+          "bytes": 12342,
+          "matches_dist": true
+        }
+      },
+      "public_asset_hashes": {
+        "payment-detail.jpg": {
+          "status": 200,
+          "bytes": 252003,
+          "sha256": "44e6debdab0da36e0cf3f6ad3dccbd535e7dc0f472059588110af2e2b1839cfa"
+        },
+        "payment-context.jpg": {
+          "status": 200,
+          "bytes": 556176,
+          "sha256": "2d2361bda897c439ef829002a9e2d140a625fbe2bf1ae323396575485db18595"
+        },
+        "space-grotesk.woff2": {
+          "status": 200,
+          "bytes": 22288,
+          "sha256": "0640890476fc1198ab4de571fb658de443c4d85b66466ec09534a8737ab1ce9d"
+        },
+        "dm-sans.woff2": {
+          "status": 200,
+          "bytes": 36932,
+          "sha256": "9fea608a947e67020c33cad9a6fe3d60c54119dfb8cff87768a8117a15ed7543"
+        }
+      },
+      "screenshots_actually_opened_sha256": {
+        "desktop-hero.png": "5a9b6eb5357447ec846c6452b426368beb4bc74d6c36533dbe4ec8863fc222d1",
+        "mobile-hero.png": "a7be1f1116c4742c2ee9bd60f1bac140896d7d93e30734d47734a0e12ac345f3",
+        "mobile-artifact.png": "91a891cd6f85b0a0b66c3a9392c2da5e389bc5c0098b80dc7a02da352d0c12d7",
+        "mobile-player.png": "41f655cf4415e20bf25594814a62512cea5d43dda1a42c95c7b71f11725dd978",
+        "desktop-footer.png": "359f440e3622809cfcd5aa847e609d4214b5427c7b6ca2ee0ade4aeb4f32027c"
+      },
+      "short_historical_playback": {
+        "time": 0.107956,
+        "duration": 3291.177596,
+        "readyState": 4,
+        "paused": false,
+        "source": "https://github.com/aikolopes-DS/fraudlab/releases/download/v0.3.0/video.mp4",
+        "captions": 1,
+        "cover_hidden": true
+      },
+      "download_endpoint_heads": {
+        "github": {
+          "target": "https://github.com/aikolopes-DS/fraudlab",
+          "status": 200,
+          "final_host": "github.com",
+          "content_type": "text/html; charset=utf-8",
+          "content_length": null,
+          "accept_ranges": "bytes"
+        },
+        "video": {
+          "target": "https://github.com/aikolopes-DS/fraudlab/releases/download/v0.3.0/video.mp4",
+          "status": 200,
+          "final_host": "release-assets.githubusercontent.com",
+          "content_type": "application/octet-stream",
+          "content_length": "64298759",
+          "accept_ranges": "bytes"
+        },
+        "delivery": {
+          "target": "https://github.com/aikolopes-DS/fraudlab/releases/download/v0.3.0/AED-FraudLab-entrega.zip",
+          "status": 200,
+          "final_host": "release-assets.githubusercontent.com",
+          "content_type": "application/octet-stream",
+          "content_length": "66575528",
+          "accept_ranges": "bytes"
+        }
+      },
+      "published_slides_probe": {
+        "status": 200,
+        "slide_sections": 139,
+        "title": "FraudLab — apresentação",
+        "has_r23": false,
+        "has_legacy_r10": true
+      },
+      "visual_blockers": [],
+      "delivery_pending": [
+        "Replace historical v03 video, slides and AED ZIP with validated v04 when generated; currently ZIP link also targetsv0.3.0",
+        "If retaining this interim snapshot, make historical package version visible beside download CTA as well as video"
+      ],
+      "limits": [
+        "Five actual screenshots visually opened in this deployment round; other captured images were not all inspected",
+        "Short playback only (about0.108s), not new-media full audiovisual review",
+        "Download endpoint HEAD inspected; AED ZIP not fully downloaded or unpacked in this round",
+        "No measured conversion experiment or artistic equivalence claim",
+        "Initial raw urllib request was403; browser actual navigation and same-origin fetch worked"
+      ],
+      "attribution_scope": "Verificação em produção executada pelo agente design_critic; integrada por design_frontend a partir dos três recibos. Distinta dos checks locais e da revisão do futuro MP4 v0.4."
+    }
+  ]
 }
