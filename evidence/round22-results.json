@@ -1,0 +1,221 @@
+{
+  "status": "complete",
+  "core_revision": "11b139f77206101d3f5beeb5648fb459f4cd304a",
+  "plan_sha256": "8d8d8f9c7f0d5a814c4b23b0d725ef63d8a9dde863d0e5e6294146af89623f6b",
+  "own_run": "round22-realmlp53",
+  "own_auc": 0.9501312330938791,
+  "own_fold_scores": [
+    0.950027918114387,
+    0.9504715897136027,
+    0.9556524672769328,
+    0.9502663261800334,
+    0.9447923279655691
+  ],
+  "comparisons": [
+    {
+      "run": "round22-realmlp-offset010-public25",
+      "replaced_fraction_of_offset": 0.1,
+      "weights": [
+        0.50625,
+        0.05625,
+        0.1875,
+        0.25
+      ],
+      "roc_auc": 0.9516849642548942,
+      "fold_scores": [
+        0.9507542553617583,
+        0.9520812574510996,
+        0.956715482314835,
+        0.9518837929437219,
+        0.9470823302366704
+      ],
+      "delta_vs_r18": 3.2481729369870926e-05,
+      "improved_folds_vs_r18": 4,
+      "eligible": true
+    },
+    {
+      "run": "round22-realmlp-offset025-public25",
+      "replaced_fraction_of_offset": 0.25,
+      "weights": [
+        0.421875,
+        0.140625,
+        0.1875,
+        0.25
+      ],
+      "roc_auc": 0.9517074903582017,
+      "fold_scores": [
+        0.9508397792121277,
+        0.9521231453682678,
+        0.9567561770742115,
+        0.9518950875493822,
+        0.9470391404103492
+      ],
+      "delta_vs_r18": 5.5007832677311796e-05,
+      "improved_folds_vs_r18": 4,
+      "eligible": true
+    },
+    {
+      "run": "round22-realmlp-offset050-public25",
+      "replaced_fraction_of_offset": 0.5,
+      "weights": [
+        0.28125,
+        0.28125,
+        0.1875,
+        0.25
+      ],
+      "roc_auc": 0.9516759015836683,
+      "fold_scores": [
+        0.9509090922937813,
+        0.9521233939428076,
+        0.9567650636140156,
+        0.9518491136882131,
+        0.9468956725074185
+      ],
+      "delta_vs_r18": 2.3419058143958615e-05,
+      "improved_folds_vs_r18": 3,
+      "eligible": false
+    },
+    {
+      "run": "round22-realmlp-offset100-public25",
+      "replaced_fraction_of_offset": 1.0,
+      "weights": [
+        0.0,
+        0.5625,
+        0.1875,
+        0.25
+      ],
+      "roc_auc": 0.9513466106906476,
+      "fold_scores": [
+        0.9507766489145537,
+        0.9518197601422235,
+        0.956563028442284,
+        0.9515129880880718,
+        0.9463427308719624
+      ],
+      "delta_vs_r18": -0.0003058718348767364,
+      "improved_folds_vs_r18": 1,
+      "eligible": false
+    }
+  ],
+  "selected": {
+    "run": "round22-realmlp-offset025-public25",
+    "replaced_fraction_of_offset": 0.25,
+    "weights": [
+      0.421875,
+      0.140625,
+      0.1875,
+      0.25
+    ],
+    "roc_auc": 0.9517074903582017,
+    "fold_scores": [
+      0.9508397792121277,
+      0.9521231453682678,
+      0.9567561770742115,
+      0.9518950875493822,
+      0.9470391404103492
+    ],
+    "delta_vs_r18": 5.5007832677311796e-05,
+    "improved_folds_vs_r18": 4,
+    "eligible": true
+  },
+  "comparison_stage_recovery": "Private driver used wrong comparison key after unchanged CLI fit; four declared comparisons finalized separately without retraining",
+  "recorded_at": "2026-11-18T01:36:25.929020+00:00",
+  "phase": "exploratory_full_data_cv",
+  "source_plan": "evidence/round22-plan.json",
+  "public_result": "evidence/round22-public.json",
+  "verification": "evidence/round22-verification.json",
+  "promoted": false,
+  "architecture": {
+    "library": "pytabkit==1.8.0",
+    "name": "RealMLP_TD",
+    "n_ens": 16,
+    "hidden_dims": [
+      512,
+      256,
+      128
+    ],
+    "activation": "parametric SiLU",
+    "numeric_embedding": "PBLD: periodic16, linear7 + original-value skip =8",
+    "categorical_embedding_dim": 5,
+    "parameters": 6117072
+  },
+  "preprocessed_features": {
+    "raw": 24,
+    "views": 53,
+    "numeric": 20,
+    "categorical": 33
+  },
+  "folds": [
+    {
+      "selected_epoch": 3,
+      "inner_training_rows": 475972,
+      "inner_validation_rows": 83996,
+      "refit_rows": 559968,
+      "seed": 42,
+      "refit_seed": 10042,
+      "parameters": 6117072,
+      "refit_elapsed_seconds": 6955.997229499975,
+      "cuda_peak_allocated_bytes": 1599984640,
+      "cuda_peak_reserved_bytes": 2663383040
+    },
+    {
+      "selected_epoch": 2,
+      "inner_training_rows": 475972,
+      "inner_validation_rows": 83996,
+      "refit_rows": 559968,
+      "seed": 43,
+      "refit_seed": 10043,
+      "parameters": 6115792,
+      "refit_elapsed_seconds": 159.7486593000358,
+      "cuda_peak_allocated_bytes": 1599984640,
+      "cuda_peak_reserved_bytes": 2663383040
+    },
+    {
+      "selected_epoch": 3,
+      "inner_training_rows": 475972,
+      "inner_validation_rows": 83996,
+      "refit_rows": 559968,
+      "seed": 44,
+      "refit_seed": 10044,
+      "parameters": 6117312,
+      "refit_elapsed_seconds": 163.2559365000343,
+      "cuda_peak_allocated_bytes": 1599984640,
+      "cuda_peak_reserved_bytes": 2663383040
+    },
+    {
+      "selected_epoch": 3,
+      "inner_training_rows": 475972,
+      "inner_validation_rows": 83996,
+      "refit_rows": 559968,
+      "seed": 45,
+      "refit_seed": 10045,
+      "parameters": 6114592,
+      "refit_elapsed_seconds": 130.69873429997824,
+      "cuda_peak_allocated_bytes": 1599976448,
+      "cuda_peak_reserved_bytes": 2663383040
+    },
+    {
+      "selected_epoch": 3,
+      "inner_training_rows": 475972,
+      "inner_validation_rows": 83996,
+      "refit_rows": 559968,
+      "seed": 46,
+      "refit_seed": 10046,
+      "parameters": 6115792,
+      "refit_elapsed_seconds": 137.5823261999758,
+      "cuda_peak_allocated_bytes": 1599984640,
+      "cuda_peak_reserved_bytes": 2663383040
+    }
+  ],
+  "elapsed_seconds": 8528.11,
+  "elapsed_scope": "Observed wall time on this laptop, including its power-state transition; not a controlled throughput comparison or GPU-hours estimate",
+  "independent_holdout": false,
+  "new_base_fits": 10,
+  "final_ensemble_members": 80,
+  "new_kaggle_submissions": 1,
+  "interpretation_pt": "A rede própria complementou a receita na CV, mas empatou com o melhor score público exibido; R20 permanece selecionada.",
+  "postprocessing_new_fits": 0,
+  "comparison_finalizer_sha256": "5c6f53bc429df027a1c8ee81974e0e8a97fb71d2025eb756a3f7a48b3382be00",
+  "training_driver_sha256": "c34798ca7f14e8db7e885fd87d65319f1c88e13e1e03073c42aaddb6cb7f8292",
+  "training_entrypoint": "python -m fraudlab, with the published plan cli_argv and frozen clean core11b139f"
+}

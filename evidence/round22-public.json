@@ -1,0 +1,20 @@
+{
+  "ref": 58489662,
+  "run": "round22-realmlp-offset025-public25",
+  "status": "complete",
+  "public_auc": 0.95162,
+  "observed_at": "2026-11-18T01:42:35.765877+00:00",
+  "source": "https://www.kaggle.com/competitions/playground-series-s6e11/submissions",
+  "submission_sha256": "f15150a2ef40abdfa316d77f6cdd1f701ef2a75529ea44c5fbe3aec321ef8dfa",
+  "downloaded_submission_sha256": "f15150a2ef40abdfa316d77f6cdd1f701ef2a75529ea44c5fbe3aec321ef8dfa",
+  "submission_file_verified": true,
+  "promoted": false,
+  "previous_best_public_auc": 0.95162,
+  "public_delta_at_reported_precision": 0.0,
+  "rank_of_this_submission": null,
+  "rank_scope": "A public-score tie at five decimals does not establish a better underlying score or an individual-submission rank.",
+  "winning_position_reached": false,
+  "gate_passed_before_upload": true,
+  "protocol_deviation": false,
+  "total_scored_submissions": 11
+}

@@ -263,6 +263,17 @@
       "observed_at": "2026-11-17T22:19:05.314857+00:00",
       "proof": "evidence/round21-public.json",
       "note": "Passou gate local predefinido, mas não superou o melhor envio R20; não promovida."
+    },
+    {
+      "submission_id": "58489662",
+      "run": "round22-realmlp-offset025-public25",
+      "public_auc": 0.95162,
+      "protocol_deviation": false,
+      "submission_file_verified": true,
+      "submission_sha256": "f15150a2ef40abdfa316d77f6cdd1f701ef2a75529ea44c5fbe3aec321ef8dfa",
+      "observed_at": "2026-11-18T01:42:35.765877+00:00",
+      "proof": "evidence/round22-public.json",
+      "note": "Ganho local pequeno, empate público na precisão exibida; não promovida."
     }
   ],
   "ranking_history": [
