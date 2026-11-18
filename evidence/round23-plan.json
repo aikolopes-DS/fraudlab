@@ -1,0 +1,270 @@
+{
+  "date": "2026-11-18",
+  "status": "prospective; no competitive R23 fit or inference exists",
+  "operation": "full_data_neural_refit_reuse_audited_trees",
+  "name": "round23-refit-realmlp-offset025-public25",
+  "neural_name": "round23-refit-realmlp",
+  "entrypoint": "scripts/refit_neural_cv.py",
+  "entrypoint_sha256": "87d6b824acd34edeb1d164178083c6b44d8a4aba6a48e46a10e5f77f97745c0a",
+  "support_script_sha256": "b58c0b9919a6aa17874170c3276cc528c26a86639c50012cb0a35aa26e3bc754",
+  "source": {
+    "revision": "11b139f77206101d3f5beeb5648fb459f4cd304a",
+    "sha256": {
+      "__init__.py": "14479eff95a0233e8bf2d9f359843c36f53f36b92cc95c3e452f75bfb2982dcc",
+      "__main__.py": "ad2a700e81de61cd32f5885092d03ff1109a227dc50289df19b8b23f4bdbfd97",
+      "bpe.py": "fb71799ca075c657a8344f85d6a7e91653d1f319e24b5e287c17565cea456d4e",
+      "data.py": "f22355cc51fa6e6162b24e639923f40a11a23af00afcb65553090176271c8326",
+      "experiment.py": "51fab0578a28f05078148ace515191b993682c34f8afeb0d36f5d2c45d49951b",
+      "external.py": "05ec4ec64e4a2c5cf1137c949646bed14fe83fb04506b8f2f973c2c7633c5e08",
+      "features.py": "184fe327468194f34563b25aee2268348ca854d59e4916f8e3eacdd1b6420424",
+      "frequency.py": "de06b4f581f6864066d94b140d67e4ed16f7cef054a30ef20bc408a972279ce6",
+      "holdout.py": "e3702891766326710c3b56dd7a7fe69f2f778acea3316665f130aa6955e2f4e3",
+      "joints.py": "620851854c56aceceba02d5855fe22525e748973e80ffe0f83040f5e75a271e8",
+      "models.py": "761f72365c5d510bc77b217ccd51c3f5b46538263a5c7bf7965fbdccd02d1a77",
+      "neural_offset.py": "042eec5ea088477bb37b045ace2f537c6e6e39ff49b3e810dc5e501b4ea8e487",
+      "offset.py": "a4ea551e4ddf89aedc87f313eb07425aebc60f7d967986524a873a73565fdc4f",
+      "original.py": "4db9d8d54929ba9d9a36fd55b8f8655611a800d22fade59af079e0497ce7b934",
+      "pooled.py": "6f15acb31c8a878efc262410a0ddf3f6b733b1a636a7bfa917758d568164601a",
+      "realmlp.py": "5bf0ec39dd482c71f82f30f6670082e2a2c70707cd5469ee9a64c486bdf4f278",
+      "refit.py": "0768665f10806858d9eeca83160bcb5b819d5417f26b775d3bc8262b988c01e4",
+      "scores.py": "8bae07482b56eb488a388c54ecd7ec0cf87a8644d9e98e53d7c1fcc75d2e58a1",
+      "splits.py": "41215280332984010f5b616bbf6a675c623b7af3e3f00604eb3238e79c709af9",
+      "strings.py": "f3248a9c0e7bbda655e29ecac02886dfa4cd4f34f35007ad90cf99a17efccbb0",
+      "tabm.py": "df22ff1a120c8a6fde59052ea7a1b509ff1b7e7acc83d774f670a1daf4a4e667",
+      "tokens.py": "8e3abfcbe2e437eee859d120f2a89b0a45bd84dfe389a06c11b622ee5ac9cbb4",
+      "transductive.py": "b2848df445f94d1135df27b99e7586048c279860b244dcf9544c30687263ca3b"
+    }
+  },
+  "data": "data/raw",
+  "output": "artifacts/runs",
+  "rows": {
+    "train": 699960,
+    "test": 299984
+  },
+  "data_hashes": {
+    "train.csv": "87eaa10b8d17a7e4f657b8da1c66242431338bdd8b6ad45861521ac0c0e9fbd5",
+    "test.csv": "10f516959020357b565abaaa4fd25baae97fc2f536d0805695bb7cc15c1660f0",
+    "sample_submission.csv": "13fc6ed8b73de5329884ec490f2a0b750cf29a7cda772b78cfa0cf486f6f35fa"
+  },
+  "reference_cv_auc": 0.9517074903582017,
+  "reference_cv_scope": "Historical exploratory R22 hybrid CV5/42, all699960labels/noindependentholdout. Not an AUC of the new full-data NN or hybrid.",
+  "cv_epochs": [
+    3,
+    2,
+    3,
+    3,
+    3
+  ],
+  "epochs": 3,
+  "scheduling_horizon": 3,
+  "preprocessing_seed": 42,
+  "network_seed": 10042,
+  "weights": [
+    0.421875,
+    0.140625,
+    0.1875,
+    0.25
+  ],
+  "roles": [
+    "offset",
+    "realmlp",
+    "lightgbm",
+    "external_gpt2"
+  ],
+  "inputs": {
+    "neural_cv": {
+      "path": "artifacts/runs/round22-realmlp53",
+      "sha256": {
+        "config.json": "3b681f2dd2fd46244e5f639994f0f4b0f9de5878a1653f2ced7fbefd463e8872",
+        "metrics.json": "62e330bf87793a903e1c7b10d6ccd172263f48833509166702030002309b0152",
+        "status.json": "970587076af8c4ebf6e94dc3999b017a4c3792faf7660c408eb91572fd86128b",
+        "predictions.csv": "d501cf906fc2b44ce5b6f005af616d1b1aa1f1fff7f7a1c4936ce23d75c99fac",
+        "submission.csv": "d501cf906fc2b44ce5b6f005af616d1b1aa1f1fff7f7a1c4936ce23d75c99fac",
+        "oof.csv": "44038fe9d9f9833380de3f0dabeb8ab0d813abbce3ec8cb04dd249c08c99e226",
+        "fold-0.pkl": "44e4be3d981b0661c8ec6c09fceb75d6ff64dd0ecb4e98dc0819dd36c82782b9",
+        "fold-1.pkl": "6bc3ca09ff62f6deef092562d3f444d14a457d6d13fd797a2f307d6887d38475",
+        "fold-2.pkl": "19fbf5251a45e6d38ad6cdeead95c4e5cae49c85fffe32ee281431071cb2a2a0",
+        "fold-3.pkl": "eb1a8e704f9dfc20a1be90ff7786ef69d937243983d9382c3f3d6a66dcd44c58",
+        "fold-4.pkl": "6aa9ca7c6f19f6ac7d302dd471b6916bed6ea5cae43431c3449a6f79af7fa2be"
+      }
+    },
+    "selection": {
+      "path": "artifacts/runs/round22-realmlp-offset025-public25",
+      "sha256": {
+        "config.json": "ccb022a90158df1b545829437c4997ca4c544d0cebd432b4fef1950cca6d69b7",
+        "metrics.json": "a14d3e1fa6b3b8924de1271c0de8297888339293e4967dd3d3c48c1b52ca4b21",
+        "status.json": "970587076af8c4ebf6e94dc3999b017a4c3792faf7660c408eb91572fd86128b",
+        "predictions.csv": "f15150a2ef40abdfa316d77f6cdd1f701ef2a75529ea44c5fbe3aec321ef8dfa",
+        "submission.csv": "f15150a2ef40abdfa316d77f6cdd1f701ef2a75529ea44c5fbe3aec321ef8dfa",
+        "oof.csv": "7949cb49208efd3b4879e3ff8e22425f588bd96c6d22e7c1a12ea705739b135d"
+      }
+    },
+    "offset": {
+      "path": "artifacts/runs/round20-refit-joint-offset",
+      "sha256": {
+        "config.json": "030bbde9757a78953d976987d9183a7daa5c830272941027626ef83066432538",
+        "metrics.json": "5bdf77bfb811a184c294ff7e7e4ae010082d6772fd37b07e9e1288543f62990d",
+        "status.json": "970587076af8c4ebf6e94dc3999b017a4c3792faf7660c408eb91572fd86128b",
+        "predictions.csv": "67a497a92fc9a3ba985e2f0b36c0a7cb0b782925b8e605c9e2090bfb1f525150",
+        "submission.csv": "67a497a92fc9a3ba985e2f0b36c0a7cb0b782925b8e605c9e2090bfb1f525150",
+        "model.joblib": "43da6386631e966647d2600a77e1c811dc3dc984925525ab1f7e7e8a7dbef17a"
+      }
+    },
+    "lightgbm": {
+      "path": "artifacts/runs/round20-refit-lgbm",
+      "sha256": {
+        "config.json": "98f7065463f113024e8127bb0357bf91598aea495ba2c01ca78c84fb9c3edb34",
+        "metrics.json": "6242e56c04d51242d90b499502dab744bd32762f38fc2896061544ee4e064649",
+        "status.json": "970587076af8c4ebf6e94dc3999b017a4c3792faf7660c408eb91572fd86128b",
+        "predictions.csv": "5b31b6061c48d5e875acb48dccef7d6c07e2cc0545c9373202c49be676e2ca35",
+        "submission.csv": "5b31b6061c48d5e875acb48dccef7d6c07e2cc0545c9373202c49be676e2ca35",
+        "model.joblib": "93566d24f2e38273f02cdf5f29b55820f3f9137500601339e81392436138f315"
+      }
+    },
+    "external_gpt2": {
+      "path": "artifacts/runs/explore5-public-gpt2-v2",
+      "sha256": {
+        "config.json": "843e20a6839bc22dc5522a4f12c7d46f64472f20782bad6a606c295dfe741d31",
+        "metrics.json": "14f9e508e5f78c926cd5a4341259623f490872da3e73d5b96f1ae8903fe29bc7",
+        "status.json": "970587076af8c4ebf6e94dc3999b017a4c3792faf7660c408eb91572fd86128b",
+        "predictions.csv": "78ada898faa132accf86daa3311ba114e44a472d31f0648357d10000ab243d58",
+        "submission.csv": "78ada898faa132accf86daa3311ba114e44a472d31f0648357d10000ab243d58",
+        "oof.csv": "4c37722b34d520a6de7d94565140cd0681baad6fb6c012d0b7a86a25b82a4dcb"
+      }
+    }
+  },
+  "proofs": {
+    "r22_audit": {
+      "path": ".local/research/realmlp/independent-audit.json",
+      "sha256": "25124a10b21661a6ba8e815765f7903783210cf437ecec92b75157a1d563b34a"
+    },
+    "r22_plan": {
+      "path": "evidence/round22-plan.json",
+      "sha256": "8d8d8f9c7f0d5a814c4b23b0d725ef63d8a9dde863d0e5e6294146af89623f6b"
+    },
+    "r22_results": {
+      "path": ".local/research/realmlp/results.json",
+      "sha256": "8a71faf6d50df135f5c176d79e1fc6f731c08b742cf672de1f017d347034b047"
+    },
+    "r20_audit": {
+      "path": ".local/research/round20/independent-audit.json",
+      "sha256": "c91c29b6851f40d98fb4d2f878faaa69a5cb2ad28b24b579eadcb8f3ad7c7b7d"
+    },
+    "r20_public": {
+      "path": "evidence/round20-public.json",
+      "sha256": "ba59f4bad3a6707d115caf02787ae344c111a32bcf2666dc27c459c623c2b919"
+    },
+    "r20_results": {
+      "path": "evidence/round20-results.json",
+      "sha256": "71bda8d422bfe92fe18f1b9f9c0b17a863c4c88be608e0f82eada182dbc9afae"
+    }
+  },
+  "dependency_versions": {
+    "numpy": "2.2.6",
+    "pandas": "2.3.3",
+    "scikit-learn": "1.7.2",
+    "torch": "2.11.0+cu128",
+    "pytabkit": "1.8.0",
+    "pytorch-lightning": "2.6.6",
+    "torchmetrics": "1.9.0",
+    "lightning-utilities": "0.15.3",
+    "cloudpickle": "3.1.2",
+    "tiktoken": "0.14.0",
+    "regex": "2026.9.29",
+    "lightgbm": "4.7.0"
+  },
+  "neural_source_parameters": {
+    "hidden_sizes": [
+      512,
+      256,
+      128
+    ],
+    "max_one_hot_cat_size": 16,
+    "embedding_size": 5,
+    "weight_param": "ntk",
+    "bias_lr_factor": 0.1,
+    "act": "silu",
+    "use_parametric_act": true,
+    "act_lr_factor": 0.1,
+    "block_str": "w-b-a-d",
+    "p_drop": 0.05,
+    "p_drop_sched": "pow5",
+    "add_front_scale": false,
+    "scale_lr_factor": 6.0,
+    "bias_init_mode": "neg-uniform-dynamic-2",
+    "weight_init_mode": "std",
+    "wd": 0.038,
+    "wd_sched": "cos_log_15",
+    "bias_wd_factor": 0.0,
+    "use_ls": true,
+    "ls_eps": 0.01,
+    "num_emb_type": "pbld",
+    "plr_sigma": 0.75,
+    "plr_hidden_1": 16,
+    "plr_hidden_2": 8,
+    "plr_lr_factor": 0.1151,
+    "lr": 0.073,
+    "tfms": [
+      "one_hot",
+      "median_center",
+      "robust_scale",
+      "smooth_clip",
+      "embedding",
+      "l2_normalize"
+    ],
+    "n_epochs": 3,
+    "lr_sched": "flat_anneal",
+    "opt": "adam",
+    "sq_mom": 0.988,
+    "n_ens": 16,
+    "batch_size": 288,
+    "predict_batch_size": 1024,
+    "use_early_stopping": false,
+    "ens_av_before_softmax": false,
+    "use_best_epoch": true,
+    "val_metric_name": "1-auc_ovr",
+    "first_layer_lr_factor": 0.25,
+    "use_plr_embeddings": true,
+    "plr_act_name": "linear",
+    "plr_use_densenet": true,
+    "plr_use_cos_bias": true,
+    "ls_eps_sched": "sqrt_cos",
+    "use_ls_prior": false,
+    "smooth_clip_max_abs_value": 3.0,
+    "robust_scale_eps": 1e-30,
+    "l2_normalize_eps": 1e-08
+  },
+  "fixed_protocol": {
+    "new_competitive_fits": 1,
+    "all_labels": 699960,
+    "new_validation_rows": 0,
+    "new_oof_rows": 0,
+    "new_roc_auc": null,
+    "epoch_rule": "Median[3,2,3,3,3]=3 from the five auditedR22inner selections; no new epoch selection.",
+    "fresh_objects": "New RealMLPPreprocessor(seed42), train-only imputation/bins/vocabulary/5-foldcrossfitTE on all699960labels; new official NNAlgInterface/Adam with networkseed10042; validation=None,stop_epoch3; schedulehorizon3.",
+    "representation": "Exactly the same53views20num33cat and architecture/optimizer as11b R22. Full-data category support/parameter count is measured rather than copied from CV or smoke.",
+    "reused_models": "Use the actual existing R20FULL offset and LightGBM checkpoint/CSV bytes; no tree refit and no averaging of CVfold predictions.",
+    "teacher": "Same approved MasayaGPT2predictiondatasetv2, unchanged25%probabilityshare; no new external arrays.",
+    "full_data_mixture": "0.421875*R20offsetFULL +0.140625*newRealMLPFULL +0.1875*R20LGBFULL +0.25*MasayaGPT2v2",
+    "seed_scope": "Preprocessing seed42 is the R22fold0fit seed; fresh neural seed10042 follows its outer-refit rule. No automatic extra10000offset.",
+    "selection_justification": "Recipe and four weights selected by the prospective R22 CV gate; only the amount of labeled training data changes. R22public feedback is not used to retune parameters/weights."
+  },
+  "verification": {
+    "requires_public_source_and_plan_before_fit": true,
+    "source": "Frozen11bworktree clean, exact all-moduleSHA manifest; entrypoint/helper/rawdata/config/metrics/checkpoints/proofs SHA checked before/after. All dependency versions fixed.",
+    "reused_models": "AuditedR20 checkpoint hashes and original parameterSHA must agree; reload each on1024actualtestrows and compare to saved full-dataCSVatol1e-12.",
+    "neural_reload": "SaveCPUcloudpickle bundle likeR22, reload1024actualtestrows onCPU vs original CUDA inferenceatol1e-6,rtol0.",
+    "composition": "Validate all299984IDs/order and finite[0,1] predictions; compare all serialized probabilities to the fixed direct formulaatol1e-15; hashbundle/config/metrics/CSV.",
+    "score_contract": "phasefull_data_refit,roc_aucnull,fold_scores[],fold_stdnull,rows.oof0,selection.source_dev_run/development_roc_auc explicitly historicalR22. Do not invent an OOF or holdout score.",
+    "immutability": "Refuse existing output directories; failure statuses prevent promotion; no retry/budget/calibration/architecturesearch in this round.",
+    "public_evaluation": "At mostone root submission after independent audit; compare public inference to the existing R20 full-data baseline. Script never submits."
+  },
+  "observed_reference": {
+    "R22_own_auc": 0.9501312330938791,
+    "R22_selected_hybrid_auc": 0.9517074903582017,
+    "R22_improved_folds_vs_R18": 4,
+    "R20_public_submission": 58483010,
+    "R20_public_auc": 0.95162,
+    "scope": "Historical observations and prospective rationale, not a result of R23."
+  }
+}
