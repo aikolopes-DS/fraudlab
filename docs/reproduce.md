@@ -1,6 +1,8 @@
 # Reproduzir o FraudLab
 
-Os comandos usam PowerShell na raiz do repositório. A receita selecionada é a [R18](../evidence/round18-plan.json), com núcleo de ML no commit [8a1c7fd](https://github.com/aikolopes-DS/fraudlab/tree/8a1c7fd141b43e41b0d43e3a07b0c5ad0bf41ae5): **56,25% offset próprio com BPE, frequência, pooling e interações, 18,75% LightGBM próprio e 25% GPT-2 externo aprovado**. O arquivo público atual usa seus [refits R20 em 100% dos rótulos](../evidence/round20-plan.json), sem nova OOF. O acompanhamento único fica no [README](../README.md); a evidência pública fica em [public.json](../evidence/public.json).
+Os comandos usam PowerShell na raiz do repositório. A receita selecionada atual é a [R23](../evidence/round23-results.json): **42,1875% offset próprio, 14,0625% RealMLP própria, 18,75% LightGBM próprio e 25% GPT-2 externo aprovado**, em probabilidades. A RealMLP foi refeita em todos os 699.960 rótulos; os dois modelos completos da R20 são reutilizados. A fonte neural é [11b139f](https://github.com/aikolopes-DS/fraudlab/tree/11b139f77206101d3f5beeb5648fb459f4cd304a) e o script de refit é [c95ff46](https://github.com/aikolopes-DS/fraudlab/tree/c95ff468619d299c94764b45e5e15af5ed9f4674). Não há nova OOF desse refit. O acompanhamento único fica no [README](../README.md); a evidência pública fica em [public.json](../evidence/public.json).
+
+Este guia preserva também o **baseline histórico R18/R20**, executável no notebook. Seus três componentes e pesos diferem da R23; não confunda um CSV desse baseline com o arquivo atual da competição.
 
 Use um clone novo ou nomes de execução novos. Os comandos não sobrescrevem `artifacts/runs/`. Uma reprodução em outro ambiente pode produzir bytes diferentes; ela precisa de verificação própria e não herda o score de outro arquivo.
 
@@ -17,7 +19,7 @@ python -m pip install -e ".[dev,bpe]"
 
 Sem ativação, use `.\.venv\Scripts\python.exe`. No Linux, crie o ambiente com `python3.11 -m venv .venv` e ative com `source .venv/bin/activate`.
 
-Para importar o núcleo congelado sem retirar do checkout principal os scripts posteriores, crie esta worktree em um clone novo:
+Para o baseline R18/R20, importe o núcleo histórico congelado sem retirar do checkout principal os scripts posteriores. Crie esta worktree em um clone novo:
 
 ```powershell
 git worktree add --detach .local/worktrees/joints-counts 8a1c7fd141b43e41b0d43e3a07b0c5ad0bf41ae5
@@ -56,7 +58,48 @@ python -m fraudlab import-public-gpt2 --source .local/research/public-models/gpt
 
 O importador confere o manifesto aprovado, hashes dos arrays e dados, formas, finitude, IDs e folds 5/42; não executa o código externo. Converte logits em probabilidades por sigmoid. No teste público, o autor já fez a média dos cinco logits antes dessa conversão.
 
-## Receita selecionada: R18
+## Receita atual: R22 em CV e refit R23
+
+A [R22](../evidence/round22-results.json) completou cinco folds próprios em todos os rótulos, com seleção de E em 15% internos de cada treino externo. Todo estado interno é descartado antes do ajuste novo do fold. Sua RealMLP usa PyTabKit 1.8.0, 53 vistas (20 numéricas e 33 categóricas) dos 24 atributos brutos, 16 membros e camadas 512→256→128. Os E observados foram [3,2,3,3,3]. A híbrida escolhida nessa rodada tem OOF exploratória **0,9517074903582017**; esses folds participaram da seleção, sem reserva independente.
+
+Prepare uma fonte isolada para essa rede, distinta do core histórico do notebook:
+
+```powershell
+git worktree add --detach .local/worktrees/realmlp-cv 11b139f77206101d3f5beeb5648fb459f4cd304a
+$env:PYTHONPATH = (Resolve-Path .local/worktrees/realmlp-cv/src).Path
+python -m pip install -e ".[bpe,realmlp]"
+```
+
+Para iniciar uma **nova CV real** pela CLI, use os argumentos públicos originais, sem copiar manualmente dezenas de padrões. O nome da execução deve estar livre:
+
+```powershell
+$fraudR22Plan = Get-Content evidence/round22-plan.json -Raw -Encoding UTF8 | ConvertFrom-Json
+$fraudR22Args = @($fraudR22Plan.cli_argv)
+python -m fraudlab @fraudR22Args
+```
+
+Esse comando exige CUDA, conforme o plano; não há fallback silencioso para CPU. Os bundles guardam transformadores e pesos, e a média do teste combina probabilidades dos cinco folds. Mudar hardware ou versões requer nova auditoria e pode mudar bytes e métricas.
+
+Na [R23](../evidence/round23-plan.json), a mediana E=3 foi congelada antes de treinar uma rede nova em todos os rótulos, sem validação nem seleção adicional. Ela contém 16 membros e **6.128.752 parâmetros** no bundle efetivamente ajustado. Offset e LightGBM completos da R20 e previsões GPT-2 v2 foram reutilizados. A [auditoria](../evidence/round23-verification.json) verificou a recarga da rede, os modelos reutilizados e a mistura das 299.984 linhas. `roc_auc=null`, `fold_scores=[]` e `rows.oof=0` são obrigatórios no novo refit. A OOF citada continua pertencendo à R22.
+
+O script auditado é um **replay condicionado aos artefatos exatos do plano**, não uma reprodução autossuficiente em um clone vazio:
+
+```powershell
+git show c95ff468619d299c94764b45e5e15af5ed9f4674:scripts/refit_neural_cv.py
+python scripts/refit_neural_cv.py --plan evidence/round23-plan.json --workspace . --core-worktree .local/worktrees/realmlp-cv
+```
+
+O segundo comando só deve ser executado após reconstruir e auditar todos os inputs de `inputs` e `proofs` do plano, incluindo a CV R22, os dois refits R20, os arrays públicos e os recibos locais ignorados pelo Git. Ele confere hashes antes de ajustar, recusa saídas existentes e exige a worktree limpa pinada. Checkpoints e recibos privados não estão incorporados no repositório ou notebook. Uma nova execução com bytes diferentes precisa de plano e recibos próprios; não edite os registros históricos para simular compatibilidade. O script não faz submissão.
+
+As versões exatas usadas nesse replay estão em `dependency_versions` do plano: NumPy 2.2.6, pandas 2.3.3, scikit-learn 1.7.2, torch 2.11.0+cu128, PyTabKit 1.8.0, pytorch-lightning 2.6.6, torchmetrics 1.9.0, lightning-utilities 0.15.3, cloudpickle 3.1.2, tiktoken 0.14.0, regex 2026.9.29 e LightGBM 4.7.0. O extra `realmlp` fixa a biblioteca e seus adaptadores; a instalação CUDA e a compatibilidade do equipamento devem ser preparadas separadamente. Este texto não declara execução desse ambiente no Kaggle.
+
+## Baseline histórico: seleção R18 e refit R20
+
+Antes dos comandos deste baseline, volte ao seu core próprio pinado:
+
+```powershell
+$env:PYTHONPATH = (Resolve-Path .local/worktrees/joints-counts/src).Path
+```
 
 A CV estratificada usa cinco folds, seed 42, sobre todos os 699.960 rótulos. Cada previsão OOF exclui o próprio fold do ajuste supervisionado; o teste recebe a média das cinco probabilidades por família própria. Essa OOF foi reutilizada para seleção: não existe holdout independente nesta etapa.
 
@@ -163,9 +206,9 @@ O gate prospectivo exige híbrida acima da R18, delta estritamente maior que 0,0
 
 ## R22: inferência da comparação RealMLP
 
-A [R22](../evidence/round22-plan.json) é uma comparação separada da receita R20. Seu adaptador usa a biblioteca oficial PyTabKit 1.8.0: aprende 53 vistas dos 24 atributos brutos, escolhe E em 15% internos e descarta esse modelo antes de um ajuste novo no treino externo. O horizonte dos schedules permanece em três épocas mesmo quando E=1. Os mapas, vocabulários e pesos entram no bundle local `.pkl`; valores categóricos novos usam o índice zero.
+A [R22](../evidence/round22-plan.json) introduziu a RealMLP posteriormente incluída na R23. Seu adaptador usa a biblioteca oficial PyTabKit 1.8.0: aprende 53 vistas dos 24 atributos brutos, escolhe E em 15% internos e descarta esse modelo antes de um ajuste novo no treino externo. O horizonte dos schedules permanece em três épocas mesmo quando E=1. Os mapas, vocabulários e pesos entram no bundle local `.pkl`; valores categóricos novos usam o índice zero.
 
-Para usar esse suporte, instale `python -m pip install -e ".[realmlp]"` no ambiente e selecione a fonte que contém R22, em vez da worktree histórica 8a1c7fd: no PowerShell, `$env:PYTHONPATH = (Resolve-Path src).Path`. O extra fixa as dependências oficiais e exige scikit-learn >=1.7. A inferência CPU não exige GPU.
+Para usar esse suporte, instale `python -m pip install -e ".[realmlp]"` no ambiente e volte à worktree neural com `$env:PYTHONPATH = (Resolve-Path .local/worktrees/realmlp-cv/src).Path`. O extra fixa as dependências oficiais e exige scikit-learn >=1.7. A inferência CPU não exige GPU.
 
 Após completar e auditar os cinco checkpoints do run, a API aceita apenas os 24 atributos brutos, sem `id` ou alvo. Em uma sessão Python com `test` carregado do CSV oficial:
 
@@ -181,18 +224,18 @@ probability = sum(
 ) / 5
 ```
 
-Cada checkpoint reconstrói os mapas armazenados e a média das probabilidades de seus 16 membros; a média acima combina os cinco folds. Não ajuste transformadores durante a inferência nem passe dados por `joint_bpe` nesse modelo. O contrato não define refit RealMLP em 100% dos rótulos. Este exemplo não declara resultado competitivo, promoção ou checkpoints já concluídos; os resultados e a seleção seguem o plano e a auditoria da rodada.
+Cada checkpoint reconstrói os mapas armazenados e a média das probabilidades de seus 16 membros; a média acima combina os cinco folds da R22. Não ajuste transformadores durante a inferência nem passe dados por `joint_bpe` nesse modelo. Esse exemplo reproduz a família CV, enquanto a R23 usa o bundle único `round23-refit-realmlp/model.pkl` treinado em todos os rótulos. Para ele, use `predict_saved("realmlp", Path("artifacts/runs/round23-refit-realmlp/model"), raw_features, "cpu")`, sem a média de cinco folds. A receita atual ainda requer as outras três contribuições e seus pesos registrados.
 
 ## Resultado público e submissão
 
-O arquivo atual R20 é a submissão **58483010**, score público **0,95162**, posição **657/2.126** em **17/11/2026 às 21h59min16s UTC**. O snapshot e o SHA conferido com o arquivo remoto estão em [round20-public.json](../evidence/round20-public.json) e [public.json](../evidence/public.json). Sua referência OOF 0,9516524825255244 pertence à seleção R18; o refit não tem OOF própria. Ranking é provisório e primeiras posições ainda não foram alcançadas.
+O arquivo atual R23 é a submissão **58490653**, score público **0,95183**, posição **626/2.135** em **18/11/2026 às 02h12min21s UTC**. O [snapshot R23](../evidence/round23-public.json) comprova que o CSV remoto e local têm SHA-256 `937dc4dd355229bc49fda67c3099ea97867a23fb9c9bbe97a2bf57fae6cf24de`. A referência OOF 0,9517074903582017 pertence à seleção R22; o refit não tem OOF própria. A R20 anterior obteve 0,95162 no [envio 58483010](../evidence/round20-public.json). Ranking é provisório e primeiras posições ainda não foram alcançadas.
 
 A submissão CV anterior R18, **58481744**, recebeu **0,95141**, com posição **714/2.125** em **17/11/2026 às 20h53min43s UTC**; sua prova permanece em [round18-public.json](../evidence/round18-public.json).
 
 Depois da auditoria do CSV e de uma decisão explícita de envio:
 
 ```powershell
-& $fraudKaggle competitions submit playground-series-s6e11 -f artifacts/runs/round20-refit-joint-public25/submission.csv -m "FraudLab: round20-refit-joint-public25"
+& $fraudKaggle competitions submit playground-series-s6e11 -f artifacts/runs/round23-refit-realmlp-offset025-public25/submission.csv -m "FraudLab: round23-refit-realmlp-offset025-public25"
 ```
 
 O comando faz um envio real, sujeito às regras e limites da conta. A confirmação exige processamento na plataforma; um CSV válido não comprova score. [record_submission.py](../scripts/record_submission.py) registra arquivo, resposta e snapshot: consulte seus argumentos em `python scripts/record_submission.py --help`. Uma reprodução não herda a pontuação já processada.
@@ -201,7 +244,9 @@ O comando faz um envio real, sujeito às regras e limites da conta. A confirmaç
 
 A [R10](../evidence/round10-results.json), fonte 169f3ee, é a receita anterior: OOF 0,9514921382152453 e submissão 58470267/0,95134. A R18 preserva seu mecanismo de offset e acrescenta pooling e interações. A [R9](../evidence/public-evaluation-results.json) permanece uma exceção pública exploratória declarada; seu critério original não foi reclassificado como cumprido. Os demais planos/resultados documentam comparações próprias, incluindo MLPs, TabM, CatBoost, tokens, dados originais e frequência transdutiva; resultados negativos não promovem uma receita.
 
-O [notebook V6](https://www.kaggle.com/code/aikoog/fraudlab-reproducible-neural-fraud-detection) incorpora os 22 módulos do core `8a1c7fd`, os vocabulários GPT-2 oficiais com hashes e as células para CV R18 e refit completo R20. Foi salvo **sem execução na nuvem**: suas 39 células foram [conferidas com a versão remota](../evidence/notebook-v6.json), com outputs e contagens de execução vazios. O preflight local do tokenizador passou sem rede; contratos com callbacks simulados não comprovam execução numérica no Kaggle. O notebook exige as versões de dependências declaradas e não instala pacotes nem submete automaticamente.
+O gerador `python scripts/kaggle_notebook.py` prepara a V7 local com dois escopos: preserva o baseline executável R18/R20 (22 módulos de `8a1c7fd` e vocabulários GPT-2 oficiais) e acrescenta um apêndice de código atual R23. O apêndice exporta em `r23-source/` os 23 módulos de `11b139f`, dois scripts de `c95ff46` e dois planos, com SHA-256. Ele só grava e confere arquivos; não importa esse core, não treina nem faz inferência. O baseline continua produzindo a composição histórica de três componentes, sem se fazer passar pela receita atual de quatro componentes.
+
+O [notebook público](https://www.kaggle.com/code/aikoog/fraudlab-reproducible-neural-fraud-detection) foi salvo sem execução nas versões verificadas. A [prova V6](../evidence/notebook-v6.json) comprova as 39 células anteriores; gerar a V7 local não comprova publicação ou execução na nuvem. Uma nova versão requer seu próprio save/readback e recibo. O preflight local do tokenizador e os testes de exportação verificam integridade e contratos; não comprovam treinamento numérico no Kaggle. O notebook não instala pacotes nem submete automaticamente.
 
 A reserva inicial de 15% seed 2026 é histórica: esses rótulos já participam das CVs posteriores. Não a reapresente como avaliação independente atual. Os refits `final-glm`/`final-lgbm` e `compose_refit_hybrid.py` pertencem à receita antiga e não são os refits R20.
 

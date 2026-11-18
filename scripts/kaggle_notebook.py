@@ -1,4 +1,4 @@
-"""Export the frozen final protocol into an offline, unexecuted Kaggle notebook."""
+"""Export the pinned baseline and current-source appendix without cloud execution."""
 
 from __future__ import annotations
 
@@ -18,6 +18,8 @@ from pathlib import Path, PurePosixPath
 
 ROOT = Path(__file__).resolve().parents[1]
 REVISION = "1fe34b540f3ea28276da652c3dd1de02726897f4"
+CURRENT_CORE = "11b139f77206101d3f5beeb5648fb459f4cd304a"
+CURRENT_SCRIPTS = "c95ff468619d299c94764b45e5e15af5ed9f4674"
 COMMON = {
     "feature_set": "value_digits",
     "id_column": "id",
@@ -227,13 +229,13 @@ def make_notebook(
     cell(
         "markdown",
         (
-            "# FraudLab · R18 em CV e refit completo R20\n\n"
+            "# FraudLab · baseline R18/R20 e código atual R23\n\n"
             if hybrid
             else "# FraudLab · protocolo próprio reproduzível\n\n"
         )
         + "**Esta versão foi salva sem execução no Kaggle.** As células não contêm resultados de uma execução nesta plataforma. Os treinamentos locais e as submissões realmente processadas estão documentados no [repositório público e suas evidências](https://github.com/aikolopes-DS/fraudlab). O ranking é uma observação datada e provisória.\n\n"
         + (
-            "O fluxo reproduz a receita selecionada R18: offset próprio com BPE, frequência, pooling e oito interações, além do LightGBM próprio. Executa CV estratificada 5/42 e, depois, dois refits em todos os rótulos conforme a R20. Pesos fixos em probabilidades: **56,25% offset / 18,75% LGB / 25% GPT-2 de Masaya Kawamata**. O GPT-2 foi treinado pelo autor externo. A R20 não fabrica OOF nem AUC de refit; a reserva antiga não é independente destes protocolos.\n\nCódigo próprio MIT; previsões externas v2 CC BY 4.0. Tokenizador e vocabulários oficiais GPT-2: OpenAI. Dados sob os termos da competição."
+            "As seções 1–6 preservam o **baseline histórico R18/R20 executável**: offset próprio com BPE, frequência, pooling e oito interações, além do LightGBM próprio. Executam CV estratificada 5/42 e, depois, dois refits em todos os rótulos conforme a R20. Seus pesos são **56,25% offset / 18,75% LGB / 25% GPT-2 de Masaya Kawamata**. **Esse baseline não é a receita selecionada atual.** O apêndice R23 disponibiliza separadamente o código próprio atualizado e seus comandos, sem executar treinamento ou inferência.\n\nO GPT-2 foi treinado pelo autor externo. Refits não fabricam OOF nem AUC nova; a reserva antiga não é independente destes protocolos. Código próprio MIT; previsões externas v2 CC BY 4.0. Tokenizador e vocabulários oficiais GPT-2: OpenAI. Dados sob os termos da competição."
             if hybrid
             else "O fluxo abaixo reproduz o protocolo escolhido: desenvolver GLM e LightGBM em 85% dos rótulos, combinar com pesos congelados 75/25, avaliar uma vez os 15% reservados, refitar ambos em 100% e gerar o CSV final. A MLP com target encoding tem uma célula opcional de comparação e não entra no blend. Código MIT; dados sob os termos da competição."
         ),
@@ -305,7 +307,8 @@ def make_notebook(
             )
         cell("code", tokenizer_cell(record["recipe"]))
         hybrid_cells(cell, record["recipe"])
-        return document(cells, revision, manifest, record), files
+        appendix, extra_files = current_source_appendix(cell)
+        return document(cells, revision, manifest, {**record, "current_appendix": appendix}), {**files, **extra_files}
     cell(
         "markdown",
         "## 2. Dados oficiais e partição independente\n\n"
@@ -832,6 +835,94 @@ def hybrid_cells(cell, recipe: dict) -> None:
     )
 
 
+def current_source_appendix(cell) -> tuple[dict, dict[str, bytes]]:
+    """Share the current own implementation without replacing the executable baseline."""
+    plan = json.loads(git_bytes("show", f"{CURRENT_SCRIPTS}:evidence/round23-plan.json"))
+    files, provenance = {}, {}
+    source_paths = git_bytes("ls-tree", "-r", "--name-only", CURRENT_CORE, "src/fraudlab").decode().splitlines()
+    pinned = [(CURRENT_CORE, path) for path in source_paths if path.endswith(".py")]
+    pinned += [(CURRENT_SCRIPTS, path) for path in (
+        "scripts/refit_selected_cv.py", "scripts/refit_neural_cv.py",
+        "evidence/round22-plan.json", "evidence/round23-plan.json",
+    )]
+    for revision, path in pinned:
+        target = "r23-source/" + path
+        body = git_bytes("show", f"{revision}:{path}")
+        files[target] = body
+        provenance[target] = {"revision": revision, "path": path, "sha256": hashlib.sha256(body).hexdigest()}
+    actual_core = {Path(path).name: provenance["r23-source/" + path]["sha256"]
+                   for revision, path in pinned if revision == CURRENT_CORE}
+    if plan["source"]["revision"] != CURRENT_CORE or actual_core != plan["source"]["sha256"]:
+        raise ValueError("Current appendix core differs from the pinned R23 plan.")
+    for path, expected in (("refit_neural_cv.py", plan["entrypoint_sha256"]),
+                           ("refit_selected_cv.py", plan["support_script_sha256"])):
+        if provenance["r23-source/scripts/" + path]["sha256"] != expected:
+            raise ValueError("Current appendix script differs from the pinned R23 plan: " + path)
+    public = json.loads((ROOT / "evidence/round23-public.json").read_text(encoding="utf-8"))
+    results = json.loads((ROOT / "evidence/round23-results.json").read_text(encoding="utf-8"))
+    record = {"scope": "source_export_only; no current-model training or inference in this appendix",
+              "core_revision": CURRENT_CORE, "script_revision": CURRENT_SCRIPTS,
+              "effective_weights": dict(zip(plan["roles"], plan["weights"])),
+              "dependencies": plan["dependency_versions"], "source_files": provenance,
+              "observed_local_result": results, "processed_public_result": public}
+    cell("markdown", dedent(f"""
+        ## Apêndice R23 · solução atual, código aberto e reprodução local
+
+        O baseline acima produz arquivos da R18/R20. A **R23 atual** combina probabilidades de
+        **42,1875% offset próprio + 14,0625% RealMLP própria + 18,75% LightGBM próprio + 25% GPT-2 externo**.
+        A RealMLP foi treinada localmente em todos os 699.960 rótulos: 16 membros, camadas
+        512→256→128, três épocas fixadas pela mediana [3,2,3,3,3] da CV R22. Reutilizamos os
+        dois modelos completos da R20. A referência OOF R22 é 0,9517074903582017; **R23 não
+        gera uma nova OOF nem holdout independente**. Score público, posição e data abaixo
+        vêm de registros locais da plataforma; não são outputs de uma execução deste notebook.
+
+        Os 23 módulos próprios do core [`{CURRENT_CORE[:7]}`](https://github.com/aikolopes-DS/fraudlab/tree/{CURRENT_CORE})
+        e os dois scripts de [`{CURRENT_SCRIPTS[:7]}`](https://github.com/aikolopes-DS/fraudlab/tree/{CURRENT_SCRIPTS})
+        são exportados abaixo em **`r23-source/`**, com os planos e hashes. Essas células
+        apenas gravam código para consulta: não substituem `fraudlab/`, não importam esse
+        código, não treinam, não preveem e não enviam submissões. Não instalam dependências.
+        O código próprio é MIT. PyTabKit e os demais pacotes conservam suas próprias licenças;
+        as previsões GPT-2 externas continuam atribuídas a Masaya Kawamata, CC BY 4.0.
+
+        Para treinar fora deste notebook, siga o [guia de reprodução](https://github.com/aikolopes-DS/fraudlab/blob/main/docs/reproduce.md).
+        A CLI RealMLP usa os argumentos de `evidence/round22-plan.json`. O script R23 é um
+        **replay auditado condicionado aos artefatos exatos** dos planos, inclusive checkpoints
+        e recibos locais; não é um comando autossuficiente para um clone vazio. Esses
+        artefatos não estão incorporados aqui. Uma nova reprodução exige seus próprios
+        ajustes, auditorias, hashes e processamento no Kaggle e não herda o score registrado.
+
+        Exemplos para uma sessão local preparada (texto de referência; não executado aqui):
+
+        ```powershell
+        $fraudR22Plan = Get-Content evidence/round22-plan.json -Raw | ConvertFrom-Json
+        $fraudR22Args = @($fraudR22Plan.cli_argv)
+        python -m fraudlab @fraudR22Args
+        python scripts/refit_neural_cv.py --plan evidence/round23-plan.json --workspace . --core-worktree .local/worktrees/realmlp-cv
+        ```
+
+        O segundo comando requer a fonte limpa pinada, versões exatas e todos os inputs/
+        recibos já produzidos e auditados; o primeiro inicia treinamento real caso seja
+        copiado e executado localmente. Nenhum deles é chamado pelo apêndice.
+        """).strip())
+    cell("code", "from pathlib import Path\nfor folder in ('src/fraudlab', 'scripts', 'evidence'):\n"
+         "    (Path('r23-source') / folder).mkdir(parents=True, exist_ok=True)\n",
+         {"fraudlab_scope": "current_source_export"})
+    for target, body in files.items():
+        cell("code", f"%%writefile {target}\n" + body.decode("utf-8"),
+             {"fraudlab_scope": "current_source_export", "fraudlab_source": provenance[target]})
+    source_hashes = {path: info["sha256"] for path, info in provenance.items()}
+    cell("code", "import hashlib\nimport json\nfrom pathlib import Path\n"
+         "CURRENT_PROTOCOL = " + pprint.pformat(record, width=100, sort_dicts=False) + "\n"
+         "CURRENT_SOURCE_SHA256 = " + pprint.pformat(source_hashes, width=100) + "\n"
+         "for filename, expected in CURRENT_SOURCE_SHA256.items():\n"
+         "    assert hashlib.sha256(Path(filename).read_bytes()).hexdigest() == expected, filename\n"
+         "print(json.dumps({'scope': CURRENT_PROTOCOL['scope'], 'files_verified': len(CURRENT_SOURCE_SHA256),\n"
+         "                  'observed_local_result': CURRENT_PROTOCOL['observed_local_result'],\n"
+         "                  'processed_public_result': CURRENT_PROTOCOL['processed_public_result']}, indent=2))\n",
+         {"fraudlab_scope": "current_source_export"})
+    return record, files
+
+
 def verify(notebook: dict, sources: dict[str, bytes]) -> dict:
     exported = {}
     compiled = 0
@@ -845,7 +936,8 @@ def verify(notebook: dict, sources: dict[str, bytes]) -> dict:
             heading, body = text.split("\n", 1)
             filename = heading.removeprefix("%%writefile ")
             exported[filename] = body.encode("utf-8")
-            compile(body, filename, "exec")
+            if filename.endswith(".py"):
+                compile(body, filename, "exec")
         else:
             compile(text, cell["id"], "exec")
             compiled += 1
@@ -855,7 +947,8 @@ def verify(notebook: dict, sources: dict[str, bytes]) -> dict:
     if re.search(r"[A-Za-z]:[\\/]+Users[\\/]+", content):
         raise ValueError("A personal absolute Windows path leaked into the notebook.")
     return {
-        "exported_modules": len(exported),
+        "exported_modules": sum(path.endswith(".py") and "/scripts/" not in path for path in exported),
+        "exported_files": len(exported),
         "compiled_non_magic_cells": compiled,
         "unexecuted": True,
     }
