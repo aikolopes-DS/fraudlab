@@ -1,0 +1,36 @@
+{
+  "checked_at": "2026-11-18T02:47:56.790395+00:00",
+  "status": "passed",
+  "url": "https://www.kaggle.com/code/aikoog/fraudlab-reproducible-neural-fraud-detection",
+  "version": 7,
+  "public": true,
+  "saved_without_running": true,
+  "cloud_training_performed": false,
+  "baseline_source_revision": "8a1c7fd141b43e41b0d43e3a07b0c5ad0bf41ae5",
+  "current_core_revision": "11b139f77206101d3f5beeb5648fb459f4cd304a",
+  "current_scripts_revision": "c95ff468619d299c94764b45e5e15af5ed9f4674",
+  "cells": 45,
+  "code_cells": 36,
+  "all_remote_cells_equal_local": true,
+  "all_execution_counts_empty": true,
+  "all_outputs_empty": true,
+  "local_notebook_sha256": "56c0f5d3a4e780e3c41e33bec9c10276bf0bea95e3ebe9c7e6d2b006c6c2a650",
+  "downloaded_notebook_sha256": "d2f3360a2ea6013961e79ec4b98c4592cd88a1b6d39ea75c8eae27d2cd1c58d7",
+  "generator_sha256": "31a300bdeaf63d6a68a1e22e698c713511b16f09170a565ff46c8ec8b8732d81",
+  "all_reconstituted_source_files_verified": true,
+  "source_verification": {
+    "exported_modules": 45,
+    "exported_files": 49,
+    "compiled_non_magic_cells": 12,
+    "transmitted_bytes": 991610,
+    "unexecuted": true
+  },
+  "comparison_method": "All fields compared after source arrays/strings were joined into identical text and one metadata timestamp's fractional trailing zero was normalized after datetime equality. All cell source/metadata bytes agree; every literal/archived source compiled and matched pinned Git bytes.",
+  "metadata_timestamp_serialization": {
+    "local": "2026-11-18T02:12:21.191510+00:00",
+    "remote": "2026-11-18T02:12:21.19151+00:00",
+    "same_instant": true
+  },
+  "scope": "Actual official SDK metadata and full saved notebook readback. Baseline R18/R20 is executable source; R23 appendix exports own source and audited replay instructions. No cloud training or complete R23 runtime execution is claimed.",
+  "size_rejection_resolved": "Official SaveKernel rejected source >=1MB. Pinned vocabularies retain exact bytes/hashes using LZMA; source archive is gzip/base64, verified without importing modules."
+}

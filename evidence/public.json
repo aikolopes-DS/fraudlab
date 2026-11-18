@@ -330,11 +330,11 @@
       "scope_pt": "Prova sintética de buffer e objetos distintos; não mede RSS do processo ou do pipeline completo."
     },
     "tests": {
-      "passed": 351,
-      "subtests": 72,
-      "scope": "CI cab2650: core, scripts, apresentação e site; sem skips",
-      "observed_at": "2026-11-17T23:20:31Z",
-      "ci_url": "https://github.com/aikolopes-DS/fraudlab/actions/runs/44198322482"
+      "passed": 369,
+      "subtests": 81,
+      "scope": "CI c21414a: core, scripts, apresentação e site; sem skips",
+      "observed_at": "2026-11-18T02:48:06Z",
+      "ci_url": "https://github.com/aikolopes-DS/fraudlab/actions/runs/44225647965"
     }
   }
 }

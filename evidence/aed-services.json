@@ -1,129 +1,338 @@
 {
-  "observed_at_utc": "2026-11-17T18:22:30.573520+00:00",
-  "confirmed_leaderboard_at_utc": "2026-11-17T18:24:25.231115+00:00",
-  "completed_at_utc": "2026-11-17T18:26:10.603659+00:00",
-  "scope": "Final read-only service audit; historical video and canonical submission snapshots were not changed by this audit",
+  "observed_at_utc": "2026-11-18T02:49:06.587030+00:00",
+  "completed_at_utc": "2026-11-18T02:49:09.442130+00:00",
+  "scope": "Fresh read-only official Kaggle CLI and anonymous GitHub API checks, with separately dated notebook/browser/file verification receipts. No new training, submission or final-selection mutation.",
   "competition": {
     "url": "https://www.kaggle.com/competitions/playground-series-s6e11",
-    "open_for_submission": true,
     "deadline_utc": "2026-11-30T23:59:00+00:00",
+    "account_has_entered": true,
+    "deadline_in_future": true,
+    "latest_successful_submission_date_utc": "2026-11-18T02:10:26.337000+00:00",
     "rules_url": "https://www.kaggle.com/competitions/playground-series-s6e11/rules",
-    "rules_content_sha256": "b09ffa98473a049145fb76ab9246d182169010662c684114b36b3bbce2132b7e",
-    "max_daily_submissions": 10,
-    "max_final_submissions": 2,
-    "limits_source": "Current official rules page; daily limit also confirmed by competition API"
+    "rules_re_read_in_this_audit": false,
+    "rules_previous_verification": "docs/competition.md and preserved historical service audit; not replaced by an unread page"
   },
   "kaggle": {
     "account": "aikoog",
-    "team_name": "aiko-og",
-    "submission_count": 7,
-    "processed_submission_count": 7,
+    "submission_count": 12,
+    "processed_submission_count": 12,
     "best_submission": {
-      "ref": 58470267,
-      "canonical_run": "round10-offset-bpe-frequency-public25",
-      "canonical_relative_file": "artifacts/runs/round10-offset-bpe-frequency-public25/submission.csv",
-      "observed_at_utc": "2026-11-17T18:26:10.078307+00:00",
-      "http_status": 200,
-      "bytes": 8830189,
-      "downloaded_sha256": "274cbe4ea90d9dc4893140cad55682f3627ced02163fff48655df4b095e428e7",
-      "local_sha256": "274cbe4ea90d9dc4893140cad55682f3627ced02163fff48655df4b095e428e7",
-      "recorded_receipt_sha256": "274cbe4ea90d9dc4893140cad55682f3627ced02163fff48655df4b095e428e7",
-      "all_equal": true,
-      "scope": "Original official submitted CSV streamed and hashed in memory, not saved or submitted again",
-      "url": "https://www.kaggle.com/competitions/playground-series-s6e11/submissions/58470267",
-      "public_score": 0.95134,
-      "status": "complete",
-      "file_verified": true,
-      "metrics_submission_sha256": "274cbe4ea90d9dc4893140cad55682f3627ced02163fff48655df4b095e428e7",
-      "metrics_file_sha256": "66150258799c3ac2e5066ce29383afc02962c2dd35766126e7a995d9fcf57d57",
-      "source_metrics_relative_file": "artifacts/runs/round10-offset-bpe-frequency-public25/metrics.json",
-      "remote_download_count_for_this_audit": 1
+      "ref": 58490653,
+      "fileName": "submission.csv",
+      "date": "2026-11-18T02:10:26.337000",
+      "description": "R23 fixed100pct neural Emedian3; reuseauditedfulltrees;no newOOF;42.1875offset14.0625RealMLP18.75LGB25Masaya;core11b",
+      "status": "SubmissionStatus.COMPLETE",
+      "publicScore": "0.95183",
+      "privateScore": ""
     },
-    "final_selection": {
-      "selected_group_count": 0,
-      "selected_ids": [],
-      "mode": "automatic_default_no_manual_selection",
-      "rules_confirm_automatic_default": true,
-      "selection_changed_by_this_audit": false
+    "best_submission_file_proof": {
+      "ref": 58490653,
+      "run": "round23-refit-realmlp-offset025-public25",
+      "submission_sha256": "937dc4dd355229bc49fda67c3099ea97867a23fb9c9bbe97a2bf57fae6cf24de",
+      "downloaded_submission_sha256": "937dc4dd355229bc49fda67c3099ea97867a23fb9c9bbe97a2bf57fae6cf24de",
+      "submission_file_verified": true,
+      "public_auc": 0.95183,
+      "ranking": 626,
+      "total_teams": 2135,
+      "observed_at": "2026-11-18T02:12:21.191510+00:00",
+      "source": "https://www.kaggle.com/competitions/playground-series-s6e11/leaderboard",
+      "plan": "evidence/round23-plan.json",
+      "integrity_audit": "evidence/round23-verification.json",
+      "phase": "full_data_refit",
+      "local_oof_auc": null,
+      "reference_cv_run": "round22-realmlp-offset025-public25",
+      "reference_cv_auc": 0.9517074903582017,
+      "previous_public_auc": 0.95162,
+      "public_delta": 0.00021,
+      "protocol_deviation": false,
+      "winning_position_reached": false
     },
-    "leaderboard": {
-      "url": "https://www.kaggle.com/competitions/playground-series-s6e11/leaderboard",
-      "rank": 723,
-      "total_teams": 2112,
-      "team_id": 17343568,
-      "team_name": "aiko-og",
-      "public_score": 0.95134,
-      "row_submission_date_utc": "2026-11-17 13:32:19.633000",
-      "matches_best_submission_by_team_score_date": true
+    "fresh_competition_list_rank": {
+      "rank": 627,
+      "total_teams": 2136,
+      "observed_at_utc": "2026-11-18T02:49:06.587030+00:00",
+      "scope": "Official competition-list account rank; separate from frozen presentation leaderboard626/2135 at02:12UTC"
     },
+    "final_selection_changed_by_this_audit": false,
     "first_positions_reached": false
   },
   "github": {
-    "repository": {
-      "html_url": "https://github.com/aikolopes-DS/fraudlab",
-      "private": false,
-      "visibility": "public",
-      "default_branch": "main"
-    },
-    "main": {
-      "sha": "f5d5abd4b8e5b02c5ad95cb070733da1d2b64846",
-      "html_url": "https://github.com/aikolopes-DS/fraudlab/commit/f5d5abd4b8e5b02c5ad95cb070733da1d2b64846",
-      "commit_date": "2026-11-17T14:29:06Z"
-    },
-    "release": {
-      "tag_name": "v0.2.0",
-      "draft": false,
-      "prerelease": false,
-      "published_at": "2026-11-17T14:22:24Z",
-      "html_url": "https://github.com/aikolopes-DS/fraudlab/releases/tag/v0.2.0",
-      "target_commitish": "3edaeba33923656afb1efca1cf7efc5996c3e39a"
-    },
-    "assets": [
-      {
-        "name": "fraudlab-slides-legendas.zip",
-        "bytes": 8003617,
-        "sha256": "b407d84cc2bc60501fe97420fcce1db1d6b00e0ae1889eb80b7b0c1894ffb402",
-        "url": "https://github.com/aikolopes-DS/fraudlab/releases/download/v0.2.0/fraudlab-slides-legendas.zip",
-        "github_api_digest": "sha256:b407d84cc2bc60501fe97420fcce1db1d6b00e0ae1889eb80b7b0c1894ffb402",
-        "anonymous_http_status": 200,
-        "remote_bytes_scope": "Full checksum file; sampled MP4/ZIP access plus API digest match"
-      },
-      {
-        "name": "SHA256SUMS.txt",
-        "bytes": 173,
-        "sha256": "a0dcc42e0cdbc9133d1bc6118b67382ac8a6e57ec6a750cb9d0931dcac97558a",
-        "url": "https://github.com/aikolopes-DS/fraudlab/releases/download/v0.2.0/SHA256SUMS.txt",
-        "github_api_digest": "sha256:a0dcc42e0cdbc9133d1bc6118b67382ac8a6e57ec6a750cb9d0931dcac97558a",
-        "anonymous_http_status": 200,
-        "remote_bytes_scope": "Full checksum file; sampled MP4/ZIP access plus API digest match"
-      },
-      {
-        "name": "video.mp4",
-        "bytes": 59961042,
-        "sha256": "882b4da07adc82e8c51a0b1f8ae13d6e012491f6d2e6b58dba6605e9874cfcbf",
-        "url": "https://github.com/aikolopes-DS/fraudlab/releases/download/v0.2.0/video.mp4",
-        "github_api_digest": "sha256:882b4da07adc82e8c51a0b1f8ae13d6e012491f6d2e6b58dba6605e9874cfcbf",
-        "anonymous_http_status": 200,
-        "remote_bytes_scope": "Full checksum file; sampled MP4/ZIP access plus API digest match"
-      }
-    ],
-    "anonymous_public_access_verified": true,
-    "current_main_ci": {
-      "api_url": "https://api.github.com/repos/aikolopes-DS/fraudlab/actions/runs/44103615705",
-      "html_url": "https://github.com/aikolopes-DS/fraudlab/actions/runs/44103615705",
-      "authentication_sent": false,
-      "http_status": 200,
-      "head_sha": "f5d5abd4b8e5b02c5ad95cb070733da1d2b64846",
-      "status": "completed",
-      "conclusion": "success"
-    },
-    "checksum_file_verified": true
+    "url": "https://github.com/aikolopes-DS/fraudlab",
+    "private": false,
+    "visibility": "public",
+    "authentication_sent": false
   },
-  "new_training": false,
-  "new_submissions": 0,
-  "service_mutations": false,
-  "limitations": [
-    "Public rank is provisional and was not a leading position. No competition win is claimed.",
-    "GitHub MP4/ZIP remote hashes are API digests matched to full local hashes; anonymous access was sampled. The checksum asset was fully downloaded and verified."
+  "notebook": {
+    "checked_at": "2026-11-18T02:47:56.790395+00:00",
+    "status": "passed",
+    "url": "https://www.kaggle.com/code/aikoog/fraudlab-reproducible-neural-fraud-detection",
+    "version": 7,
+    "public": true,
+    "saved_without_running": true,
+    "cloud_training_performed": false,
+    "baseline_source_revision": "8a1c7fd141b43e41b0d43e3a07b0c5ad0bf41ae5",
+    "current_core_revision": "11b139f77206101d3f5beeb5648fb459f4cd304a",
+    "current_scripts_revision": "c95ff468619d299c94764b45e5e15af5ed9f4674",
+    "cells": 45,
+    "code_cells": 36,
+    "all_remote_cells_equal_local": true,
+    "all_execution_counts_empty": true,
+    "all_outputs_empty": true,
+    "local_notebook_sha256": "56c0f5d3a4e780e3c41e33bec9c10276bf0bea95e3ebe9c7e6d2b006c6c2a650",
+    "downloaded_notebook_sha256": "d2f3360a2ea6013961e79ec4b98c4592cd88a1b6d39ea75c8eae27d2cd1c58d7",
+    "generator_sha256": "31a300bdeaf63d6a68a1e22e698c713511b16f09170a565ff46c8ec8b8732d81",
+    "all_reconstituted_source_files_verified": true,
+    "source_verification": {
+      "exported_modules": 45,
+      "exported_files": 49,
+      "compiled_non_magic_cells": 12,
+      "transmitted_bytes": 991610,
+      "unexecuted": true
+    },
+    "comparison_method": "All fields compared after source arrays/strings were joined into identical text and one metadata timestamp's fractional trailing zero was normalized after datetime equality. All cell source/metadata bytes agree; every literal/archived source compiled and matched pinned Git bytes.",
+    "metadata_timestamp_serialization": {
+      "local": "2026-11-18T02:12:21.191510+00:00",
+      "remote": "2026-11-18T02:12:21.19151+00:00",
+      "same_instant": true
+    },
+    "scope": "Actual official SDK metadata and full saved notebook readback. Baseline R18/R20 is executable source; R23 appendix exports own source and audited replay instructions. No cloud training or complete R23 runtime execution is claimed.",
+    "size_rejection_resolved": "Official SaveKernel rejected source >=1MB. Pinned vocabularies retain exact bytes/hashes using LZMA; source archive is gzip/base64, verified without importing modules."
+  },
+  "site_review": {
+    "reviewer": "design_critic",
+    "recorded_at": "2026-11-18T02:36:45.755923+00:00",
+    "url": "https://aikolopes-fraudlab.aikol9pes.chatgpt.site/",
+    "verdict": "Published V7 visually accepted in reviewed desktop/mobile flows; media replacement remains pending",
+    "root_reported_deployment": {
+      "id": "appgdep_6afd0e090f1c8191bb9ab2dd7046ad9e",
+      "status": "succeeded",
+      "source_sha": "627583cd3d5105c8fcc258b41a4447556a4487e6"
+    },
+    "independently_verified": {
+      "chromium_viewports": [
+        [
+          1440,
+          900
+        ],
+        [
+          1280,
+          720
+        ],
+        [
+          390,
+          844
+        ],
+        [
+          360,
+          780
+        ]
+      ],
+      "overflow_px": 0,
+      "javascript_errors": 0,
+      "both_fonts_loaded": true,
+      "both_photos_loaded_and_credit_hash_matched": true,
+      "public_source_matches_dist": true,
+      "hero_cta_navigates_to_player": true,
+      "code_video_delivery_anonymously_accessible": true,
+      "public_results": {
+        "local_auc": 0.9517074903582017,
+        "local_auc_scope": "development_oof",
+        "fold_scores": [
+          0.9508397792121277,
+          0.9521231453682678,
+          0.9567561770742115,
+          0.9518950875493822,
+          0.9470391404103492
+        ],
+        "holdout_auc": null,
+        "public_auc": 0.95183,
+        "ranking": 626,
+        "total_teams": 2135,
+        "submission_id": "58490653",
+        "observed_at": "2026-11-18T02:12:21.191510+00:00"
+      },
+      "github_readme_has_r23": true,
+      "github_realmlp_configuration_matches": true
+    },
+    "opened_screenshots": [
+      "desktop-hero.png",
+      "mobile-hero.png",
+      "mobile-artifact.png",
+      "mobile-player.png",
+      "desktop-footer.png"
+    ],
+    "opened_screenshot_sha256": {
+      "desktop-hero.png": "5a9b6eb5357447ec846c6452b426368beb4bc74d6c36533dbe4ec8863fc222d1",
+      "mobile-hero.png": "a7be1f1116c4742c2ee9bd60f1bac140896d7d93e30734d47734a0e12ac345f3",
+      "mobile-artifact.png": "91a891cd6f85b0a0b66c3a9392c2da5e389bc5c0098b80dc7a02da352d0c12d7",
+      "mobile-player.png": "41f655cf4415e20bf25594814a62512cea5d43dda1a42c95c7b71f11725dd978",
+      "desktop-footer.png": "359f440e3622809cfcd5aa847e609d4214b5427c7b6ca2ee0ade4aeb4f32027c"
+    },
+    "playback": {
+      "time": 0.107956,
+      "duration": 3291.177596,
+      "readyState": 4,
+      "paused": false,
+      "source": "https://github.com/aikolopes-DS/fraudlab/releases/download/v0.3.0/video.mp4",
+      "captions": 1,
+      "cover_hidden": true
+    },
+    "visual_blockers": [],
+    "delivery_pending": [
+      "Replace historical v03 video, slides and AED ZIP with validated v04 when generated; currently ZIP link also targetsv0.3.0",
+      "If retaining this interim snapshot, make historical package version visible beside download CTA as well as video"
+    ],
+    "limits": [
+      "Five actual screenshots visually opened in this deployment round; other captured images were not all inspected",
+      "Short playback only (about0.108s), not new-media full audiovisual review",
+      "Download endpoint HEAD inspected; AED ZIP not fully downloaded or unpacked in this round",
+      "No measured conversion experiment or artistic equivalence claim",
+      "Initial raw urllib request was403; browser actual navigation and same-origin fetch worked"
+    ],
+    "supporting_reports": {
+      "public-browser-checks.json": "408a14c37a3e6664a9da61c2276914288369006b609bac6757eb15d9ba593ea1",
+      "public-source-assets.json": "473261d5bd99deccc5f2d2adf36c0144025d1c54cb9bf733cd0b240b380d3656"
+    },
+    "published_slides_probe": {
+      "status": 200,
+      "slide_sections": 139,
+      "title": "FraudLab — apresentação",
+      "has_r23": false,
+      "has_legacy_r10": true
+    }
+  },
+  "local_media_status": "v04 full AV decode/whole-input ASR passed; final frame/content receipts and packaging are separate evidence",
+  "release_v04_published_in_this_audit": false,
+  "no_mutations_of_external_services_performed": true,
+  "history": [
+    {
+      "observed_at_utc": "2026-11-17T18:22:30.573520+00:00",
+      "confirmed_leaderboard_at_utc": "2026-11-17T18:24:25.231115+00:00",
+      "completed_at_utc": "2026-11-17T18:26:10.603659+00:00",
+      "scope": "Final read-only service audit; historical video and canonical submission snapshots were not changed by this audit",
+      "competition": {
+        "url": "https://www.kaggle.com/competitions/playground-series-s6e11",
+        "open_for_submission": true,
+        "deadline_utc": "2026-11-30T23:59:00+00:00",
+        "rules_url": "https://www.kaggle.com/competitions/playground-series-s6e11/rules",
+        "rules_content_sha256": "b09ffa98473a049145fb76ab9246d182169010662c684114b36b3bbce2132b7e",
+        "max_daily_submissions": 10,
+        "max_final_submissions": 2,
+        "limits_source": "Current official rules page; daily limit also confirmed by competition API"
+      },
+      "kaggle": {
+        "account": "aikoog",
+        "team_name": "aiko-og",
+        "submission_count": 7,
+        "processed_submission_count": 7,
+        "best_submission": {
+          "ref": 58470267,
+          "canonical_run": "round10-offset-bpe-frequency-public25",
+          "canonical_relative_file": "artifacts/runs/round10-offset-bpe-frequency-public25/submission.csv",
+          "observed_at_utc": "2026-11-17T18:26:10.078307+00:00",
+          "http_status": 200,
+          "bytes": 8830189,
+          "downloaded_sha256": "274cbe4ea90d9dc4893140cad55682f3627ced02163fff48655df4b095e428e7",
+          "local_sha256": "274cbe4ea90d9dc4893140cad55682f3627ced02163fff48655df4b095e428e7",
+          "recorded_receipt_sha256": "274cbe4ea90d9dc4893140cad55682f3627ced02163fff48655df4b095e428e7",
+          "all_equal": true,
+          "scope": "Original official submitted CSV streamed and hashed in memory, not saved or submitted again",
+          "url": "https://www.kaggle.com/competitions/playground-series-s6e11/submissions/58470267",
+          "public_score": 0.95134,
+          "status": "complete",
+          "file_verified": true,
+          "metrics_submission_sha256": "274cbe4ea90d9dc4893140cad55682f3627ced02163fff48655df4b095e428e7",
+          "metrics_file_sha256": "66150258799c3ac2e5066ce29383afc02962c2dd35766126e7a995d9fcf57d57",
+          "source_metrics_relative_file": "artifacts/runs/round10-offset-bpe-frequency-public25/metrics.json",
+          "remote_download_count_for_this_audit": 1
+        },
+        "final_selection": {
+          "selected_group_count": 0,
+          "selected_ids": [],
+          "mode": "automatic_default_no_manual_selection",
+          "rules_confirm_automatic_default": true,
+          "selection_changed_by_this_audit": false
+        },
+        "leaderboard": {
+          "url": "https://www.kaggle.com/competitions/playground-series-s6e11/leaderboard",
+          "rank": 723,
+          "total_teams": 2112,
+          "team_id": 17343568,
+          "team_name": "aiko-og",
+          "public_score": 0.95134,
+          "row_submission_date_utc": "2026-11-17 13:32:19.633000",
+          "matches_best_submission_by_team_score_date": true
+        },
+        "first_positions_reached": false
+      },
+      "github": {
+        "repository": {
+          "html_url": "https://github.com/aikolopes-DS/fraudlab",
+          "private": false,
+          "visibility": "public",
+          "default_branch": "main"
+        },
+        "main": {
+          "sha": "f5d5abd4b8e5b02c5ad95cb070733da1d2b64846",
+          "html_url": "https://github.com/aikolopes-DS/fraudlab/commit/f5d5abd4b8e5b02c5ad95cb070733da1d2b64846",
+          "commit_date": "2026-11-17T14:29:06Z"
+        },
+        "release": {
+          "tag_name": "v0.2.0",
+          "draft": false,
+          "prerelease": false,
+          "published_at": "2026-11-17T14:22:24Z",
+          "html_url": "https://github.com/aikolopes-DS/fraudlab/releases/tag/v0.2.0",
+          "target_commitish": "3edaeba33923656afb1efca1cf7efc5996c3e39a"
+        },
+        "assets": [
+          {
+            "name": "fraudlab-slides-legendas.zip",
+            "bytes": 8003617,
+            "sha256": "b407d84cc2bc60501fe97420fcce1db1d6b00e0ae1889eb80b7b0c1894ffb402",
+            "url": "https://github.com/aikolopes-DS/fraudlab/releases/download/v0.2.0/fraudlab-slides-legendas.zip",
+            "github_api_digest": "sha256:b407d84cc2bc60501fe97420fcce1db1d6b00e0ae1889eb80b7b0c1894ffb402",
+            "anonymous_http_status": 200,
+            "remote_bytes_scope": "Full checksum file; sampled MP4/ZIP access plus API digest match"
+          },
+          {
+            "name": "SHA256SUMS.txt",
+            "bytes": 173,
+            "sha256": "a0dcc42e0cdbc9133d1bc6118b67382ac8a6e57ec6a750cb9d0931dcac97558a",
+            "url": "https://github.com/aikolopes-DS/fraudlab/releases/download/v0.2.0/SHA256SUMS.txt",
+            "github_api_digest": "sha256:a0dcc42e0cdbc9133d1bc6118b67382ac8a6e57ec6a750cb9d0931dcac97558a",
+            "anonymous_http_status": 200,
+            "remote_bytes_scope": "Full checksum file; sampled MP4/ZIP access plus API digest match"
+          },
+          {
+            "name": "video.mp4",
+            "bytes": 59961042,
+            "sha256": "882b4da07adc82e8c51a0b1f8ae13d6e012491f6d2e6b58dba6605e9874cfcbf",
+            "url": "https://github.com/aikolopes-DS/fraudlab/releases/download/v0.2.0/video.mp4",
+            "github_api_digest": "sha256:882b4da07adc82e8c51a0b1f8ae13d6e012491f6d2e6b58dba6605e9874cfcbf",
+            "anonymous_http_status": 200,
+            "remote_bytes_scope": "Full checksum file; sampled MP4/ZIP access plus API digest match"
+          }
+        ],
+        "anonymous_public_access_verified": true,
+        "current_main_ci": {
+          "api_url": "https://api.github.com/repos/aikolopes-DS/fraudlab/actions/runs/44103615705",
+          "html_url": "https://github.com/aikolopes-DS/fraudlab/actions/runs/44103615705",
+          "authentication_sent": false,
+          "http_status": 200,
+          "head_sha": "f5d5abd4b8e5b02c5ad95cb070733da1d2b64846",
+          "status": "completed",
+          "conclusion": "success"
+        },
+        "checksum_file_verified": true
+      },
+      "new_training": false,
+      "new_submissions": 0,
+      "service_mutations": false,
+      "limitations": [
+        "Public rank is provisional and was not a leading position. No competition win is claimed.",
+        "GitHub MP4/ZIP remote hashes are API digests matched to full local hashes; anonymous access was sampled. The checksum asset was fully downloaded and verified."
+      ]
+    }
   ]
 }
