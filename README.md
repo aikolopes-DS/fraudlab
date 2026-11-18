@@ -12,7 +12,7 @@ O objetivo é disputar as primeiras posições no [Playground S6E11](https://www
 
 ## Estado do projeto
 
-Este é o único acompanhamento de tarefas. Atualizado em 17/11/2026, horário de São Paulo. A melhor submissão é a R23: score público **0,95183**, posição **626/2.135** no snapshot do vídeo, às 23h12 SP. Nova consulta oficial às 23h48 SP registra **627/2.136**, com o mesmo score. São doze envios processados. A apresentação v0.4 está validada localmente: **87min58s, 198 slides, 78 pares e 62 fórmulas**. A landing V7 e o notebook V7 estão publicados e verificados; a release v0.4 e a integração dos materiais no site estão em andamento. Primeiras posições não alcançadas; o ranking final depende da avaliação privada ao encerrar a competição.
+Este é o único acompanhamento de tarefas. Atualizado em 17/11/2026, horário de São Paulo. A melhor submissão é a R23: score público **0,95183**, posição **626/2.135** no snapshot do vídeo, às 23h12 SP. Nova consulta oficial às 23h49 SP registra **627/2.136**, com o mesmo score. São doze envios processados. A apresentação v0.4 está validada localmente: **87min58s, 198 slides, 78 pares e 62 fórmulas**. A landing V7 e o notebook V7 estão publicados e verificados; a release v0.4 e a integração dos materiais no site estão em andamento. Primeiras posições não alcançadas; o ranking final depende da avaliação privada ao encerrar a competição.
 
 | Pedido | Resultado esperado | Estado real | Evidência |
 | --- | --- | --- | --- |
