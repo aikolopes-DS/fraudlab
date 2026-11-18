@@ -9,6 +9,7 @@ from __future__ import annotations
 import argparse
 import hashlib
 import importlib.util
+import importlib.metadata
 import json
 from pathlib import Path
 import statistics
@@ -259,8 +260,6 @@ def execute(plan_path, root, worktree):
     from fraudlab.experiment import create_run, source_provenance, versions
     from fraudlab.features import transform_features
     from fraudlab.models import predict_saved
-
-    import importlib.metadata
 
     require(
         all(

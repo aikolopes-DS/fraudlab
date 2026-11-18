@@ -5,7 +5,7 @@
   "name": "round23-refit-realmlp-offset025-public25",
   "neural_name": "round23-refit-realmlp",
   "entrypoint": "scripts/refit_neural_cv.py",
-  "entrypoint_sha256": "87d6b824acd34edeb1d164178083c6b44d8a4aba6a48e46a10e5f77f97745c0a",
+  "entrypoint_sha256": "a25e9d6971f07a459e7de0532a64584f8e394d81e678c5b9ed641b166ac631e1",
   "support_script_sha256": "b58c0b9919a6aa17874170c3276cc528c26a86639c50012cb0a35aa26e3bc754",
   "source": {
     "revision": "11b139f77206101d3f5beeb5648fb459f4cd304a",
