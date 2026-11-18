@@ -1,0 +1,505 @@
+{
+  "schema_version": 1,
+  "recorded_at": "2026-11-18T02:38:12.269511+00:00",
+  "scope": "Evidência da pesquisa, refatoração, revisão visual local e verificação atribuída da landing publicada V7. Não é medição de conversão nem atestado de revisão audiovisual integral.",
+  "sites_source_commit": "627583cd3d5105c8fcc258b41a4447556a4487e6",
+  "team": {
+    "research_agent": "design_research",
+    "frontend_agent": "design_frontend",
+    "independent_visual_critic_agent": "design_critic"
+  },
+  "research": {
+    "researched_at": "2026-11-18T02:11:16.578539+00:00",
+    "provenance": {
+      "file": ".local/design-research/research.json",
+      "sha256": "fdcaecd9ea5757a114affef6cba0d22044e830c0ed3cbc9d0891af0bdc4998cd",
+      "visibility": "Registro e capturas locais; as imagens de referência não foram publicadas como assets."
+    },
+    "requested_platforms": [
+      {
+        "platform": "Behance",
+        "urls": [
+          "https://www.behance.net/gallery/223657763/Fintech-website-UI-UX-Landing-Page-Design",
+          "https://www.behance.net/gallery/162132339/Fintech-Online-Banking-Website"
+        ],
+        "actual_coverage": "Full pages rejected403/400. Two official CDN project images inspected via critic; scope documented in shortlist.",
+        "use": "Duas imagens oficiais de projetos examinadas; não reutilizadas como assets."
+      },
+      {
+        "platform": "Pinterest",
+        "urls": [
+          "https://www.pinterest.com/search/pins/?q=fintech%20editorial%20website%20design",
+          "https://help.pinterest.com/en/business/article/pin-performance-and-distribution",
+          "https://newsroom.pinterest.com/en-gb/pdf/pinterest-palette-2026-pdf/?filters=trust-safety"
+        ],
+        "actual_coverage": "Public search200 shows partially visible design pins behind login modal; screenshot viewed. No account login or pin licensing inferred. Official business guidance read separately. PDF palette opened as13page PDF but screenshot timed out; do not claim viewed PDF.",
+        "use": "Visible partial pins repeat payments/device imagery and large editorial headings. Treat thumbnails as discovery only. Official guidance supports crisp, well-framed context images and destination consistency."
+      },
+      {
+        "platform": "Adobe Stock",
+        "urls": [
+          "https://stock.adobe.com/br/search?k=contactless+payment"
+        ],
+        "actual_coverage": "Public catalog text opened through web; anonymous browser visual403, no image purchased or reused.",
+        "use": "Catalog checked as a paid reference source; publishable images selected from individually verified Unsplash free pages instead."
+      },
+      {
+        "platform": "Indeed",
+        "urls": [
+          "https://ca.indeed.com/career-advice/finding-a-job/web-designer-portfolio"
+        ],
+        "actual_coverage": "Full public primary article opened and read. Editorial career guidance, not visual portfolio evaluation or causal conversion research.",
+        "use": "Curate work and explain the project background, objectives, approach and result. Apply to one complete real FraudLab case. No invented testimonials."
+      },
+      {
+        "platform": "Quora",
+        "urls": [
+          "https://www.quora.com/What-do-clients-employers-and-recruiters-look-for-in-a-UX-portfolio-in-Los-Angeles",
+          "https://www.quora.com/How-should-I-prepare-for-getting-a-UX-Design-intern-job-interview"
+        ],
+        "actual_coverage": "Direct page blocked by robots; indexed primary answer excerpts only, not a complete read and not measured usability evidence.",
+        "use": "Practitioner opinions favour explicit problem, role, decisions and outcomes. Use only as corroborating qualitative input."
+      }
+    ],
+    "professional_references": [
+      {
+        "title": "COLLINS — Case Studies",
+        "url": "https://wearecollins.com/case-studies/",
+        "coverage": "Live page opened in anonymous Chromium, screenshot viewed. Above-fold visual only.",
+        "applied_principle": "Let actual project evidence dominate compositions, with varied image scale and a restrained frame."
+      },
+      {
+        "title": "COLLINS — Robinhood",
+        "url": "https://wearecollins.com/case-studies/robinhood/",
+        "coverage": "Live page opened in anonymous Chromium; above-fold screenshot viewed.",
+        "applied_principle": "Build a recognisable project language through a deliberately paired real-world photo and real research artifact; concise title leads to work."
+      },
+      {
+        "title": "Instrument — Work",
+        "url": "https://www.instrument.com/work",
+        "coverage": "Anonymous Chromium page settled for five seconds, screenshot viewed. Above-fold only, includes cookie banner.",
+        "applied_principle": "Use decisive hierarchy and planned proportions rather than distributing every component equally. Show presentation/case artifacts near the top."
+      },
+      {
+        "title": "Behance — Fintech website UI UX Landing Page Design",
+        "url": "https://www.behance.net/gallery/223657763/Fintech-website-UI-UX-Landing-Page-Design",
+        "coverage": "Project page403; official CDN project image obtained by independent design critic and viewed locally here. No claim of complete page inspection.",
+        "applied_principle": "Study clear CTA contrast and large numeric typographic hierarchy. Treat generic fintech styling as a baseline to exceed, not the identity."
+      },
+      {
+        "title": "Behance — Fintouch, Fintech Online Banking Website",
+        "url": "https://www.behance.net/gallery/162132339/Fintech-Online-Banking-Website",
+        "coverage": "Project page403; official CDN image obtained by independent design critic and opened locally here. Hero image only.",
+        "applied_principle": "Use photography at a scale that creates presence and establish a clear main action."
+      }
+    ],
+    "use_limits": "Referências orientaram hierarquia, enquadramento e narrativa. Não foram copiadas artes, marcas, depoimentos, selos de segurança ou métricas comerciais."
+  },
+  "before_after": [
+    {
+      "criterion": "Natureza do projeto e ação principal",
+      "before": "Hero com muito vazio e CTAs para explorar o experimento/ver evidências.",
+      "after": "Estudo neural/Kaggle identificado; assistir ao estudo como ação dominante, AED secundária e código acessível.",
+      "evidence": "site/index.html: hero e âncora #apresentacao"
+    },
+    {
+      "criterion": "Imagem contextual",
+      "before": "Card de competição com gráfico decorativo no espaço principal.",
+      "after": "Gesto real de pagamento em foto grande; recortes desktop/mobile preservam cartão e terminal. Segunda foto contextual com crédito.",
+      "evidence": "site/assets/payment-detail.jpg; site/assets/payment-context.jpg"
+    },
+    {
+      "criterion": "Prova e rastreabilidade",
+      "before": "Primeira tela sem pontuação quantitativa comprovável.",
+      "after": "ROC-AUC pública e data carregadas do registro verificado, fora da foto; ranking, composição e autoria externa detalhados em resultados.",
+      "evidence": "site/app.js: data-hero-public/observed; evidence/public.json"
+    },
+    {
+      "criterion": "Mostrar trabalho próprio",
+      "before": "Método explicado em texto, sem artefato próprio em destaque.",
+      "after": "Diagrama 512→256→128 e recorte literal da configuração RealMLP; 16 membros, SiLU e PBLD com link ao código.",
+      "evidence": "site/index.html: .research-artifact; src/fraudlab/realmlp.py: official_config"
+    },
+    {
+      "criterion": "Leitura em celular",
+      "before": "Primeira iteração da refatoração tinha corpo de 10–11px e metadados de 7–9px, rejeitados pelo crítico.",
+      "after": "Corpo mobile 15px, evidências 14px, metadados 12px e ações principais com alvo mínimo de 44px; sem overflow nas larguras verificadas.",
+      "evidence": ".local/design-review/final-local-review.json; frontend-preview/frontend-checks.json"
+    },
+    {
+      "criterion": "Entrada para a apresentação",
+      "before": "Player sem capa de contexto, formando grande área quase preta antes do play.",
+      "after": "Capa HTML/CSS com fotografia real e botão acessível; a capa oculta no evento playing. Controles e legenda preservados.",
+      "evidence": ".local/design-review/frontend-preview/frontend-checks.json"
+    }
+  ],
+  "local_validation": {
+    "unit_tests": {
+      "command": "python -m unittest test_build -q",
+      "passed": true,
+      "tests": 24,
+      "scope": "Allowlist pública, composição com RealMLP e crédito externo, proteção de evidências e contrato de build. Execução registrada nesta sessão; não prova fluxo publicado.",
+      "working_directory": "site"
+    },
+    "browser_contract": {
+      "command": "python check_browser.py",
+      "report": ".local/design-review/frontend-final/checks.json",
+      "report_sha256": "668cf742456ff6e0fc2534bc9d9a77388893d6416c0bee497a9f4b122659e8af",
+      "viewports": [
+        [
+          1440,
+          1050
+        ],
+        [
+          390,
+          844
+        ]
+      ],
+      "passed": true,
+      "checks": [
+        "Navegação por âncoras",
+        "Exatamente três métricas",
+        "Valores correspondem à evidência R23",
+        "Quatro pesos e autoria externa visíveis",
+        "Fixtures: scores não verificados e vídeo inseguro ocultos"
+      ],
+      "evidence_snapshot_at": "2026-11-18T02:12:21.191510+00:00",
+      "working_directory": "site"
+    },
+    "responsive_rendering": {
+      "report": ".local/design-review/frontend-preview/frontend-checks.json",
+      "report_sha256": "e06e941bea4ec4c7d460eca140683c00333152d32888e2f11d2d8cae0e34ddbd",
+      "viewports": [
+        [
+          1440,
+          900
+        ],
+        [
+          1280,
+          720
+        ],
+        [
+          390,
+          844
+        ],
+        [
+          360,
+          800
+        ]
+      ],
+      "all_without_overflow": true,
+      "photos_and_self_hosted_fonts_loaded": true,
+      "javascript_errors": []
+    },
+    "real_remote_playback": {
+      "time": 0.110915,
+      "duration": 3291.177596,
+      "readyState": 4,
+      "paused": false,
+      "source": "https://github.com/aikolopes-DS/fraudlab/releases/download/v0.3.0/video.mp4",
+      "captions": 1,
+      "cover_hidden_on_playing": true,
+      "scope": "Playback curto do MP4 histórico v0.3 a partir de página local. Não comprova revisão integral do vídeo nem a nova publicação."
+    },
+    "screenshots": [
+      ".local/design-review/frontend-final/desktop.png",
+      ".local/design-review/frontend-final/mobile.png",
+      ".local/design-review/frontend-preview/laptop-hero.png",
+      ".local/design-review/frontend-preview/small-mobile-hero.png",
+      ".local/design-review/frontend-preview/mobile-method.png",
+      ".local/design-review/frontend-preview/mobile-player.png"
+    ]
+  },
+  "independent_local_critique": {
+    "reviewer": "design_critic",
+    "recorded_at": "2026-11-18T02:28:25.428821+00:00",
+    "report": ".local/design-review/final-local-review.json",
+    "report_sha256": "fd4b4db5b037be357e27d654fb75e1a53ccace3a556825515aa1bff08210ee46",
+    "verdict": "Local visual acceptance for integration, not deployed delivery or measured conversion",
+    "viewports": [
+      [
+        1440,
+        900
+      ],
+      [
+        1280,
+        720
+      ],
+      [
+        390,
+        844
+      ],
+      [
+        360,
+        780
+      ]
+    ],
+    "overflow_px": 0,
+    "javascript_errors": 0,
+    "full_resolution_samples_opened": [
+      "mobile-hero",
+      "mobile-artifact",
+      "mobile-evidence",
+      "desktop-artifact",
+      "mobile-player",
+      "desktop-focus"
+    ],
+    "latest_360px_hero_opened": true,
+    "playback_seconds": 0.107459,
+    "playback_cover_hidden": true,
+    "nonblocking_suggestion_at_review": "Secondary desktop body text in pipeline/resources remains12px;14px would improve comfort",
+    "frontend_response": "Corpo secundário base de pipeline/resources elevado a 14px antes do congelamento da fonte. A crítica não equivale a conversão medida ou equivalência artística universal.",
+    "presentation_coverage": {
+      "scope": "Revisão parcial independente de slides; não validação integral do vídeo final.",
+      "full_resolution_slides_opened": [
+        1,
+        4,
+        5,
+        60,
+        100,
+        132,
+        157,
+        168,
+        172,
+        177,
+        180,
+        182,
+        183,
+        184
+      ],
+      "slides_total": 198,
+      "empty_examples_structurally_found": []
+    }
+  },
+  "production_review": {
+    "site_url": "https://aikolopes-fraudlab.aikol9pes.chatgpt.site/",
+    "version": 7,
+    "reviewer_agent": "design_critic",
+    "recorded_at": "2026-11-18T02:36:45.755923+00:00",
+    "status": "Published V7 visually accepted in reviewed desktop/mobile flows; media replacement remains pending",
+    "receipt": {
+      "file": ".local/design-review/published-v7/production-review.json",
+      "sha256": "d0c0c20ffd2c4eab890903b69abc0477548d25d0d91abaea8295147ed713ce64"
+    },
+    "supporting_receipts": [
+      {
+        "file": ".local/design-review/published-v7/public-browser-checks.json",
+        "sha256": "408a14c37a3e6664a9da61c2276914288369006b609bac6757eb15d9ba593ea1"
+      },
+      {
+        "file": ".local/design-review/published-v7/public-source-assets.json",
+        "sha256": "473261d5bd99deccc5f2d2adf36c0144025d1c54cb9bf733cd0b240b380d3656"
+      }
+    ],
+    "root_reported_deployment": {
+      "id": "appgdep_6afd0e090f1c8191bb9ab2dd7046ad9e",
+      "status": "succeeded",
+      "source_sha": "627583cd3d5105c8fcc258b41a4447556a4487e6"
+    },
+    "independently_verified": {
+      "chromium_viewports": [
+        [
+          1440,
+          900
+        ],
+        [
+          1280,
+          720
+        ],
+        [
+          390,
+          844
+        ],
+        [
+          360,
+          780
+        ]
+      ],
+      "overflow_px": 0,
+      "javascript_errors": 0,
+      "both_fonts_loaded": true,
+      "both_photos_loaded_and_credit_hash_matched": true,
+      "public_source_matches_dist": true,
+      "hero_cta_navigates_to_player": true,
+      "code_video_delivery_anonymously_accessible": true,
+      "public_results": {
+        "local_auc": 0.9517074903582017,
+        "local_auc_scope": "development_oof",
+        "fold_scores": [
+          0.9508397792121277,
+          0.9521231453682678,
+          0.9567561770742115,
+          0.9518950875493822,
+          0.9470391404103492
+        ],
+        "holdout_auc": null,
+        "public_auc": 0.95183,
+        "ranking": 626,
+        "total_teams": 2135,
+        "submission_id": "58490653",
+        "observed_at": "2026-11-18T02:12:21.191510+00:00"
+      },
+      "github_readme_has_r23": true,
+      "github_realmlp_configuration_matches": true
+    },
+    "public_source_hashes": {
+      "index": {
+        "status": 200,
+        "sha256": "b3b92cae163036177487418b5a3471a2b5d5572dadd5dde624639a70d471c391",
+        "bytes": 30195,
+        "matches_dist": true
+      },
+      "styles": {
+        "status": 200,
+        "sha256": "081b1e37c72f3eaf10fdea3ec0365eac486c0b0172d2e8d97801f0347d80d813",
+        "bytes": 50446,
+        "matches_dist": true
+      },
+      "app": {
+        "status": 200,
+        "sha256": "ab47382658359e318d56365e405425f9b61727f5a377eb8cc61fb349c2fbdce7",
+        "bytes": 12342,
+        "matches_dist": true
+      }
+    },
+    "public_asset_hashes": {
+      "payment-detail.jpg": {
+        "status": 200,
+        "bytes": 252003,
+        "sha256": "44e6debdab0da36e0cf3f6ad3dccbd535e7dc0f472059588110af2e2b1839cfa"
+      },
+      "payment-context.jpg": {
+        "status": 200,
+        "bytes": 556176,
+        "sha256": "2d2361bda897c439ef829002a9e2d140a625fbe2bf1ae323396575485db18595"
+      },
+      "space-grotesk.woff2": {
+        "status": 200,
+        "bytes": 22288,
+        "sha256": "0640890476fc1198ab4de571fb658de443c4d85b66466ec09534a8737ab1ce9d"
+      },
+      "dm-sans.woff2": {
+        "status": 200,
+        "bytes": 36932,
+        "sha256": "9fea608a947e67020c33cad9a6fe3d60c54119dfb8cff87768a8117a15ed7543"
+      }
+    },
+    "screenshots_actually_opened_sha256": {
+      "desktop-hero.png": "5a9b6eb5357447ec846c6452b426368beb4bc74d6c36533dbe4ec8863fc222d1",
+      "mobile-hero.png": "a7be1f1116c4742c2ee9bd60f1bac140896d7d93e30734d47734a0e12ac345f3",
+      "mobile-artifact.png": "91a891cd6f85b0a0b66c3a9392c2da5e389bc5c0098b80dc7a02da352d0c12d7",
+      "mobile-player.png": "41f655cf4415e20bf25594814a62512cea5d43dda1a42c95c7b71f11725dd978",
+      "desktop-footer.png": "359f440e3622809cfcd5aa847e609d4214b5427c7b6ca2ee0ade4aeb4f32027c"
+    },
+    "short_historical_playback": {
+      "time": 0.107956,
+      "duration": 3291.177596,
+      "readyState": 4,
+      "paused": false,
+      "source": "https://github.com/aikolopes-DS/fraudlab/releases/download/v0.3.0/video.mp4",
+      "captions": 1,
+      "cover_hidden": true
+    },
+    "download_endpoint_heads": {
+      "github": {
+        "target": "https://github.com/aikolopes-DS/fraudlab",
+        "status": 200,
+        "final_host": "github.com",
+        "content_type": "text/html; charset=utf-8",
+        "content_length": null,
+        "accept_ranges": "bytes"
+      },
+      "video": {
+        "target": "https://github.com/aikolopes-DS/fraudlab/releases/download/v0.3.0/video.mp4",
+        "status": 200,
+        "final_host": "release-assets.githubusercontent.com",
+        "content_type": "application/octet-stream",
+        "content_length": "64298759",
+        "accept_ranges": "bytes"
+      },
+      "delivery": {
+        "target": "https://github.com/aikolopes-DS/fraudlab/releases/download/v0.3.0/AED-FraudLab-entrega.zip",
+        "status": 200,
+        "final_host": "release-assets.githubusercontent.com",
+        "content_type": "application/octet-stream",
+        "content_length": "66575528",
+        "accept_ranges": "bytes"
+      }
+    },
+    "published_slides_probe": {
+      "status": 200,
+      "slide_sections": 139,
+      "title": "FraudLab — apresentação",
+      "has_r23": false,
+      "has_legacy_r10": true
+    },
+    "visual_blockers": [],
+    "delivery_pending": [
+      "Replace historical v03 video, slides and AED ZIP with validated v04 when generated; currently ZIP link also targetsv0.3.0",
+      "If retaining this interim snapshot, make historical package version visible beside download CTA as well as video"
+    ],
+    "limits": [
+      "Five actual screenshots visually opened in this deployment round; other captured images were not all inspected",
+      "Short playback only (about0.108s), not new-media full audiovisual review",
+      "Download endpoint HEAD inspected; AED ZIP not fully downloaded or unpacked in this round",
+      "No measured conversion experiment or artistic equivalence claim",
+      "Initial raw urllib request was403; browser actual navigation and same-origin fetch worked"
+    ],
+    "attribution_scope": "Verificação em produção executada pelo agente design_critic; integrada por design_frontend a partir dos três recibos. Distinta dos checks locais e da revisão do futuro MP4 v0.4."
+  },
+  "explicit_limits": [
+    "Não houve experimento de conversão, estudo com usuários ou medição comercial.",
+    "Não se afirma ser indistinguível de Behance nem equivalente a todos os portfólios profissionais.",
+    "HTTP 200, build, teste unitário e captura isolada não demonstram todo o fluxo operacional.",
+    "Playback curto não é vídeo assistido integralmente nem áudio ouvido por humano.",
+    "Ranking e score são registros datados; a refatoração visual não prova vitória na competição."
+  ],
+  "site_assets": {
+    "photos": [
+      {
+        "file": "site/assets/payment-detail.jpg",
+        "sha256": "44e6debdab0da36e0cf3f6ad3dccbd535e7dc0f472059588110af2e2b1839cfa",
+        "author": "Blake Wisz",
+        "source_url": "https://unsplash.com/photos/person-holding-credit-card-swipe-machine--JJg90OAnWI",
+        "license": "Unsplash License",
+        "license_url": "https://unsplash.com/license"
+      },
+      {
+        "file": "site/assets/payment-context.jpg",
+        "sha256": "2d2361bda897c439ef829002a9e2d140a625fbe2bf1ae323396575485db18595",
+        "author": "Blake Wisz",
+        "source_url": "https://unsplash.com/photos/woman-paying-at-salon-checkout-counter-tE6th1h6Bfk",
+        "license": "Unsplash License",
+        "license_url": "https://unsplash.com/license"
+      }
+    ],
+    "photo_scope": "Fotografias ilustrativas de pagamentos; não representam clientes, dados de treino, endosso ou ocorrência de fraude do FraudLab. Sem score sobre a pessoa fotografada.",
+    "fonts": [
+      {
+        "family": "Space Grotesk",
+        "file": "site/assets/space-grotesk.woff2",
+        "sha256": "0640890476fc1198ab4de571fb658de443c4d85b66466ec09534a8737ab1ce9d",
+        "source_url": "https://github.com/google/fonts/tree/main/ofl/spacegrotesk",
+        "download_url": "https://fonts.gstatic.com/s/spacegrotesk/v22/V8mDoQDjQSkFtoMM3T6r8E7mPbF4Cw.woff2",
+        "license": "SIL Open Font License 1.1",
+        "license_file": "site/assets/space-grotesk-OFL.txt",
+        "license_sha256": "564ce565c371c5e5bbf286006565a7c9aa55a9f56e7ca58d56e05d649dd61a72"
+      },
+      {
+        "family": "DM Sans",
+        "file": "site/assets/dm-sans.woff2",
+        "sha256": "9fea608a947e67020c33cad9a6fe3d60c54119dfb8cff87768a8117a15ed7543",
+        "source_url": "https://github.com/google/fonts/tree/main/ofl/dmsans",
+        "download_url": "https://fonts.gstatic.com/s/dmsans/v17/rP2Yp2ywxg089UriI5-g4vlH9VoD8Cmcqbu0-K4.woff2",
+        "license": "SIL Open Font License 1.1",
+        "license_file": "site/assets/dm-sans-OFL.txt",
+        "license_sha256": "9af36190332437f5ecd09974de43c1f7c77a310a996cdd8ceb25628b458840e1"
+      }
+    ],
+    "credit_manifests": [
+      "site/assets/credits.json",
+      "site/assets/font-sources.json"
+    ],
+    "not_used": "Nenhuma imagem do Pinterest, Behance ou Adobe Stock foi reutilizada. A foto alternativa SumUp foi examinada e não entrou no site."
+  }
+}

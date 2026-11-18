@@ -105,7 +105,7 @@ Todos os rótulos, inclusive a antiga reserva, participam da CV atual: `phase=ex
 | `realmlp.py`, `scripts/refit_neural_cv.py` | Rede própria R22 e ajuste integral R23; transformadores/checkpoints, versões, épocas e contratos auditados |
 | `external.py` | Importação da única release pública aprovada e atribuição |
 | `holdout.py`, `refit.py` | Avaliação reservada e refits do protocolo próprio histórico |
-| `notebooks/hybrid-recipe.json`, `scripts/kaggle_notebook.py` | Baseline R18/R20 com 22 módulos e vocabulários; apêndice R23 isolado com 23 módulos, dois scripts, dois planos e hashes |
+| `notebooks/hybrid-recipe.json`, `scripts/kaggle_notebook.py` | Baseline R18/R20 com 22 módulos e vocabulários; apêndice R23 isolado com 23 módulos, dois scripts, dois planos e hashes; compressão reversível e limite de payload verificado |
 | `evidence/`, `presentation/`, `site/` | Fatos públicos, conteúdo didático, mídia e estudo de caso |
 
 O núcleo é uma CLI Python sobre arquivos locais. Não há banco de dados ou servidor de treinamento. `evidence/public.json` concentra os fatos publicados; o README mantém o acompanhamento único do trabalho. Dados, credenciais e artefatos privados ficam fora do Git.

@@ -3,10 +3,12 @@
 from __future__ import annotations
 
 import argparse
+import ast
 import base64
 import gzip
 import hashlib
 import json
+import lzma
 import math
 import os
 import pprint
@@ -103,7 +105,7 @@ def tokenizer_assets(recipe: dict) -> list[dict]:
             {
                 **spec,
                 "cache_key": key,
-                "gzip_base64": base64.b64encode(gzip.compress(body, mtime=0)).decode(),
+                "lzma_base64": base64.b64encode(lzma.compress(body)).decode(),
             }
         )
     return assets
@@ -116,7 +118,7 @@ def tokenizer_cell(recipe: dict) -> str:
         + "\n"
         + dedent("""
         import base64
-        import gzip
+        import lzma
         import os
 
         for package, expected in {'tiktoken': '0.14.0', 'regex': '2026.9.29'}.items():
@@ -126,7 +128,7 @@ def tokenizer_cell(recipe: dict) -> str:
         tokenizer_cache = Path('/kaggle/temp/fraudlab-tokenizer-cache')
         tokenizer_cache.mkdir(parents=True, exist_ok=True)
         for asset in TOKENIZER_ASSETS:
-            body = gzip.decompress(base64.b64decode(asset['gzip_base64']))
+            body = lzma.decompress(base64.b64decode(asset['lzma_base64']))
             assert hashlib.sha256(body).hexdigest() == asset['sha256']
             assert hashlib.sha1(asset['url'].encode()).hexdigest() == asset['cache_key']
             (tokenizer_cache / asset['cache_key']).write_bytes(body)
@@ -881,6 +883,9 @@ def current_source_appendix(cell) -> tuple[dict, dict[str, bytes]]:
         são exportados abaixo em **`r23-source/`**, com os planos e hashes. Essas células
         apenas gravam código para consulta: não substituem `fraudlab/`, não importam esse
         código, não treinam, não preveem e não enviam submissões. Não instalam dependências.
+        Para respeitar o limite de tamanho do Kaggle, as fontes do apêndice estão em
+        um arquivo gzip/base64 que se extrai sem executar os módulos. O adaptador
+        `realmlp.py` e o script `refit_neural_cv.py` também ficam diretamente legíveis.
         O código próprio é MIT. PyTabKit e os demais pacotes conservam suas próprias licenças;
         as previsões GPT-2 externas continuam atribuídas a Masaya Kawamata, CC BY 4.0.
 
@@ -907,7 +912,24 @@ def current_source_appendix(cell) -> tuple[dict, dict[str, bytes]]:
     cell("code", "from pathlib import Path\nfor folder in ('src/fraudlab', 'scripts', 'evidence'):\n"
          "    (Path('r23-source') / folder).mkdir(parents=True, exist_ok=True)\n",
          {"fraudlab_scope": "current_source_export"})
+    visible = {"r23-source/src/fraudlab/realmlp.py", "r23-source/scripts/refit_neural_cv.py"}
+    packed = {name: body.decode("utf-8") for name, body in files.items() if name not in visible}
+    archive = gzip.compress(json.dumps(packed, ensure_ascii=False).encode(), mtime=0)
+    encoded = base64.b64encode(archive).decode()
+    cell("code", "import base64\nimport gzip\nimport hashlib\nimport json\nfrom pathlib import Path\n"
+         f"SOURCE_ARCHIVE = {encoded!r}\n"
+         "archive_bytes = base64.b64decode(SOURCE_ARCHIVE, validate=True)\n"
+         f"assert hashlib.sha256(archive_bytes).hexdigest() == {hashlib.sha256(archive).hexdigest()!r}\n"
+         "for filename, text in json.loads(gzip.decompress(archive_bytes)).items():\n"
+         "    target = Path(filename)\n"
+         "    assert not target.is_absolute() and '..' not in target.parts and target.parts[0] == 'r23-source'\n"
+         "    target.parent.mkdir(parents=True, exist_ok=True)\n"
+         "    target.write_bytes(text.encode('utf-8'))\n",
+         {"fraudlab_scope": "current_source_export",
+          "fraudlab_archive": {"encoding": "gzip+base64", "sha256": hashlib.sha256(archive).hexdigest()}})
     for target, body in files.items():
+        if target not in visible:
+            continue
         cell("code", f"%%writefile {target}\n" + body.decode("utf-8"),
              {"fraudlab_scope": "current_source_export", "fraudlab_source": provenance[target]})
     source_hashes = {path: info["sha256"] for path, info in provenance.items()}
@@ -923,6 +945,32 @@ def current_source_appendix(cell) -> tuple[dict, dict[str, bytes]]:
     return record, files
 
 
+def archived_sources(cell: dict) -> dict[str, bytes]:
+    """Inspect a source archive as data; never execute the exporting cell."""
+    archive = cell.get("metadata", {}).get("fraudlab_archive")
+    if not archive:
+        return {}
+    tree = ast.parse("".join(cell["source"]))
+    payload = next(ast.literal_eval(node.value) for node in tree.body if isinstance(node, ast.Assign)
+                   and any(isinstance(target, ast.Name) and target.id == "SOURCE_ARCHIVE" for target in node.targets))
+    body = base64.b64decode(payload, validate=True)
+    if archive["encoding"] != "gzip+base64" or hashlib.sha256(body).hexdigest() != archive["sha256"]:
+        raise ValueError("Notebook source archive integrity failed.")
+    files = {}
+    for name, text in json.loads(gzip.decompress(body)).items():
+        path = PurePosixPath(name)
+        if path.is_absolute() or ".." in path.parts or path.parts[0] != "r23-source":
+            raise ValueError("Unsafe path in notebook source archive.")
+        files[name] = text.encode("utf-8")
+    return files
+
+
+def transmitted_size(notebook: dict) -> int:
+    """Match the CLI's source-string normalization and default json.dumps encoding."""
+    normalized = {**notebook, "cells": [{**cell, "source": "".join(cell["source"])} for cell in notebook["cells"]]}
+    return len(json.dumps(normalized).encode("utf-8"))
+
+
 def verify(notebook: dict, sources: dict[str, bytes]) -> dict:
     exported = {}
     compiled = 0
@@ -932,6 +980,13 @@ def verify(notebook: dict, sources: dict[str, bytes]) -> dict:
         if cell["execution_count"] is not None or cell["outputs"]:
             raise ValueError("Generated notebooks must have no execution history.")
         text = "".join(cell["source"])
+        archived = archived_sources(cell)
+        if set(archived) & set(exported):
+            raise ValueError("Duplicate files in notebook source export.")
+        exported.update(archived)
+        for filename, body in archived.items():
+            if filename.endswith(".py"):
+                compile(body, filename, "exec")
         if text.startswith("%%writefile "):
             heading, body = text.split("\n", 1)
             filename = heading.removeprefix("%%writefile ")
@@ -946,10 +1001,14 @@ def verify(notebook: dict, sources: dict[str, bytes]) -> dict:
     content = "\n".join("".join(cell["source"]) for cell in notebook["cells"])
     if re.search(r"[A-Za-z]:[\\/]+Users[\\/]+", content):
         raise ValueError("A personal absolute Windows path leaked into the notebook.")
+    wire_bytes = transmitted_size(notebook)
+    if wire_bytes >= 1_000_000:
+        raise ValueError(f"Notebook source exceeds Kaggle limit: {wire_bytes} bytes >= 1000000.")
     return {
         "exported_modules": sum(path.endswith(".py") and "/scripts/" not in path for path in exported),
         "exported_files": len(exported),
         "compiled_non_magic_cells": compiled,
+        "transmitted_bytes": wire_bytes,
         "unexecuted": True,
     }
 
